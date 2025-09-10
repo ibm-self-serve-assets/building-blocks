@@ -1,4 +1,4 @@
-# IBM Building Block Assets – Embeddable AI & Automation
+# IBM Building Block – Embeddable AI & Automation
 
 ## Introduction  
 The **Building Block** is a collection of **minimum viable use cases (MVPs)** designed to showcase the strength of the IBM offerings stack, with a particular emphasis on **Embeddable AI**.  
