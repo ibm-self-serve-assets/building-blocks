@@ -1,7 +1,7 @@
-# IBM Building Block – Embeddable AI & Automation
+# Technology Building Blocks – Embeddable AI & Automation
 
 ## Introduction  
-The **Building Block** is a collection of **minimum viable use cases (MVPs)** designed to showcase the strength of the IBM offerings stack, with a particular emphasis on **Embeddable AI**.  
+The **Technology Building Block** is a collection of **minimum viable use cases (MVPs)** designed to showcase the strength of the IBM offerings stack, with a particular emphasis on **Embeddable AI**.  
 These use cases demonstrate seamless integration across the **Data & AI** and **Automation** stack.  
 
 The assets serve a dual purpose:  
@@ -12,7 +12,7 @@ Standardized MVPs ensure consistent, high-quality demonstrations of business out
 
 ---
 
-## What is the Building Block?  
+## What is the Technology Building Block?  
 The Building Block is a **reference framework** of demo-ready assets that help teams:  
 - Rapidly **prototype and deploy** AI-enabled applications.  
 - **Integrate IBM offerings** like watsonx.ai, watsonx.data, Instana, and Turbonomic with partner ecosystems.  
