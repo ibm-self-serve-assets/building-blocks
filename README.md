@@ -41,6 +41,8 @@ The Building Block is a **reference framework** of demo-ready assets that help t
 ### 2. Architecture Diagram
 The high-level solution architecture illustrates how the core building blocks—Data & AI, Automation, and Observability—integrate seamlessly to deliver end-to-end use cases. It highlights the interaction between frontend applications, backend services, AI models, and monitoring tools, providing a clear overview of how the solution drives scalability, governance, and efficiency.
 
+---
+
 ### 2. Integration Code  
 - **Python/Node.js scripts** for invoking watsonx.ai endpoints.  
 - **Terraform/Helm charts** for infrastructure automation.  
