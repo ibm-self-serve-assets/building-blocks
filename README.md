@@ -60,10 +60,10 @@ Navigate to [IBM TechZone](https://techzone.ibm.com/).
 
 When demonstrating the Building Blocks, emphasize:
 
-AI-Driven Outcomes – watsonx.ai generating actionable insights.
-Governance & Compliance – watsonx.governance enforcing trust and auditability.
-Data Readiness – watsonx.data providing governed data pipelines.
-Observability – Instana offering real-time application performance metrics.
-Optimization – Turbonomic ensuring cost efficiency and workload balance.
+- AI-Driven Outcomes – watsonx.ai generating actionable insights.
+- Governance & Compliance – watsonx.governance enforcing trust and auditability.
+- Data Readiness – watsonx.data providing governed data pipelines.
+- Observability – Instana offering real-time application performance metrics.
+- Optimization – Turbonomic ensuring cost efficiency and workload balance.
 
 These building blocks serve as both engineering accelerators and business value multipliers, enabling teams to quickly deliver impactful, production-grade demos that resonate with partners.
