@@ -1,7 +1,7 @@
-# Technology Building Blocks – Embeddable AI & Automation  
+<img width="160" height="20" alt="image" src="https://github.com/user-attachments/assets/e37f3552-5f2e-4856-bc44-cc7601e12657" /># Technology Building Blocks – Embeddable AI & Automation  
 
 ## Introduction
-The **Technology Building Block** represents a curated set of **IBM capabilities** engineered by Build Engineering team to accelerate solution delivery and highlight the technical and business value of the IBM technology stack, with a strong focus on Embeddable AI. Each Building Block is designed to demonstrate the seamless integration of IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and speed time-to-value. 
+The **Technology Building Block** represents a curated set of **IBM capabilities** engineered by Build Engineering team to accelerate solution delivery and highlight the technical and business value of the IBM technology stack, with a strong focus on Embeddable AI. Each building block is designed to demonstrate the seamless integration of IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and speed time-to-value. 
 
 The assets are structured around two key objectives: 
 - **Engineering Enablement** – Providing production-ready codebases, deployment automation, and integration templates that reduce development overhead and accelerate delivery. 
@@ -22,16 +22,32 @@ The Building Block is a **reference implementation framework** that accelerates 
 ---
 
 ## Value Proposition  
-- **Accelerated Delivery:** Pre-built engineering patterns minimize development overhead.  
-- **Consistency at Scale:** Standardized assets ensure repeatable, high-quality client outcomes.  
-- **Extensibility:** Supports industry-specific tailoring and integration with third-party tools.  
-- **Cross-Stack Integration:** Demonstrates IBM technologies working cohesively in hybrid environments.  
-- **Client Impact:** Bridges technical capabilities with measurable business outcomes.  
+We offer a comprehensive set of embeddable capabilities across the following domains:
+
+- **AI Agents** – Capabilities delivered via APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source.
+Examples: orchestration, interoperability, intelligent task automation.
+
+- **Trusted AI** – APIs and SDKs from watsonx.governance, watsonx.ai, and open source.
+Examples: model validation, guardrails, governance workflows.
+
+- **Data for AI** – Capabilities powered by watsonx.data, watsonx.ai, and open source.
+Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations.
+
+ - **Build & Deploy ** – Deployable configuration, Generating new code snippets based on natural language prompts. 
+Examples: Infrastructure-as-Code, AI-powered code assistants, and integration through iPaaS
+
+ - **Observe** – Discovery with dependency mapping, AI-driven anomaly detection automated issue remediation.
+Examples: Application observability and network performance monitoring.
+
+- **Optimize**  –  AI-powered solution to detect risks early, enforce compliance continuously and automate remediation across application environments.
+Examples: FinOps-driven cost optimization, automated resource management, and compliance with resilience frameworks
+
+Our easy-to-consume, fully supported building blocks enable engineering teams to accelerate delivery, enhance mission-critical application stacks, and seamlessly integrate AI into enterprise and partner ecosystems.
 
 ---
 
-## Solution Architecture  
-The high-level solution architecture outlines the integration of **frontend applications (React-based UI)**, **backend services (API and orchestration layers)**, **AI models (watsonx.ai/Granite)**, and **observability/automation services (Instana, Turbonomic)**.  
+## Enterprise Architecture  
+The high-level enterprise architecture outlines the integration of **frontend applications (React-based UI)**, **backend services (API and orchestration layers)**, **AI models (watsonx.ai/Granite)**, and **observability/automation services (Instana, Turbonomic)**.  
 This modular design enables **end-to-end traceability, scalability, and governance**, ensuring the solution can adapt to both technical and business demands.  
 
 ---
