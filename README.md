@@ -24,23 +24,24 @@ The Building Block is a **reference implementation framework** that accelerates 
 ## Value Proposition  
 We offer a comprehensive set of embeddable capabilities across the following domains:
 
-- **AI Agents** – Capabilities delivered via APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source.
-  Examples: orchestration, interoperability, intelligent task automation.
+**AI Agents** – Capabilities delivered via APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source.  
+Examples: orchestration, interoperability, intelligent task automation.  
 
-- **Trusted AI** – APIs and SDKs from watsonx.governance, watsonx.ai, and open source.
-  Examples: model validation, guardrails, governance workflows.
+**Trusted AI** – APIs and SDKs from watsonx.governance, watsonx.ai, and open source.  
+Examples: model validation, guardrails, governance workflows.  
 
-- **Data for AI** – Capabilities powered by watsonx.data, watsonx.ai, and open source.
-  Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations.
+**Data for AI** – Capabilities powered by watsonx.data, watsonx.ai, and open source.  
+Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations.  
 
-- **Build & Deploy** – Deployable configuration, Generating new code snippets based on natural language prompts.
-  Examples: Infrastructure-as-Code, AI-powered code assistants, and integration through iPaaS.
+**Build & Deploy** – Deployable configuration, generating new code snippets based on natural language prompts.  
+Examples: Infrastructure-as-Code, AI-powered code assistants, and integration through iPaaS.  
 
- - **Observe** – Discovery with dependency mapping, AI-driven anomaly detection automated issue remediation.
-   Examples: Application observability and network performance monitoring.
+**Observe** – Discovery with dependency mapping, AI-driven anomaly detection, and automated issue remediation.  
+Examples: Application observability and network performance monitoring.  
 
-- **Optimize**  –  AI-powered solution to detect risks early, enforce compliance continuously and automate remediation across application environments.
-  Examples: FinOps-driven cost optimization, automated resource management, and compliance with resilience frameworks.
+**Optimize** – AI-powered solutions to detect risks early, enforce compliance continuously, and automate remediation across application environments.  
+Examples: FinOps-driven cost optimization, automated resource management, and compliance with resilience frameworks.  
+
 
 Our easy-to-consume, fully supported building blocks enable engineering teams to accelerate delivery, enhance mission-critical application stacks, and seamlessly integrate AI into enterprise and partner ecosystems.
 
