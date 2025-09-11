@@ -16,7 +16,8 @@ Standardized MVPs ensure consistent, high-quality demonstrations of business out
 The Building Block is a **reference framework** of demo-ready assets that help teams:  
 - Rapidly **prototype and deploy** AI-enabled applications.  
 - **Integrate IBM offerings** like watsonx.ai, watsonx.data, Instana, and Turbonomic with partner ecosystems.  
-- Provide **business-aligned narratives** through reusable MVPs that can be tailored for partners.  
+- Provide **business-aligned narratives** through reusable MVPs that can be tailored for partners.
+  
 
 <img width="1718" height="914" alt="Technology_Building_Blocks" src="https://github.com/user-attachments/assets/7aa992ae-9b1b-4aea-ba90-734a8efb0e37" />
 
