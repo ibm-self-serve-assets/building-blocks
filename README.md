@@ -33,7 +33,7 @@ Examples: model validation, guardrails, governance workflows.
 - **Data for AI** – Capabilities powered by watsonx.data, watsonx.ai, and open source.
 Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations.
 
- - **Build & Deploy ** – Deployable configuration, Generating new code snippets based on natural language prompts. 
+ - **Build & Deploy** – Deployable configuration, Generating new code snippets based on natural language prompts. 
 Examples: Infrastructure-as-Code, AI-powered code assistants, and integration through iPaaS
 
  - **Observe** – Discovery with dependency mapping, AI-driven anomaly detection automated issue remediation.
