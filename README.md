@@ -37,7 +37,7 @@ This modular design enables **end-to-end traceability, scalability, and governan
 
 ---
 
-##Code Assets
+## Code Assets
 1. React Frontend (Demo Repo)
 Provides the demo UI with React + Tailwind + shadcn/ui.
 Includes modular components for invoking watsonx.ai endpoints and visualizing AI results.
@@ -50,13 +50,13 @@ Prebuilt connectors for monitoring (Instana) and resource optimization (Turbonom
 
 ---
 
-##Accessing the Software (via TechZone)
+## Accessing the Software (via TechZone)
 
 Navigate to [IBM TechZone](https://techzone.ibm.com/). 
 
 ---
 
-##Demo Value Proposition
+## Demo Value Proposition
 
 When demonstrating the Building Blocks, emphasize:
 
