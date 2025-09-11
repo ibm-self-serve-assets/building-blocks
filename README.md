@@ -7,7 +7,7 @@ The assets are structured around two key objectives:
 - **Engineering Enablement** – Providing production-ready codebases, deployment automation, and integration templates that reduce development overhead and accelerate delivery. 
 - **Partner & Client Engagement** – Equipping teams with demo-ready assets that can be easily tailored to customer or partner environments, ensuring impactful solution showcases. 
 
-By standardizing these Building Blocks, we establish **consistent delivery practices**, **scalable architectures**, and **repeatable client demonstrations**, enabling teams to deliver measurable outcomes in **governance, observability, scalability, and cost optimization**.
+By standardizing these Building Blocks, we establish **consistent delivery practices**, **scalable architectures**, and **repeatable partner demonstrations**, enabling teams to deliver measurable outcomes in **governance, observability, scalability, and cost optimization**.
 
 ---
 
