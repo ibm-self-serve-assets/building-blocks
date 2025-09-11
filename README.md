@@ -28,16 +28,16 @@ We offer a comprehensive set of embeddable capabilities across the following dom
   Examples: orchestration, interoperability, intelligent task automation.
 
 - **Trusted AI** – APIs and SDKs from watsonx.governance, watsonx.ai, and open source.
-  Examples: model validation, guardrails, governance workflows.
+  Examples: model validation, guardrails, governance workflows
 
 - **Data for AI** – Capabilities powered by watsonx.data, watsonx.ai, and open source.
-  Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations.
+  Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations
 
 - **Build & Deploy** – Deployable configuration, Generating new code snippets based on natural language prompts.  
   Examples: Infrastructure-as-Code, AI-powered code assistants, and integration through iPaaS
 
  - **Observe** – Discovery with dependency mapping, AI-driven anomaly detection automated issue remediation.
-   Examples: Application observability and network performance monitoring.
+   Examples: Application observability and network performance monitoring
 
 - **Optimize**  –  AI-powered solution to detect risks early, enforce compliance continuously and automate remediation across application environments.
   Examples: FinOps-driven cost optimization, automated resource management, and compliance with resilience frameworks
