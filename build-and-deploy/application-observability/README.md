@@ -60,7 +60,7 @@
 
 ---
 
-Recommended structure for a sample IBM Instana demo building block
+Recommended structure for a sample IBM Instana building block
 
 ```
 instana-demo/
