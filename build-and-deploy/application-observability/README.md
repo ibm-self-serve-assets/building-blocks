@@ -37,7 +37,7 @@
 - Integrate with **IBM Cloud Pak for AIOps** or **Slack/Teams for notifications**.
 - Show **API-driven data export** to other observability platforms if needed.
 
-## 7. building block Flow & Storytelling
+## 7. building block     Flow & Storytelling
 - Begin with a **healthy system view** (baseline monitoring).
 - Introduce an **issue or anomaly**.
 - Use Instana’s features to **detect, analyze, and resolve** the issue.
@@ -90,9 +90,6 @@ instana-building block/
 └── troubleshooting.md
 
 ```
-
-
-Folder Purpose
 
 ---
 
