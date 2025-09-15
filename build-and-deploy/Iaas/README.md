@@ -1,4 +1,4 @@
-# Terraform Demo Asset for IBM Cloud
+# Infrastructure as a service (Terraform)  Building Block Demo for IBM Cloud
 
 This repository provides a sample **Infrastructure as Code (IaC)** demo using Terraform on IBM Cloud.  
 It is designed to be **simple, reusable, and cost-safe**, while showcasing best practices for demos and learning.
