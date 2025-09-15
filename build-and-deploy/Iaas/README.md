@@ -121,3 +121,13 @@ terraform-ibm-demo/
 │       ├── variables.tf
 │       └── outputs.tf
 ```
+
+---
+
+### 7. Cleanup
+
+To remove resources and avoid costs:
+
+```
+terraform destroy -auto-approve
+```
