@@ -103,6 +103,6 @@ Folder Purpose
 - **`dashboards/`** → Exported Instana dashboards for reuse.  
 - **`traces/`** → Pre-captured trace data for demo fallback.  
 - **`alerts/`** → Alert rules for errors, latency, anomalies.  
-- **`docs/`** → Reference documentation + diagrams.  
+- **`docs/`** → Solution Architecture + documentation.  
 
 ---
