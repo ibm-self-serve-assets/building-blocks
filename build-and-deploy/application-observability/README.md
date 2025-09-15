@@ -1,4 +1,4 @@
-# Key Aspects for Creating a Technology Building Block Asset: Application Observability with IBM Instana
+# Key Aspects for Creating a Technology Building Block: Application Observability with IBM Instana
 
 ## 1. Clear Objectives
 - Define the **purpose** of the building block  (e.g., monitoring microservices, APM, incident response).
@@ -6,7 +6,7 @@
 
 ## 2. Demo Environment Setup
 - Use **containerized workloads** (e.g., OpenShift) or **VM-based apps**.
-- Ensure **sample applications** (e.g., microservices, e-commerce app) with meaningful transactions.
+- Ensure **sample applications** (e.g., microservices, app) with meaningful transactions.
 - Provide **pre-configured Instana agent deployment steps**.
 
 ## 3. Agent Deployment
@@ -57,5 +57,52 @@
 - Ensure **data consistency** across metrics, traces, and logs.
 - Keep the demo **time-bound (10–15 minutes)** for effectiveness.
 - Provide **cleanup instructions** to avoid leftover resources/costs.
+
+---
+
+Recommended structure for a sample IBM Instana demo building block
+
+```
+instana-demo/
+├── README.md # Documentation: overview, setup, usage
+├── manifests/ # OpenShift/Kubernetes manifests
+│ ├── instana-agent-daemonset.yaml # Instana agent deployment
+│ ├── service-monitor.yaml # Service monitor (Prometheus/metrics integration)
+│ └── demo-app-deployment.yaml # Sample microservices app
+├── helm/ # Helm charts (optional if using Helm for agent/app)
+│ └── instana-agent/ # Helm chart for Instana agent
+├── scripts/ # Helper scripts
+│ ├── deploy.sh # Deploy app + Instana agent
+│ ├── cleanup.sh # Destroy demo environment
+│ └── simulate-incident.sh # Script to inject failures/latency
+├── dashboards/ # JSON exports of Instana dashboards
+│ ├── app-performance.json
+│ └── infra-health.json
+├── traces/ # Sample trace data (for offline demo or training)
+│ ├── order-service-trace.json
+│ └── payment-service-trace.json
+├── alerts/ # Instana alert configurations (YAML/JSON)
+│ ├── error-rate-alert.json
+│ └── latency-threshold-alert.json
+└── docs/ # Supporting docs & diagrams
+├── architecture-diagram.png
+├── setup-guide.md
+└── troubleshooting.md
+
+```
+
+
+Folder Purpose
+
+---
+
+## Folder Purpose
+- **`manifests/`** → Deployment configs for app & Instana agent (OpenShift-ready).  
+- **`helm/`** → Helm-based deployment option.  
+- **`scripts/`** → Automation (deploy, clean up, simulate incidents).  
+- **`dashboards/`** → Exported Instana dashboards for reuse.  
+- **`traces/`** → Pre-captured trace data for demo fallback.  
+- **`alerts/`** → Alert rules for errors, latency, anomalies.  
+- **`docs/`** → Reference documentation + diagrams.  
 
 ---
