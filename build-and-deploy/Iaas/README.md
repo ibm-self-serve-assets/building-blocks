@@ -36,7 +36,7 @@ variable "region" {
 
 ---
 
-###4. Outputs & Observability
+### 4. Outputs & Observability
 
 Use outputs.tf to show important information after deployment (e.g., IPs, URLs, bucket names).
 
@@ -44,7 +44,7 @@ Makes the demo more engaging when participants immediately see something usable.
 
 ---
 
-###5. Documentation
+### 5. Documentation
 
 Include a README.md with:
 -- Overview of what the demo builds.
@@ -63,7 +63,7 @@ terraform destroy
 
 ---
 
-###6. Safety & Cost Control
+### 6. Safety & Cost Control
 
 Avoid deploying large/expensive resources — stick to free/low-cost tiers.
 
@@ -78,7 +78,7 @@ tags = {
 ```
 ---
 
-###7. Provider & Authentication
+### 7. Provider & Authentication
 
 Clearly document provider setup:
 ```
@@ -90,7 +90,9 @@ provider "ibm" {
 ```
 Use variables for credentials or rely on environment variables:
 
+```
 export IC_API_KEY=<your-ibmcloud-api-key>
+```
 
 ---
 Example Project Structure
