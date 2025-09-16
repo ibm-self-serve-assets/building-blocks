@@ -1,4 +1,4 @@
-# Creating a Technology Building Block for FinOps using IBM Turbonomic / ibm Apptio
+# Creating a Technology Building Block for FinOps using IBM Turbonomic / IBM Apptio
 
 ## Key Aspects to Consider
 
