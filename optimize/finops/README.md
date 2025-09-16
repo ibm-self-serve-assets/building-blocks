@@ -1,10 +1,10 @@
-# Creating a Technology Building Block for FinOps using IBM Turbonomic
+# Creating a Technology Building Block for FinOps using IBM Turbonomic / ibm Apptio
 
 ## Key Aspects to Consider
 
 ### 1. **Clarity & Simplicity**
 - Keep building block  **easy to understand** for FinOps and CloudOps teams.  
-- Clearly highlight **cost optimization opportunities** (e.g., rightsizing, scaling, eliminating waste).  
+- Clearly highlight **cost optimization opportunities** and the purpose of the building block (e.g., rightsizing, scaling, eliminating waste).  
 - Use **realistic, but safe building block workloads** that simulate cloud usage patterns.
 
 ---
@@ -13,6 +13,7 @@
 - Organize the building block into **modular components**: application workloads, policies, dashboards, and reports.  
 - Allow easy extension for **multi-cloud (IBM Cloud, AWS, Azure, GCP)** scenarios.  
 - Provide a **baseline building block** with optional add-ons (e.g., reserved instances, spot instances).
+- Highlight ***integration*** with other products such as IBM Instana, IBM Apptio as per building block.
 
 ---
 
@@ -32,6 +33,7 @@
   - Cost savings summary  
   - Resource utilization trends  
   - Policy compliance overview  
+- To highlight Hybrid cloud cost optimization.
 
 ---
 
@@ -41,6 +43,8 @@ Include a **README.md** that provides:
 - **Prerequisites**: IBM Turbonomic instance, access credentials, Terraform/Helm if applicable.  
 - Step-by-step instructions (deploy → optimize → review savings).  
 - Screenshots of **dashboards, savings recommendations, policies applied**.  
+- ***Architecture Diagram*** for the building block.
+
 
 ---
 

@@ -36,6 +36,7 @@
 ## 6. Integration Points
 - Integrate with **IBM Cloud Pak for AIOps** or **Slack/Teams for notifications**.
 - Show **API-driven data export** to other observability platforms if needed.
+- Highlight ***integration*** with other IBM / Non - IBM offerings (Turbonomic, Concert, Kubecost) as per building block.
 
 ## 7. building block     Flow & Storytelling
 - Begin with a **healthy system view** (baseline monitoring).
@@ -47,6 +48,7 @@
 - Provide **step-by-step setup instructions** (OpenShift-focused if applicable).
 - Include **Terraform/Helm scripts** for automated setup.
 - Keep the building block **repeatable, simple, and modular** for quick re-runs.
+- ***Architecture Diagram*** of the building block.
 
 ## 9. Visualization & User Experience
 - Use **clear dashboards, heatmaps, and service maps** for storytelling.
