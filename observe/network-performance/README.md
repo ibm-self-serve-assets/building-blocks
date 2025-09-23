@@ -13,19 +13,19 @@
 
 ## 2. Demo Development Best Practices  
 
-### 🔹 Agentic AI with Watsonx Orchestrate  
+### Agentic AI with Watsonx Orchestrate  
 - Automate SevOne alerts → incident workflows → remediation steps.  
 - Demonstrate multi-agent orchestration for:  
   - Predictive maintenance (using anomaly detection)  
   - Automated ticketing with ServiceNow/Jira  
   - Intelligent escalation paths  
 
-### 🔹 Governance with Watsonx.governance  
+### Governance with Watsonx.governance  
 - Define **policies for AI-driven anomaly detection** models.  
 - Implement **explainability dashboards** for AI-based SevOne alerts.  
 - Establish audit logs of demo data + compliance enforcement.  
 
-### 🔹 Data & AI with Watsonx.data and Watsonx.ai  
+### Data & AI with Watsonx.data and Watsonx.ai  
 - Use **watsonx.data** as the scalable data layer for SevOne telemetry.  
 - Train/host anomaly detection and root cause analysis models in **watsonx.ai**.  
 - Benchmark performance with open datasets (NetFlow, SNMP).  
