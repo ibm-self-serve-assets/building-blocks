@@ -1,4 +1,4 @@
-# IBM iPaaS Building Blocks Development Best Practises
+# IBM Integration platform as a service (iPaaS) Building Blocks Development Best Practises
 
 ## Objective
 
