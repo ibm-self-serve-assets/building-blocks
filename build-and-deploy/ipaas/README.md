@@ -1,4 +1,7 @@
 # IBM Integration platform as a service (iPaaS) Building Blocks Development Best Practises
+iPaaS allows enterprises to create and deploy integration flows that seamlessly connect applications and data across public and private clouds, as well as between cloud environments and on-premises data centers. These platforms help address enterprise integration and data management challenges by offering capabilities such as pre-built connectors, mapping, and data transformations, enabling organizations to orchestrate integration flows and ensure interoperability across diverse systems.
+
+Additionally, iPaaS solutions support a wide range of integration needs, including B2B integration, IoT connectivity, cloud-to-cloud integration, event stream processing, managed file transfer, and integrations across different business platforms and systems.
 
 ## Objective
 
