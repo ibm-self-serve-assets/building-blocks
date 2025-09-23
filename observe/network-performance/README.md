@@ -1,4 +1,8 @@
-# Best Practices for IBM SevOne Network Monitoring & Observability Building Block Development  
+# Best Practices for IBM SevOne Network Monitoring & Observability Building Block Development
+
+IBM SevOne Network Monitoring & Observability provides enterprises with real-time, end-to-end visibility into complex hybrid network environments, enabling them to monitor, analyze, and optimize performance across physical, virtual, and cloud infrastructure. The solution delivers comprehensive network monitoring across routers, switches, firewalls, SD-WAN, wireless, and cloud platforms, all while scaling to handle millions of network objects and metrics. By going beyond traditional monitoring, SevOne collects rich telemetry data—including metrics, flows, logs, and events—to provide actionable insights that help organizations ensure consistent performance and reliability across their networks.
+
+With AI-driven analytics, SevOne empowers enterprises to proactively detect anomalies, forecast performance issues, and perform root cause analysis. Its automation and integration capabilities seamlessly connect with ITSM, DevOps, and other automation platforms, helping teams accelerate resolution and reduce downtime. Role-based dashboards and reports offer tailored views for network operations, engineers, and business leaders, ensuring stakeholders get the insights they need. Together, these capabilities enhance customer experience, optimize application performance, and modernize operations across hybrid and multi-vendor networks.
 
 ## 1. Enterprise Architecture Creation  
 - **Model-driven architecture**: Document SevOne’s role in ingesting, processing, and monitoring network telemetry.  
