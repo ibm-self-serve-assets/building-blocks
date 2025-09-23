@@ -1,108 +1,126 @@
 # Best Practices for IBM watsonx Code Assistant Building Blocks Development
 
-This document lists best practices for building demos with **IBM watsonx Code Assistant** in combination with:
+## Objective
+Develop a **demo building block for IBM watsonx Code Assistant** that demonstrates:
+- **Agentic AI** using **watsonx Orchestrate** for automated code suggestions and workflow execution.
+- **Governance** using **watsonx.governance** to ensure trusted and auditable AI-driven code assistance.
+- **Data & AI** using **watsonx.data** and **watsonx.ai** for secure, scalable code analysis, contextual understanding, and insights.
 
-- **Agentic AI** → watsonx.orchestrate  
-- **Governance** → watsonx.governance  
-- **Data for AI** → watsonx.data & watsonx.ai  
+The demo will highlight the **integration of IBM Stack components** and the differentiators compared to competitors.
 
 ---
 
 ## Best Practices
 
-### 1. Demo Design & Storyboarding
-- Define **end-to-end use case flow** (problem → orchestration → governance → AI output).  
-- Keep the demo **modular** so each component (code assistant, orchestrate, governance, data/AI) can be shown independently or in combination.  
-- Maintain **realistic but synthetic data** for compliance and reproducibility.  
+### 1. Building Block Development
+- Design modular, reusable demo artifacts for **Code Assistant use cases** (e.g., code generation, debugging, refactoring).
+- Include **synthetic or anonymized sample code** to demonstrate AI capabilities safely.
+- Ensure **repeatability and deterministic behavior** for demos.
 
-### 2. Code Assistant Development
-- Use **watsonx Code Assistant** for generating boilerplate code and automating repetitive tasks.  
-- Always review, refine, and annotate generated code with comments — highlight AI contributions for building blocks clarity.  
-- Include **before/after code examples** to showcase productivity gains.  
-- Enforce **coding standards, linting, and formatting** in the repo.  
+### 2. Agentic AI with watsonx Orchestrate
+- Create **agents/workflows** for:
+  - Automating code review processes.
+  - Triggering context-aware code suggestions.
+  - Executing repetitive code modifications.
+- Ensure agents log actions and decisions for audit and traceability.
 
-### 3. Agentic AI with watsonx.orchestrate
-- Wrap code assistant workflows in orchestrate agents for **step-by-step automation**.  
-- Configure **least-privilege access** for agents (restricted APIs, data).  
-- Add **human-in-the-loop approvals** for critical steps (e.g., deployment).  
-- Use orchestration to **chain tasks** (e.g., generate code → validate → deploy to sandbox).  
+### 3. Governance with watsonx.governance
+- Implement governance policies to:
+  - Verify AI suggestions adhere to coding standards.
+  - Maintain **explainability of AI outputs**.
+  - Provide audit trails for all automated actions.
 
-### 4. Governance with watsonx.governance
-- Register demo datasets, models, and generated artifacts in **watsonx.governance**.  
-- Track **lineage** → which model/code/data produced which output.  
-- Apply **bias/fairness checks** for demo outputs (when applicable).  
-- Set up **policy-as-code** to show automated gates (only deploy if governance criteria are met).  
+### 4. Data & AI with watsonx.data and watsonx.ai
+- Store and manage code samples, training datasets, and AI models in a **governed data layer**.
+- Use AI models to:
+  - Analyze code patterns and generate recommendations.
+  - Identify potential bugs or security issues.
+- Ensure **responsible AI usage** with explainability dashboards and lineage tracking.
 
-### 5. Data & AI with watsonx.data + watsonx.ai
-- Use watsonx.data for **cataloging, schema validation, and query federation** in demos.  
-- Ensure **dataset versioning** for repeatability.  
-- For watsonx.ai:  
-  - Use clear prompts and prompt templates.  
-  - Demonstrate fine-tuning or RAG (retrieval-augmented generation) using watsonx.data sources.  
-  - Capture latency and cost metrics for transparency.  
- 
-### 6. Documentation & Demo Usability
-- Provide a **README walkthrough** with step-by-step demo instructions.  
-- Add **screenshots or recordings** for offline reference.  
-- Clearly mark **AI-generated code vs manually written code** in the repo.  
-- Provide a **troubleshooting guide** for setup errors.  
+### 5. Differentiation from Competitors
+- IBM Stack provides **full integration of AI, data, orchestration, and governance**, which competitors may lack.
+- Agentic automation allows **workflow-triggered code recommendations**, not just static suggestions.
+- Governance layer ensures **trusted AI outputs** and **enterprise compliance**.
+- Unified data layer ensures **scalable, multi-cloud AI** for code analysis.
 
 ---
 
-## 📂 Recommended Folder Structure
+## Enterprise Architecture Overview
 
-A practical folder layout for demos:
+### Logical Components
+- **watsonx Code Assistant**: Central AI-driven coding assistant.
+- **watsonx Orchestrate**: Automates code workflows and approvals.
+- **watsonx.governance**: Enforces compliance, audit trails, and explainability.
+- **watsonx.data**: Centralized data for code samples, training datasets, and model inputs.
+- **watsonx.ai**: Analyzes code, generates recommendations, and identifies anomalies.
+- **DevOps Tools**: Integration with GitHub, GitLab, Jenkins for code repository access and pipeline triggers.
 
-```
-/watsonx-code-assistant-demo
-├── README.md # Demo overview & quickstart
-├── LICENSE
-├── .gitignore
+### Data & Control Flow
+1. Developer submits code or requests assistance via Code Assistant.
+2. Orchestrate triggers relevant AI workflow for code analysis.
+3. watsonx.ai models generate recommendations or identify issues.
+4. Governance layer validates AI suggestions and logs decisions.
+5. Orchestrate applies changes or sends suggestions back to the developer.
+6. All actions and recommendations are recorded in watsonx.data for audit.
+
+---
+
+### Demo Recording Best Practices
+- Record both **screen and voice narration** for clarity.
+- Keep demo **under 10 minutes**, with optional 60–90 second highlights.
+- Include clear **callouts** for AI suggestions, governance actions, and orchestration steps.
+
+---
+
+## Folder Structure for Code Development
+
+```plaintext
+watsonx-code-assistant-demo/
 │
-├── /docs
-│ ├── architecture-diagram.png
-│ ├── demo-script.md # Narration / flow
-│ └── troubleshooting.md
+├── docs/                          
+│   ├── architecture.md
+│   ├── demo-script.md
+│   ├── competitor-differentiation.md
+│   └── recording-guidelines.md
 │
-├── /infra
-│ ├── terraform/ # Infra as Code for demo env
-│ └── k8s/ # K8s manifests (if needed)
+├── orchestrate-flows/              
+│   ├── code-generation-agent/
+│   │   ├── agent.yaml
+│   │   ├── src/
+│   │   │   └── main.py
+│   │   └── tests/
+│   └── code-review-agent/
+│       ├── agent.yaml
+│       ├── src/
+│       └── tests/
 │
-├── /orchestrate
-│ ├── agents/
-│ │ ├── codegen-agent/
-│ │ │ ├── agent.yaml # agent definition
-│ │ │ └── src/ # orchestration logic
-│ │ └── deploy-agent/
-│ │ ├── agent.yaml
-│ │ └── src/
-│ └── tests/
+├── governance-policies/            
+│   ├── coding-standards.yaml
+│   ├── security-compliance.yaml
+│   └── audit-rules.yaml
 │
-├── /governance
-│ ├── policies/ # policy-as-code YAMLs
-│ ├── lineage-examples/ # lineage registration files
-│ └── monitoring/ # drift/bias checks
+├── data-ai/                        
+│   ├── datasets/                   
+│   │   ├── sample-code.csv
+│   │   └── code-metrics.parquet
+│   ├── models/                     
+│   │   ├── code-generation/
+│   │   └── code-review/
+│   └── notebooks/                  
+│       ├── code-analysis.ipynb
+│       └── ai-recommendation.ipynb
 │
-├── /data
-│ ├── schemas/ # JSONSchema/Avro
-│ ├── sample/ # synthetic datasets
-│ └── catalog/ # watsonx.data metadata
+├── integration/                    
+│   ├── code-assistant-api.py
+│   ├── orchestrate-connector.py
+│   └── governance-checks.py
 │
-├── /models
-│ ├── prompts/ # prompt templates
-│ ├── fine-tuning/ # fine-tuning scripts
-│ └── registry.yaml # governance metadata
+├── building-block/                    
+│   ├── recordings/
+│   ├── slides/
+│   └── screenshots/
 │
-├── /assistant
-│ ├── before-after/ # before vs AI-generated code
-│ ├── src/ # code assistant outputs
-│ └── tests/ # unit & integration tests
-│
-├── /ci
-│ ├── pipelines/ # CI/CD workflows
-│ └── scripts/ # helper scripts
-│
-└── /tests
-├── e2e/ # full demo flow tests
-├── integration/
-└── performance/
+└── tests/                          
+    ├── unit/
+    ├── integration/
+    └── governance/
