@@ -1,5 +1,7 @@
 # Creating a Technology Building Block for Authencation Management using IBM Security Verify
 
+IBM Security Verify is an Identity and Access Management (IAM) solution designed to help enterprises secure user access, protect digital identities, and ensure regulatory compliance across hybrid IT environments. It provides single sign-on (SSO), adaptive multi-factor authentication (MFA), identity governance, and lifecycle management to simplify and secure how employees, partners, and customers interact with applications and data. Security Verify enables enterprises to apply a zero-trust approach by continuously validating identities and context before granting access, thereby reducing risks of unauthorized access and insider threats.
+
 ## Objective
 Develop a comprehensive **IBM Security Verify demo asset** that leverages:
 - **Agentic AI** with **watsonx Orchestrate**  
