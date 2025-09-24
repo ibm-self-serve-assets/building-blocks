@@ -1,12 +1,10 @@
-# RAG Service API - Milvus RAG Integration Service for GenAI Pipelines
+# RAG Ingestion Integration Service for GenAI Pipelines
 
 The RAG Service API provides a modular framework for building GenAI pipelines that combine retrieval-augmented generation (RAG) with Milvus as the vector database. It simplifies ingestion and querying pipeline while offering extensible customization options for document loaders, schemas, embedding models, and rerankers. The framework is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines, governance hooks, and evaluation tools.
 
 ## Features
 * **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
 * **Embedding:** Dense, hybrid, or dual embeddings with selectable models
-* **Retriever & Querying:** Hybrid search, reranking (weighted, RRF, cross-encoder), configurable search parameters
-* **Generation:** LLM integration with configurable models and prompt templates
 
 ## Deploying the Framework
 * **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables
@@ -22,15 +20,10 @@ The API supports customizations at multiple levels:
     * Document processing: Docling/Markdown processing, picture annotation, table cleanup
     * Chunkers: Docling hybrid chunker, Markdown text splitter, recursive text splitter
 
-* **Querying**
-    * Search parameters: Number of docs retrieved and reranked
-    * Rerankers: Weighted, RRF, cross-encoding
-    * LLM models: Configurable by provider and prompt template
-
 ## Getting Started
 ### Prerequisites
 The following prerequisites are required to spin up the RAG Service API:
-1. **Python3** installed locally
+1. Python3 installed locally
 2. Milvus DB Credentials
 3. IBM watsonx.ai Credentials
 4. IBM COS Credentials
@@ -38,12 +31,12 @@ The following prerequisites are required to spin up the RAG Service API:
 ### Installation
 1. Clone the repository
     ```
-    git clone git@github.ibm.com:ibm-build-lab/RAG-Service.git
+    git clone git@github.com:ibm-self-serve-assets/building-blocks.git
     ```
 
-2. Change directory into `RAG-Service`
+2. Change directory into `RAG Service Ingestion Pipeline`
     ```
-    cd RAG-Service
+    cd building-blocks/data-for-ai/vector-search/RAG Service Ingestion Pipeline
     ```
 
 3. Create a python virtual environment
@@ -64,17 +57,12 @@ The following prerequisites are required to spin up the RAG Service API:
         * `WXD_MILVUS_PORT` (Milvus port)
         * `WXD_MILVUS_USER` (Username)
         * `WXD_MILVUS_PASSWORD` (IBM Cloud API Key associated with Milvus account)
-    2. **watsonx.ai credentials**: 
-        * `WATSONX_MODEL_ID` (Choose the foundation model ID found in your project on [watsonx.ai](https://dataplatform.cloud.ibm.com/))
-        * `WATSONX_PROJECT_ID` (From your watsonx.ai project dashboard)
-        * `WATSONX_APIKEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
-        * `WATSONX_URL` (Typically "https://us-south.ml.cloud.ibm.com")
-    3. **IBM COS credentials**: 
+    2. **IBM COS credentials**: 
         * `IBM_CLOUD_API_KEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
         * `COS_ENDPOINT` (Service endpoint URL for your COS instance)
         * `COS_AUTH_ENDPOINT` (IAM auth endpoint)
         * `COS_SERVICE_INSTANCE_ID` (Bucket ID found in COS service credentials)
-    4. `REST_API_KEY`: All API request endpoints require a header `REST_API_KEY`: <your-secret>. Must be any arbitrary string (not empty), set in .env
+    3. `REST_API_KEY`: All API request endpoints require a header `REST_API_KEY`: <your-secret>. Must be any arbitrary string (not empty), set in .env
 
 6. When finished, deactivate the virtual environment by running this command: 
     ```
@@ -150,9 +138,6 @@ Verify results through the Swagger UI or by checking the API response.
 ### **Coming Soon**
 * .png and .jpg VLM Support
 * Additional docling processing functions (image annotation, table exports)
-* **Prompt Controls & Guardrails:** Guardrails for runtime governance and prompt safety
-* **Governance SDK:** Evaluation of golden datasets, runtime metrics, LLM-as-a-judge
-* **Memory Layers:** Multi-turn Q&A, cache integration, context management (MemVerge, Zep)
 * **Error Logging:** Structured logs with timestamp, line of code, and error response models
 
 ## Team
