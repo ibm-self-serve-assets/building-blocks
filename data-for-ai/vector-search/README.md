@@ -1,6 +1,6 @@
-# RAG Ingestion Integration Service for GenAI Pipelines
+# Ingestion Service for Vector search for GenAI Pipelines
 
-The RAG Service API provides a modular framework for building GenAI pipelines that combine retrieval-augmented generation (RAG) with Milvus as the vector database. It simplifies ingestion and querying pipeline while offering extensible customization options for document loaders, schemas, embedding models, and rerankers. The framework is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines, governance hooks, and evaluation tools.
+Ingestion API provides a modular framework for building GenAI pipelines that combine Docling based parsing and extraction with Milvus as the vector database. It simplifies ingestion and querying pipeline while offering extensible customization options for document loaders, schemas, embedding models, and rerankers. The framework is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines, governance hooks, and evaluation tools.
 
 ## Features
 * **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
@@ -142,4 +142,4 @@ Verify results through the Swagger UI or by checking the API response.
 
 ## Team
 ### Created and Architected By
-Anand Das, Anindya Neogi, Joseph Kim
+Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki
