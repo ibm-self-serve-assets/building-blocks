@@ -7,7 +7,7 @@
 ## Folder Structure
 
 ```
-data-for-ai-building-block/
+data-for-ai/
 ├── README.md
 ├── .env.example                        # API keys & endpoints (copy to .env)
 ├── configs/
@@ -16,10 +16,10 @@ data-for-ai-building-block/
 ├── lakehouse/
 │   ├── create_iceberg.sql              # zero-copy external tables on COS
 │   └── samples/                        # tiny demo docs/tables (10–100MB)
-├── ingestion/
+├── vector-search/
 │   ├── ingest_job.py                   # load → chunk → embed → upsert vectors
-│   └── utils/                          # loaders.py, chunkers.py (minimal)
-├── services/
+│   └── utils/                          # loaders.py, chunkers.py
+├── q-and-a/
 │   ├── rag-api/                        # FastAPI: /health, /ingest, /query
 │   │   ├── app.py
 │   │   ├── routers.py
@@ -42,9 +42,9 @@ data-for-ai-building-block/
 ## What’s Inside (and why)
 
 * **Zero-Copy Lakehouse:** Iceberg external tables over COS; no ETL copies.
-* **Vector Search:** Milvus/Elastic with **hybrid retrieval** (BM25 + dense).
+* **Vector Search:** Document parsing and chunking using Docling and ingesting chunked documents into Milvus with **hybrid retrieval** (BM25 + dense).
 * **Q\&A (RAG):** FastAPI with `/ingest` and `/query`.
-* **Text2SQL:** Notebook that shows SQL before execution.
+* **Q\&A Text2SQL:** Notebook that shows SQL before execution.
 * **Data Security & Enrcyption:** 
 
 ---
@@ -179,8 +179,7 @@ generation:
 
 ## RAG API
 
-* `GET /health` – liveness check
-* `POST /ingest` – (optional) ingest new files from COS → chunks → embeddings → upsert
+* `POST /ingest` – ingest new files from COS → chunks → embeddings → upsert
 * `POST /query` – returns concise answer + citations (source URI/page/section)
 
 ---
