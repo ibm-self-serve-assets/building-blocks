@@ -1,0 +1,24 @@
+# watsonx.data credentials
+WXD_MILVUS_HOST=""
+WXD_MILVUS_PORT=""
+WXD_MILVUS_USER=""
+WXD_MILVUS_PASSWORD=""
+
+# watsonx.ai credentials
+# Project ID is in new project, API Key is generated in watsonx / IBM Cloud IAM
+WATSONX_MODEL_ID=""
+WATSONX_PROJECT_ID=""
+WATSONX_APIKEY=""
+WATSONX_URL=""
+
+
+# COS credentials - IBM Cloud API Key is the same as Watsonx API KEY
+# COS Service Instance ID is in the IBM COS from Resources
+IBM_CLOUD_API_KEY=""
+COS_ENDPOINT=""
+COS_AUTH_ENDPOINT=""
+COS_SERVICE_INSTANCE_ID=""
+
+
+# app key - arbitrary, match with test_api.ipynb
+REST_API_KEY=""
