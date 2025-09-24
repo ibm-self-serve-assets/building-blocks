@@ -130,7 +130,7 @@ pyarrow==21.0.0
 pydantic==2.10.6
 pydantic_core==2.27.2
 pydeck==0.9.1
-PyJWT==2.10.0
+PyJWT==2.10.1
 pyphen==0.17.2
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.1
