@@ -7,6 +7,9 @@ Currently, it supports three primary IBM products:
 1. **Watsonx Orchestrate**  
 2. **Watsonx Assistant**  
 3. **Cognos Analytics**  
+4. **Watsonx AI**  
+5. **Watsonx Code Assistant**  
+
 
 This project aims to enhance customer support by providing quick, accurate answers related to these IBM products.  
 The supervisory agent, **IBM Product Specialist**, intelligently redirects user questions to the appropriate sub-agent.  
@@ -137,12 +140,31 @@ orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requiremen
 orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
 ```
 
+### Adding Wx AI Tools
+```bash
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_agent_development.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_knowledge_management.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_model_customization.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_model_library.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_rag_development.py -r requirements.txt
+```
+
+### Adding Wx Code Assistant Tools
+```bash
+orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_pricing.py -r requirements.txt
+```
+
 ### Adding Agents
 ```bash
 orchestrate agents import -f agents/cognos_analytics_agent.yaml
 orchestrate agents import -f agents/wxo_agent.yaml
 orchestrate agents import -f agents/wx_assistant_agent.yaml
 orchestrate agents import -f agents/ibm_product_specialist.yaml
+orchestrate agents import -f agents/wx_ai_agent.yaml
+orchestrate agents import -f agents/wx_code_assistant_agent.yaml
 ```
 
 ### Starting the Chat Server
@@ -158,6 +180,8 @@ orchestrate chat start
     - Wx_Orchestrate
     - Wx_Assistant
     - Cognos_Analytics
+    - Wx_AI
+    - Wx_Code_Assistant
 5. Verify the master agent setup.
    ![image](https://github.ibm.com/Dheeraj-Arremsetty/wx.orchestrate-Agents-Builder-Library/assets/195534/31c78cb7-3bc7-423c-bbc0-165dc8ae31d7)
 
@@ -167,6 +191,8 @@ orchestrate chat start
     - Watsonx Orchestrate
     - Watsonx Assistant
     - Cognos Analytics
+    - Watsonx AI
+    - Watsonx Code Assistant
 - The master agent will dynamically choose the appropriate sub-agent to fetch the correct response.
 - You can extend the agent setup to support additional IBM products by adding new sub-agents.
 - 
