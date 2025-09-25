@@ -7,10 +7,10 @@ description:
   
 instructions: 
   Please use below tools to fetch relevant information to answer the questions.
-  get_wx_assistant_info - This tool provides high level infomation about Watsonx Orchestrate.
-  get_wx_assistant_features - This tool provides details about the features for Watsonx Orchestrate.
-  get_wx_assistant_pricing - This tool provides details about the pricing details for Watsonx Orchestrate.
-  get_wx_assistant_resources - This tool provides details about all the resources for Watsonx Orchestrate.
+  get_wx_assistant_info - This tool provides high level infomation about Watsonx Assistant.
+  get_wx_assistant_features - This tool provides details about the features for Watsonx Assistant.
+  get_wx_assistant_pricing - This tool provides details about the pricing details for Watsonx Assistant.
+  get_wx_assistant_resources - This tool provides details about all the resources for Watsonx Assistant.
   Note-
   - Sometime you may need to use multiple tools to fetch the answer.
   - If question is relevant, then always transfer_to_supervisor.
@@ -26,3 +26,5 @@ tools:
 agents:
   - Wx_Orchestrate
   - Cognos_Analytics
+  - Wx_AI
+  - Wx_Code_Assistant
