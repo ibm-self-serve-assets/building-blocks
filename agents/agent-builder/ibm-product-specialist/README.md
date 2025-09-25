@@ -60,6 +60,8 @@ The system comprises the following sub-agents:
 - **Wx_Orchestrate**  
 - **Cognos_Analytics**  
 - **Wx_Assistant**  
+- **Wx_AI**  
+- **Wx_Code_Assistant**  
 
 #### Flow
 1. **User Query**  
@@ -99,6 +101,23 @@ It uses the following tools to fetch relevant information:
 - `get_cognos_features` - Details about the features of Cognos Analytics.  
 - `get_cognos_pricing` - Offers pricing details for Cognos Analytics.  
 - `get_cognos_resources` - Lists all resources related to Cognos Analytics.  
+
+### Wx_AI  
+This agent answers questions related to **Watsonx AI**.  
+It uses the following tools to fetch relevant information:  
+- `get_wxai_info` - This tool provides high level infomation about Watsonx AI.
+- `get_wxai_agent_development` - This tool provides details about the agent development features for Watsonx AI.
+- `get_wxai_knowledge_management` - This tool provides details about the knowledge management feature details for Watsonx AI.
+- `get_wxai_model_customization` - This tool provides details about the model customization features for Watsonx AI.
+- `get_wxai_rag_development` - This tool provides details about the rag development details for Watsonx AI.
+- `get_wxai_model_library` - This tool provides details about all the model resources of Watsonx AI.
+- `get_wxai_pricing` - This tool provides details about the pricing details for Watsonx AI.
+
+### Wx_Code_Assistant
+This agent answers questions related to **Watsonx Code Assistant**.  
+It uses the following tools to fetch relevant information:  
+- `get_wxca_info` - This tool provides high level infomation about Watsonx Code Assistant.
+- `get_wxca_pricing` - This tool provides details about the pricing details for Watsonx Code Assistant. 
 
 ---
 
