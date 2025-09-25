@@ -36,7 +36,7 @@ The following prerequisites are required to spin up the RAG Service API:
 
 2. Change directory into `RAG Service Ingestion Pipeline`
     ```
-    cd building-blocks/data-for-ai/vector-search/RAG Service Ingestion Pipeline
+    cd building-blocks/data-for-ai/vector-search/
     ```
 
 3. Create a python virtual environment
