@@ -1,6 +1,7 @@
 # IBM Building Blocks for Trusted AI
 
-![Trusted AI Building Blocks](images/BBs.png)
+<img src="images/images/BBs.png" alt="Trusted AI Building Blocks" width="400"/>
+
 
 
 
