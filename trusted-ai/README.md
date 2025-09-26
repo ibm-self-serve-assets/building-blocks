@@ -1,9 +1,7 @@
 # IBM Building Blocks for Trusted AI
 
-# Trusted AI Solutions  
-
-Welcome to the **Trusted AI Solutions** repository.  
-This resource is designed to help you understand how to design, build, and deploy AI systems that are **reliable, transparent, secure, and compliant** using IBM watsonx governance capabilities.  
+Welcome to the **Trusted AI** repository.  
+This resource helps you get started on designing, building, and deploying AI systems that are reliable, transparent, secure, and compliant, powered by **IBM watsonx governance** capabilities.
 
 Building trust in AI requires a holistic approach across the full AI lifecycle—from design and development to deployment and ongoing monitoring. This repository provides frameworks, best practices, and tools that can be applied to ensure your AI solutions are trusted and enterprise-ready.  
 
@@ -43,6 +41,7 @@ The content is organized into four main categories:
 
 ## 🤝 Contributing  
 We welcome contributions! Please submit issues, suggest improvements, or open pull requests to expand the resources and keep this repository valuable for all partners.  
+
 
 
 
