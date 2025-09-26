@@ -1,7 +1,3 @@
-<div align="left">
-  <img src="images/design_time_logo.png" alt="IBM Building Blocks AI Guardrails" width="300"/>
-</div>
-
 # Design Time Evaluations / Guardrails for Gen AI Solutions
 
 An advanced AI guardrails implementation using IBM watsonx.governance SDK for comprehensive AI safety evaluation and monitoring of Gen AI solutions.
