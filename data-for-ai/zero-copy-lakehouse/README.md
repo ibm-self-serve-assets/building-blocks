@@ -1,4 +1,4 @@
-# Watsonx.data Setup Automation
+# Zero Copy Lakehouse with IBM Watsonx.data
 What is Zero Copy Lakehouse?
 
 A Zero Copy Lakehouse is a data architecture approach where multiple analytics, AI, and ML tools can access and process the same underlying data without duplicating or moving it across systems.
