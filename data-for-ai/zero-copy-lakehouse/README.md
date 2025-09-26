@@ -15,12 +15,11 @@ Zero-copy lakehouse eliminates data silos by providing a single source of truth 
 ---
 
 # Benefits
-
-Cost Savings → No redundant storage costs.
-Faster Insights → Avoids ETL delays.
-Single Source of Truth → Reduces risk of inconsistent data.
-Flexibility → Multiple engines/tools access the same data.
-Governance → One layer controls access everywhere.
+-  Cost Savings → No redundant storage costs.
+- Faster Insights → Avoids ETL delays.
+- Single Source of Truth → Reduces risk of inconsistent data.
+- Flexibility → Multiple engines/tools access the same data.
+- Governance → One layer controls access everywhere.
 
 ---
 
@@ -29,9 +28,7 @@ Governance → One layer controls access everywhere.
 In the IBM watsonx.data lakehouse:
 
 Built on open table formats (Iceberg/Delta).
-
 Provides federated query capability (query S3, Db2, Cloud Object Storage, external warehouses, all in place).
-
 Ensures zero-copy data access → no need to ETL into another system.
 
 ---
