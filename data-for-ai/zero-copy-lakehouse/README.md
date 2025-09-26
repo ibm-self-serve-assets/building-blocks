@@ -54,10 +54,10 @@ The script allows seamless integration of data across COS, S3, and DB2 into wats
 ## Prerequisites
 
 1. Access to:
-   - IBM Cloud Account
-   - [**watsonx.data SaaS instance**] (https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-tutorial_prov_lite_1 )on IBM Cloud 
-   - **DB2 Database SaaS instance** on IBM Cloud  
-   - **AWS S3 (Simple Cloud Storage)**  
+   - IBM Cloud Account and AWS Account
+   - [watsonx.data SaaS instance](https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-tutorial_prov_lite_1 )on IBM Cloud 
+   - [DB2 Database SaaS instance](https://cloud.ibm.com/docs/db2-saas?topic=db2-saas-provisioning) on IBM Cloud  
+   - [AWS S3 - Simple Cloud Storage](https://aws.amazon.com/s3/)
 
 2. Python 3.8+ installed locally  
 
