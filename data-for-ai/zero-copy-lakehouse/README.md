@@ -1,4 +1,42 @@
 # Watsonx.data Setup Automation
+What is Zero Copy Lakehouse?
+
+A Zero Copy Lakehouse is a data architecture approach where multiple analytics, AI, and ML tools can access and process the same underlying data without duplicating or moving it across systems.
+
+Instead of copying data between warehouses, lakes, and ML pipelines, a zero-copy approach enables shared access with governance and performance optimizations.
+
+---
+# Why It Matters
+
+Traditional setups involve ETL (Extract, Transform, Load) pipelines that duplicate data into multiple systems → leading to higher costs, governance risks, and delays.
+
+Zero-copy lakehouse eliminates data silos by providing a single source of truth for BI, AI, ML, and analytics workloads.
+
+---
+
+# Benefits
+
+Cost Savings → No redundant storage costs.
+Faster Insights → Avoids ETL delays.
+Single Source of Truth → Reduces risk of inconsistent data.
+Flexibility → Multiple engines/tools access the same data.
+Governance → One layer controls access everywhere.
+
+---
+
+# IBM’s Take (watsonx.data & Zero Copy)
+
+In the IBM watsonx.data lakehouse:
+
+Built on open table formats (Iceberg/Delta).
+
+Provides federated query capability (query S3, Db2, Cloud Object Storage, external warehouses, all in place).
+
+Ensures zero-copy data access → no need to ETL into another system.
+
+---
+
+# Watsonx.data Setup Automation
 
 This repository provides a Python script (`watsonxdata_setup.py`) that automates the setup of **IBM watsonx.data** resources using official APIs.  
 It helps you quickly register and configure:
