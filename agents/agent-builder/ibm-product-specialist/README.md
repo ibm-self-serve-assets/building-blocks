@@ -213,7 +213,7 @@ Create an environment in ADK, copy the instance url from the IBM Orchestrate lau
 (Ask your instructor for help)
 
 ```bash
-orchestrate env add -n <ENV_NAME> -u <IBM_ORCHESTRATE_INSTANCE_URL> --iam-url https://iam.cloud.ibm.com/identity/token
+orchestrate env add -n <ENV_NAME> -u <IBM_ORCHESTRATE_INSTANCE_URL> --iam-url <IAM_URL>
 ```
 Activate the environment
 ```bash
