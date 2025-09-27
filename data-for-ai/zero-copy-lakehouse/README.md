@@ -1,12 +1,14 @@
 # Zero Copy Lakehouse with IBM Watsonx.data
-What is Zero Copy Lakehouse?
+
+## What is Zero Copy Lakehouse?
 
 A Zero Copy Lakehouse is a data architecture approach where multiple analytics, AI, and ML tools can access and process the same underlying data without duplicating or moving it across systems.
 
 Instead of copying data between warehouses, lakes, and ML pipelines, a zero-copy approach enables shared access with governance and performance optimizations.
 
 ---
-# Why It Matters
+
+## Why It Matters
 
 Traditional setups involve ETL (Extract, Transform, Load) pipelines that duplicate data into multiple systems → leading to higher costs, governance risks, and delays.
 
@@ -14,8 +16,8 @@ Zero-copy lakehouse eliminates data silos by providing a single source of truth 
 
 ---
 
-# Benefits
--  Cost Savings → No redundant storage costs.
+## Benefits
+- Cost Savings → No redundant storage costs.
 - Faster Insights → Avoids ETL delays.
 - Single Source of Truth → Reduces risk of inconsistent data.
 - Flexibility → Multiple engines/tools access the same data.
@@ -23,13 +25,13 @@ Zero-copy lakehouse eliminates data silos by providing a single source of truth 
 
 ---
 
-# IBM’s Take (watsonx.data & Zero Copy)
+## IBM’s Take (watsonx.data & Zero Copy)
 
 In the IBM watsonx.data lakehouse:
 
-Built on open table formats (Iceberg/Delta).
-Provides federated query capability (query S3, Db2, Cloud Object Storage, external warehouses, all in place).
-Ensures zero-copy data access → no need to ETL into another system.
+- Built on open table formats (Iceberg/Delta).
+- Provides federated query capability (query S3, Db2, Cloud Object Storage, external warehouses, all in place).
+- Ensures zero-copy data access → no need to ETL into another system.
 
 ---
 
@@ -52,7 +54,7 @@ The script allows seamless integration of data across COS, S3, and DB2 into wats
 
 1. Access to:
    - IBM Cloud Account and AWS Account
-   - [watsonx.data SaaS instance](https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-tutorial_prov_lite_1 )on IBM Cloud 
+   - [watsonx.data SaaS instance](https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-tutorial_prov_lite_1 ) on IBM Cloud 
    - [DB2 Database SaaS instance](https://cloud.ibm.com/docs/db2-saas?topic=db2-saas-provisioning) on IBM Cloud  
    - [AWS S3 - Simple Cloud Storage](https://aws.amazon.com/s3/)
 
@@ -78,7 +80,7 @@ The script allows seamless integration of data across COS, S3, and DB2 into wats
 
 ---
 
-##  Configuration (`config.json`)
+## Configuration (`config.json`)
 
 The script reads all inputs from `config.json` so you can manage values easily without editing Python code.  
 
@@ -113,7 +115,7 @@ The script reads all inputs from `config.json` so you can manage values easily w
 
 ---
 
-##  Architecture
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -121,9 +123,12 @@ flowchart LR
         Engine["Presto Engine"]
     end
 
-    COS["IBM Cloud Object Storage (COS)\ncos_catalog"] --> Engine
-    S3["Amazon S3\ns3_catalog"] --> Engine
-    DB2["DB2 OLTP\n(db2_catalog)"] --> Engine
+    COS["IBM Cloud Object Storage (COS)
+cos_catalog"] --> Engine
+    S3["Amazon S3
+s3_catalog"] --> Engine
+    DB2["DB2 OLTP
+(db2_catalog)"] --> Engine
 
     Engine --> Queries["Federated SQL Queries"]
     Queries --> Users["Data Scientists / Analysts"]
@@ -131,41 +136,109 @@ flowchart LR
 
 ---
 
-##  Usage
+# Zero Copy Lakehouse Demo with watsonx.data
 
-1. Update your `config.json` file with correct values.  
-2. Run the setup script:  
-   ```bash
-   python watsonxdata_setup.py
-   ```  
-3. The script will:  
-   - Register COS and S3 buckets  
-   - Register DB2 OLTP connection  
-   - Retrieve Presto engine ID  
-   - Associate all catalogs with the engine  
-   - Create schemas for COS and S3  
+This guide demonstrates how to load data into **Amazon S3**, **IBM Cloud Object Storage (COS)**, and **Db2** and then query them seamlessly from **watsonx.data** without duplicating the data.
 
 ---
 
-## Example Output
+## Step 1: Clone the Repository
 
 ```bash
-COS Bucket Registration: 200 OK
-AWS S3 Bucket Registration: 200 OK
-DB2 OLTP Connection: 200 OK
-Engine ID: presto369
-Catalog Association (cos_catalog): 200 OK
-Catalog Association (s3_catalog): 200 OK
-Catalog Association (db2_catalog): 200 OK
-Schema Creation (customer in cos_catalog): 200 OK
-Schema Creation (account in s3_catalog): 200 OK
-COS + S3 + DB2 + Schemas setup complete.
+git clone git@github.com:ibm-self-serve-assets/building-blocks.git
+cd building-blocks/data-for-ai/zero-copy-lakehouse/data/
 ```
 
 ---
 
-##  Notes
+## Step 2: Load Data into Storage Sources
 
-- Keep your `IBM_API_KEY` secure — always store it in an environment variable, not inside `config.json`.  
-- Ensure your COS/S3 buckets and DB2 instances exist before running the script.  
-- The script is designed for **watsonx.data SaaS**. Adjust endpoints if using on-premises or private deployments.  
+watsonx.data supports a wide variety of storage systems and databases. For details, refer to the IBM documentation:
+
+- [Adding a storage and catalog pair](https://www.ibm.com/docs/en/watsonxdata/standard/2.0.x?topic=components-adding-storage-catalog-pair)  
+- [Adding a database and catalog pair](https://www.ibm.com/docs/en/watsonxdata/standard/2.0.x?topic=components-adding-database-catalog-pair)  
+
+For this demo, we will use **Amazon S3**, **IBM COS**, and **Db2**.
+
+### 2.1 Load Data into Amazon S3
+
+```bash
+# Create a folder named 'account' in S3
+aws s3 cp account.csv s3://<your-s3-bucket-name>/account/
+```
+
+### 2.2 Load Data into IBM COS
+
+```bash
+# Create a bucket and folder 'customer' in COS, then upload
+ibmcloud cos upload --bucket <your-cos-bucket-name> --key customer/customer.csv --file customer.csv
+```
+
+### 2.3 Load Data into Db2
+
+```sql
+CREATE TABLE customer_info.customer_summary (
+  customer_id VARCHAR(50),
+  total_spend DECIMAL(10,2),
+  last_purchase_date DATE
+);
+
+IMPORT FROM customer_summary.csv OF DEL
+INSERT INTO customer_info.customer_summary;
+```
+
+---
+
+## Step 3: Define External Tables in watsonx.data
+
+Login to the **watsonx.data console**, go to the **Query Workspace**, and run:
+
+### Create COS Table
+```sql
+create table "cos_catalog"."customer"."customer" (
+  customer_id varchar,
+  customer_name varchar,
+  region varchar
+)
+with (
+  format = 'CSV',
+  external_location = 's3a://watsonxdata-demo/customer/'
+);
+```
+
+### Create S3 Table
+```sql
+create table "s3_catalog"."account"."account" (
+  customer_id varchar,
+  customer_name varchar,
+  region varchar
+)
+with (
+  format = 'CSV',
+  external_location = 's3a://watsonxdata/account/'
+);
+```
+
+---
+
+## Step 4: Query Across All Three Data Sources
+
+```sql
+select
+  *
+from
+  "s3_catalog"."account"."account" a
+  JOIN "cos_catalog"."customer"."customer" c ON a.customer_id = c.customer_id
+  JOIN "db2_catalog"."customer_info"."customer_summary" cs ON cs.customer_id = a.customer_id;
+```
+
+This query demonstrates accessing **S3, COS, and Db2** data directly without duplication, enabling **Zero Copy Lakehouse** insights.
+
+---
+
+## Notes
+
+- Keep your API keys secure and never commit them into git.  
+- Ensure your S3/COS buckets and Db2 tables exist before running the demo.  
+- For larger workloads, consider optimizing with Iceberg/Delta formats.
+
