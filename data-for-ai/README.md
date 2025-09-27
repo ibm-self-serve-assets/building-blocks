@@ -1,6 +1,7 @@
 # Building Block of Data for AI
 
-Welcome to the **Building Block of Data for AI**.  
+Welcome to the **Building Block of Data for AI**. 
+ 
 This framework provides ready-to-use accelerators that make it easier to operationalize data for AI/GenAI use cases. Each accelerator addresses a critical capability required to manage, process, and secure data for AI-driven applications. These accelerators are designed to integrate seamlessly with existing enterprise systems, reducing time-to-value for AI projects. By standardizing data access, governance, and enrichment, the framework ensures scalability, trust, and efficiency across diverse AI workloads.
 
 ---
