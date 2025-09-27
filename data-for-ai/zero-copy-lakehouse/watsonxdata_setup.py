@@ -2,6 +2,7 @@ import os
 import time
 import json
 import requests
+import sys
 
 with open("config.json", "r") as f:
     config = json.load(f)
@@ -10,7 +11,7 @@ REGION = config["region"]
 BASE_URL = f"https://{REGION}.lakehouse.cloud.ibm.com/lakehouse/api/v2"
 
 IBM_API_KEY = os.getenv("IBM_API_KEY")
-AUTH_INSTANCE_ID = os.getenv("AUTH_INSTANCE_ID")
+AUTH_INSTANCE_ID = config["auth_instance_id"]
 
 COS_CONFIG = config["cos_config"]
 S3_CONFIG = config["s3_config"]
@@ -47,6 +48,14 @@ def build_headers(token: str):
         "AuthInstanceId": AUTH_INSTANCE_ID,
         "Content-Type": "application/json",
     }
+
+def wait_with_progress(seconds, message="Waiting"):
+    """Show countdown progress instead of silent sleep."""
+    for i in range(seconds, 0, -1):
+        sys.stdout.write(f"\r{message}... {i} seconds remaining")
+        sys.stdout.flush()
+        time.sleep(1)
+    sys.stdout.write("\rDone!                          \n")
 
 def register_bucket(headers, config, label):
     url = f"{BASE_URL}/bucket_registrations"
@@ -119,8 +128,13 @@ if __name__ == "__main__":
     engine_id = get_engine_id(headers)
 
     associate_catalog_to_engine(headers, engine_id, COS_CONFIG["associated_catalog"]["catalog_name"])
+    wait_with_progress(30, "Waiting before associating next catalog")
+
     associate_catalog_to_engine(headers, engine_id, S3_CONFIG["associated_catalog"]["catalog_name"])
+    wait_with_progress(30, "Waiting before associating DB2")
+
     associate_catalog_to_engine(headers, engine_id, DB2_OLTP_CONFIG["catalog_name"])
+    wait_with_progress(90, "Waiting before schema creation")
 
     create_schema(
         headers,
@@ -130,6 +144,8 @@ if __name__ == "__main__":
         schema_name="customer",
         custom_path="/customer"
     )
+
+    wait_with_progress(40, "Waiting before creating S3 schema")
 
     create_schema(
         headers,
