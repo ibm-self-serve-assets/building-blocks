@@ -6,6 +6,7 @@ Each accelerator addresses a critical capability required to manage, process, an
 
 ---
 
+<img width="1536" height="1024" alt="accelerators_diagram" src="https://github.com/user-attachments/assets/3c296ea4-b258-4ead-9007-8e750830b0ca" />
 
 
 ---
