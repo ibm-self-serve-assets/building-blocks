@@ -1,3 +1,40 @@
+# Building Block of Data for AI
+
+Welcome to the **Building Block of Data for AI**.  
+This framework provides ready-to-use accelerators that make it easier to operationalize data for AI/GenAI use cases.  
+Each accelerator addresses a critical capability required to manage, process, and secure data for AI-driven applications.
+
+---
+
+
+
+---
+
+## Zero-Copy Lakehouse
+- Enables seamless querying across databases, warehouses, and cloud object stores without data duplication.  
+- Reduces **costs and latency** by eliminating data movement.  
+
+---
+
+## Vector Search
+- Provides a **vector-based retrieval service** for GenAI pipelines.   
+- Powers **semantic similarity search** for retrieval-augmented generation (RAG).  
+- Optimized for **scalable AI workloads**.  
+
+---
+
+## Question & Answer
+- Delivers **natural language interfaces** to interact with data.  
+- **watsonx.data intelligence Text2SQL** converts natural language questions into executable SQL.    
+
+---
+
+## Data Security & Encryption 
+- Protects sensitive data through **masking, encryption, and access controls**.  
+- Enhances **data governance** and regulatory compliance.  
+
+---
+
 # Data for AI Building Block
 
 **Scope:** Zero-Copy Lakehouse · Vector Search · Q\&A: RAG, Text2SQL · Data Security and Encryption
