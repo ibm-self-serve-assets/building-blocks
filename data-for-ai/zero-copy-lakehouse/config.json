@@ -1,6 +1,6 @@
 {
   "region": "us-south",
-  "auth_instance_id": "crn:v1:bluemix:public:lakehouse:us-south:a/e65910fa61ce9072d64902d03f3d4774:5ddd9647-1c80-47da-be19-e2f43643ee9c::",
+  "auth_instance_id": "crn:v1:bluemix:public:lakehouse:us-south:a/XXXXXXXXXXXXXXXXXXXXX:5ddd9647-XXXXXXXXXXXXXXXXXXXXXc::",
   "cos_config": {
     "bucket_display_name": "cos_bucket",
     "bucket_type": "ibm_cos",
