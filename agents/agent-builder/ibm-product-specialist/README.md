@@ -112,8 +112,12 @@ In this case, it fetches and extracts text content from the various IBM watsonx 
 ### Step 1: Define the Agent in YAML
 
 Create a agent with instruction and attach tools associated with it:e.g: agents/wx_ai_agent.yaml
+or 
+refer to the already created `tools/` and `agents/` available.
 
 ```bash
+# agents/wx_ai_agent.yaml
+
 spec_version: v1
 style: default
 name: Agent_Name
@@ -311,12 +315,9 @@ orchestrate chat start
 ## Conclusion
 
 By following this lab, you’ve created a multi-agent workflow in Watsonx Orchestrate to collect and process data from various IBM product web pages. You’ve learned how to:
-
-Set up a Main Agent that orchestrates tasks across multiple agents.
-
-Use Collaborator Agents for scraping, processing, and aggregating data.
-
-Leverage the Watsonx Orchestrate ADK for seamless automation of multi-agent workflows.
+- Set up a Main Agent that orchestrates tasks across multiple agents.
+- Use Collaborator Agents for scraping, processing, and aggregating data.
+- Leverage the Watsonx Orchestrate ADK for seamless automation of multi-agent workflows.
 
 This setup can be adapted to a variety of use cases, such as product comparison engines, market research tools, and e-commerce aggregators. Watsonx Orchestrate’s robust multi-agent support allows you to scale and automate tasks efficiently while maintaining flexibility and control over the workflow.
 
