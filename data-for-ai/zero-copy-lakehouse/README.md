@@ -209,13 +209,14 @@ with (
 ### Create S3 Table
 ```sql
 create table "s3_catalog"."account"."account" (
-  customer_id varchar,
-  customer_name varchar,
-  region varchar
+  account_id varchar,
+  balance varchar,
+  customer_id varchar
 )
-with (
-  format = 'CSV',
-  external_location = 's3a://watsonxdata/account/'
+with
+  (
+    format = 'CSV',
+    external_location = 's3a://watsonxdata/account/'
 );
 ```
 
