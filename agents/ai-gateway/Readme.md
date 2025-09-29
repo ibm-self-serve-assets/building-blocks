@@ -1,43 +1,54 @@
-# IBM WatsonX Orchestrate AI Gateway: Integrating Third-Party LLMs
+# IBM Watsonx Orchestrate AI Gateway: Extending Agents with Third-Party LLMs
 
-IBM WatsonX Orchestrate provides powerful capabilities for integrating third-party Large Language Models (LLMs) through its **AI Gateway** system. This enables organizations to leverage a wide range of AI models from leading providers while maintaining the orchestration and management capabilities of the WatsonX platform.
+IBM **Watsonx Orchestrate** provides a flexible and enterprise-ready framework to build, deploy, and manage AI agents. One of its most powerful features is the **AI Gateway**, which enables organizations to seamlessly connect **third-party Large Language Models (LLMs)** with IBM’s ecosystem.  
 
-## IBM's AI Gateway Capabilities
+With AI Gateway, developers can use a **single orchestration layer** to integrate, manage, and govern models from providers such as OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai. This helps enterprises build **trusted AI workflows** that are secure, scalable, and future-proof.  
 
-The AI Gateway system in WatsonX Orchestrate offers:
+--- 
 
-- **Multi-Provider Support**: Integration with 10+ leading AI providers including OpenAI, Azure OpenAI, AWS Bedrock, Anthropic, Google, watsonx.ai, Mistral, OpenRouter, and Ollama
-- **Secure Credential Management**: API keys and sensitive configuration stored securely in connections
-- **Advanced Routing Policies**: Load balancing, fallback mechanisms, and retry strategies across multiple models
-- **Flexible Configuration**: Custom endpoints, timeouts, and provider-specific settings
-- **Enterprise-Grade Security**: Secure handling of API credentials and model configurations
+## Why AI Gateway?
 
-For comprehensive documentation on all supported providers and advanced features, see the [IBM WatsonX Orchestrate AI Gateway Documentation](https://developer.watson-orchestrate.ibm.com/llm/managing_llm#supported-providers).
+The **AI Gateway** serves as a **bridge** between IBM watsonx Orchestrate and external LLM providers, enabling:  
 
+- **Multi-Provider Integration** – 10+ supported providers, including OpenAI, Anthropic, Google Gemini, Azure OpenAI, AWS Bedrock, watsonx.ai, and others  
+- **Unified Credential Management** – API keys and tokens stored securely in **Watsonx connections**  
+- **Routing Policies** – load balancing, failover, retries, and fallback across multiple LLMs  
+- **Enterprise Security** – encrypted credentials, RBAC, and governance controls  
+- **Flexible Configurations** – custom endpoints, request timeouts, and provider-specific settings  
 
-## Third-Party LLM Integration
+[Learn more about supported providers →](https://developer.watson-orchestrate.ibm.com/llm/managing_llm#supported-providers)  
 
-In this lab, we will integrate the below models to IBM watsonx orchestrate.
-
-1. Integrate OpenAI Models
-2. Integrate Anthropic claude Models
-3. Integrate Google Gemini Models
-
+---
 
 ## Prerequisites
 
-- Python 3.x
-- Access to IBM watsonx Orchestrate SaaS
-- The Watsonx Orchestrate ADK / CLI installed and configured
-- Model Name and API Key for the third‑party model (OpenAI Models, Anthropic Claude, Google Gemini)
+- Python **3.x**  
+- Access to **[Watsonx Orchestrate SaaS](https://cloud.ibm.com/catalog/services/watsonx-orchestrate)**  
+- Installed and configured **Watsonx Orchestrate ADK / CLI**  
+- API key and model name for third-party LLMs (OpenAI, Anthropic Claude, Google Gemini, etc.)  
 
-## 1. Integrating OpenAI Models
+Install the ADK:  
+```bash
+pip install ibm-watsonx-orchestrate
+```
 
-This guide demonstrates how to integrate OpenAI models into WatsonX Orchestrate using the AI Gateway. This example can be adapted for any of the supported providers.
+Verify installation:  
+```bash
+orchestrate --version
+```
 
-### Step 1: Configure Provider Settings
+---
 
-Create a JSON configuration for the OpenAI provider. The `api_key` is excluded for security and will be stored separately in a connection:
+## Step-by-Step: Third-Party LLM Integration
+
+This guide covers integration for **OpenAI**, **Anthropic Claude**, and **Google Gemini**, but the same steps apply to all supported providers.  
+
+---
+
+### 1. Integrating OpenAI Models
+
+#### Step 1: Configure Provider Settings  
+Create a configuration JSON (excluding API key for security):  
 
 ```json
 {
@@ -46,27 +57,16 @@ Create a JSON configuration for the OpenAI provider. The `api_key` is excluded f
 }
 ```
 
-### Step 2: Secure API Key Storage
-
-Store your OpenAI API key securely in a WatsonX Orchestrate connection:
-
-[Generate API KEY](https://platform.openai.com/api-keys)
+#### Step 2: Store API Key Securely  
+[Generate OpenAI API key →](https://platform.openai.com/api-keys)  
 
 ```bash
-# Create a connection for OpenAI credentials
 orchestrate connections add -a openai_creds
-# Configure the connection as key-value type
 orchestrate connections configure -a openai_creds --env draft -k key_value -t team
-# Store the API key securely
-orchestrate connections set-credentials -a openai_creds --env draft -e "api_key=your_openai_api_key"
+orchestrate connections set-credentials -a openai_creds --env draft -e "api_key=sk-xxxx"
 ```
 
-**Security Note**: Replace `your_openai_api_key` with your actual OpenAI API key (format: `sk-...`). The connection system ensures credentials are stored securely and encrypted.
-
-### Step 3: Register the OpenAI Model
-
-Add the OpenAI model to WatsonX Orchestrate using the AI Gateway:
-
+#### Step 3: Register the OpenAI Model  
 ```bash
 orchestrate models add \
   --name openai/gpt-4 \
@@ -75,37 +75,114 @@ orchestrate models add \
   --type chat
 ```
 
-**Parameters Explained**:
-- `--name openai/gpt-4`: Specifies the provider (`openai`) and model name (`gpt-4`)
-- `--app-id openai_creds`: Links to the connection containing the API key
-- `--provider-config`: JSON configuration for custom settings
-- `--type chat`: Indicates this is a chat-completion model
-
-**Alternative Models**: Replace `gpt-4` with other OpenAI models like `gpt-3.5-turbo`, `gpt-4-turbo`, etc.
-
-### Step 4: Verify Integration
-
-Confirm the model was successfully added to your WatsonX Orchestrate environment:
-
+#### Step 4: Verify Integration  
 ```bash
 orchestrate models list
 ```
-<img width="875" alt="image" src="https://github.ibm.com/Dheeraj-Arremsetty/wx.orchestrate-Agents-Builder-Library/assets/195534/f5f65523-5667-4949-8c3e-4a106c9bd810">
 
-**Model shows up on the model drop down in the Orchestrate**
-![image](https://github.ibm.com/Dheeraj-Arremsetty/wx.orchestrate-Agents-Builder-Library/assets/195534/ab9e3475-2b9f-4b6d-973d-b7860bc056d6)
+---
 
+### 2. Integrating Anthropic Claude Models  
+
+#### Step 1: Create Connection  
+[Generate Anthropic API Key →](https://console.anthropic.com/login)  
+
+```bash
+orchestrate connections add -a anthropic_creds
+orchestrate connections configure -a anthropic_creds --env draft -k key_value -t team
+orchestrate connections set-credentials -a anthropic_creds --env draft -e "api_key=YOUR_API_KEY"
+```
+
+#### Step 2: Define Model Specification (YAML)  
+
+`config/anthropic-claude.yaml`  
+
+```yaml
+spec_version: v1
+kind: model
+name: anthropic/claude-3-7-sonnet
+display_name: Anthropic Claude 3.7 Sonnet
+description: Safe, reliable AI assistant from Anthropic
+tags: [anthropic, claude]
+model_type: chat
+provider_config:
+  anthropic_version: 2023-06-01
+```
+
+#### Step 3: Import Model  
+```bash
+orchestrate models import --file config/anthropic-claude.yaml --app-id anthropic_creds
+```
+
+---
+
+### 3. Integrating Google Gemini Models  
+
+#### Step 1: Create Connection  
+[Generate Gemini API Key →](https://aistudio.google.com/)  
+
+```bash
+orchestrate connections add -a gemini_creds
+orchestrate connections configure -a gemini_creds --env draft -k key_value -t team
+orchestrate connections set-credentials -a gemini_creds --env draft -e "api_key=YOUR_API_KEY"
+```
+
+#### Step 2: Define Model Specification (YAML)  
+
+`config/google-gemini.yaml`  
+
+```yaml
+spec_version: v1
+kind: model
+name: google/gemini-2.5-pro
+display_name: Google Gemini 2.5 Pro
+description: Google’s latest GenAI model for advanced reasoning
+tags: [google, gemini]
+model_type: chat
+provider_config: {}
+```
+
+#### Step 3: Import Model  
+```bash
+orchestrate models import --file config/google-gemini.yaml --app-id gemini_creds
+```
+
+Navigate to connections from the UI's Agent Manager
+Image 1
+List of imported models
+Image 2
+
+---
+
+## Validate the Integration
+
+- **List all models**  
+```bash
+orchestrate models list
+```
+
+List of imported models in CLI
+
+Image 3
+
+Test the imported in watsonx orchestrate UI
+1. Test the agent’s behavior, verifying that requests are routed to the external model
+2. Monitor logs, API responses, latency, error rates
+3. If needed, update the model spec (or connection) and re-import / re-add
+4. Adjust model policies if you combine multiple models
+
+Image 4
+
+- **Check in Watsonx Orchestrate UI**  
+Models appear in the **Model Manager** dropdown.  
+Agents can now be assigned third-party LLMs directly.  
+
+---
 
 ## Advanced AI Gateway Features
 
-### Model Policies for Load Balancing and Fallback
-
-WatsonX Orchestrate supports sophisticated model policies for enterprise scenarios:
-
-Check this link for [model policies](https://developer.watson-orchestrate.ibm.com/llm/model_policies)
-
+- **Load Balancing & Fallback**  
 ```bash
-# Create a load-balancing policy between multiple models
 orchestrate models policy add \
   --name balanced_gpt \
   --model openai/gpt-4 \
@@ -115,162 +192,43 @@ orchestrate models policy add \
   --retry-attempts 3
 ```
 
+- **Provider-Specific Options**  
+  - Azure OpenAI → requires deployment ID, API version  
+  - AWS Bedrock → supports IAM roles & regional endpoints  
+  - watsonx.ai → integrates via project/space IDs  
 
-## 2. Integrate Anthropic claude Models
+[Read: Advanced model policies →](https://developer.watson-orchestrate.ibm.com/llm/model_policies)  
 
-### Step 1: Create a Connection to the Provider
+---
 
-You’ll want to store credentials (API key) in a `connection` object in Orchestrate. This decouples sensitive data from model config files.
+## Business Value & Benefits
 
-Replace `YOUR_API_KEY` with the Anthropic Claude API key. [Generate API Key](https://console.anthropic.com/login?returnTo=%2F%3F)
+The AI Gateway enables organizations to:  
 
-```bash
-# Create a connection for ANthropic Claude credentials
-orchestrate connections add -a anthropic_credentials
-# Configure the connection as key-value type
-orchestrate connections configure -a anthropic_credentials --env draft -k key_value -t team
-# Store the API key securely
-orchestrate connections set-credentials -a anthropic_credentials --env draft -e "api_key=YOUR_API_KEY"
-```
+1. **Future-Proof AI Strategy** → integrate any leading LLM provider without vendor lock-in  
+2. **Enterprise Security** → centralized credential storage, encryption, and RBAC  
+3. **Operational Resilience** → load balancing, failover, and fallback across models  
+4. **Cost Optimization** → dynamically route requests to the most efficient model  
+5. **Productivity Gains** → empower agents with the right LLM for each task  
 
-### Step 2: Write a Model Specification (YAML / JSON)
+---
 
-Define a spec file describing the model, the provider, and how to connect to it. This will include:
+## Example Use Cases  
 
-- spec_version: e.g. “v1” This field defines the specification version for the agent configuration.
-- kind: usually "model", This field indicates that the agent is a native agent and defined directly in watsonx Orchestrate.
-- name: <provider>/<model_id> This field is the name of the agent in the watsonx Orchestrate UI when the agent is imported via the CLI.
-- display_name, description (optional but helpful)
-- model_type: e.g. chat, completion, embedding, etc.
-- provider_config: A JSON object with provider‑specific configuration (version, region, endpoints, model id, etc.)
+- **Contact Center Automation** → fallback between Claude (safety) and GPT-4 (creativity)  
+- **Knowledge Management** → agents dynamically query OpenAI for summarization and Gemini for reasoning  
+- **Financial Services** → regulated workflows using watsonx.ai + external LLMs for contextual insights  
+- **Multi-Agent Orchestration** → blend IBM Granite models with external LLMs inside a single workflow  
 
-Configuration for Anthropic Claude Model (config/anthropic-claude.yaml):
+---
 
-```bash
-  spec_version: v1
-  kind: model
-  name: anthropic/claude-3-7-sonnet-20250219
-  display_name: Anthropic Sonnet v1 Claude 3
-  description: |
-    Anthropic Claude model for safe and helpful AI interactions.
-  tags:
-    - anthropic
-    - claude
-  model_type: chat
-  provider_config:
-    anthropic_version: 2023-06-01
-```
-Note: Different providers require different fields in provider_config.
+## Next Steps  
 
+- Explore the [IBM AI Gateway Tutorial](https://developer.ibm.com/tutorials/ai-agents-llms-watsonx-orchestrate-ai-gateway/)  
+- Try the [Multi-Model Orchestration Demo](https://medium.com/@IBMDeveloper/extend-your-ai-agents-with-external-llms-using-watsonx-orchestrate-and-ai-gateway-1cfaa9c0e304)  
+- Build your own agents with **Watsonx Orchestrate ADK** and connect them to external LLMs  
 
-### Step 3: Import / Register the Model via CLI
-Once your connection is in place and your spec file is ready, you import the model:
+---
 
-```bash
-orchestrate models import --file config/anthropic-claude.yaml --app-id anthropic_credentials
-``` 
-- --app-id refers to the connection you created earlier
-- This will register the model with Orchestrate, making it available for agents. 
-
-## 3. Integrate Google Gemini Models
-
-### Step 1: Create a Connection to the Provider
-
-You’ll want to store credentials (API key) in a `connection` object in Orchestrate. This decouples sensitive data from model config files.
-
-Replace `YOUR_API_KEY` with the Google Gemini Model API key. [Generate API KEY](https://aistudio.google.com/prompts/new_chat?_gl=1*17y8d80*_up*MQ..&gclid=Cj0KCQjw3OjGBhDYARIsADd-uX61bJSPJ_f8IiVY2F6ae6s6occfL5vm1_GNdxaCYV9P2NxaeW7grIgaArsdEALw_wcB&gclsrc=aw.ds&gbraid=0AAAAACn9t653VlgXXB6C-zGOMJYAsodXe)
-
-```bash
-# Create a connection for ANthropic Claude credentials
-orchestrate connections add -a gemini_credentials
-# Configure the connection as key-value type
-orchestrate connections configure -a gemini_credentials --env draft -k key_value -t team
-# Store the API key securely
-orchestrate connections set-credentials -a gemini_credentials --env draft -e "api_key=YOUR_API_KEY"
-```
-
-### Step 2: Write a Model Specification (YAML / JSON)
-
-Define a spec file describing the model, the provider, and how to connect to it. This will include:
-
-- spec_version: e.g. “v1” This field defines the specification version for the agent configuration.
-- kind: usually "model", This field indicates that the agent is a native agent and defined directly in watsonx Orchestrate.
-- name: <provider>/<model_id> This field is the name of the agent in the watsonx Orchestrate UI when the agent is imported via the CLI.
-- display_name, description (optional but helpful)
-- model_type: e.g. chat, completion, embedding, etc.
-- provider_config: A JSON object with provider‑specific configuration (version, region, endpoints, model id, etc.)
-
-
-Configuration for Googles's Gemini Model (google-gemini.yaml):
-
-```bash
-  spec_version: v1
-  kind: model
-  name: google/gemini-2.5-pro
-  display_name: Google Generative AI (Gemini 2.5 Pro)
-  description: |
-    Google Generative AI model via API key authentication.
-  tags:
-    - google
-    - genai
-  model_type: chat
-  provider_config: {}
-```
-Note: Different providers require different fields in provider_config.
-
-
-### Step 3: Import / Register the Model via CLI
-Once your connection is in place and your spec file is ready, you import the model:
-
-```bash
-orchestrate models import --file config/google-gemini.yaml --app-id gemini_credentials
-```
-
-- --app-id refers to the connection you created earlier
-- This will register the model with Orchestrate, making it available for agents. 
-
-## Validate the imported models
-
-Navigate to connections from the UI's Agent Manager
-
-![Navigate to connection](images/connection.png)
-
-List of imported models
-
-![List all the connection](images/validate_connection.png)
-
-## List all the imported models
-
-```bash
-orchestrate models list
-```
-List of imported models in CLI
-
-![List all the connection](images/model_list.png)
-
-### Test the imported in watsonx orchestrate UI
-
-- Test the agent’s behavior, verifying that requests are routed to the external model
-- Monitor logs, API responses, latency, error rates
-- If needed, update the model spec (or connection) and re-import / re-add
-- Adjust model policies if you combine multiple models
-
-![Validate in the wxo UI](images/wxo_imported_models.png)
-
-
-## Benefits of IBM WatsonX Orchestrate AI Gateway
-
-1. **Unified Management**: Manage multiple AI providers from a single platform
-2. **Enterprise Security**: Secure credential management and access controls
-3. **Scalability**: Load balancing and failover capabilities across models
-4. **Flexibility**: Support for custom endpoints and provider-specific features
-5. **Integration**: Seamless integration with WatsonX Orchestrate agents and tools
-
-## Next Steps
-
-- Explore [all supported providers](https://developer.watson-orchestrate.ibm.com/llm/managing_llm#supported-providers) in the official documentation
-- Learn about [model policies](https://developer.watson-orchestrate.ibm.com/llm/managing_llm#configuring-model-policies) for advanced routing
-- Discover [connection management](https://developer.watson-orchestrate.ibm.com/connections/overview) for secure credential handling
-- Build agents that leverage multiple AI providers through the AI Gateway
-
-This integration capability demonstrates IBM's commitment to providing flexible, enterprise-grade AI orchestration that works with the tools and models your organization already uses.
+## License  
+This project is licensed under the **Apache 2.0 License**.  
