@@ -35,3 +35,33 @@ This framework provides ready-to-use accelerators that make it easier to operati
 - Enhances **data governance** and regulatory compliance.  
 
 ---
+
+## Getting Started
+
+Clone this repository:
+
+```bash
+git clone https://github.com/your-org/building-block-agents.git
+cd data-for-ai
+```
+
+Review the accelerators inside the repo:
+
+- `zero-copy-lakehouse/`  
+- `vector-search/`  
+- `q-and-a/`  
+- `data-security-and-encryption/` 
+
+Follow the documentation in each folder to integrate the accelerator into your application.
+
+---
+
+## Contributing
+
+We welcome contributions! Please fork this repo, create a feature branch, and open a pull request with your changes.
+
+---
+
+## License
+
+This project is licensed under the [Apache 2.0 License](LICENSE).
