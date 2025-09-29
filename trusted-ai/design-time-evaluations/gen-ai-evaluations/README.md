@@ -1,4 +1,4 @@
-# IBM Building Block for Trusted AI: Design Time Evaluations / Guardrails
+# IBM Building Block for Trusted AI: Design Time Evaluations & Guardrails
 
 An advanced AI guardrails implementation using IBM watsonx.governance SDK for comprehensive AI safety evaluation and monitoring.
 
