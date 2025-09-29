@@ -148,9 +148,12 @@ orchestrate models import --file config/google-gemini.yaml --app-id gemini_creds
 ```
 
 Navigate to connections from the UI's Agent Manager
-Image 1
+
+<img width="1505" height="885" alt="1" src="https://github.com/user-attachments/assets/2898c5c5-b963-41f3-b913-4227553fb4f1" />
+
 List of imported models
-Image 2
+
+<img width="1508" height="645" alt="2" src="https://github.com/user-attachments/assets/e783bf3b-f7c7-4dc0-87a7-cb961e3ed1a9" />
 
 ---
 
@@ -163,7 +166,7 @@ orchestrate models list
 
 List of imported models in CLI
 
-Image 3
+<img width="1219" height="405" alt="3" src="https://github.com/user-attachments/assets/4445f2f1-1ebc-41bc-9b3f-792ef9c669eb" />
 
 Test the imported in watsonx orchestrate UI
 1. Test the agent’s behavior, verifying that requests are routed to the external model
@@ -171,7 +174,7 @@ Test the imported in watsonx orchestrate UI
 3. If needed, update the model spec (or connection) and re-import / re-add
 4. Adjust model policies if you combine multiple models
 
-Image 4
+<img width="1508" height="890" alt="4" src="https://github.com/user-attachments/assets/3b19a8fd-7cde-42e3-a392-33ce26308d17" />
 
 - **Check in Watsonx Orchestrate UI**  
 Models appear in the **Model Manager** dropdown.  
