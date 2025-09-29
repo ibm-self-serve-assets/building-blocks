@@ -22,7 +22,7 @@ The API supports customizations at multiple levels:
 ## Getting Started
 ### Prerequisites
 The following prerequisites are required to spin up the RAG Service API:
-1. watsonx.data envirment set up with milvus DB
+1. watsonx.data envirment set up with milvus DB (https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-adding-milvus-service)
 2. Python3.13 installed locally
 3. git installed locally
 4. watsonx.data Milvus DB host, port and log in (username will be'ibmlhapikey' and password will be the IBM API key)
