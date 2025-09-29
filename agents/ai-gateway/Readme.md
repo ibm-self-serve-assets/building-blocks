@@ -47,32 +47,43 @@ This guide covers integration for **OpenAI**, **Anthropic Claude**, and **Google
 
 ### 1. Integrating OpenAI Models
 
-#### Step 1: Configure Provider Settings  
-Create a configuration JSON (excluding API key for security):  
+#### Step 1: Create openAI connection 
 
-```json
-{
-  "custom_host": "https://api.openai.com/v1",
-  "request_timeout": 500
-}
-```
-
-#### Step 2: Store API Key Securely  
 [Generate OpenAI API key →](https://platform.openai.com/api-keys)  
+
+Replace `YOUR_API_KEY` with API key generated for OpenAI model access.
 
 ```bash
 orchestrate connections add -a openai_creds
 orchestrate connections configure -a openai_creds --env draft -k key_value -t team
-orchestrate connections set-credentials -a openai_creds --env draft -e "api_key=sk-xxxx"
+orchestrate connections set-credentials -a openai_creds --env draft -e "api_key=YOUR_API_KEY"
+```
+
+#### Step 2: Define Model Specification (YAML)  
+
+`config/openai-gpt.yaml`  
+
+```yaml
+spec_version: v1
+kind: model
+name: openai/gpt-oss-20b
+display_name: GPT-OSS-20b
+description: |-
+  OpenAI's open-weight models designed for powerful reasoning, agentic tasks, and versatile developer use cases.
+
+  GPT-OSS-20b: for lower latency, and local or specialized use cases (21B parameters with 3.6B active parameters)
+tags:
+  - openai
+  - gpt
+model_type: chat
+provider_config:
+  transform_to_form_data: false
 ```
 
 #### Step 3: Register the OpenAI Model  
+
 ```bash
-orchestrate models add \
-  --name openai/gpt-4 \
-  --app-id openai_creds \
-  --provider-config '{"custom_host": "https://api.openai.com/v1", "request_timeout": 5000}' \
-  --type chat
+orchestrate models import --file config/openai-gpt.yaml --app-id openai_credentials
 ```
 
 #### Step 4: Verify Integration  
