@@ -3,7 +3,7 @@ WXD_MILVUS_HOST="<host url>"
 WXD_MILVUS_PORT="<port>"
 WXD_MILVUS_USER="ibmlhapikey"
 WXD_MILVUS_PASSWORD="<IBM API KEY>"
-WATSONX_APIKEY="gBWDCpJX35jGUfeh-M-n-EtRwvBTyJBeMvMcpHjesBpw"
+WATSONX_APIKEY="<IBM API KEY>"
 
 
 # COS credentials - IBM Cloud API Key is the same as Watsonx API KEY
