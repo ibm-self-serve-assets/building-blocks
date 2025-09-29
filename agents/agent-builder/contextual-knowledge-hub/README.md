@@ -88,6 +88,8 @@ flowchart TD
 
 ### 1 Install IBM Watsonx Orchestrate ADK  
 
+Getting started with [Agent Development Kit](https://developer.ibm.com/tutorials/getting-started-with-watsonx-orchestrate/)
+
 ```bash
 pip install ibm-watsonx-orchestrate
 ```
@@ -100,6 +102,12 @@ orchestrate env activate dev_env -a <API_KEY>
 ```
 
 ### 2 Register Tools & Agents  
+
+- Go to the folder `contextual-knowledge-hub`
+
+```bash
+cd agents/agent-builder/contextual-knowledge-hub
+```
 
 - Import tools for each product (Watsonx AI, Orchestrate, Assistant, Cognos, Code Assistant).  
 ```bash
@@ -153,13 +161,8 @@ orchestrate agents import -f agents/wx_ai_agent.yaml
 orchestrate agents import -f agents/wx_code_assistant_agent.yaml
 ```
 
-### 3 Start Chat Server  
 
-```bash
-orchestrate chat start
-```
-
-### 4 Configuring Agents on UIOpen the chat UI, configure the **Contextual Knowledge Hub** as the master agent, and add all sub-agents.  
+### 3 Configuring Agents on UIOpen the chat UI, configure the **Contextual Knowledge Hub** as the master agent, and add all sub-agents.  
 1. Open the chat server user interface.
 2. Go to Manage Agents.
 3. Choose the Contextual Knowledge Hub (master agent).
