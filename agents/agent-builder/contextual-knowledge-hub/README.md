@@ -163,11 +163,11 @@ orchestrate chat start
 2. Go to Manage Agents.
 3. Choose the Contextual Knowledge Hub (master agent).
 4. Add the following sub-agents to the configuration:
-    Wx_Orchestrate
-    Wx_Assistant
-    Cognos_Analytics
-    Wx_Code_Assistant
-    Wx_AI
+    - Wx_Orchestrate
+    - Wx_Assistant
+    - Cognos_Analytics
+    - Wx_Code_Assistant
+    - Wx_AI
 5, Confirm that the master agent is properly configured with all sub-agents.
 ---
 
