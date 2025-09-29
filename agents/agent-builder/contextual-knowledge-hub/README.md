@@ -174,7 +174,7 @@ orchestrate agents import -f agents/wx_code_assistant_agent.yaml
     - Wx_AI
 5. Confirm that the master agent is properly configured with all sub-agents.
 
-   <img width="2154" height="2062" alt="wx_orche" src="https://github.com/user-attachments/assets/3390dea2-95a9-47d7-aeaa-0a0bb6e04221" />
+  <img width="3584" height="2066" alt="wxo" src="https://github.com/user-attachments/assets/eac2c3b0-bbeb-4865-9626-5393bc61c0f5" />
 
 ---
 
