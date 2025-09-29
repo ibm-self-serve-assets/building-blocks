@@ -16,6 +16,16 @@ The Building Block of Agents includes:
 
 ---
 
+Here’s how the accelerators fit under the **Building Block of Agents**:
+
+<img width="612" height="408" alt="Agents" src="https://github.com/user-attachments/assets/e89318a5-dc3c-4afb-b092-295fe21e0188" />
+
+- **Agent Builder**  
+- **AI Gateway**  
+- **Multi-Agent Orchestration**
+
+---
+
 ## Accelerators
 
 ### Agent Builder
@@ -59,18 +69,6 @@ Key capabilities:
 
 ---
 
-## Diagram
-
-Here’s how the accelerators fit under the **Building Block of Agents**:
-
-<img width="612" height="408" alt="Agents" src="https://github.com/user-attachments/assets/e89318a5-dc3c-4afb-b092-295fe21e0188" />
-
-- **Agent Builder**  
-- **AI Gateway**  
-- **Multi-Agent Orchestration**  
-
----
-
 ## Use Cases
 
 - **Agent Builder** → Build an HR assistant that automates leave approvals using Workday APIs.  
@@ -107,3 +105,4 @@ We welcome contributions! Please fork this repo, create a feature branch, and op
 ## License
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
+
