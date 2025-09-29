@@ -126,29 +126,30 @@ orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requiremen
 orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
 ```
 
-- Adding Wx Code Assistnat Tools
-```bash
-orchestrate tools import -k python -f tools/wxo/get_wxo_features.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_info.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_integration.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
-```
 - Adding Wx AI Tools
 ```bash
-orchestrate tools import -k python -f tools/wxo/get_wxo_features.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_info.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_integration.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requirements.txt
-orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_agent_development.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_knowledge_management.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_model_customization.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_model_library.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.ai/get_wxai_rag_development.py -r requirements.txt
 ```
 
-- Register all **sub-agents** + **Contextual Knowledge Hub**.  
+- Adding Wx Code Assistant Tools
 ```bash
-orchestrate agents import -f agents/contextual_knowledge_hub.yaml
-orchestrate agents import -f agents/wx_ai_agent.yaml
+orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_pricing.py -r requirements.txt
+```
+
+- Adding Agents
+```bash
 orchestrate agents import -f agents/cognos_analytics_agent.yaml
+orchestrate agents import -f agents/wxo_agent.yaml
 orchestrate agents import -f agents/wx_assistant_agent.yaml
+orchestrate agents import -f agents/ibm_product_specialist.yaml
+orchestrate agents import -f agents/wx_ai_agent.yaml
 orchestrate agents import -f agents/wx_code_assistant_agent.yaml
 ```
 
