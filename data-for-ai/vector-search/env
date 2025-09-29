@@ -13,5 +13,5 @@ COS_ENDPOINT="<COS Public endpoint if accessing outside VPC>"
 COS_SERVICE_INSTANCE_ID="CRN of COS instance"
 
 
-# app key - arbitrary, same value needs to be passes during API call
+# app key - arbitrary, same value needs to be passed during API call
 REST_API_KEY="<unique value>"
