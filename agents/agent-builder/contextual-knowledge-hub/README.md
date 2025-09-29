@@ -168,7 +168,7 @@ orchestrate chat start
     - Cognos_Analytics
     - Wx_Code_Assistant
     - Wx_AI
-5, Confirm that the master agent is properly configured with all sub-agents.
+5. Confirm that the master agent is properly configured with all sub-agents.
 ---
 
 ## Example Queries  
