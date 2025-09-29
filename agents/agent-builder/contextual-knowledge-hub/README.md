@@ -103,10 +103,45 @@ orchestrate env activate dev_env -a <API_KEY>
 
 - Import tools for each product (Watsonx AI, Orchestrate, Assistant, Cognos, Code Assistant).  
 ```bash
+orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_features.py -r requirements.txt
 orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_info.py -r requirements.txt
 orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_resources.py -r requirements.txt
 ```
-Repeat for Watsonx Orchestrate, Assistant, AI, and Code Assistant.
+
+- Adding Wx Assistant Tools
+```bash
+orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_features.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_resources.py -r requirements.txt
+```
+
+- Adding Wx Orchestrate Tools
+```bash
+orchestrate tools import -k python -f tools/wxo/get_wxo_features.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_integration.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
+```
+
+- Adding Wx Code Assistnat Tools
+```bash
+orchestrate tools import -k python -f tools/wxo/get_wxo_features.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_integration.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
+```
+- Adding Wx AI Tools
+```bash
+orchestrate tools import -k python -f tools/wxo/get_wxo_features.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_info.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_integration.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requirements.txt
+orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
+```
 
 - Register all **sub-agents** + **Contextual Knowledge Hub**.  
 ```bash
@@ -123,8 +158,17 @@ orchestrate agents import -f agents/wx_code_assistant_agent.yaml
 orchestrate chat start
 ```
 
-Open the chat UI, configure the **Contextual Knowledge Hub** as the master agent, and add all sub-agents.  
-
+### 4 Configuring Agents on UIOpen the chat UI, configure the **Contextual Knowledge Hub** as the master agent, and add all sub-agents.  
+1. Open the chat server user interface.
+2. Go to Manage Agents.
+3. Choose the Contextual Knowledge Hub (master agent).
+4. Add the following sub-agents to the configuration:
+    Wx_Orchestrate
+    Wx_Assistant
+    Cognos_Analytics
+    Wx_Code_Assistant
+    Wx_AI
+5, Confirm that the master agent is properly configured with all sub-agents.
 ---
 
 ## Example Queries  
@@ -135,7 +179,7 @@ Open the chat UI, configure the **Contextual Knowledge Hub** as the master agent
 
 ---
 
-## Business Value (Executive View)  
+## Business Value
 
 The **Contextual Knowledge Hub** provides business leaders with:  
 
