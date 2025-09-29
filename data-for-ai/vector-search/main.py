@@ -36,8 +36,8 @@ app.include_router(root_api.root_api_route)
 from app.route.ingest import routes as ingest_api
 app.include_router(ingest_api.ingest_api_route)
 
-from app.route.query import routes as query_api
-app.include_router(query_api.query_api_route)
+#from app.route.query import routes as query_api
+#app.include_router(query_api.query_api_route)
 
 # Middleware for trusted hosts
 # TRUSTED_HOSTS = os.getenv("TRUSTED_HOSTS", "localhost,127.0.0.1").split(",")
@@ -57,4 +57,4 @@ logger.info("Starting API service...")
 
 # Application entry point
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=4050, log_level="info")
+    uvicorn.run("main:app", host="127.0.0.1", port=4050, log_level="info")
