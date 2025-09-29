@@ -148,7 +148,7 @@ orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_pricing.p
 orchestrate agents import -f agents/cognos_analytics_agent.yaml
 orchestrate agents import -f agents/wxo_agent.yaml
 orchestrate agents import -f agents/wx_assistant_agent.yaml
-orchestrate agents import -f agents/ibm_product_specialist.yaml
+orchestrate agents import -f agents/contextual_knowledge_hub.yaml
 orchestrate agents import -f agents/wx_ai_agent.yaml
 orchestrate agents import -f agents/wx_code_assistant_agent.yaml
 ```
