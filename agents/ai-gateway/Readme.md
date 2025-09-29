@@ -14,7 +14,24 @@ The AI Gateway system in WatsonX Orchestrate offers:
 
 For comprehensive documentation on all supported providers and advanced features, see the [IBM WatsonX Orchestrate AI Gateway Documentation](https://developer.watson-orchestrate.ibm.com/llm/managing_llm#supported-providers).
 
-## Example: Integrating OpenAI Models
+
+## Third-Party LLM Integration
+
+In this lab, we will integrate the below models to IBM watsonx orchestrate.
+
+1. Integrate OpenAI Models
+2. Integrate Anthropic claude Models
+3. Integrate Google Gemini Models
+
+
+## Prerequisites
+
+- Python 3.x
+- Access to IBM watsonx Orchestrate SaaS
+- The Watsonx Orchestrate ADK / CLI installed and configured
+- Model Name and API Key for the third‑party model (OpenAI Models, Anthropic Claude, Google Gemini)
+
+## 1. Integrating OpenAI Models
 
 This guide demonstrates how to integrate OpenAI models into WatsonX Orchestrate using the AI Gateway. This example can be adapted for any of the supported providers.
 
@@ -33,13 +50,13 @@ Create a JSON configuration for the OpenAI provider. The `api_key` is excluded f
 
 Store your OpenAI API key securely in a WatsonX Orchestrate connection:
 
+[Generate API KEY](https://platform.openai.com/api-keys)
+
 ```bash
 # Create a connection for OpenAI credentials
 orchestrate connections add -a openai_creds
-
 # Configure the connection as key-value type
 orchestrate connections configure -a openai_creds --env draft -k key_value -t team
-
 # Store the API key securely
 orchestrate connections set-credentials -a openai_creds --env draft -e "api_key=your_openai_api_key"
 ```
@@ -85,6 +102,8 @@ orchestrate models list
 
 WatsonX Orchestrate supports sophisticated model policies for enterprise scenarios:
 
+Check this link for [model policies](https://developer.watson-orchestrate.ibm.com/llm/model_policies)
+
 ```bash
 # Create a load-balancing policy between multiple models
 orchestrate models policy add \
@@ -96,14 +115,148 @@ orchestrate models policy add \
   --retry-attempts 3
 ```
 
-### Provider-Specific Configurations
 
-Each supported provider has specific configuration options:
+## 2. Integrate Anthropic claude Models
 
-- **Azure OpenAI**: Requires `azure_resource_name`, `azure_deployment_id`, `azure_api_version`
-- **AWS Bedrock**: Supports AWS IAM roles, regions, and Bedrock-specific models
-- **watsonx.ai**: Integrates with IBM's watsonx.ai platform using Space ID, Project ID, or Deployment ID
-- **Anthropic**: Supports Claude models with version and beta features
+### Step 1: Create a Connection to the Provider
+
+You’ll want to store credentials (API key) in a `connection` object in Orchestrate. This decouples sensitive data from model config files.
+
+Replace `YOUR_API_KEY` with the Anthropic Claude API key. [Generate API Key](https://console.anthropic.com/login?returnTo=%2F%3F)
+
+```bash
+# Create a connection for ANthropic Claude credentials
+orchestrate connections add -a anthropic_credentials
+# Configure the connection as key-value type
+orchestrate connections configure -a anthropic_credentials --env draft -k key_value -t team
+# Store the API key securely
+orchestrate connections set-credentials -a anthropic_credentials --env draft -e "api_key=YOUR_API_KEY"
+```
+
+### Step 2: Write a Model Specification (YAML / JSON)
+
+Define a spec file describing the model, the provider, and how to connect to it. This will include:
+
+- spec_version: e.g. “v1” This field defines the specification version for the agent configuration.
+- kind: usually "model", This field indicates that the agent is a native agent and defined directly in watsonx Orchestrate.
+- name: <provider>/<model_id> This field is the name of the agent in the watsonx Orchestrate UI when the agent is imported via the CLI.
+- display_name, description (optional but helpful)
+- model_type: e.g. chat, completion, embedding, etc.
+- provider_config: A JSON object with provider‑specific configuration (version, region, endpoints, model id, etc.)
+
+Configuration for Anthropic Claude Model (config/anthropic-claude.yaml):
+
+```bash
+  spec_version: v1
+  kind: model
+  name: anthropic/claude-3-7-sonnet-20250219
+  display_name: Anthropic Sonnet v1 Claude 3
+  description: |
+    Anthropic Claude model for safe and helpful AI interactions.
+  tags:
+    - anthropic
+    - claude
+  model_type: chat
+  provider_config:
+    anthropic_version: 2023-06-01
+```
+Note: Different providers require different fields in provider_config.
+
+
+### Step 3: Import / Register the Model via CLI
+Once your connection is in place and your spec file is ready, you import the model:
+
+```bash
+orchestrate models import --file config/anthropic-claude.yaml --app-id anthropic_credentials
+``` 
+- --app-id refers to the connection you created earlier
+- This will register the model with Orchestrate, making it available for agents. 
+
+## 3. Integrate Google Gemini Models
+
+### Step 1: Create a Connection to the Provider
+
+You’ll want to store credentials (API key) in a `connection` object in Orchestrate. This decouples sensitive data from model config files.
+
+Replace `YOUR_API_KEY` with the Google Gemini Model API key. [Generate API KEY](https://aistudio.google.com/prompts/new_chat?_gl=1*17y8d80*_up*MQ..&gclid=Cj0KCQjw3OjGBhDYARIsADd-uX61bJSPJ_f8IiVY2F6ae6s6occfL5vm1_GNdxaCYV9P2NxaeW7grIgaArsdEALw_wcB&gclsrc=aw.ds&gbraid=0AAAAACn9t653VlgXXB6C-zGOMJYAsodXe)
+
+```bash
+# Create a connection for ANthropic Claude credentials
+orchestrate connections add -a gemini_credentials
+# Configure the connection as key-value type
+orchestrate connections configure -a gemini_credentials --env draft -k key_value -t team
+# Store the API key securely
+orchestrate connections set-credentials -a gemini_credentials --env draft -e "api_key=YOUR_API_KEY"
+```
+
+### Step 2: Write a Model Specification (YAML / JSON)
+
+Define a spec file describing the model, the provider, and how to connect to it. This will include:
+
+- spec_version: e.g. “v1” This field defines the specification version for the agent configuration.
+- kind: usually "model", This field indicates that the agent is a native agent and defined directly in watsonx Orchestrate.
+- name: <provider>/<model_id> This field is the name of the agent in the watsonx Orchestrate UI when the agent is imported via the CLI.
+- display_name, description (optional but helpful)
+- model_type: e.g. chat, completion, embedding, etc.
+- provider_config: A JSON object with provider‑specific configuration (version, region, endpoints, model id, etc.)
+
+
+Configuration for Googles's Gemini Model (google-gemini.yaml):
+
+```bash
+  spec_version: v1
+  kind: model
+  name: google/gemini-2.5-pro
+  display_name: Google Generative AI (Gemini 2.5 Pro)
+  description: |
+    Google Generative AI model via API key authentication.
+  tags:
+    - google
+    - genai
+  model_type: chat
+  provider_config: {}
+```
+Note: Different providers require different fields in provider_config.
+
+
+### Step 3: Import / Register the Model via CLI
+Once your connection is in place and your spec file is ready, you import the model:
+
+```bash
+orchestrate models import --file config/google-gemini.yaml --app-id gemini_credentials
+```
+
+- --app-id refers to the connection you created earlier
+- This will register the model with Orchestrate, making it available for agents. 
+
+## Validate the imported models
+
+Navigate to connections from the UI's Agent Manager
+
+![Navigate to connection](images/connection.png)
+
+List of imported models
+
+![List all the connection](images/validate_connection.png)
+
+## List all the imported models
+
+```bash
+orchestrate models list
+```
+List of imported models in CLI
+
+![List all the connection](images/model_list.png)
+
+### Test the imported in watsonx orchestrate UI
+
+- Test the agent’s behavior, verifying that requests are routed to the external model
+- Monitor logs, API responses, latency, error rates
+- If needed, update the model spec (or connection) and re-import / re-add
+- Adjust model policies if you combine multiple models
+
+![Validate in the wxo UI](images/wxo_imported_models.png)
+
 
 ## Benefits of IBM WatsonX Orchestrate AI Gateway
 
