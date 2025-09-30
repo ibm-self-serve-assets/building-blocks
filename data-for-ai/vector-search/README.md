@@ -7,8 +7,7 @@ Ingestion API provides a modular framework for building GenAI pipelines that com
 * **Embedding:** Dense, hybrid, or dual embeddings with selectable models
 
 ## Deploying the Framework
-* **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables
-* **watsonx.ai:** Required for Governance SDK, prompt lab, and model hosting
+* **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables. Same value needs to be along with API call to authenticate.
 * **IBM COS:** Configure COS_ENDPOINT, COS_AUTH_ENDPOINT, and COS_SERVICE_INSTANCE_ID for storage services
 
 ## Customization
@@ -22,19 +21,20 @@ The API supports customizations at multiple levels:
 
 ## Getting Started
 ### Prerequisites
-The following prerequisites are required to spin up the RAG Service API:
-1. Python3 installed locally
-2. Milvus DB Credentials
-3. IBM watsonx.ai Credentials
-4. IBM COS Credentials
+The following prerequisites are required to spin up the milvus ingest API:
+1. watsonx.data environment set up with milvus DB (https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-adding-milvus-service)
+2. Python3.13 installed locally
+3. git installed locally
+4. watsonx.data Milvus DB host, port and log in (username will be'ibmlhapikey' and password will be the IBM API key)
+5. IBM COS Credentials
 
 ### Installation
 1. Clone the repository
     ```
-    git clone git@github.com:ibm-self-serve-assets/building-blocks.git
+    git clone https://github.com/ibm-self-serve-assets/building-blocks.git
     ```
 
-2. Change directory into `RAG Service Ingestion Pipeline`
+2. Change directory into `vector-search`
     ```
     cd building-blocks/data-for-ai/vector-search/
     ```
@@ -53,15 +53,14 @@ The following prerequisites are required to spin up the RAG Service API:
 
 5. Configure parameters in .env
     1. **Milvus credentials**: 
-        * `WXD_MILVUS_HOST` (Milvus host URL)
-        * `WXD_MILVUS_PORT` (Milvus port)
-        * `WXD_MILVUS_USER` (Username)
-        * `WXD_MILVUS_PASSWORD` (IBM Cloud API Key associated with Milvus account)
+        * `WXD_MILVUS_HOST` (Milvus host URL from watsonx.data UI)
+        * `WXD_MILVUS_PORT` (Milvus portf rom watsonx.data UI)
+        * `WXD_MILVUS_USER` (value will be 'ibmlhapikey')
+        * `WXD_MILVUS_PASSWORD` (IBM Cloud API Key associated with Milvus account (IBM cloud Service account created for Milvus))
     2. **IBM COS credentials**: 
-        * `IBM_CLOUD_API_KEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
+        * `IBM_CLOUD_API_KEY` (IBM Cloud API Key associated with COS (IBM cloud Service account created for Milvus))
         * `COS_ENDPOINT` (Service endpoint URL for your COS instance)
-        * `COS_AUTH_ENDPOINT` (IAM auth endpoint)
-        * `COS_SERVICE_INSTANCE_ID` (Bucket ID found in COS service credentials)
+        * `COS_SERVICE_INSTANCE_ID` (CRN value of COS Instance)
     3. `REST_API_KEY`: All API request endpoints require a header `REST_API_KEY`: <your-secret>. Must be any arbitrary string (not empty), set in .env
 
 6. When finished, deactivate the virtual environment by running this command: 
@@ -77,12 +76,12 @@ python3 main.py
 
 The RAG Service API is built using Uvicorn CLI. You can also run the following within the `/app` directory:
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 4050 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 4050 --reload
 ```
 
 ### Swagger UI
 The RAG Service API is built with FastAPI, which includes interactive docs with Swagger UI support. 
-To view endpoints, http://0.0.0.0:4050/docs (replace with your configured host/port)
+To view endpoints, http://127.0.0.1:4050/docs (replace with your configured host/port)
 #### Ingestion
 Use the ingestion endpoint to pull documents from your COS bucket, process them (split/chunk), embed, and upsert into Milvus.
 **Endpoint** 
@@ -116,7 +115,7 @@ The API includes interactive documentation powered by FastAPI + Swagger.
 **Sample Test Python endpoint:**
 ```
 import json, requests
-url = "http://0.0.0.0:4050/ingest-files"
+url = "http://127.0.0.1:4050/ingest-files"
 
 payload = json.dumps({
     "bucket_name": "<cos-bucket>"
