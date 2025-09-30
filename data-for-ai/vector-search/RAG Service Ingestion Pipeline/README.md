@@ -22,11 +22,10 @@ The API supports customizations at multiple levels:
 
 ## Getting Started
 ### Prerequisites
-The following prerequisites are required to spin up the RAG Service API:
+The following prerequisites are required to spin up the RAG Ingestion Service:
 1. Python3 installed locally
 2. Milvus DB Credentials
-3. IBM watsonx.ai Credentials
-4. IBM COS Credentials
+3. IBM COS Credentials (Note: your COS bucket must be public for this ingestion pipeline)
 
 ### Installation
 1. Clone the repository
@@ -36,7 +35,7 @@ The following prerequisites are required to spin up the RAG Service API:
 
 2. Change directory into `RAG Service Ingestion Pipeline`
     ```
-    cd building-blocks/data-for-ai/vector-search/RAG Service Ingestion Pipeline
+    cd building-blocks/data-for-ai/vector-search/"RAG Service Ingestion Pipeline"
     ```
 
 3. Create a python virtual environment
