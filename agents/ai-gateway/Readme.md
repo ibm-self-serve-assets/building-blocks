@@ -1,8 +1,11 @@
 # IBM Watsonx Orchestrate AI Gateway: Extending Agents with Third-Party LLMs
 
-IBM **Watsonx Orchestrate** provides a flexible and enterprise-ready framework to build, deploy, and manage AI agents. One of its most powerful features is the **AI Gateway**, which enables organizations to seamlessly connect **third-party Large Language Models (LLMs)** with IBM’s ecosystem.  
+IBM **Watsonx Orchestrate** a flexible, enterprise-ready framework to build, deploy, and manage AI agents. One of its most powerful features is the AI Gateway, Which enables organizations to seamlessly connect third-party Large Language Models (LLMs) with IBM’s ecosystem.
 
-With AI Gateway, developers can use a **single orchestration layer** to integrate, manage, and govern models from providers such as OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai. This helps enterprises build **trusted AI workflows** that are secure, scalable, and future-proof.  
+One of the key advantages of AI Gateway is that you don’t need to rely on a single LLM provider. Using its built-in, out-of-the-box features, you can easily bring external models into the AI Gateway and integrate them into your workflows. This means you can leverage models from providers such as OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai—all through a single orchestration layer.
+
+By centralizing integration, management, and governance, AI Gateway helps enterprises build trusted AI workflows that are secure, scalable, and future-proof. It gives you the flexibility to choose the best models for your use cases while maintaining consistent governance and compliance across your AI landscape.
+
 
 --- 
 
