@@ -10,6 +10,8 @@ The RAG Service provides a deployable API for orchestrating RAG pipelines. It si
 * **Querying:** LLM integration with configurable models and prompt templates
 * **Governance:** Integration with watsonx.governance for build-time and runtime governance
 
+<img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/7846b5a7-5e22-45bd-94ea-d0176d7a07fc" />
+
 ## Deploying the Service
 
 * **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables
