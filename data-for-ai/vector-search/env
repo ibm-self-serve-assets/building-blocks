@@ -1,0 +1,17 @@
+# watsonx.data credentials
+WXD_MILVUS_HOST="<host url>"
+WXD_MILVUS_PORT="<port>"
+WXD_MILVUS_USER="ibmlhapikey"
+WXD_MILVUS_PASSWORD="<IBM API KEY>"
+WATSONX_APIKEY="<IBM API KEY>"
+
+
+# COS credentials - IBM Cloud API Key is the same as Watsonx API KEY
+# COS Service Instance ID is in the IBM COS from Resources
+IBM_CLOUD_API_KEY="<IBM API KEY>"
+COS_ENDPOINT="<COS Public endpoint if accessing outside VPC>"
+COS_SERVICE_INSTANCE_ID="CRN of COS instance"
+
+
+# app key - arbitrary, same value needs to be passed during API call
+REST_API_KEY="<unique value>"
