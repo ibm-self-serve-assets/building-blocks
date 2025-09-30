@@ -58,7 +58,7 @@ def init_environment(collection_name, chunk_type): # chunk type is where you can
             'wxd_milvus_user': os.getenv("WXD_MILVUS_USER"),
             'wxd_milvus_password': os.getenv("WXD_MILVUS_PASSWORD"),
             'watsonx_apikey': os.getenv("WATSONX_APIKEY"),
-            'watsonx_project_id': os.getenv("WATSONX_PROJECT_ID"),
+            #'watsonx_project_id': os.getenv("WATSONX_PROJECT_ID"),
             'collection_name': collection_name,
             'chunk_type': chunk_type
         }
