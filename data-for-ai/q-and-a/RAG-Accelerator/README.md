@@ -38,23 +38,24 @@ The API supports customizations at multiple levels:
 
 The following prerequisites are required to spin up the RAG Service API:
 
-1. **Python3** installed locally
+1. **Python3.13** installed locally
 2. Milvus DB Credentials
-3. IBM watsonx.ai Credentials
+3. IBM watsonx.ai environt with project and necessay access control
 4. IBM COS Credentials
+5. git installed locally
 
 ### Installation
 
 1. Clone the repository
 
     ```bash
-    git clone git@github.ibm.com:ibm-build-lab/RAG-Service.git
+    git clone https://github.com/ibm-self-serve-assets/building-blocks.git
     ```
 
-2. Change directory into `RAG-Service`
+2. Change directory into `RAG-Accelerator`
 
     ```bash
-    cd RAG-Service
+    cd /data-for-ai/q-and-a/RAG-Accelerator
     ```
 
 3. Create a python virtual environment
@@ -106,13 +107,13 @@ python3 main.py
 The RAG Service API is built using Uvicorn CLI. You can also run the following within the `/app` directory:
 
 ```bash
-uvicorn app.main:app --host 0.0.0.0 --port 4050 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 4050 --reload
 ```
 
 ### Swagger UI
 
 The RAG Service API is built with FastAPI, which includes interactive docs with Swagger UI support.
-To view endpoints, <http://0.0.0.0:4050/docs> (replace with your configured host/port)
+To view endpoints, <http://127.0.0.1:4050/docs> (replace with your configured host/port)
 
 ## Ingestion
 
@@ -155,12 +156,69 @@ The API includes interactive documentation powered by FastAPI + Swagger.
 
 ```
 import json, requests
-url = "http://0.0.0.0:4050/ingest-files"
+url = "http://127.0.0.1:4050/ingest-files"
 
 payload = json.dumps({
     "bucket_name": "<cos-bucket>"
     "collection_name": "<milvus-collection>"
     "chunk_type": "DOCLING_DOCS"
+})
+headers = {
+    "REST_API_KEY": <your-secret>,
+    "Content-Type": "application/json"
+}
+
+response = requests.request("POST", url, headers=headers, data=payload)
+
+print(response.text)
+```
+
+Verify results through the Swagger UI or by checking the API response.
+
+## Query
+
+Use the query endpoint to pull query Milvus database by natural language (RAG)
+
+**Endpoint**
+
+```
+POST /query
+```
+**Required JSON Body**
+
+```
+{
+    "collection_name": "<milvus-collection>",
+    "query": "<query text>"
+}
+```
+
+* `collection_name`: Target Milvus collection to fetch data
+* 'query' : Natual language query to fetch data
+
+**Headers**
+
+```
+REST_API_KEY: <your-secret>
+Content-Type: application/json
+```
+
+**Test via Swagger UI**
+The API includes interactive documentation powered by FastAPI + Swagger.
+
+1. Navigate to `/docs` → expand **POST /ingest-files**.
+2. Click `Try it out` → fill in **collection name**, **query**
+3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
+
+**Sample Test Python endpoint:**
+
+```
+import json, requests
+url = "http://127.0.0.1:4050/query"
+
+payload = json.dumps({
+    "collection_name": "<milvus-collection>"
+    "query": "<query text>"
 })
 headers = {
     "REST_API_KEY": <your-secret>,
@@ -188,3 +246,4 @@ Verify results through the Swagger UI or by checking the API response.
 ### Created and Architected By
 
 Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki
+**Endpoint**
