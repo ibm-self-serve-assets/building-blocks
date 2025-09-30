@@ -6,6 +6,8 @@ Ingestion API provides a modular framework for building GenAI pipelines that com
 * **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
 * **Embedding:** Dense, hybrid, or dual embeddings with selectable models
 
+<img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/b259ff95-163e-427c-93f3-15a99462f777" />
+
 ## Deploying the Framework
 * **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables. Same value needs to be along with API call to authenticate.
 * **IBM COS:** Configure COS_ENDPOINT, COS_AUTH_ENDPOINT, and COS_SERVICE_INSTANCE_ID for storage services
@@ -25,7 +27,7 @@ The following prerequisites are required to spin up the milvus ingest API:
 1. watsonx.data environment set up with milvus DB (https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-adding-milvus-service)
 2. Python3.13 installed locally
 3. git installed locally
-4. watsonx.data Milvus DB host, port and log in (username will be'ibmlhapikey' and password will be the IBM API key)
+4. watsonx.data Milvus DB host, port and log in (Note: your COS bucket must be public for this ingestion pipeline)
 5. IBM COS Credentials
 
 ### Installation
