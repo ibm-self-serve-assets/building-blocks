@@ -7,6 +7,7 @@ This repository contains **Runtime Evaluations** for **Prompt Governance** in **
 - **Python 3.10+**
 - **IBM watsonx.governance SDK**: for model governance, prompt evaluations, and monitoring.
 - **IBM watsonx openscale SDK**: for model continuous monitoring and evaluation.
+- **IBM Watson Machine Learning SDK**: for lifecycle governance and deployment space management
 - **Jupyter Notebooks**: for interactive development and experimentation.
 - **python-dotenv**: for managing environment configurations.
 - **IBM Cloud SDK**: for authentication with IBM Cloud services.
@@ -25,4 +26,5 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
    - Ensure you have appropriate access to the **watsonx.governance** service instance to monitor prompts, track model performance, and run evaluations.
 
 ---
+
 
