@@ -39,15 +39,6 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 | **General Governance & Health** | —                                                                                                                           | - Latency, throughput <br> - Input/output token volume <br> - Embedding drift <br> - Metadata drift <br> - Alerts, error rates           |
 
 ---
-## Prerequisites
-
-1. Python 3.10 +
-2. ibm-watsonx-governance SDK
-3. ibm-openscale SDK
-4. ibm-watson-machine-learning SDK
-5. Jupyter Notebook or VS Code
-
----
 
 ## Module Structure
 ```
@@ -95,10 +86,62 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 
 ## Getting Started
 
-1. Clone the git repo
-2. Go to directory
-3. notebooks
-4. dashboard-ui
+Follow these steps to set up and run the Generative AI evaluation notebooks and the dashboard UI for runtime prompt evaluation using watsonx.governance.
+
+### Clone the git Repository
+```
+git clone https://github.com/ibm-self-serve-assets/building-blocks.git
+cd building-blocks/trusted-ai/runtime-evaluations/generative_ai
+```
+
+a.)  Run Evaluation Notebooks
+
+The notebooks are organized under the notebooks/ directory.
+
+### Prerequisites
+
+1. Python 3.10+
+2. Jupyter Notebook or JupyterLab
+3. (Optional) Virtual environment recommended
+```
+python -m venv runtime
+source runtime/bin/activate (or runtimse/Scripts/activate for windows)
+```
+4. following python package dependencies
+```
+pip install pandas transformers matplotlib seaborn jupyter
+```
+5. Launch Jupyter
+```
+cd notebooks
+jupyter notebook
+```
+6. Open notebooks in the folders below to get started:
+| Folder                                     | Description                                     |
+| ------------------------------------------ | ----------------------------------------------- |
+| `00-runtime-evaluation-realtime/`          | Manual prompt evaluation in real-time.          |
+| `01-runtime-evaluation-scheduled/`         | Automated scheduled prompt evaluations.         |
+| `02-custom-metrics-monitoring-deployment/` | Custom metrics setup and deployment monitoring. |
+| `assets/`                                  | Sample datasets used for evaluation.            |
+
+b.) The dashboard is a Streamlit app located in the dashboard-ui/ folder.
+
+### Prerequisites
+
+1. Python 3.10+
+2. streamlit
+3. Install Dependencies
+```
+cd dashboard-ui
+pip install -r requirements.txt
+```
+4. Launch the Dashboard
+```
+streamlit run app.py
+```
+5. The dashboard will open in your browser at http://localhost:8501
+   
+Note: Make sure evaluation outputs (e.g., CSVs from notebooks) are accessible by the dashboard or update paths in app.py accordingly.
 
 ---
 
