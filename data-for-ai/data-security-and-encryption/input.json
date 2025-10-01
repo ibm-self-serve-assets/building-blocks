@@ -32,7 +32,7 @@
     "name": "Demo-Catalog-for-watsonx.data-Intelligence",
     "generator": "API",
     "description": "Demo catalog",
-    "bss_account_id": "e65910fa61ce9072d64902d03f3d4774",
+    "bss_account_id": "XXXXXXXXXXXXXXXXXXXXXXXX",
     "is_governed": true,
     "bucket": {
       "bucket_name": "bucket-m4lgjj3jpdvdu1o",
