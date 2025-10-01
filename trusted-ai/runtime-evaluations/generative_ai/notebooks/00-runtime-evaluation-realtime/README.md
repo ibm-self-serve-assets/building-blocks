@@ -45,7 +45,6 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 
 <details> <summary> Configuration Variables </summary>
 ```
-
 | Variable                  | Default / Placeholder                           | Purpose / Notes                                                                 |
 |--------------------------|--------------------------------------------------|----------------------------------------------------------------------------------|
 | `use_cpd`                | `False`                                          | Set to `True` for Cloud Pak for Data (CPD), `False` for IBM Cloud.              |
@@ -78,6 +77,7 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 | `mhm_monitor_id`         | Set during monitor creation                      | ID for Model Health monitor.                                                    |
 | `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                            |
 ```
+
 </details>
 
 ---
