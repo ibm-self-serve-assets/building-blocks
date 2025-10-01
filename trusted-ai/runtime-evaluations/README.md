@@ -38,21 +38,23 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 ├── generative_ai
 │   ├── LICENSE
 │   ├── README.md
-│   ├── SETUP.md
-│   ├── app.py
-│   ├── notebooks
-│   │   ├── 00-runtime-evaluation-realtime
-│   │   │   ├── Manual_Prompt_Evaluation_for_Production.ipynb
-│   │   │   └── README.md
-│   │   ├── 01-runtime-evaluation-scheduled
-│   │   │   └── Automated_Prompt_Evaluation_for_Production.ipynb
-│   │   ├── 02-custom-metrics-monitoring-deployment
-│   │   │   └── Custom_Metrics_Monitoring_and_Deployment.ipynb
-│   │   ├── README.md
-│   │   └── assets
-│   │       ├── RAG_data.csv
-│   │       └── summarisation.csv
-│   └── requirements.txt
+│   ├── dashboard-ui
+│   │   ├── app.py
+│   │   └── requirements.txt
+│   └── notebooks
+│       ├── 00-runtime-evaluation-realtime
+│       │   ├── Manual_Prompt_Evaluation_for_Production.ipynb
+│       │   └── README.md
+│       ├── 01-runtime-evaluation-scheduled
+│       │   ├── Automated_Prompt_Evaluation_for_Production.ipynb
+│       │   └── README.md
+│       ├── 02-custom-metrics-monitoring-deployment
+│       │   ├── Custom_Metrics_Monitoring_and_Deployment.ipynb
+│       │   └── README.md
+│       ├── README.md
+│       └── assets
+│           ├── RAG_data.csv
+│           └── summarisation.csv
 └── traditional_ai
     └── notebooks
         ├── Custom_Monitors_and_Custom_Metrics_Deployment.ipynb
@@ -68,5 +70,6 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
 
 ---
+
 
 
