@@ -82,7 +82,8 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 
 ---
     
-<details> <summary> Execution Flow</summary>
+<details> <summary>Execution Flow</summary>
+
 ```mermaid
 flowchart TD
     A[Start Notebook] --> B[Configure Credentials]
@@ -100,7 +101,7 @@ flowchart TD
 
 ---
 
-<details> <summary> Outputs</summary>
+<details> <summary>Outputs</summary>
 
 ```
 | Output Variable            | Description                                                                 |
@@ -120,6 +121,7 @@ flowchart TD
 ---
 
 <details> <summary> Troubleshooting</summary>
+
 ```
 | Problem                            | Explanation / Fix                                                                 |
 |-----------------------------------|-----------------------------------------------------------------------------------|
