@@ -2,6 +2,8 @@
 
 This repository contains assets, workflows, and notebooks to support the runtime evaluation of Generative AI prompts using IBM watsonx.governance. It is designed to help AI teams ensure trustworthy, compliant, and safe usage of large language models (LLMs) in regulated and enterprise environments.
 
+---
+
 ## Overview
 
 Generative AI models can exhibit unpredictable behavior at runtime. This project enables real-time prompt monitoring, evaluation, and governance using watsonx.governance capabilities. It includes:
@@ -45,8 +47,61 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 4. ibm-watson-machine-learning SDK
 5. Jupyter Notebook or VS Code
 
----
 ## Getting Started
 
+1. Clone the git repo
+2. Go to 
+
+## Module Structure
+```
+.
+├── LICENSE
+├── README.md
+├── dashboard-ui
+│   ├── app.py
+│   └── requirements.txt
+└── notebooks
+    ├── 00-runtime-evaluation-realtime
+    │   ├── Manual_Prompt_Evaluation_for_Production.ipynb
+    │   └── README.md
+    ├── 01-runtime-evaluation-scheduled
+    │   ├── Automated_Prompt_Evaluation_for_Production.ipynb
+    │   └── README.md
+    ├── 02-custom-metrics-monitoring-deployment
+    │   ├── Custom_Metrics_Monitoring_and_Deployment.ipynb
+    │   └── README.md
+    ├── README.md
+    └── assets
+        ├── RAG_data.csv
+        └── summarisation.csv
+```
+
 ---
 
+## File Description
+
+| Path                                           | Description                                                               |
+| ---------------------------------------------- | ------------------------------------------------------------------------- |
+| [LICENSE](LICENSE)                                     | Project license file.                                                     |
+| [README.md](README.md)                                    | Root-level documentation for the repository.                              |
+| [dashboard-ui](dashboard-ui)                                | Contains the interactive Streamlit dashboard for visualizing evaluations. |
+| ├── [app.py](app.py)                                   | Streamlit app for dashboard UI.                                           |
+| └── [requirements.txt](requirements.txt)                         | Python dependencies for the dashboard.                                    |
+| [notebooks](notebooks)                                   | Collection of Jupyter notebooks for evaluation workflows.                 |
+| ├── [00-runtime-evaluation-realtime](00-runtime-evaluation-realtime)          | Manual, real-time prompt evaluation notebook.                             |
+| ├── [01-runtime-evaluation-scheduled](01-runtime-evaluation-scheduled)        | Scheduled, automated prompt evaluation workflow.                          |
+| ├── [02-custom-metrics-monitoring-deployment](02-custom-metrics-monitoring-deployment)  | Custom metrics setup and deployment monitoring.                           |
+| ├── [README.md](README.md)                                | Overview of the notebooks and structure.                                  |
+| └── [assets](assets)                                  | CSV files used for evaluation (e.g., RAG and summarization datasets).     |
+
+---
+
+## License
+
+
+---
+
+## References
+1. 
+
+---
