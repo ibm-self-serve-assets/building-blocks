@@ -104,6 +104,7 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 
 ## License
 
+Licensing details are present in [LICENSE](LICENSE) file.
 
 ---
 
