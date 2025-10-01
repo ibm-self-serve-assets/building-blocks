@@ -1,4 +1,4 @@
-# Manual Prompt Evaluation for Production
+# Realtime Prompt Evaluation for Production
 
 This repository contains the Jupyter notebook **`Manual_Prompt_Evaluation_for_Production.ipynb`** — a hands‑on, end‑to‑end workbook that: creates a prompt template asset, publishes it to a space, deploys/evaluates prompt subscriptions and collects manual evaluation data via IBM Watson/Watson OpenScale runtime APIs.
 
