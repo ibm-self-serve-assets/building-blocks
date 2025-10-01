@@ -137,18 +137,5 @@ Note: Many outputs are stored and viewable in the Watson OpenScale / Watson Stud
 
 ---
 
-## Where to look in the notebook (short index)
-- **Cell 12**: primary environment & credential configuration (CLOUD_API_KEY, DATAPLATFORM_URL, use_cpd)
-- **Cell 16**: `project_id`
-- **Cell 24–32**: space selection & creation (`existing_space_id`, `space_name`, `COS_RESOURCE_CRN`)
-- **Cell 35**: access token generation helper (CPD auth path)
-- **Cell 39**: prompt template definition & `prompt_mgr.store_prompt(...)`
-- **Cell ~97**: promote PTA to space (`space_pta_id`) and related requests
-- **Cell ~100–110**: subscription creation, `scoring_url`, and `deployment_id`
-- **Cell 112–128**: read CSV (`test_data_path`) and store feedback records in OpenScale dataset
-- **Cell 129 onward**: monitor instance listing, monitor id reads, metrics display and plotting
-
----
-
 ## Final notes
 This notebook is a working walkthrough for manual / trigger based prompt evaluation with watsonx.gov on CP4D/SaaS environment. It wires cloud APIs and OpenScale artifacts together as an example flow — before using in production, transform the procedural cells into modular, well‑tested scripts and replace inline secrets with secure secret management.
