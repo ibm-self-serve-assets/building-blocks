@@ -19,7 +19,6 @@ The Building Block is a **reference implementation framework** that accelerates 
 
 <img width="1696" height="901" alt="Building_Blocks" src="https://github.com/user-attachments/assets/df2d0cd3-a2ea-4c42-a24b-a03eed22b1e2" />
 
----
 
 ## Value Proposition  
 We offer a comprehensive set of embeddable capabilities across the following domains:
