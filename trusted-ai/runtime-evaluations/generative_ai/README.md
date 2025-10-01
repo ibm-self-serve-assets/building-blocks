@@ -98,7 +98,7 @@ a.)  Run Evaluation Notebooks
 
 The notebooks are organized under the notebooks/ directory.
 
-### Prerequisites
+#### Prerequisites
 
 1. Python 3.10+
 2. Jupyter Notebook or JupyterLab
@@ -126,7 +126,7 @@ jupyter notebook
 
 b.) The dashboard is a Streamlit app located in the dashboard-ui/ folder.
 
-### Prerequisites
+#### Prerequisites
 
 1. Python 3.10+
 2. streamlit
