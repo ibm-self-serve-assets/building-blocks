@@ -71,6 +71,7 @@ flowchart TD
     I --> J[Review Results]
 ```
 </details>
+
 ---
 
 <details><summary> Outputs </summary>
@@ -85,7 +86,9 @@ flowchart TD
 | `feedback_records`      | Number of records ingested for evaluation.                       |
 
 </details>
+
 ---
+
 <details><summary> Troubleshooting </summary>
   
 | Problem                     | Explanation / Fix                                                     |
