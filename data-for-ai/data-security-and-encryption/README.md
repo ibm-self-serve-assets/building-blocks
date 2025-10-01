@@ -1,6 +1,6 @@
 # Data Privacy and Encryption with watsonx.data Intelligence
 
-This README combines two critical areas of automation:
+This building block combines two critical areas of data security and encryption:
 
 1. **Project & Catalog Automation**  
    Using Python and IBM Cloud APIs to create projects and catalogs.
@@ -8,6 +8,8 @@ This README combines two critical areas of automation:
 2. **Data Protection / Masking Workflow**  
    Using REST APIs (cURL templates) to create **categories**, **business terms**, **data protection rules** (redacting email), and **policies** that enforce masking.
 
+3. **Guardium Integration (Coming Soon)**
+  Building block to cover advanced data security, monitoring, and encryption enforcement with IBM Guardium.
 ---
 
 ## Overview
@@ -211,6 +213,19 @@ curl -X GET "${CATALOG_API_BASE}/v2/assets/<ASSET_ID>/data" \
 Expected: Email column is masked (e.g., `***` or `xxxxx`).
 
 ---
+# 3. Guardium Integration (Coming Soon)
+
+In the next iteration of this building block, we will extend watsonx.data security and encryption by adding IBM Guardium capabilities, including:
+
+Data Activity Monitoring – Track sensitive data access in real-time.
+
+Encryption & Key Management – Enforce encryption policies consistently.
+
+Compliance Reporting – Automate reporting for GDPR, CCPA, HIPAA, and other regulations.
+
+Integration with watsonx.data – Unified data protection and governance.
+
+📘 Learn more: [IBM Guardium Documentation](https://www.ibm.com/docs/en/gdp/12.x)
 
 # Troubleshooting & Notes
 
@@ -231,6 +246,9 @@ With this guide, you can:
 2. Enforce governance with masking rules.
 3. Protect sensitive data like **emails** with **policies and terms**.
 4. Validate masking behavior by simulating different roles.
+5. (Soon) Extend to Guardium for end-to-end data security, monitoring, and encryption enforcement.
+
+This ensures data privacy and encryption at scale using watsonx.data Intelligence today, with Guardium integration coming soon.
 
 This ensures **data privacy and encryption at scale** using watsonx.data Intelligence.
 
