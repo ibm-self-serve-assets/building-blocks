@@ -81,7 +81,7 @@ Below is a focused list of configurable variables found in the notebook with the
 
 ---
 ## Execution flow
-```
+```mermaid
 flowchart TD
 
     A[Start Notebook] --> B[Configure Credentials]
