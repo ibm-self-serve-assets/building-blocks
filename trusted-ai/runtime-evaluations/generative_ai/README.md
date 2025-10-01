@@ -6,13 +6,11 @@ This repository contains assets, workflows, and notebooks to support the runtime
 
 Generative AI models can exhibit unpredictable behavior at runtime. This project enables real-time prompt monitoring, evaluation, and governance using watsonx.governance capabilities. It includes:
 
----
-
-## Prompt logging and metadata capture
-1. Policy-based runtime evaluation
-2. Custom metric definition
-3. Integration with watsonx.governance dashboards
-4. Alerting and audit capabilities
+1. Prompt logging and metadata capture
+2. Policy-based runtime evaluation
+3. Custom metric definition
+4. Integration with watsonx.governance dashboards
+5. Alerting and audit capabilities
 
 ---
 
