@@ -70,7 +70,9 @@ flowchart TD
     H --> I[Manage Monitor Lifecycle]
     I --> J[Review Results]
 ```
+</details>
 ---
+
 <details><summary> Outputs </summary>
   
 | Output Variable         | Description                                                      |
