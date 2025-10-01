@@ -29,7 +29,12 @@ This repository contains notebooks and assets related to prompt evaluation and c
 | Custom_Metrics_Monitoring_and_Deployment.ipynb   | Custom metrics monitoring and deployment strategies |
 
 ---
+## Prerequisites
 
+1. Python3.10+
+2. Jupyter Notebook Environment
+
+---
 ## Getting Started
 
 1. Clone the repository
@@ -43,14 +48,7 @@ This repository contains notebooks and assets related to prompt evaluation and c
 3. Launch notebooks as needed using Jupyter Notebook or JupyterLab.
    ```
    jupyter notebook
-   ```
-   
----
-## Prerequisites
-
-1. Python3.10+
-2. Jupyter Notebook Environment
-
+   ```  
 ---
 
 ## Data
