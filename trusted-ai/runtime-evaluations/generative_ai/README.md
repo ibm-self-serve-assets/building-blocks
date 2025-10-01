@@ -49,15 +49,6 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 
 ---
 
-## Getting Started
-
-1. Clone the git repo
-2. Go to directory
-3. notebooks
-4. dashboard-ui
-
----
-
 ## Module Structure
 ```
 .
@@ -99,6 +90,15 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 |     [02-custom-metrics-monitoring-deployment](02-custom-metrics-monitoring-deployment)  | Custom metrics setup and deployment monitoring.                           |
 | [README.md](README.md)                                | Overview of the notebooks and structure.                                  |
 | [assets](assets)                                  | CSV files used for evaluation (e.g., RAG and summarization datasets).     |
+
+---
+
+## Getting Started
+
+1. Clone the git repo
+2. Go to directory
+3. notebooks
+4. dashboard-ui
 
 ---
 
