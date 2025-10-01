@@ -44,7 +44,6 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 ---
 
 <details> <summary> Configuration Variables </summary>
-```
 
 | Variable                  | Default / Placeholder                           | Purpose / Notes                                                                 |
 |--------------------------|--------------------------------------------------|----------------------------------------------------------------------------------|
@@ -77,7 +76,6 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 | `fb_records_count`       | Set after record ingestion                       | Number of records stored in feedback dataset.                                   |
 | `mhm_monitor_id`         | Set during monitor creation                      | ID for Model Health monitor.                                                    |
 | `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                            |
-```
 </details>
 
 ---
@@ -102,7 +100,6 @@ flowchart TD
 ---
 
 <details> <summary>Outputs</summary>
-```
 
 | Output Variable            | Description                                                                 |
 |---------------------------|-----------------------------------------------------------------------------|
@@ -115,13 +112,13 @@ flowchart TD
 | `mhm_monitor_id`          | ID of the Model Health monitor instance.                                    |
 | `drift_monitor_id`        | ID of the Drift V2 monitor instance.                                        |
 | `factsheets_url`          | URL linking to runtime factsheets in the Watson Studio / OpenScale UI.     |
-```
+
 </details>
 
 ---
 
 <details> <summary> Troubleshooting</summary>
-```
+
 | Problem                            | Explanation / Fix                                                                 |
 |-----------------------------------|-----------------------------------------------------------------------------------|
 | **Authentication failures**       | Double-check `CLOUD_API_KEY`, `IAM_URL`, and `use_cpd` settings.                 |
@@ -129,7 +126,6 @@ flowchart TD
 | **SSL / cert verification**       | For CPD with self-signed certs, set `verify = False`. Do **not** do this in prod. |
 | **Empty feedback dataset**        | Check your CSV file. It must contain the expected fields (e.g., `original_text`). |
 | **Scoring issues**                | Confirm `scoring_url` is set correctly and your deployment is active.             |
-``
 </details>
 
 ---
