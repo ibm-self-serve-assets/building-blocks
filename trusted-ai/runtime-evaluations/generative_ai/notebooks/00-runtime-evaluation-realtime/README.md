@@ -78,6 +78,7 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 | `mhm_monitor_id`         | Set during monitor creation                      | ID for Model Health monitor.                                                    |
 | `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                                        |
 ```
+</details>
 
 ---
     
@@ -101,44 +102,36 @@ flowchart TD
 
 <details> <summary> Outputs</summary>
 
-project_pta_id: Prompt template stored in project
-
-space_pta_id: Prompt template published to space
-
-prod_subscription_id: Runtime subscription ID
-
-scoring_url: Final prompt input endpoint
-
-feedback_data_set_id: OpenScale feedback dataset
-
-fb_records_count: Number of records stored
-
-Monitor IDs: Health, Drift, GenAI Quality
-
-ROUGE plots + factsheets_url displayed inline
+```
+| Output Variable            | Description                                                                 |
+|---------------------------|-----------------------------------------------------------------------------|
+| `project_pta_id`          | ID of the prompt template asset stored at the project level.                |
+| `space_pta_id`            | ID of the prompt template asset promoted to the target space.               |
+| `prod_subscription_id`    | ID of the production subscription created for the prompt.                   |
+| `scoring_url`             | Endpoint URL used to send generation/scoring requests to the model.         |
+| `feedback_data_set_id`    | ID of the Watson OpenScale dataset used for evaluation/feedback records.    |
+| `fb_records_count`        | Number of evaluation records successfully stored in OpenScale.              |
+| `mhm_monitor_id`          | ID of the Model Health monitor instance.                                    |
+| `drift_monitor_id`        | ID of the Drift V2 monitor instance.                                        |
+| `factsheets_url`          | URL linking to runtime factsheets in the Watson Studio / OpenScale UI.     |
+```
 </details>
 
 ---
 
 <details> <summary> Troubleshooting</summary>
-1. Auth Errors: Check CLOUD_API_KEY, IAM_URL, and use_cpd
-2. Space Creation Fails: Check COS_RESOURCE_CRN & IAM roles
-3. Self-signed Certs: Use verify=False in dev only
-4. Empty Feedback Dataset: Validate input CSV format (original_text expected)
+```
+| Problem                            | Explanation / Fix                                                                 |
+|-----------------------------------|-----------------------------------------------------------------------------------|
+| **Authentication failures**       | Double-check `CLOUD_API_KEY`, `IAM_URL`, and `use_cpd` settings.                 |
+| **Space creation errors**         | Ensure `COS_RESOURCE_CRN` is valid and your IAM user has necessary permissions.   |
+| **SSL / cert verification**       | For CPD with self-signed certs, set `verify = False`. Do **not** do this in prod. |
+| **Empty feedback dataset**        | Check your CSV file. It must contain the expected fields (e.g., `original_text`). |
+| **Scoring issues**                | Confirm `scoring_url` is set correctly and your deployment is active.             |
+```
 </details>
 
 ---
-
-## Notebook Index
-Section	Cells	Description
-Environment Setup	12–16	Configure credentials, project ID
-Space Setup	19–32	Use or create deployment space
-Auth Helper	35	Token generation
-Prompt Template	39	Create prompt template asset
-Promotion	~97	Publish PTA to space
-Deployment	~100–110	Create runtime + subscription
-Scoring & Feedback	112–128	Score prompts and store feedback
-Monitoring	129+	Create monitors & read metrics
 
 ## Final Note
 
