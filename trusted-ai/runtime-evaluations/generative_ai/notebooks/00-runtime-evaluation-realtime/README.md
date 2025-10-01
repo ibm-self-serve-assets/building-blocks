@@ -6,17 +6,6 @@ The notebook is targeted at IBM Cloud / Cloud Pak for Data (CPD) environments an
 
 ---
 
-## What this README contains
-- Quick summary of the notebook purpose
-- Requirements & recommended runtime
-- Exact configurable parameters (variable name + default value + notebook cell number)
-- Execution order / cell‑by‑cell plan (which cells to run and when)
-- Expected outputs and where they appear
-- Security notes and recommended changes
-- Troubleshooting pointers
-
----
-
 ## Quick summary
 The notebook is structured as a tutorial / production playbook for evaluating prompts. It does the following at a high level:
 1. Configure credentials & runtime (IBM Cloud vs CPD)
@@ -91,8 +80,23 @@ Below is a focused list of configurable variables found in the notebook with the
 > Cell numbers above correspond to the notebook's cell index (0‑based). Edit the cell shown to change the variable.
 
 ---
+## Execution flow
+```
+flowchart TD
 
-## Execution order (recommended)
+    A[Start Notebook] --> B[Configure Credentials]
+    B --> C[Set Project ID]
+    C --> D[Select or Create Space]
+    D --> E[Generate Access Token]
+    E --> F[Create Prompt Template Asset]
+    F --> G[Publish Prompt Template to Space]
+    G --> H[Create Subscription & Runtime Deployment]
+    H --> I[Prepare Test Data & Run Scoring]
+    I --> J[Create & Read Monitors / Metrics]
+    J --> K[Review & Iterate]
+    K --> L[End / Repeat]
+```
+## Execution order
 The notebook contains many cells and interactions with cloud services. The safest way to run is: run cells top‑to‑bottom but pause and verify at key steps.
 
 1. **Start**: open the notebook and read the top markdown cells (cells `0`–`10`) for context.
@@ -122,21 +126,6 @@ The notebook contains many cells and interactions with cloud services. The safes
 - `factsheets_url` — a URL printed at the end that links to factsheets / runtime details in the Cloud UI
 
 Note: Many outputs are stored and viewable in the Watson OpenScale / Watson Studio UI — the notebook primarily triggers those artefacts and reads them back.
-
----
-
-## Security & Secrets
-- **Do not hardcode secrets** (API keys, CRNs, passwords) in files committed to git. Replace placeholders in the notebook with environment variables or a locally stored secrets file that is listed in `.gitignore`.
-- Recommended approach in notebooks: use `os.environ.get("CLOUD_API_KEY")` or read from `~/.env` (with `python-dotenv`) and keep the actual secret out of source control.
-- If testing in a demo environment, remove secrets before sharing the notebook.
-
----
-
-## Suggested improvements / production hardening
-- Replace inline credentials with secure environment variables or use the IBM Cloud CLI / IAM auth flows.
-- Wrap cloud/interacting code blocks into reusable functions (so you can unit test and run parts programmatically instead of cell‑by‑cell).
-- Add error handling around `requests.post` calls and calls to SDK methods (check for HTTP errors and JSON parse errors).
-- Export any evaluation logs to a local CSV backup in addition to storing via `wos_client.data_sets.store_records` for reproducibility.
 
 ---
 
