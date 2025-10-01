@@ -111,6 +111,8 @@ flowchart TD
 | `drift_monitor_id`      | ID of the Drift V2 monitor.                                                 |
 | `factsheets_url`        | URL linking to runtime factsheets in Watson Studio / OpenScale.             |
 
+</details>
+
 ---
 
 <details> <summary> Troubleshooting</summary>
@@ -123,6 +125,7 @@ flowchart TD
 | **Empty feedback dataset**  | Check your input CSV and confirm expected fields exist (e.g., `original_text`).   |
 | **Scoring issues**          | Confirm `scoring_url` is set correctly and deployment is active.                  |
 | **Metric errors**           | Ensure `datasets`, `evaluate`, and `transformers` versions match notebook setup.  |
+
 </details>
 
 ---
