@@ -68,9 +68,9 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 
 | Name             | Description                                                                 |
 |------------------|-----------------------------------------------------------------------------|
-| `README.md`      | Root-level documentation for the repository.                               |
-| `generative_ai`  | Contains generative AI workflows, notebooks, dashboards, and assets for prompt evaluation, monitoring, and custom metrics. |
-| `traditional_ai` | Contains traditional AI/ML workflows, notebooks for fairness, monitoring, and risk management. |
+| [README.md](README.md)      | Root-level documentation for the repository.                               |
+| [generative_ai](generative_ai/README.md)  | Contains generative AI workflows, notebooks, dashboards, and assets for prompt evaluation, monitoring, and custom metrics. |
+| [traditional_ai](traditional_ai) | Contains traditional AI/ML workflows, notebooks for fairness, monitoring, and risk management. |
 
 ---
 
@@ -80,6 +80,7 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
 
 ---
+
 
 
 
