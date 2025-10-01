@@ -37,4 +37,4 @@ IBM Guardium AI Security platform helps organizations adopt AI safely, securely,
 
 
 ## 📚 Resources
-- [IBM Guardium AI Security Documentation:]([https://www.ibm.com/products/guardium-ai-security](https://demos.ibm-ai-security.com/_docs/docs/overview/platform_and_applications))  
+- [IBM Guardium AI Security Documentation](https://demos.ibm-ai-security.com/_docs/docs/overview/platform_and_applications)
