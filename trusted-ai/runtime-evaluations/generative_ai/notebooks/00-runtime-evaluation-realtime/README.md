@@ -27,17 +27,22 @@ The workflow targets both **IBM Cloud** and **Cloud Pak for Data (CPD)** environ
 ---
 
 <details>
+
 <summary> Requirements</summary>
 
 - **Python 3.10+**
 - **Jupyter Notebook** or JupyterLab
 
+
 #### Required packages:
 ```bash
 pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-watson-studio-lib ibm-cloud-sdk-core
 ```
----
+
 </details>
+
+---
+
 <details> <summary>⚙️ Configurable Variables</summary>
 Variable	Default / Placeholder	Cell #	Description
 use_cpd	False	12	Toggle between IBM Cloud or CPD
