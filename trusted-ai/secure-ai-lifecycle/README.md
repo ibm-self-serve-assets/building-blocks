@@ -6,6 +6,8 @@ IBM Guardium AI Security platform helps organizations adopt AI safely, securely,
   <img src="pentesting/images/IBM Guardium AI Security chart.png" alt="IBM Guardium AI Security" width="50%"/>
 </div>
 
+---
+
 ## 🚀 Key Features
 
 🔍 **AI Scanning and Pentesting**
@@ -35,6 +37,7 @@ IBM Guardium AI Security platform helps organizations adopt AI safely, securely,
 - Provides AI posture assessment and risk scoring.
 - Suggests remediation steps aligned with MITRE Atlas & OWASP.
 
+---
 
 ## 📚 Resources
 - [IBM Guardium AI Security Documentation](https://demos.ibm-ai-security.com/_docs/docs/overview/platform_and_applications)
