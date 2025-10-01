@@ -64,12 +64,24 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 
 ---
 
+# Repository Top-Level Overview
+
+| Name | Description |
+|------|------|-------------|
+| `README.md`| Root-level documentation for the repository. |
+| `generative_ai`| Contains generative AI workflows, notebooks, dashboards, and assets for prompt evaluation, monitoring, and custom metrics. |
+| `traditional_ai` | Contains traditional AI/ML workflows, notebooks for fairness, monitoring, and risk management. |
+
+
+---
+
 ## References
 
 1. https://github.com/IBM/watson-openscale-samples
 2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
 
 ---
+
 
 
 
