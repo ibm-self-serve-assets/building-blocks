@@ -6,6 +6,8 @@ This repository contains Design Time Evaluations for **Generative AI** and **Age
 
 - **Python 3.10+**
 - **IBM watsonx.governance SDK**
+- **IBM OpenScale SDK**
+- **IBM Watson Machine Learning SDK**
 - **Jupyter Notebooks** for interactive development
 - **python-dotenv** for environment configuration
 - **IBM Cloud SDK** for authentication
