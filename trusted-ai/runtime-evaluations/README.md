@@ -62,5 +62,11 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 
 ---
 
+## References
+
+1. https://github.com/IBM/watson-openscale-samples
+2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
+
+---
 
 
