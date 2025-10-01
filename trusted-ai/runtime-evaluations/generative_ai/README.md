@@ -14,21 +14,6 @@ This repository contains **Runtime Evaluations** for **Prompt Governance** in **
 
 ---
 
-## Prerequisites
-
-Before you can start working with Runtime Evaluations for Prompt Governance, make sure you have the following:
-
-### 1. **IBM WatsonX Governance Service Instance**
-   - Create an instance of the **IBM WatsonX Governance** service via the [IBM Cloud Catalog](https://cloud.ibm.com/catalog) to access the necessary tools and APIs for prompt governance.
-
-### 2. **IBM Cloud API Key**
-   - Generate an **API Key** for authenticating with IBM Cloud using the [IBM Cloud API Key Generator](https://cloud.ibm.com/docs/account?topic=account-userapikey).
-
-### 3. **Access to IBM WatsonX Governance Service**
-   - Ensure you have appropriate access to the **watsonx.governance** service instance to monitor prompts, track model performance, and run evaluations.
-
----
-
 ## Project Struture
 
 ```
@@ -60,5 +45,19 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 
 
 ```
+---
+
+## Prerequisites
+
+Before you can start working with Runtime Evaluations for Prompt Governance, make sure you have the following:
+
+### 1. **IBM WatsonX Governance Service Instance**
+   - Create an instance of the **IBM WatsonX Governance** service via the [IBM Cloud Catalog](https://cloud.ibm.com/catalog) to access the necessary tools and APIs for prompt governance.
+
+### 2. **IBM Cloud API Key**
+   - Generate an **API Key** for authenticating with IBM Cloud using the [IBM Cloud API Key Generator](https://cloud.ibm.com/docs/account?topic=account-userapikey).
+
+### 3. **Access to IBM WatsonX Governance Service**
+   - Ensure you have appropriate access to the **watsonx.governance** service instance to monitor prompts, track model performance, and run evaluations.
 
 ---
