@@ -43,7 +43,7 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 
 ---
 
-<details> <summary>⚙️ Configurable Variables</summary>
+<details> <summary> Configurable Variables</summary>
 Variable	Default / Placeholder	Cell #	Description
 use_cpd	False	12	Toggle between IBM Cloud or CPD
 IAM_URL	"https://iam.cloud.ibm.com"	12	IAM endpoint
@@ -55,6 +55,7 @@ existing_space_id	"<space_id>"	24	Space ID (if using existing space)
 test_data_path	"summarisation.csv"	125	Input data for scoring
 prompt_template	name="Summarise input"	39	Prompt metadata and config
 </details>
+
 ---
     
 <details> <summary> Execution Flow</summary>
@@ -72,6 +73,7 @@ flowchart TD
     J --> K[Review Results]
 ```
 </details>
+
 ---
 
 <details> <summary> Outputs</summary>
