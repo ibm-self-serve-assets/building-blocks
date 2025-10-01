@@ -1,6 +1,6 @@
 # Runtime Evaluation for Generative AI via Jupyter Notebook
 
-This repository contains notebooks and assets related to prompt evaluation and custom metrics monitoring for production environments.
+This directory contains notebooks and assets related to prompt evaluation and custom metrics monitoring for production environments.
 
 ---
 
