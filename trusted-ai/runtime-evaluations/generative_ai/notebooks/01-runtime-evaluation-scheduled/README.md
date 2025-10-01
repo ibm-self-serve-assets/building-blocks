@@ -77,6 +77,7 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 ---
   
 <details> <summary>Execution Flow</summary>
+
 ```mermaid
 flowchart TD
     A[Start Notebook] --> B[Install Dependencies]
@@ -97,6 +98,7 @@ flowchart TD
 ---
 
 <details> <summary>Outputs</summary>
+  
 | Output Variable         | Description                                                                 |
 |-------------------------|-----------------------------------------------------------------------------|
 | `project_pta_id`        | ID of the prompt template asset stored at the project level.                |
