@@ -108,6 +108,8 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 ---
 
 ## References
-1. 
+
+1. https://github.com/IBM/watson-openscale-samples
+2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
 
 ---
