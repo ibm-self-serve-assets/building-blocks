@@ -78,7 +78,6 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 | `mhm_monitor_id`         | Set during monitor creation                      | ID for Model Health monitor.                                                    |
 | `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                            |
 ```
-
 </details>
 
 ---
