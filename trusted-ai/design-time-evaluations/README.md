@@ -1,13 +1,11 @@
 # Design Time Evaluations
 
-This repository contains Design Time Evaluations for **Generative AI** and **Traditional AI** applications using IBM watsonx governance Python SDK.
+This repository contains Design Time Evaluations for **Generative AI** and **Agentic AI** applications using IBM watsonx governance Python SDK.
 
 ## Technology Stack
 
 - **Python 3.10+**
 - **IBM watsonx.governance SDK**
-- **IBM OpenScale SDK**
-- **IBM Watson Machine Learning SDK**
 - **Jupyter Notebooks** for interactive development
 - **python-dotenv** for environment configuration
 - **IBM Cloud SDK** for authentication
