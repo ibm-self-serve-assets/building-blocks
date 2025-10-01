@@ -24,9 +24,9 @@ This repository contains notebooks and assets related to prompt evaluation and c
 
 | Notebook Name                                    | Description                                         |
 |-------------------------------------------------|-----------------------------------------------------|
-| Manual_Prompt_Evaluation_for_Production.ipynb    | Manual evaluation of prompts in real-time scenarios |
-| Automated_Prompt_Evaluation_for_Production.ipynb | Automated, scheduled evaluation of prompts          |
-| Custom_Metrics_Monitoring_and_Deployment.ipynb   | Custom metrics monitoring and deployment strategies |
+| [Manual_Prompt_Evaluation_for_Production.ipynb](00-runtime-evaluation-realtime/Manual_Prompt_Evaluation_for_Production.ipynb)  | Manual evaluation of prompts in real-time scenarios |
+| [Automated_Prompt_Evaluation_for_Production.ipynb](01-runtime-evaluation-scheduled/Automated_Prompt_Evaluation_for_Production.ipynb) | Automated, scheduled evaluation of prompts          |
+| [Custom_Metrics_Monitoring_and_Deployment.ipynb](02-custom-metrics-monitoring-deployment/Custom_Metrics_Monitoring_and_Deployment.ipynb)  | Custom metrics monitoring and deployment strategies |
 
 ---
 ## Prerequisites
