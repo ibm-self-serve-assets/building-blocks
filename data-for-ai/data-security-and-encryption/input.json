@@ -1,5 +1,5 @@
 {
-  "ibm_api_key": "EuhSrUnTh0S649K8Ym0nQ1V_KVy9amztKcAyUrnwQ6qT",
+  "ibm_api_key": "XXXXXXXXXXXXXXXXXXXXXXXX",
   "region": "eu-de",
   "project": {
     "name": "Demo-Project-for-watsonx.data-Intelligence",
@@ -9,8 +9,8 @@
     "public": false,
     "storage": {
       "type": "bmcos_object_storage",
-      "resource_crn": "crn:v1:bluemix:public:cloud-object-storage:global:a/e65910fa61ce9072d64902d03f3d4774:8f4b06b6-2903-4676-a2e8-3bd8f0934b2c::",
-      "guid": "8f4b06b6-2903-4676-a2e8-3bd8f0934b2c",
+      "resource_crn": "XXXXXXXXXXXXXXXXXXXXXXXX",
+      "guid": "XXXXXXXXXXXXXXXXXXXXXXXX",
       "delegated": false
     },
     "catalog": {
@@ -39,25 +39,25 @@
       "bucket_location": "eu-de",
       "bucket_type": "bluemix_cos",
       "endpoint_url": "s3.eu-de.cloud-object-storage.appdomain.cloud",
-      "resource_instance_id": "crn:v1:bluemix:public:cloud-object-storage:global:a/e65910fa61ce9072d64902d03f3d4774:2583caf6-2051-4722-b89a-05c9403ca5dc::",
+      "resource_instance_id": "XXXXXXXXXXXXXXXXXXXXXXXX",
       "bluemix_cos_credentials": {
       "viewer": {
-        "api_key": "7TckfipOEWlZdOv07T7CigsfM-8M0yg1A4jHj2DENxFi",
-        "access_key_id": "742dab7cb8554e26923b1fc0a9db6a0d",
-        "secret_access_key": "00b66262c4465f71e171dc16bea1d20db85d9fb71487a9b5",
-        "service_id": "ServiceId-179778ce-71d0-4391-bc18-c94fb3fcecd0"
+        "api_key": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "access_key_id": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "secret_access_key": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "service_id": "XXXXXXXXXXXXXXXXXXXXXXXX"
       },
       "editor": {
-        "api_key": "6IhHtx2diHvEPZhq-v78TA8pOrcDgE49S1f5mKyTJeW1",
-        "access_key_id": "bccef536835942718c62117a6a3c9894",
-        "secret_access_key": "ac8cd914fe2d83d710cb62dff99f7fadcd878de0900b4fa6",
-        "service_id": "ServiceId-a351fb70-93cb-439b-891a-22bef92e1e3f"
+        "api_key": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "access_key_id": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "secret_access_key": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "service_id": "XXXXXXXXXXXXXXXXXXXXXXXX"
       },
        "admin": {
-        "api_key": "R9r5fvPsb5mPBJcsBwnTtwA-wXqP6UyJRo1ZxhC3NUqL",
-        "access_key_id": "fa14a001f1d4408cb1903584d84494ea",
-        "secret_access_key": "46bab6975ce11e578c137a8f1a9f5cd7c6ad4388d97017ff",
-        "service_id": "ServiceId-c93884fb-16d5-47b5-86ef-e9f1afba080d"
+        "api_key": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "access_key_id": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "secret_access_key": "XXXXXXXXXXXXXXXXXXXXXXXX",
+        "service_id": "XXXXXXXXXXXXXXXXXXXXXXXX"
       }
       }
     }
