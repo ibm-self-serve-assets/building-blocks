@@ -43,18 +43,41 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 
 ---
 
-<details> <summary> Configurable Variables</summary>
-Variable	Default / Placeholder	Cell #	Description
-use_cpd	False	12	Toggle between IBM Cloud or CPD
-IAM_URL	"https://iam.cloud.ibm.com"	12	IAM endpoint
-DATAPLATFORM_URL	"https://api.dataplatform.cloud.ibm.com"	12	IBM Cloud base URL
-CLOUD_API_KEY	"<apikey>"	12	Never commit this!
-project_id	"<project_id>"	16	Project where assets will be stored
-use_existing_space	True	19	Use or create a new space
-existing_space_id	"<space_id>"	24	Space ID (if using existing space)
-test_data_path	"summarisation.csv"	125	Input data for scoring
-prompt_template	name="Summarise input"	39	Prompt metadata and config
-</details>
+<details> <summary> Configuration Variables </summary>
+```
+
+| Variable                  | Default / Placeholder                           | Purpose / Notes                                                                 |
+|--------------------------|--------------------------------------------------|----------------------------------------------------------------------------------|
+| `use_cpd`                | `False`                                          | Set to `True` for Cloud Pak for Data (CPD), `False` for IBM Cloud.              |
+| `IAM_URL`                | `"https://iam.cloud.ibm.com"`                   | IAM endpoint (region-dependent).                                                |
+| `DATAPLATFORM_URL`       | `"https://api.dataplatform.cloud.ibm.com"`      | IBM Cloud Data Platform URL.                                                    |
+| `SERVICE_URL`            | `"https://aiopenscale.cloud.ibm.com"`           | Watson OpenScale service endpoint.                                              |
+| `CLOUD_API_KEY`          | `"<apikey>"`                                     | IBM Cloud API key. **Never commit to Git.**                                     |
+| `WML_CREDENTIALS`        | Dict with `url` + `apikey`                      | Machine learning credentials dictionary.                                        |
+| `project_id`             | `"<project_id>"`                                 | ID of the project for prompt template assets.                                   |
+| `use_existing_space`     | `True`                                           | If `True`, use existing space ID.                                               |
+| `existing_space_id`      | `"<space_id>"`                                   | Deployment space ID (if reusing an existing one).                               |
+| `space_name`             | `"runtime_evaluation_deployment_space_2"`       | Name of space to create (if not using existing).                                |
+| `WML_INSTANCE_NAME`      | `""`                                             | (Optional) WML instance name (for CPD use).                                     |
+| `WML_CRN`                | `""`                                             | (Optional) WML CRN (for CPD use).                                               |
+| `COS_RESOURCE_CRN`       | `' '`                                            | Cloud Object Storage CRN for space creation.                                    |
+| `space_id`               | `existing_space_id`                              | Automatically set from `existing_space_id` or new space.                        |
+| `test_data_path`         | `"summarisation.csv"`                            | Path to CSV input for scoring.                                                  |
+| `csv_file_path`          | `"summarisation.csv"`                            | Alias for input CSV path.                                                       |
+| `prompt_template`        | `name="Summarise input"` + model/task info      | Prompt definition including `model_id` and `task_ids`.                          |
+| `verify`                 | `True`                                           | Set to `False` to skip SSL verification (useful in CPD/dev environments).       |
+| `version`                | `'2023-07-07'`                                   | API version for model deployment.                                               |
+| `DEPLOYMENTS_URL`        | Computed from WML credentials                   | Base URL for WML deployments.                                                   |
+| `deployment_id`          | `''`                                             | Populated later; identifies runtime deployment.                                 |
+| `scoring_url`            | Computed from deployment/subscription           | Endpoint used for scoring/generation requests.                                  |
+| `project_pta_id`         | Set programmatically                             | ID of the stored Prompt Template Asset in the project.                          |
+| `space_pta_id`           | Set after publishing PTA                         | ID of the prompt asset in the deployment space.                                 |
+| `prod_subscription_id`   | Set after subscription creation                  | ID of the runtime prompt subscription.                                          |
+| `feedback_data_set_id`   | Set when dataset is created                      | ID of feedback dataset in OpenScale.                                            |
+| `fb_records_count`       | Set after record ingestion                       | Number of records stored in feedback dataset.                                   |
+| `mhm_monitor_id`         | Set during monitor creation                      | ID for Model Health monitor.                                                    |
+| `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                                        |
+```
 
 ---
     
@@ -94,6 +117,7 @@ Monitor IDs: Health, Drift, GenAI Quality
 
 ROUGE plots + factsheets_url displayed inline
 </details>
+
 ---
 
 <details> <summary> Troubleshooting</summary>
@@ -102,6 +126,7 @@ ROUGE plots + factsheets_url displayed inline
 3. Self-signed Certs: Use verify=False in dev only
 4. Empty Feedback Dataset: Validate input CSV format (original_text expected)
 </details>
+
 ---
 
 ## Notebook Index
