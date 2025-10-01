@@ -76,14 +76,13 @@ pip install jupyter matplotlib requests ibm-watsonx-ai ibm-watson-openscale ibm-
 | `feedback_data_set_id`   | Set when dataset is created                      | ID of feedback dataset in OpenScale.                                            |
 | `fb_records_count`       | Set after record ingestion                       | Number of records stored in feedback dataset.                                   |
 | `mhm_monitor_id`         | Set during monitor creation                      | ID for Model Health monitor.                                                    |
-| `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                                        |
+| `drift_monitor_id`       | Set during monitor creation                      | ID for Drift V2 monitor.                                            |
 ```
 </details>
 
 ---
     
 <details> <summary>Execution Flow</summary>
-
 ```mermaid
 flowchart TD
     A[Start Notebook] --> B[Configure Credentials]
@@ -102,7 +101,6 @@ flowchart TD
 ---
 
 <details> <summary>Outputs</summary>
-
 ```
 | Output Variable            | Description                                                                 |
 |---------------------------|-----------------------------------------------------------------------------|
@@ -121,7 +119,6 @@ flowchart TD
 ---
 
 <details> <summary> Troubleshooting</summary>
-
 ```
 | Problem                            | Explanation / Fix                                                                 |
 |-----------------------------------|-----------------------------------------------------------------------------------|
@@ -130,7 +127,7 @@ flowchart TD
 | **SSL / cert verification**       | For CPD with self-signed certs, set `verify = False`. Do **not** do this in prod. |
 | **Empty feedback dataset**        | Check your CSV file. It must contain the expected fields (e.g., `original_text`). |
 | **Scoring issues**                | Confirm `scoring_url` is set correctly and your deployment is active.             |
-```
+``
 </details>
 
 ---
