@@ -1,26 +1,12 @@
-# IBM Cloud: Project & Catalog Automation + Data protection (masking) — README
+# Data Privacy and Encryption with watsonx.data Intelligence
 
 This combined README covers two things in one place:
 
-1. **Project & Catalog automation** (Python script approach, token steps) — useful for provisioning projects and catalogs (previous script).
-2. **Data protection / masking workflow** — step-by-step cURL templates to create a *category*, *business term*, *data protection (masking) rule* that **redacts email**, and a *policy* that ties the rule + business term together. These examples are based on IBM Knowledge Catalog / Watson Data APIs and are provided as templates you must adapt to your environment.
+1. **Project & Catalog automation** (Python script approach, token steps) — useful for provisioning projects and catalog.
+2. **Data protection / masking workflow** — step-by-step cURL templates to create a *category*, *business term*, *data protection (masking) rule* that **redacts email**, and a *policy* that ties the rule + business term together. 
 
 > **NOTE:** Replace all placeholder values (`$TOKEN`, `$API_KEY`, `<REGION>`, `<CATALOG_API_BASE>`, `<WATSONDATA_API_BASE>`, `<ROLE_ID>`, etc.) with your real values for your tenant/region. Consult your instance endpoints in IBM Cloud for exact base URLs.
 
----
-
-# Table of contents
-
-- # Overview
-- # Prerequisites
-- # Get an IAM token (one-liner)
-- # Base URL / endpoint guidance
-- # Data protection / masking workflow (high-level)
-- # API examples (curl) — Category, Business Term, Rule (redact email), Policy (associate rule+term)
-- # How to extract IDs (jq examples)
-- # Testing / validating masked data (as business user)
-- # Permissions & troubleshooting
-- # References
 
 ---
 
@@ -28,7 +14,7 @@ This combined README covers two things in one place:
 
 This document helps DevOps / data engineers and data stewards automate:
 
-- provisioning projects & catalogs (already covered by your Python script),
+- provisioning projects & catalogs,
 - and creating governance artifacts required for masking sensitive fields (like email and SSN):
 
   1. Create a Category (e.g., `PII`)  
@@ -43,7 +29,8 @@ This approach enforces masking at the catalog / governance layer so consumers (U
 
 # Prerequisites
 
-- IBM Cloud account with access to your watsonx / Knowledge Catalog / Watson Data service.
+- IBM Cloud account with access to your watsonx data intelligence.
+- IBM Cloud Object Store.
 - An IBM **API key** with privileges to create catalog artifacts (or credentials of a user with Manager / Data Steward privileges).
 - `curl`, `jq` and a terminal (or Postman) available.
 - Knowledge of the correct service endpoints for your region / instance — you will need:
@@ -83,7 +70,7 @@ Set these environment variables before running the cURL commands:
 
 ```bash
 export CATALOG_API_BASE="https://api.eu-de.dataplatform.cloud.ibm.com"   # example
-export WATSONDATA_API_BASE="$CATALOG_API_BASE"                          # often the same
+export WATSONDATA_API_BASE="$CATALOG_API_BASE" 
 ```
 
 > If you're unsure which base to use, visit the **Service instance** in IBM Cloud → Service details → API endpoints or check the IBM docs for the region endpoints.
@@ -250,26 +237,6 @@ If masking rule & policy are in effect, the `email` column values should be reda
 - **API version differences:** Field names and endpoints can vary by service/API version. Always confirm with your instance’s API docs. The authoritative docs are:
   - Knowledge Catalog: https://cloud.ibm.com/apidocs/knowledge-catalog#introduction
   - Watson Data API: https://cloud.ibm.com/apidocs/watson-data-api#introduction
-- **404 / endpoint errors:** If you receive `404` check the exact host/instance endpoint — the general cloud docs show API definitions, but your instance's URL may be region/tenant-specific.
-- **500 / server errors:** Inspect response body and logs. Use `curl -v` for verbose debugging.
-- **Role vs role ID:** Some APIs accept role *names*, others require role *IDs*. If role names are not accepted, fetch roles via the catalog API to find the correct ID and use that.
-- **Activation / publish step:** Some governance changes are not immediate; you may need an explicit publish or refresh.
-
----
-
-# Example linear sequence (summary)
-
-1. Obtain token:
-   ```bash
-   export TOKEN=$(curl -s -X POST "https://iam.cloud.ibm.com/identity/token" -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=${API_KEY}" | jq -r .access_token)
-   ```
-
-2. Create category → extract `category_id`.  
-3. Create term referencing `category_id` → extract `term_id`.  
-4. Create rule that targets `email` → extract `rule_id`.  
-5. Create policy referencing `rule_id` and `term_id` → extract `policy_id`.  
-6. Publish/apply rule to catalog/project if required.  
-7. Test masked output with a business-user token.
 
 ---
 
@@ -284,8 +251,3 @@ If masking rule & policy are in effect, the `email` column values should be reda
 
 ---
 
-# Business value (short)
-
-- Automating governance artifacts (categories, terms, rules, policies) ensures consistent masking of sensitive data across teams and systems.
-- Enforces regulatory compliance (GDPR, CCPA) by systematically applying masking to PII columns.
-- Reduces manual errors and accelerates time-to-govern for data assets.
