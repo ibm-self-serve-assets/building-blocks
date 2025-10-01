@@ -88,7 +88,7 @@ Generative AI models can exhibit unpredictable behavior at runtime. This project
 
 Follow these steps to set up and run the Generative AI evaluation notebooks and the dashboard UI for runtime prompt evaluation using watsonx.governance.
 
-### Clone the git Repository
+#### Clone the git Repository
 ```
 git clone https://github.com/ibm-self-serve-assets/building-blocks.git
 cd building-blocks/trusted-ai/runtime-evaluations/generative_ai
