@@ -41,8 +41,10 @@ IBM Guardium AI Security platform helps organizations adopt AI safely, securely,
 
 ## 🎥 Demo
 Check out the demo video to see IBM Guardium AI Security in action:  
-- [IBM Guardium AI Security: Manage the security risk of your AI]([https://mediacenter.ibm.com/media/IBM%20Guardium%20AI%20Security%3A%20Manage%20the%20security%20risk%20of%20your%20AI/1_lfnswqya])
-- [Implement Trustworthy AI with IBM]([https://mediacenter.ibm.com/media/1_tf0mks9g])
+
+- [IBM Guardium AI Security: Manage the security risk of your AI](https://mediacenter.ibm.com/media/IBM%20Guardium%20AI%20Security%3A%20Manage%20the%20security%20risk%20of%20your%20AI/1_lfnswqya)  
+- [Implement Trustworthy AI with IBM](https://mediacenter.ibm.com/media/1_tf0mks9g)
+
 
 ---
 
