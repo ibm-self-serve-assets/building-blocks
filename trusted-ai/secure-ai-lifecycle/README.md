@@ -1,6 +1,6 @@
 # Secure AI Lifecycle with IBM Guardium AI Security
 
-IBM Guardium AI Security platform helps organizations adopt AI safely, securely, and in compliance with regulations. It provides solutions such as compliance tools, gateways, and security posture management. With modular applications that can be licensed and deployed as needed, the platform supports a flexible and secure AI adoption journey.
+IBM Guardium AI Security platform helps organizations adopt AI safely, securely, and in compliance with regulations. It provides solutions such as gateways, security posture management, and compliance tools. With modular applications that can be licensed and deployed as needed, the platform supports a flexible and secure AI adoption journey.
 
 <div align="center">
   <img src="pentesting/images/IBM Guardium AI Security chart.png" alt="IBM Guardium AI Security" width="50%"/>
