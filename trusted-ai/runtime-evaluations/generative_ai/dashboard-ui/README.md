@@ -92,16 +92,16 @@ streamlit run app.py
 
 ## Tech Stack
 
-Streamlit
+1. Streamlit
  — UI & Dashboard
 
-IBM Watsonx.ai
+2. IBM Watsonx.ai
  — Model Inference & Prompt Management
 
-IBM Watson OpenScale
+3. IBM Watson OpenScale
  — Monitoring & Quality Metrics
 
-Watsonx.governance
+4. Watsonx.governance
  — Evaluation & Prompt Factsheets
 
 ---
