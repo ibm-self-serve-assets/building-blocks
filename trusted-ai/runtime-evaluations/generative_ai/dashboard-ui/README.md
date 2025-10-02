@@ -94,13 +94,10 @@ streamlit run app.py
 
 1. Streamlit
  — UI & Dashboard
-
 2. IBM Watsonx.ai
  — Model Inference & Prompt Management
-
 3. IBM Watson OpenScale
  — Monitoring & Quality Metrics
-
 4. Watsonx.governance
  — Evaluation & Prompt Factsheets
 
