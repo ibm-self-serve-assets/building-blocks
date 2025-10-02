@@ -28,6 +28,7 @@ This tool helps teams **configure**, **deploy**, and **monitor** large language 
 ## Folder Structure
 
 ```plaintext
+dashboard_ui
 ├── app.py                # Streamlit main app
 ├── config.yaml           # Configuration file for IBM Cloud credentials
 └── README.md             # Doucmentation for streamlit application
