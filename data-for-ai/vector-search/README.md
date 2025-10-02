@@ -6,7 +6,9 @@ Ingestion API provides a modular framework for building GenAI pipelines that com
 * **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
 * **Embedding:** Dense, hybrid, or dual embeddings with selectable models
 
-<img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/b259ff95-163e-427c-93f3-15a99462f777" />
+
+<img width="591" height="201" alt="rag-Page-2 drawio" src="https://github.com/user-attachments/assets/cdada7e7-69b0-41ae-8243-bc7f1daa0bfd" />
+
 
 ## Deploying the Framework
 * **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables. Same value needs to be along with API call to authenticate.
