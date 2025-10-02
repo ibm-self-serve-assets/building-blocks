@@ -10,6 +10,20 @@ The RAG Service provides a deployable API for orchestrating RAG pipelines. It si
 * **Querying:** LLM integration with configurable models and prompt templates
 * **Governance:** Integration with watsonx.governance for build-time and runtime governance
 
+
+
+**Figure 1**: End-to-End RAG Service API Flow
+1. Engineer selects or provides domain-specific data sources (e.g., PDFs, CSVs, knowledge bases).
+2. Data is cleaned, parsed, chunked, and normalized into consistent formats (Docling, Markdown, etc.).
+3. Each processed document chunk is converted into dense (and/or sparse) embeddings using an embedding model.
+4. Embeddings are stored in a Vector Database (e.g., Milvus) with metadata for efficient retrieval.
+5. End users interact with the application (UI/API) by submitting queries.
+6. The query is embedded and sent to the vector database to retrieve the most relevant chunks.
+7. Retrieved chunks are optionally reranked to improve relevance before being passed downstream.
+8. The retrieved context is combined with the query and sent to the LLM for grounded generation.
+9. Governance policies (filters, guardrails, attribution, observability) are applied before returning results.
+10. Final, safe, and relevant response is delivered back to the user.
+
 ## Deploying the Service
 
 * **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables
