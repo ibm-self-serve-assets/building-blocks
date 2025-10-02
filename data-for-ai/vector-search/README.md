@@ -7,7 +7,7 @@ Ingestion API provides a modular framework for building GenAI pipelines that com
 * **Embedding:** Dense, hybrid, or dual embeddings with selectable models
 
 
-<img width="591" height="201" alt="rag-Page-2 drawio" src="https://github.com/user-attachments/assets/cdada7e7-69b0-41ae-8243-bc7f1daa0bfd" />
+<img width="591" height="201" alt="rag-Page-2 drawio" src="https://github.com/user-attachments/assets/e4cf8a62-79ed-42e8-8be4-e37c1df05d42" />
 
 
 ## Deploying the Framework
