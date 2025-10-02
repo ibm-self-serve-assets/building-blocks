@@ -1,0 +1,10 @@
+watsonx:
+  api_key: "<your-ibm-cloud-api-key>"
+  url: "https://us-south.ml.cloud.ibm.com"
+  dataplatform_url: "https://dataplatform.cloud.ibm.com"
+  project_id: "<your-project-id>"
+  space_id: "<your-space-id>"
+
+openscale:
+  url: "https://us-south.ml.monitoring.cloud.ibm.com"
+  service_instance_id: "<your-openscale-instance-id>"

@@ -1,0 +1,12 @@
+spec_version: v1
+kind: model
+name: anthropic/claude-3-7-sonnet-20250219
+display_name: Anthropic Sonnet v1 Claude 3
+description: |
+  Anthropic Claude model for safe and helpful AI interactions.
+tags:
+  - anthropic
+  - claude
+model_type: chat
+provider_config:
+  anthropic_version: 2023-06-01
