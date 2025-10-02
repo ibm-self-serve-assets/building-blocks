@@ -10,6 +10,7 @@ The RAG Service provides a deployable API for orchestrating RAG pipelines. It si
 * **Querying:** LLM integration with configurable models and prompt templates
 * **Governance:** Integration with watsonx.governance for build-time and runtime governance
 
+
 <img width="591" height="401" alt="rag drawio" src="https://github.com/user-attachments/assets/d039f755-b0a9-4fa0-87d8-e6c9a8f5c0ac" />
 
 **Figure 1**: End-to-End RAG Service API Flow
