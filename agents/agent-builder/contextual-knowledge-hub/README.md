@@ -29,23 +29,49 @@ The **Contextual Knowledge Hub** orchestrates queries across product-specific su
 
 ```mermaid
 flowchart TD
-    A[User Query] --> B[Contextual Knowledge Hub]
-    B -->|Routes| C[Wx Orchestrate Agent]
-    B -->|Routes| D[Wx Assistant Agent]
-    B -->|Routes| E[Cognos Analytics Agent]
-    B -->|Routes| F[Wx AI Agent]
-    B -->|Routes| G[Wx Code Assistant Agent]
-    C --> H[Orchestrate Tools]
-    D --> I[Assistant Tools]
-    E --> J[Cognos Tools]
-    F --> K[AI Tools]
-    G --> L[Code Assistant Tools]
-    H --> M[Final Response]
-    I --> M
-    J --> M
-    K --> M
-    L --> M
-    M --> N[User]
+    A[User Query] --> B[🤖 Contextual Knowledge Hub Agent]
+    B <-->|Final Response| A
+    B -->|Routes| C[🤖 Wx Orchestrate Agent]
+    C -->|Response| B
+    B -->|Routes| D[🤖 Wx Assistant Agent]
+    D -->|Response| B
+    B -->|Routes| E[🤖 Cognos Analytics Agent]
+    E -->|Response| B
+    B -->|Routes| F[🤖 Wx AI Agent]
+    F -->|Response| B
+    B -->|Routes| G[🤖 Wx Code Assistant Agent]
+    G -->|Response| B
+    C --> |fetch info|H[🛠️ Tools:
+    get_features
+    get_info
+    get_integration
+    get_pricing
+    get_resources
+    ]
+    D --> |fetch info|I[🛠️ Tools:
+    get_features
+    get_info
+    get_pricing
+    get_resources
+    ]
+    E --> |fetch info|J[🛠️ Tools:
+    get_features
+    get_info
+    get_pricing
+    get_resources]
+    F --> |fetch info|K[🛠️ Tools:
+    get_info
+    get_info_agent_dev
+    get_pricing
+    get_info_knowledge_mgn,
+    get_info_model_cust,
+    get_info_model_lib,
+    get_princing,
+    get_info_rag]
+    G --> |fetch info|L[🛠️ Tools:
+    get_info
+    get_procing]
+    
 ```
 
 ---
