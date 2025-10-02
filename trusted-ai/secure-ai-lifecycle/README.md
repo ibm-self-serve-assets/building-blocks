@@ -8,7 +8,7 @@ IBM Guardium AI Security platform helps organizations adopt AI safely, securely,
 
 ---
 
-##⚙️ Key Features
+## 🔧 Key Features
 
 🔍 **AI Scanning and Pentesting**
 - Tests AI infrastructure and models, including third-party LLMs.
