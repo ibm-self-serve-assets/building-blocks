@@ -1,5 +1,4 @@
 # Design Time Evaluations for Agentic AI Solutions
-Advanced evaluations using IBM watsonx.governance SDK for comprehensive AI safety evaluation and monitoring of Agentic AI solutions.
 
+This folder contains self-serve notebooks for comprehensive evaluation and monitoring of Agentic AI solutions using IBM watsonx.governance SDK.
 
-Assets coming soon...
