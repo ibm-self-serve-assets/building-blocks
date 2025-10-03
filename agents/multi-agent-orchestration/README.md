@@ -538,51 +538,7 @@ Security is paramount in multi-agent systems, especially when agents need to acc
 - **Compliance**: Many security standards require proper credential management
 - **Team collaboration**: Team members shouldn't have access to production credentials in code
 
-**Secure Credential Management Example:**
-```python
-from ibm_watsonx_orchestrate.agent_builder.tools import tool, get_credential
-
-@tool
-def secure_api_call(endpoint: str, data: dict) -> dict:
-    """Make secure API call using managed credentials.
-    
-    This tool demonstrates proper credential management by retrieving
-    API keys from the watsonx Orchestrate credential store rather than
-    hardcoding them in the source code.
-    
-    Args:
-        endpoint (str): API endpoint to call
-        data (dict): Data to send in the request
-        
-    Returns:
-        dict: API response data
-    """
-    try:
-        # Retrieve credentials securely from watsonx Orchestrate
-        api_key = get_credential("external_service_api_key")
-        
-        if not api_key:
-            return {"error": "API credentials not configured"}
-        
-        headers = {
-            "Authorization": f"Bearer {api_key}",
-            "Content-Type": "application/json"
-        }
-        
-        response = requests.post(
-            endpoint, 
-            json=data, 
-            headers=headers,
-            timeout=10
-        )
-        response.raise_for_status()
-        return response.json()
-        
-    except requests.exceptions.RequestException as e:
-        return {"error": f"API call failed: {str(e)}"}
-    except Exception as e:
-        return {"error": f"Unexpected error: {str(e)}"}
-```
+**Examples:** [Watsonx Orchestrate Credentials](URL_HERE)
 
 **Insecure Credential Management (Never Do This):**
 ```python
