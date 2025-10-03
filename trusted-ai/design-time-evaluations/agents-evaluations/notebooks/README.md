@@ -4,7 +4,7 @@ This folder contains self-serve notebooks for comprehensive evaluation and monit
 
 In "basic-deisgn-time-eval-for-agents" notebook, you will create a LangGraph RAG agent and then use watsonx Agentic AI evaluator to evaluate the agent’s performance. Your agent for this lab has the following architecture. It uses local documents to perform a RAG task. 
 
-<img src="../images/Basic_Agent.png" width="10%"/>
+<img src="../images/Basic_Agent.png" width="15%"/>
 
 We evaluate this agent on range of metrics:
 - answer similarity
