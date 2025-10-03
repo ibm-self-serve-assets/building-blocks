@@ -944,16 +944,13 @@ collaborators:
 
 **Always use watsonx Orchestrate's built-in credential management.**
 
-```python
-from ibm_watsonx_orchestrate.agent_builder.tools import tool, get_credential
-
-@tool
-def secure_api_call(endpoint: str, data: dict) -> dict:
-    """Make secure API call using managed credentials."""
-    api_key = get_credential("external_service_api_key")
-    headers = {"Authorization": f"Bearer {api_key}"}
-    # Make secure API call
+```shell
+orchestrate connections set-credentials -a application_id \
+  --env draft \
+  -u username \
+  -p password
 ```
+More info at [Watsonx Orchestrate Credentials]([URL_HERE](https://developer.watson-orchestrate.ibm.com/connections/build_connections#setting-credentials))
 
 ## Common Pitfalls and Solutions
 
