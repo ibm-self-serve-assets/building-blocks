@@ -9,7 +9,7 @@ This folder contains self-serve notebooks for comprehensive evaluation and monit
 
 ## Basic Design-Time Evaluation
 
-In "basic-deisgn-time-eval-for-agents" notebook, you will create a LangGraph RAG agent and then use watsonx Agentic AI evaluator to evaluate the agent’s performance. Your agent for this lab has the following architecture. It uses local documents to perform a RAG task. 
+In "basic-deisgn-time-eval-for-agents" notebook, you will create a LangGraph RAG agent and use watsonx Agentic AI evaluator to evaluate the agent’s performance. Your agent for this lab has the following architecture. It uses local documents to perform a RAG task. 
 
 <p align="center">
   <img src="../images/Basic_Agent.png" width="14%"/>
@@ -53,7 +53,7 @@ In "advanced-design-time-eval-for-agents" notebook, we first create a question a
   <img src="../images/Advanced_Agent.png" width="30%"/>
 </p>
 
-We then use the Agentic AI evaluators from IBM watsonx.governance Python SDK to evaluate this agent.
+We use the Agentic AI evaluators from IBM watsonx.governance Python SDK to evaluate this agent.
 
 **Metrics evaluated:**
 - Retrieval context relevance
