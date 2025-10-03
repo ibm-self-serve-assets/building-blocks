@@ -1,20 +1,22 @@
-# watsonx-data-intelligence-text2sql
+# watsonx.data Text_to_sql onboarding and applications
 
 <!-- ABOUT THE PROJECT -->
 
-This repository provides a guide to spinning up watsonx.data intelligence for text2sql workflows. The process includes:
+This repository provides an oib=nboarding guide to the text_to_sql api service that is part of watsonx.data intelligence
 
-1. Provisioning an instance of watsonx.data intelligence
-2. Onboarding a project within the service for genai capabilities
-3. Adding a connection to a data asset (ex: prestoDB database)
-4. Importing data assetes (ex: tables within the prestoDB database)
-5. Querying data via a text2sql API endpoint
+The following steps are required to use the service:
+1. Provision an instance of watsonx.data intelligence see [Setting up the IBM watsonx.data intelligence service](https://www.ibm.com/docs/en/watsonx/wdi/saas?topic=cloud-setting-up-watsonxdata-intelligence)
+2. Create and onboard the watsonx.data intelligence project see [onboarding]()
+3. Import data assets to the project (ex: tables within the prestoDB database) see [Adding a data asset from a connection](https://www.ibm.com/docs/en/watsonx/wdi/2.2.x?topic=catalog-adding-data-from-connection)
+5. Use the text_to_sql endpoint to generate SQL statements based on the data schemas
 
-Insert watsonx.data intelligence architecture diagram
+
 
 <!-- GETTING STARTED -->
 
-## Getting Started
+## Architecture
+
+![alt text](images/image.png)
 
 ### Prerequisites
 

@@ -1,0 +1,54 @@
+          env:
+            - name: RAG_APP_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: RAG_APP_API_KEY
+            - name: IBM_CLOUD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: IBM_CLOUD_API_KEY
+            - name: WX_URL
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: WX_URL
+            - name: WX_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: WX_PROJECT_ID
+            - name: MYSQL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: MYSQL_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: MYSQL_HOSTNAME
+            - name: MYSQL_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: MYSQL_PORT
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: MYSQL_DATABASE
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
