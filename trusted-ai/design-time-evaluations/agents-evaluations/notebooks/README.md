@@ -47,6 +47,4 @@ We then use the Agentic AI evaluators from IBM watsonx.governance Python SDK to 
 - Latency
 - Cost
 
-<img width="468" height="420" alt="image" src="https://github.com/user-attachments/assets/3b33af8c-dbbd-4198-a433-0da238e077fb" />
-
 
