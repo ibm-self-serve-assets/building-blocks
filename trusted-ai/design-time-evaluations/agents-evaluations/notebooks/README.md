@@ -7,7 +7,7 @@ This folder contains self-serve notebooks for comprehensive evaluation and monit
 - [Tool Calling Evaluation](#tool-calling-evaluation)
 - [Advanced Design-Time Evaluation](#advanced-design-time-evaluation)
 
-## Basic Design-Time Evaluation
+## Basic AI Agents Evaluation
 
 In "basic-design-time-eval-for-agents" notebook, you will create a LangGraph RAG agent and use watsonx Agentic AI evaluator to evaluate the agent’s performance.
 
@@ -28,7 +28,7 @@ In "basic-design-time-eval-for-agents" notebook, you will create a LangGraph RAG
 
 ----
 
-## Tool Calling Evaluation
+## Tool Calling Evaluation of Agents
 
 In "design-time-eval-for-agentic-toolCalling" notebook, you will create a question answering agent that is equipped with two custom tools. Given the user’s query, an LLM routes it to the relevant tool. If there is not a relevant tool to answer that question, the agent will generate without a tool. 
 
@@ -45,7 +45,7 @@ We will use the Agentic AI evaluators from IBM watsonx.governance Python SDK to 
 
 ----
 
-## Advanced Design-Time Evaluation
+## Advanced Design-Time Evaluation of Agents
 
 In "advanced-design-time-eval-for-agents" notebook, we first create a question answering agent that can use local documents or web search to answer the question. The agent will context relevance to decide what tool. 
 
