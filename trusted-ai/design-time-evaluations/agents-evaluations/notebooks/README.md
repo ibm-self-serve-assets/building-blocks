@@ -2,10 +2,11 @@
 
 This folder contains self-serve notebooks for comprehensive evaluation and monitoring of Agentic AI solutions using IBM watsonx.governance SDK.
 
-## 📑 Table of Contents
-- [Basic Design-Time Evaluation](#basic-design-time-evaluation)
-- [Tool Calling Evaluation](#tool-calling-evaluation)
-- [Advanced Design-Time Evaluation](#advanced-design-time-evaluation)
+## 📚 Table of Contents
+- [Basic AI Agents Evaluation](#basic-ai-agents-evaluation)
+- [Tool Calling Evaluation of Agents](#tool-calling-evaluation-of-agents)
+- [Advanced Design-Time Evaluation of Agents](#advanced-design-time-evaluation-of-agents)
+
 
 ## Basic AI Agents Evaluation
 
