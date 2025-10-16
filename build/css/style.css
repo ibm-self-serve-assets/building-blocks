@@ -148,22 +148,3 @@ nav a:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
-.hero {
-  background: url("../images/banner.png") no-repeat center top;
-  background-size: contain; /* Shrinks image to fit nicely */
-  background-position-y: 2rem;
-  background-attachment: scroll;
-  background-repeat: no-repeat;
-  text-align: center;
-  padding: 10rem 2rem 4rem 2rem;
-  color: #fff;
-}
-
-.hero-text {
-  background-color: rgba(11, 23, 54, 0.7);
-  padding: 2rem;
-  border-radius: 10px;
-  display: inline-block;
-  margin-top: 20rem;
-}
-
