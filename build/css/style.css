@@ -159,4 +159,11 @@ nav a:hover {
   color: #fff;
 }
 
+.hero-text {
+  background-color: rgba(11, 23, 54, 0.7);
+  padding: 2rem;
+  border-radius: 10px;
+  display: inline-block;
+  margin-top: 20rem;
+}
 
