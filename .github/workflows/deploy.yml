@@ -15,14 +15,14 @@ jobs:
 
       - name: Build static site
         run: |
-          mkdir -p build
-          cp build/index.html  build
-          cp build/css build
-          cp build/js build
-          cp build/images build
+          mkdir -p bin
+          cp build/index.html  bin
+          cp build/css bin
+          cp build/js bin
+          cp build/images bin
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build
+          publish_dir: ./bin
 
