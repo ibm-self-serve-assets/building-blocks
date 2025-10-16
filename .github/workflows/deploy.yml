@@ -16,8 +16,6 @@ jobs:
       - name: Build static site
         run: |
           mkdir -p build
-          cp -r css build/css
-          cp index.html build/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
