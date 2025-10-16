@@ -16,10 +16,10 @@ jobs:
       - name: Build static site
         run: |
           mkdir -p bin
-          cp build/index.html  bin
-          cp build/css bin
-          cp build/js bin
-          cp build/images bin
+          cp -r build/index.html  bin
+          cp -r build/css bin
+          cp -r build/js bin
+          cp -r build/images bin
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
