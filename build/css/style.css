@@ -220,3 +220,48 @@ p {
 #access .btn-secondary {
   margin: 0.5rem 1rem; /* adds spacing between buttons */
 }
+
+/* WHY IT MATTERS SECTION */
+.why-section {
+  background: linear-gradient(135deg, #0b1736, #001f4d);
+  text-align: left;
+  padding: 2rem 2rem;
+}
+
+.why-section h2 {
+  color: #61dafb;
+  text-align: left;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.why-section p {
+  font-size: 1.1em;
+  color: #e0e0e0;
+  text-align: left;
+  max-width: 2000px;
+  margin: 0 left 2rem auto;
+}
+
+.benefits-list {
+  list-style: none;
+  max-width: 2000px;
+  margin: 0 left;
+  padding: 0;
+}
+
+.benefits-list li {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 4px solid #00b4ff;
+  margin: 1rem 0;
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 1rem;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.benefits-list li:hover {
+  background: rgba(0, 180, 255, 0.1);
+  transform: translateX(5px);
+}
