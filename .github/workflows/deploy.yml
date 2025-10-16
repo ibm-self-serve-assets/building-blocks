@@ -11,33 +11,17 @@ permissions:
 
 jobs:
   deploy:
-    name: Build and Deploy Static Page
+    name: Deploy static site from build directory
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Dependencies
+      - name: Verify build directory contents
         run: |
-          echo "Installing dependencies if package.json exists"
-          if [ -f "package.json" ]; then
-            npm install
-          fi
-
-      - name: Prepare Static Files
-        run: |
-          mkdir -p build
-          cp -r index.html css js images build/
-          echo "Build directory prepared."
-
-      - name: Verify Build Directory
-        run: ls -R build
+          echo "Listing current files for verification:"
+          ls -R build || echo "⚠️build directory not found!"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -45,5 +29,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
           publish_branch: gh-pages
-          cname: ""
+          force_orphan: true
 
