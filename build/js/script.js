@@ -43,7 +43,15 @@ document.addEventListener("DOMContentLoaded", () => {
         Detect, analyze, and resolve issues proactively through AI-assisted insights.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe" target="_blank">🔗 View Observability</a>
       `
-    }
+    },
+    builddeploy: {
+      title: "⚙ Build & Deploy",
+      content: `
+        <p>Deployable configurations that dynamically generate new code snippets from <strong>natural language prompts.</strong>
+        Examples include Infrastructure-as-Code automation, AI-driven code generation tools, and seamless integrations using iPaaS solutions.</p>
+        <a href=https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy target="_blank">🔗 Open Build & Deploy Block</a>
+      `
+    },
   };
 
   document.querySelectorAll(".card").forEach(card => {

@@ -7,8 +7,8 @@ body {
 
 .header {
   background: #000;
-  padding: 1.5rem 2rem;
-  display: flex;
+  padding: 0rem 0rem;
+
   justify-content: space-between;
   align-items: center;
 }
@@ -155,15 +155,68 @@ nav a:hover {
   background-attachment: scroll;
   background-repeat: no-repeat;
   text-align: center;
-  padding: 10rem 2rem 4rem 2rem;
+  padding: 20rem 2rem 4rem 2rem;
   color: #fff;
 }
 
 .hero-text {
   background-color: rgba(11, 23, 54, 0.7);
-  padding: 2rem;
+  padding: 1rem;
   border-radius: 10px;
   display: inline-block;
   margin-top: 20rem;
 }
 
+h1, h2 {
+    color: #61dafb;
+    text-align: left;
+}
+
+p {
+    font-size: 1.1em;
+    max-width: 2000px;
+    margin: 15px left;
+    text-align: left;
+}
+
+.container {
+    max-width: 2000px;
+    margin: 0 left;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 15px;
+    border-radius: 2px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    text-align: left;
+}
+
+.header .container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem; /* controls the spacing between the logo and menu */
+  padding: 0.5rem 1.5rem;
+}
+
+.header img.logo {
+  height: 28px;
+  margin: 0; /* removes any extra margin around the logo */
+  padding: 0; 
+  vertical-align: middle;
+}
+
+.header nav ul {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: 2rem;
+}
+
+#access .container {
+  text-align: center;
+}
+
+#access .btn-primary,
+#access .btn-secondary {
+  margin: 0.5rem 1rem; /* adds spacing between buttons */
+}
