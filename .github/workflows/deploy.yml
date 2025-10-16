@@ -21,7 +21,7 @@ jobs:
       - name: Verify build directory contents
         run: |
           echo "Listing current files for verification:"
-          ls -R build || echo "⚠️build directory not found!"
+          ls -R build || echo "Build directory not found!"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -30,4 +30,5 @@ jobs:
           publish_dir: ./build
           publish_branch: gh-pages
           force_orphan: true
+          cname: buildingblocks.ibm.com
 
