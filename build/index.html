@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IBM Technology Building Blocks</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script defer src="js/script.js"></script>
+  <link rel="icon" href="https://www.ibm.com/favicon.ico">
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/5/51/IBM_logo.svg" alt="IBM Logo" class="logo">
+      <nav>
+        <ul>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#domains">Building Blocks</a></li>
+          <li><a href="#access">Access</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <img src="images/banner.png" alt="Building Blocks Banner" class="hero-banner">
+    <div class="hero-text">
+      <h1>IBM Technology Building Blocks</h1>
+      <p>Accelerating innovation with embeddable AI, data, and automation frameworks for hybrid cloud ecosystems.</p>
+      <a href="https://github.com/ibm-self-serve-assets/building-blocks" class="btn-primary">View on GitHub</a>
+    </div>
+  </section>
+
+  <!-- OVERVIEW -->
+  <section id="overview" class="section">
+    <div class="container">
+      <h2>About the Building Blocks</h2>
+      <p>
+        IBM’s <strong>Technology Building Blocks</strong> are ready-to-use, embeddable assets that combine 
+        <strong>Data, AI, and Automation</strong> technologies to accelerate development, integration, and deployment across industries.
+      </p>
+    </div>
+  </section>
+
+  <!-- BUILDING BLOCKS -->
+  <section id="domains" class="section bg-gradient">
+    <div class="container">
+      <h2>Explore the Building Blocks</h2>
+      <div class="cards">
+        <div class="card" data-modal="agents">
+          <h3>🤖 Agents</h3>
+          <p>Watsonx Orchestrate and watsonx.ai for task automation and orchestration.</p>
+        </div>
+        <div class="card" data-modal="data">
+          <h3>🧠 Data-for-AI</h3>
+          <p>Data pipelines and retrieval systems built on watsonx.data and open tooling.</p>
+        </div>
+        <div class="card" data-modal="trusted">
+          <h3>🛡 Trusted-AI</h3>
+          <p>Governance, fairness, and explainability for responsible AI operations.</p>
+        </div>
+        <div class="card" data-modal="optimize">
+          <h3>⚙ Optimize</h3>
+          <p>AI-driven cost optimization and resource management powered by Turbonomic.</p>
+        </div>
+        <div class="card" data-modal="observe">
+          <h3>👁 Observe</h3>
+          <p>End-to-end observability and performance analytics with Instana.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCESS -->
+  <section id="access" class="section bg-dark">
+    <div class="container">
+      <h2>Access the Building Blocks</h2>
+      <p>
+        Access IBM Building Blocks via <a href="https://techzone.ibm.com/" target="_blank">IBM TechZone</a> or our open GitHub repositories.
+        Deploy and extend them to power your AI-driven solutions.
+      </p>
+      <a href="https://techzone.ibm.com/" class="btn-secondary">Explore TechZone</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2025 IBM Corporation | <a href="https://github.com/ibm-self-serve-assets/building-blocks">GitHub Repo</a></p>
+  </footer>
+
+  <!-- MODALS -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal" id="modal-content">
+      <span class="close-btn">&times;</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+</body>
+</html>
+
