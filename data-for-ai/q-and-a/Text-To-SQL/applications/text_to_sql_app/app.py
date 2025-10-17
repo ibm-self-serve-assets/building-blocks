@@ -3,10 +3,13 @@ import os
 import uvicorn
 import sys
 import time
+import requests
 import jaydebeapi
 import pymysql
 import pandas as pd
-
+import prestodb
+import logging
+from datetime import datetime, timedelta
 
 from pymongo import MongoClient
 from dotenv import load_dotenv
@@ -19,11 +22,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 
 # Custom type classes
-from customTypes.text2sqlRequest import text2sqlRequest
-from customTypes.text2sqlResponse import text2sqlResponse
-from customTypes.queryRequest import queryRequest
-from customTypes.querylResponse import queryResponse
+from customTypes.texttosqlRequest import texttosqlRequest
+from customTypes.texttosqlResponse import texttosqlResponse
 
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -40,12 +49,12 @@ app.add_middleware(
 
 load_dotenv()
 # RAG APP Security
-API_KEY_NAME = "APP-API-Key"
+API_KEY_NAME = "APP-API-KEY"
 api_key_header = APIKeyHeader(name=API_KEY_NAME, auto_error=False)
 
 # Token to IBM Cloud
 ibm_cloud_api_key = os.environ.get("IBM_CLOUD_API_KEY")
-project_id = os.environ.get("WX_PROJECT_ID")
+project_id = os.environ.get("WXD_PROJECT_ID")
 text_to_sql_endpoint = os.environ.get("TEXT_TO_SQL_ENDPOINT")
 
 # DB2 Creds
@@ -88,7 +97,6 @@ presto_creds = {
 }
 
 
-print("token")
 token_updated_at = None
 token = None
 headers = None
@@ -115,7 +123,6 @@ def get_auth_token(api_key):
 def update_token_if_needed(api_key):
     global token, token_updated_at, headers
     if token is None or datetime.now() - token_updated_at > timedelta(minutes=20):
-        print(f'updating token')
         token =  get_auth_token(api_key)
         token_updated_at = datetime.now()
         headers = {
@@ -124,18 +131,31 @@ def update_token_if_needed(api_key):
             "Authorization": f"Bearer {token}"
         }
 
+# Basic security for accessing the App
+async def get_api_key(api_key_header: str = Security(api_key_header)):
+    if api_key_header == os.environ.get("APP_API_KEY"):
+        return api_key_header
+    else:
+        raise HTTPException(
+            status_code=HTTP_403_FORBIDDEN, detail="Could not validate APP credentials. Please check your ENV."
+        )
+
+@app.get("/")
+def index():
+    return {"IBM": "Build Engineering"}
+
 # Caching database connection
 db_connections = {}
 async def get_db_connection(dbtype):
     if dbtype in db_connections:
         return db_connections[dbtype]
 
-    if dbtype == "DB2":
+    if dbtype == "db2":
         SQL_DATABASE_URL = "jdbc:db2://" + str(db2_creds["db_hostname"]) + ":" + str(db2_creds["db_port"]) + "/" + str(db2_creds["db_database"]) + ":currentSchema=" + str(db2_creds["db_schema"]) + ";user=" + str(db2_creds["db_user"]) + ";password=" + str(db2_creds["db_password"]) + ";sslConnection=true;"
         print("SQL created " + SQL_DATABASE_URL)
         conn = jaydebeapi.connect("com.ibm.db2.jcc.DB2Driver", SQL_DATABASE_URL, None, "db2jcc4.jar")
     
-    elif dbtype == "MYSQL":
+    elif dbtype == "mysql":
 
         conn = pymysql.connect(
                         host=str(mysql_creds["db_hostname"]),
@@ -145,14 +165,14 @@ async def get_db_connection(dbtype):
                         passwd=str(mysql_creds["db_password"]),
                         ssl={'ca': None})
     
-    elif dbtype == "MONGODB":
+    elif dbtype == "mongodb":
         tls_ca_file =  str(mdb_creds["tls_location"])
         username = str(mdb_creds["db_user"])
         password = str(mdb_creds["db_password"]) 
         host = str(mdb_creds["db_hostname"])
         port = str(mdb_creds["db_port"])  # default MongoDB port
         conn =  MongoClient(f'mongodb://{username}:{password}@{host}:{port}',tls=True,tlsCAFile=tls_ca_file)
-    elif dbtype == "PRESTO":
+    elif dbtype == "presto":
         #print("in presto" + str(presto_creds["db_password"]) + " " + str(presto_creds["db_user"]) + " " + str(presto_creds["db_hostname"]))
         with prestodb.dbapi.connect(
             host=str(presto_creds["db_hostname"]),
@@ -171,52 +191,68 @@ async def get_db_connection(dbtype):
     db_connections[dbtype] = conn
     return conn
 
+async def query_exec(query, dbtype):
+    conn = await get_db_connection(dbtype)
+        
+    cur = conn.cursor()
+    cur.execute(query)
+    rows = cur.fetchall()
+
+    # Get column names from cursor description
+    columns = [description[0] for description in cur.description]
+    
+    # Convert rows to a list of dictionaries
+    results = []
+    for row in rows:
+        results.append(dict(zip(columns, row)))
+    return results
+
 @app.post("/texttosql")
 async def texttosql(request: texttosqlRequest, api_key: str = Security(get_api_key)):
     question=request.question
-    container_id=equest.container_id
+    container_id=request.container_id
     container_type=request.container_type
     dialect=request.dialect
     top_n=request.top_n
+    raw_output=request.raw_output
+    db_execute=request.db_execute
     
     update_token_if_needed(ibm_cloud_api_key)
-    params = {'container_id': container_id, 'container_type': container_type, 'dialect': dialect, 'top_n': top_n}
 
+    payload= {
+        "query": question,
+        "raw_output": raw_output
+    }
+    
+    params = {'container_id': container_id, 'container_type': container_type, 'dialect': dialect, 'top_n': top_n}
+    
     response = requests.post(text_to_sql_endpoint, headers=headers, json=payload, params=params, verify=False).json()
 
-    print("RESPONSE : " + str(response))
-    message = response['generated_sql_queries']['sql']
-    print(" message: " + str(message))
-    return message
+    nlResponse = {}
 
-    #v1/text_to_sql?model_id=meta-llama/llama-3-3-70b-instruct&container_id=61f9e0af-0c6a-4127-9b67-5e789f318fff&container_type=project&dialect=presto&top_n=5
+    try:
+        query = response['generated_sql_queries'][0]['sql']
+        score = response['generated_sql_queries'][0]['score']
+        nlResponse['nl_question'] = question
+        nlResponse['sql_query'] = query
+        nlResponse['score'] = score
+        nlResponse['model_id'] = response['model_id']
+        nlResponse['token_count'] = response['resource_usage']['token_count']
+        nlResponse['cuh'] = response['resource_usage']['cuh']
+        if raw_output=="true":
+            nlResponse['raw_output'] = response['wx_ai_raw_output']
+        if db_execute=="true":
+           queryresponse = await query_exec(query.replace(';', ''), dialect)
+           nlResponse['query_response'] = queryresponse
+        logger.info("Query tranaction complete")
+    except IndexError as e:
+        logger.error(f"SQL Generate Error: {str(e)}")
+        nlResponse['sql_generate_error'] = str(e)
+  
+  
     return texttosqlResponse(response=nlResponse)
 
 
-
-@app.post("/query")
-async def query(request: queryRequest, api_key: str = Security(get_api_key)):
-    query = request.query
-    conn = await get_db_connection(dbtype)  
-    print ("SQL DB Connection: " + str(conn))
-  
-    cur = conn.cursor()
-    
-    cur.execute(query)
-    rows = cur.fetchall()
-    op=""
-
-    for row in rows:
-        br="" 
-        for i,col in enumerate(row):
-            key=cur.description[i][0]
-            br += "{}:{},".format(key,col)
-        br = br[:-1]
-        op += "{" + br + "}"
-
-    nl=""
-    history=""
-    image=""
-    response = dict(answer=op,query=query,nl=nl,history=history,image=image)
-    print("Response from queryexec: "+ str(response))
-    return queryResponse(response=response)
+if __name__ == '__main__':
+    if 'uvicorn' not in sys.argv[0]:
+        uvicorn.run("app:app", host='0.0.0.0', port=4050, reload=True)

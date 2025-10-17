@@ -46,8 +46,8 @@
     From the Code Engine Project window, select **Image builds**, then go into the **Image build** tab, click build **Create** button
     
     Under the **Source** tab:
-    - Name your build (something like `sequifi-app`
-    - For **Code repo URL** use the SSH repo format i.e. `git@github.ibm.com:<org>/Sequifi-LLM-Service.git`
+    - Name your build (something like `text_to_sql_app`
+    - For **Code repo URL** use the SSH repo format i.e. `git@github.com:<org>/text_to_sql_app.git`
     - Choose the SSH secret you creatd in step 4 above
     - Choose the branch name, i.e. `main`
     - Choose the subdirectory where the `Dockerfile` resides if not in top level repo directory
@@ -71,8 +71,8 @@
 
     Navigate to the **Applications** tab within **Code Engine** on the left side and click **Create**.
 
-    - Provide a name for the Application, i.e. `sequifi-app`
-    - Choose **Use an existing container image**, and enter the image name created in previous step for **Image reference**, i.e. `us.icr.io/<cr_namespace>/sequifi-app:latest`
+    - Provide a name for the Application, i.e. `text_to_sql_app`
+    - Choose **Use an existing container image**, and enter the image name created in previous step for **Image reference**, i.e. `us.icr.io/<cr_namespace>/text_to_sql_app:latest`
     - Change the Ephemeral storage to 2.04
     - Limit the instance scaling to 1 and 1
     - Select **Domain mappings** to **Public**.
@@ -88,6 +88,6 @@ Use the normal repository syntax, i.e. `https://github.com/<org>>/<repo>`
 
 ## Accessing the URL on Code Engine
 
-Wait for the build to complete. To access the URL go into the **Applications** page within the Code Engine Project, and click the **OpenURL** link next to the newly deployed `sequifi-app` application
+Wait for the build to complete. To access the URL go into the **Applications** page within the Code Engine Project, and click the **OpenURL** link next to the newly deployed `text_to_sql_app` application
 
 A quick sanity check with `<url>/docs` will take you to the swagger ui. To try the APIs from swagger, you will need to click the **Authorize** button at the topand add the value you set for RAG-APP-API-KEY in the environment variables

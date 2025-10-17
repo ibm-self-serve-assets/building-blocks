@@ -1,49 +1,54 @@
           env:
-            - name: RAG_APP_API_KEY
+            - name: APP_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: RAG_APP_API_KEY
+                  key: APP_API_KEY
             - name: IBM_CLOUD_API_KEY
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
                   key: IBM_CLOUD_API_KEY
-            - name: WX_URL
+            - name: TEXT_TO_SQL_ENDPOINT
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: WX_URL
-            - name: WX_PROJECT_ID
+                  key: TEXT_TO_SQL_ENDPOINT
+            - name: WXD_PROJECT_ID
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: WX_PROJECT_ID
-            - name: MYSQL_USERNAME
+                  key:  WXD_PROJECT_ID
+            - name: PRESTO_HOSTNAME
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: MYSQL_USERNAME
-            - name: MYSQL_PASSWORD
+                  key: PRESTO_HOSTNAME
+            - name: PRESTO_PORT
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: MYSQL_PASSWORD
-            - name: MYSQL_HOSTNAME
+                  key: PRESTO_PORT
+            - name: PRESTO_USERNAME
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: MYSQL_HOSTNAME
-            - name: MYSQL_PORT
+                  key: PRESTO_USERNAME
+            - name: PRESTO_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: MYSQL_PORT
-            - name: MYSQL_DATABASE
+                  key: PRESTO_PASSWORD
+            - name: PRESTO_CATALOG
               valueFrom:
                 secretKeyRef:
                   name: <secret-name>
-                  key: MYSQL_DATABASE
+                  key: PRESTO_CATALOG
+            - name: PRESTO_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_SCHEMA
           securityContext:
             capabilities:
               drop:
