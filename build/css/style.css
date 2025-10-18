@@ -149,15 +149,17 @@ nav a:hover {
 }
 
 .hero {
-  background: url("../images/banner.png") no-repeat center top;
-  background-size: contain; /* Shrinks image to fit nicely */
-  background-position-y: 2rem;
-  background-attachment: scroll;
+  background: url("../images/banner.png") no-repeat center center;
+  background-size: contain; /* Show the full image */
+  background-position: center;
   background-repeat: no-repeat;
+  background-attachment: scroll;
   text-align: center;
-  padding: 20rem 2rem 4rem 2rem;
+  padding: 6rem 2rem; /* Reduce excessive padding */
   color: #fff;
+  min-height: 30vh;
 }
+
 
 .hero-text {
   background-color: rgba(11, 23, 54, 0.7);
