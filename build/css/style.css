@@ -150,14 +150,14 @@ nav a:hover {
 
 .hero {
   background: url("../images/banner.png") no-repeat center center;
-  background-size: contain; /* Show the full image */
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: scroll;
   text-align: center;
-  padding: 6rem 2rem; /* Reduce excessive padding */
+  padding: 6rem 2rem;
   color: #fff;
-  min-height: 40vh;
+  min-height: 30vh;
 }
 
 
@@ -195,13 +195,13 @@ p {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 1rem; /* controls the spacing between the logo and menu */
+  gap: 1rem;
   padding: 0.5rem 1.5rem;
 }
 
 .header img.logo {
   height: 28px;
-  margin: 0; /* removes any extra margin around the logo */
+  margin: 0; 
   padding: 0; 
   vertical-align: middle;
 }
@@ -220,7 +220,7 @@ p {
 
 #access .btn-primary,
 #access .btn-secondary {
-  margin: 0.5rem 1rem; /* adds spacing between buttons */
+  margin: 0.5rem 1rem;
 }
 
 /* WHY IT MATTERS SECTION */
