@@ -15,7 +15,7 @@ This folder contains self-serve notebooks for comprehensive evaluation and monit
 
 ## Technology Stack
 
-- **Python 3.10+**
+- **Python 3.11+**
 - **IBM watsonx.governance SDK**
 - **Jupyter Notebooks** for interactive development
 - **python-dotenv** for environment configuration
