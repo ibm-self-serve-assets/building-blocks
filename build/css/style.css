@@ -25,13 +25,26 @@ nav ul {
 }
 
 nav a {
-  color: #fff;
-  text-decoration: none;
-  transition: color 0.3s;
+  color: #ffffff !important; 
+  text-decoration: none !important;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
-nav a:hover {
-  color: #00b4ff;
+nav a:visited {
+  color: #ffffff !important;
+}
+
+nav a:hover,
+nav a:focus {
+  color: #00b4ff !important; 
+  text-decoration: none;
+}
+
+
+nav a.active {
+  border-bottom: 2px solid #00b4ff;
+  padding-bottom: 0.2rem;
 }
 
 .hero {
@@ -194,10 +207,10 @@ p {
 .header .container {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 1rem;
-  padding: 0.5rem 1.5rem;
+  justify-content: space-between; 
+  padding: 1rem 1.5rem;
 }
+
 
 .header img.logo {
   height: 28px;
