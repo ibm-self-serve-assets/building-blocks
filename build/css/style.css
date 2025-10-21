@@ -223,7 +223,6 @@ p {
   margin: 0.5rem 1rem;
 }
 
-/* WHY IT MATTERS SECTION */
 .why-section {
   background: linear-gradient(135deg, #0b1736, #001f4d);
   text-align: left;
@@ -266,4 +265,13 @@ p {
 .benefits-list li:hover {
   background: rgba(0, 180, 255, 0.1);
   transform: translateX(5px);
+}
+
+#overview {
+  padding-bottom: 1rem;
+  padding-top: 1rem;
+}
+
+#why {
+  padding-top: 1rem;
 }
