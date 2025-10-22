@@ -1,159 +1,215 @@
-# Runtime Evaluation of Generative AI Prompts using Watsonx.governance
+# 🧩 Runtime Evaluations and Production-Grade Monitoring with IBM watsonx.governance
 
-This repository contains assets, workflows, and notebooks to support the runtime evaluation of Generative AI prompts using IBM watsonx.governance. It is designed to help AI teams ensure trustworthy, compliant, and safe usage of large language models (LLMs) in regulated and enterprise environments.
+Ensure your Generative and Traditional AI models are trustworthy, compliant, and monitored using the IBM watsonx.governance SDK.
 
----
-
-## Overview
-
-Generative AI models can exhibit unpredictable behavior at runtime. This project enables real-time prompt monitoring, evaluation, and governance using watsonx.governance capabilities. It includes:
-
-1. Prompt logging and metadata capture
-2. Policy-based runtime evaluation
-3. Custom metric definition
-4. Integration with watsonx.governance dashboards
-5. Alerting and audit capabilities
-
----
-
-## Features
-1. Real-time Prompt Evaluation: Evaluate LLM prompts and responses as they are processed.
-2. Custom Governance Metrics: Define and compute domain-specific quality and risk metrics.
-3. Policy Enforcement: Apply business rules, usage guidelines, and compliance policies.
-4. Watsonx.governance Integration: Seamless integration with the watsonx.governance platform for logging, dashboards, and audits.
-5. Model Agnostic: Can be integrated with any LLM provider (OpenAI, Anthropic, Meta, IBM Granite, etc.).
+## 📚 Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [Deployment](#deployment)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
 
 ---
 
-## Design-time vs Runtime Metrics for GenAI Use Cases  
+## 🧠 Overview
 
+This repository demonstrates how to perform runtime evaluations and continuous monitoring for AI models using the IBM watsonx.governance SDK.
 
-| **Use Case**               | **Design-time Metrics**                                                                                                                  | **Runtime Metrics**                                                                                                                       |
-|----------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| **Text Summarization**     | - ROUGE (1, 2, L)  <br> - SARI  <br> - METEOR <br> - Readability scores <br> - Sentence similarity                                       | - ROUGE/SARI drift <br> - Input/output similarity changes <br> - Latency, token count <br> - Policy violations (PII, HAP)                |
-| **Content Generation**     | - BLEU, METEOR <br> - Novelty/diversity (e.g., self-BLEU) <br> - Perplexity <br> - Fluency/coherence ratings                             | - Degradation in BLEU/similarity <br> - Safety violations (toxicity, PII) <br> - Failed generations <br> - Latency, throughput           |
-| **Question Answering (QA)**| - F1 score <br> - Exact Match <br> - ROUGE <br> - Faithfulness <br> - Relevance scoring                                                  | - Decline in F1/EM <br> - Hallucination rate <br> - Irrelevant/empty answers <br> - Response time <br> - Output violations               |
-| **Entity Extraction**      | - Precision, Recall, F1 <br> - Span-level accuracy                                                                                        | - Drop in entity detection accuracy <br> - Latency <br> - PII in extracted text                                                          |
-| **RAG (Retrieval-Augmented Generation)** | - Retrieval recall@k <br> - nDCG <br> - Faithfulness <br> - ROUGE (answer quality)                                 | - Retrieval drift <br> - Faithfulness decline <br> - Failed retrievals <br> - Latency, policy violations                                |
-| **Code Generation**        | - CodeBLEU <br> - Syntax correctness <br> - Unit test pass rate                                                                           | - Code execution failures <br> - Unsafe/insecure patterns <br> - Latency, hallucinated code blocks                                      |
-| **General Governance & Health** | —                                                                                                                           | - Latency, throughput <br> - Input/output token volume <br> - Embedding drift <br> - Metadata drift <br> - Alerts, error rates           |
+It includes:
+- **Runtime Evaluations** for **Prompt Governance** in **Large Language Models (LLMs)**
+- **Production-Grade Monitoring** for **Traditional AI Models**
+
+These components ensure transparency, fairness, and compliance during real-time model deployment and usage.
 
 ---
 
-## Module Structure
+## 🏗 Architecture
+
+Runtime Evaluations and Monitoring integrate directly with **IBM watsonx.governance** for observability, fairness analysis, and continuous compliance enforcement.
+
+```mermaid
+flowchart TD
+    A[User Prompt] --> B[watsonx.governance Runtime Evaluation]
+    B -->|Policy Checks| C[LLM Response Evaluation]
+    C --> D[Metrics Logging & Drift Detection]
+    D --> E[Dashboard UI (Streamlit)]
+    E --> F[Governance Reports & Alerts]
 ```
+
+**Key Components:**
+- **Generative AI Runtime Evaluations:** Policy-driven prompt and response analysis  
+- **Traditional AI Monitoring:** Continuous drift, bias, and model risk tracking  
+- **Custom Dashboards:** Real-time visualization of evaluation metrics  
+
+---
+
+## ✨ Features
+
+| Feature | Description |
+|----------|-------------|
+| **Real-time Prompt Evaluation** | Evaluate LLM prompts and responses as they occur |
+| **Custom Governance Metrics** | Define and compute domain-specific risk and quality metrics |
+| **Policy Enforcement** | Apply compliance and ethical AI policies at runtime |
+| **Continuous Model Monitoring** | Track drift, bias, and performance degradation |
+| **Cross-Model Compatibility** | Supports IBM Granite, OpenAI, Anthropic, Meta, etc. |
+| **Dashboard UI** | Visualize metrics and evaluation results interactively |
+
+---
+
+## 🧩 Technology Stack
+
+- **Python 3.10+**
+- **IBM watsonx.governance SDK** — Prompt evaluation & governance
+- **IBM watsonx.openscale SDK** — Continuous monitoring
+- **IBM Watson Machine Learning SDK** — Lifecycle management
+- **Jupyter Notebooks** — Development & experimentation
+- **Streamlit** — Runtime dashboard UI
+- **python-dotenv** — Environment configuration
+- **IBM Cloud SDK** — IBM Cloud authentication
+
+---
+
+## 🔧 Prerequisites
+
+Before starting, ensure you have:
+
+1. **IBM watsonx.governance Instance**
+   - Create via [IBM Cloud Catalog](https://cloud.ibm.com/catalog)
+
+2. **IBM Cloud API Key**
+   - Generate from [IBM Cloud Account Settings](https://cloud.ibm.com/docs/account?topic=account-userapikey)
+
+3. **Service Access**
+   - Access permissions for watsonx.governance and watsonx.openscale services
+
+4. **Environment Setup**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+---
+
+## 🧱 Project Structure
+
+```bash
 .
-├── LICENSE
 ├── README.md
-├── dashboard-ui
-│   ├── app.py
-│   └── requirements.txt
-└── notebooks
-    ├── 00-runtime-evaluation-realtime
-    │   ├── Manual_Prompt_Evaluation_for_Production.ipynb
-    │   └── README.md
-    ├── 01-runtime-evaluation-scheduled
-    │   ├── Automated_Prompt_Evaluation_for_Production.ipynb
-    │   └── README.md
-    ├── 02-custom-metrics-monitoring-deployment
-    │   ├── Custom_Metrics_Monitoring_and_Deployment.ipynb
-    │   └── README.md
-    ├── README.md
-    └── assets
-        ├── RAG_data.csv
-        └── summarisation.csv
+├── generative_ai
+│   ├── LICENSE
+│   ├── dashboard-ui/
+│   │   ├── app.py
+│   │   └── requirements.txt
+│   └── notebooks/
+│       ├── 00-runtime-evaluation-realtime/
+│       │   └── Manual_Prompt_Evaluation_for_Production.ipynb
+│       ├── 01-runtime-evaluation-scheduled/
+│       │   └── Automated_Prompt_Evaluation_for_Production.ipynb
+│       ├── 02-custom-metrics-monitoring-deployment/
+│       │   └── Custom_Metrics_Monitoring_and_Deployment.ipynb
+│       └── assets/
+│           ├── RAG_data.csv
+│           └── summarisation.csv
+└── traditional_ai/
+    └── notebooks/
+        ├── Custom_Monitors_and_Custom_Metrics_Deployment.ipynb
+        ├── Fairness_Monitoring_with_Indirect_Bias_Mechanism.ipynb
+        └── Model_Risk_Management.ipynb
 ```
 
 ---
 
-## File Description
+## 🚀 Getting Started
 
-| Path                                           | Description                                                               |
-| ---------------------------------------------- | ------------------------------------------------------------------------- |
-| [LICENSE](LICENSE)                                     | Project license file.                                                     |
-| [README.md](README.md)                                    | Root-level documentation for the repository.                              |
-| [dashboard-ui](dashboard-ui)                                | Contains the interactive Streamlit dashboard for visualizing evaluations. |
-|     [app.py](app.py)                                   | Streamlit app for dashboard UI.                                           |
-|     [requirements.txt](requirements.txt)                         | Python dependencies for the dashboard.                                    |
-| [notebooks](notebooks)                                   | Collection of Jupyter notebooks for evaluation workflows.                 |
-|     [00-runtime-evaluation-realtime](00-runtime-evaluation-realtime)          | Manual, real-time prompt evaluation notebook.                             |
-|     [01-runtime-evaluation-scheduled](01-runtime-evaluation-scheduled)        | Scheduled, automated prompt evaluation workflow.                          |
-|     [02-custom-metrics-monitoring-deployment](02-custom-metrics-monitoring-deployment)  | Custom metrics setup and deployment monitoring.                           |
-| [README.md](README.md)                                | Overview of the notebooks and structure.                                  |
-| [assets](assets)                                  | CSV files used for evaluation (e.g., RAG and summarization datasets).     |
-
----
-
-## Getting Started
-
-Follow these steps to set up and run the Generative AI evaluation notebooks and the dashboard UI for runtime prompt evaluation using watsonx.governance.
-
-#### Clone the git Repository
-```
+### Clone the repository
+```bash
 git clone https://github.com/ibm-self-serve-assets/building-blocks.git
 cd building-blocks/trusted-ai/runtime-evaluations/generative_ai
 ```
 
-a.)  Run Evaluation Notebooks
-
-The notebooks are organized under the notebooks/ directory.
-
-#### Prerequisites
-
-1. Python 3.10+
-2. Jupyter Notebook or JupyterLab
-3. (Optional) Virtual environment recommended
-```
-python -m venv runtime
-source runtime/bin/activate (or runtimse/Scripts/activate for windows)
-```
-4. following python package dependencies
-```
-pip install pandas transformers matplotlib seaborn jupyter
-```
-5. Launch Jupyter
-```
+### Run evaluation notebooks
+```bash
 cd notebooks
 jupyter notebook
 ```
-6. Open notebooks in the folders below to get started:
-| Folder                                     | Description                                     |
-| ------------------------------------------ | ----------------------------------------------- |
-| `00-runtime-evaluation-realtime/`          | Manual prompt evaluation in real-time.          |
-| `01-runtime-evaluation-scheduled/`         | Automated scheduled prompt evaluations.         |
-| `02-custom-metrics-monitoring-deployment/` | Custom metrics setup and deployment monitoring. |
-| `assets/`                                  | Sample datasets used for evaluation.            |
 
-b.) The dashboard is a Streamlit app located in the dashboard-ui/ folder.
-
-#### Prerequisites
-
-1. Python 3.10+
-2. streamlit
-3. Install Dependencies
-```
+### Launch Streamlit dashboard
+```bash
 cd dashboard-ui
 pip install -r requirements.txt
-```
-4. Launch the Dashboard
-```
 streamlit run app.py
 ```
-5. The dashboard will open in your browser at http://localhost:8501
-   
-Note: Make sure evaluation outputs (e.g., CSVs from notebooks) are accessible by the dashboard or update paths in app.py accordingly.
+
+The dashboard opens at: [http://localhost:8501](http://localhost:8501)
 
 ---
 
-## License
+## ⚙️ Configuration
 
-Licensing details are present in [LICENSE](LICENSE) file.
+You can configure environment variables in a `.env` file:
+
+```
+IBM_CLOUD_API_KEY=<your_api_key>
+WATSONX_GOVERNANCE_URL=<governance_instance_url>
+PROJECT_ID=<your_project_id>
+```
+
+Ensure all dependent services (**watsonx.governance**, **openscale**, **WML**) are active.
 
 ---
 
-## References
+## 🧪 Usage
 
-1. https://github.com/IBM/watson-openscale-samples
-2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
+| Mode | Notebook | Description |
+|------|-----------|-------------|
+| **Manual Runtime Evaluation** | `00-runtime-evaluation-realtime` | Interactive evaluation of prompts |
+| **Automated Evaluation** | `01-runtime-evaluation-scheduled` | Scheduled evaluations and reporting |
+| **Custom Metrics Monitoring** | `02-custom-metrics-monitoring-deployment` | Define and deploy custom metrics |
 
 ---
+
+## 📊 Examples
+
+| Use Case | Description |
+|-----------|-------------|
+| **Prompt Evaluation (Generative AI)** | Evaluate prompt safety, bias, and compliance |
+| **Model Risk Management** | Track model drift and risk metrics |
+| **Fairness Monitoring** | Detect indirect bias in traditional ML |
+| **Custom Metrics Deployment** | Deploy governance-driven KPIs |
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions to enhance governance workflows and integrations!
+
+1. Fork this repo  
+2. Create a feature branch  
+3. Commit your changes  
+4. Submit a PR  
+
+---
+
+## 🪪 License
+
+This project is licensed under the **Apache 2.0 License**.  
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🧭 Support
+
+For questions or issues:
+- Visit [IBM watsonx.governance Documentation](https://cloud.ibm.com/catalog/services/watsonx-governance)
+- Open an issue in this repository
+- Explore related assets on [IBM TechZone](https://techzone.ibm.com)
