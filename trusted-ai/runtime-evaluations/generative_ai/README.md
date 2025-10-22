@@ -16,7 +16,6 @@ Ensure your Generative and Traditional AI models are trustworthy, compliant, and
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
-- [Support](#support)
 
 ---
 
@@ -199,11 +198,3 @@ We welcome contributions to enhance governance workflows and integrations!
 This project is licensed under the **Apache 2.0 License**.  
 See the [LICENSE](LICENSE) file for details.
 
----
-
-## 🧭 Support
-
-For questions or issues:
-- Visit [IBM watsonx.governance Documentation](https://cloud.ibm.com/catalog/services/watsonx-governance)
-- Open an issue in this repository
-- Explore related assets on [IBM TechZone](https://techzone.ibm.com)

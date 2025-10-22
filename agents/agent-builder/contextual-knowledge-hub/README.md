@@ -7,19 +7,21 @@
 ## Table of Contents
 - [Overview](#overview)
 - [Architecture](#architecture)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
 - [Developer Guide](#developer-guide)
-- [Example Queries](#example-queries)
+- [Examples](#examples)
 - [Business Value](#business-value)
 - [Use Cases](#use-cases)
 - [Benefits](#benefits)
-- [Executive Architecture (Value Flow)](#executive-architecture-value-flow)
 - [Contributing](#contributing)
 - [License](#license)
 
 ---
 
-## Overview  
+## 🧠 Overview  
 
 This project demonstrates how to build a **multi-agent workflow** using **Watsonx Orchestrate** to collect, process, and aggregate contextual knowledge across IBM products.  
 
@@ -30,21 +32,7 @@ By the end of this lab, you will have:
 - Multiple **sub-agents** (Watsonx Orchestrate, Watsonx Assistant, Cognos Analytics, Watsonx AI, Watsonx Code Assistant)  
 - A complete end-to-end setup for **automated information retrieval, processing, and Q&A**  
 
----
-
-## Prerequisites  
-
-Before you begin, ensure you have:  
-- Access to **IBM Watsonx Orchestrate** ([SaaS](https://cloud.ibm.com/catalog/services/watsonx-orchestrate) or Developer Edition)  
-- IBM Watsonx **[Agentic Development Kit (ADK)](https://developer.watson-orchestrate.ibm.com/)**  
-- Python **3.9+**  
-- Git CLI  
-
----
-
-## Architecture  
-
-The **Contextual Knowledge Hub** orchestrates user queries across multiple product-specific sub-agents, ensuring contextual, accurate, and AI-driven responses.  
+--- 
 
 ### Developer Architecture  
 
@@ -66,7 +54,33 @@ flowchart TD
 
 ---
 
-## 📂 Project Structure  
+## 🏗 Architecture  
+
+The **Contextual Knowledge Hub** orchestrates user queries across multiple product-specific sub-agents, ensuring contextual, accurate, and AI-driven responses.  
+
+---
+
+## ✨ Features
+
+- Context-Aware Knowledge Routing: Automatically routes user queries to the most relevant IBM product-specific agent for precise, contextual responses.
+
+- Multi-Agent Collaboration: Enables multiple specialized agents to work together seamlessly for comprehensive, cross-product knowledge retrieval.
+
+- Intelligent Query Decomposition: Breaks down complex queries into smaller tasks and aggregates results from relevant IBM systems.
+
+- Adaptive Learning: Continuously improves accuracy and context understanding through feedback loops powered by watsonx.ai.
+
+---
+
+## 🧩 Technology Stack  
+
+- **IBM Watsonx Orchestrate** ([SaaS](https://cloud.ibm.com/catalog/services/watsonx-orchestrate) or Developer Edition)  
+- IBM Watsonx **[Agentic Development Kit (ADK)](https://developer.watson-orchestrate.ibm.com/)**  
+- Python **3.9+** 
+
+---
+
+## 🧱  Project Structure  
 
 ```bash
 ├── agents/                          
@@ -100,7 +114,28 @@ flowchart TD
 
 ---
 
-## Developer Guide  
+## 🔧 Prerequisites
+
+Before starting, ensure you have:
+
+1. **IBM watsonx.Orchestrate Instance**
+   - Create via [IBM Cloud Catalog](https://cloud.ibm.com/catalog)
+
+2. **IBM Cloud API Key**
+   - Generate from [IBM Cloud Account Settings](https://cloud.ibm.com/docs/account?topic=account-userapikey)
+
+3. **Service Access**
+   - Access permissions for watsonx.Orchestrate service
+
+4. **Agentic Development Kit (ADK)**
+   - IBM Watsonx [Agentic Development Kit (ADK)](https://developer.watson-orchestrate.ibm.com/)
+
+5. **Python**
+   - Python 3.9+
+
+---
+
+## 🚀 Developer Guide  
 
 ### 1. Install IBM Watsonx Orchestrate ADK  
 
@@ -197,7 +232,7 @@ Open the chat UI, and configure **Contextual Knowledge Hub** as the master agent
 
 ---
 
-## Example Queries  
+## 📊 Examples
 
 | Query | Routed To |
 |--------|------------|
@@ -233,23 +268,6 @@ The **Contextual Knowledge Hub** empowers enterprises with:
 - Improved productivity with quick knowledge retrieval  
 - Seamless integration with IBM and third-party APIs  
 - Scalable design – onboard new agents in hours  
-
----
-
-## Executive Architecture (Value Flow)  
-
-```mermaid
-flowchart LR
-    A[Business User] --> B[Contextual Knowledge Hub]
-    B --> C[Instant Product Q&A]
-    B --> D[Sales Enablement]
-    B --> E[Market Research]
-    B --> F[Knowledge Management]
-    C --> G[Increased Customer Satisfaction]
-    D --> H[Faster Sales Cycles]
-    E --> I[Actionable Insights]
-    F --> J[Reduced Training Costs]
-```
 
 ---
 
