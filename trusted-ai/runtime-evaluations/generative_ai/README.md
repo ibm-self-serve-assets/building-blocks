@@ -36,14 +36,8 @@ These components ensure transparency, fairness, and compliance during real-time 
 
 Runtime Evaluations and Monitoring integrate directly with **IBM watsonx.governance** for observability, fairness analysis, and continuous compliance enforcement.
 
-```mermaid
-flowchart TD
-    A[User Prompt] --> B[watsonx.governance Runtime Evaluation]
-    B -->|Policy Checks| C[LLM Response Evaluation]
-    C --> D[Metrics Logging & Drift Detection]
-    D --> E[Dashboard UI (Streamlit)]
-    E --> F[Governance Reports & Alerts]
-```
+![Alt text for the image](images/reference_architecture.png "Reference Architecture")
+
 
 **Key Components:**
 - **Generative AI Runtime Evaluations:** Policy-driven prompt and response analysis  
