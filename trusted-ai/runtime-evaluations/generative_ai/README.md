@@ -12,7 +12,6 @@ Ensure your Generative and Traditional AI models are trustworthy, compliant, and
 - [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Configuration](#configuration)
-- [Deployment](#deployment)
 - [Examples](#examples)
 - [Contributing](#contributing)
 - [License](#license)
