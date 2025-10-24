@@ -53,7 +53,9 @@ document.addEventListener("DOMContentLoaded", () => {
     build: {
       title: "Build & Deploy - Building Blocks",
       items: [
-        { name: "CI/CD Integration", desc: "Automate AI model packaging, testing, and deployment pipelines." }
+        { name: "Authentication Management", desc: "Adaptive, AI-driven identity and access management (IAM) that secures user authentication across cloud and on-premises applications. It delivers risk-based multifactor authentication, single sign-on (SSO), and identity governance to ensure zero-trust security compliance and seamless user experiences." },
+        { name: "Infrastructure as Code", desc: "Automation tool that enables declarative provisioning, management, and versioning of cloud and on-premises resources. It provides idempotent, multi-cloud orchestration through reusable configuration files, ensuring consistent and scalable infrastructure deployment across hybrid environments." },
+        { name: "Code Assistant", desc: "Leverages large language models (LLMs) to accelerate code generation, modernization, and automation across programming languages and platforms. It provides context-aware code recommendations, test generation, and documentation assistance, enabling developers to enhance productivity and reduce technical debt in enterprise software delivery." },
       ]
     }
   };
