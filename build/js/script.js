@@ -38,13 +38,16 @@ document.addEventListener("DOMContentLoaded", () => {
     optimize: {
       title: "Optimize - Building Blocks",
       items: [
-        { name: "Resource Optimization", desc: "AI-driven scaling and cost control for hybrid deployments." }
+        { name: "FinOps", desc: "Provides deep visibility into IT spend across hybrid and multicloud environments. It enables organizations to optimize cloud costs, forecast budgets, and align technology investments with business outcomes through data-driven insights and automated cost governance."},
+        { name: "Automated Resilience and Compliance", desc: "AI-powered observability and decision intelligence platform that unifies data across IT operations, applications, and infrastructure for real-time insight and proactive issue resolution. It leverages generative AI, causal reasoning, and predictive analytics to deliver context-aware recommendations and automated remediation, enhancing operational efficiency and reliability across hybrid environments." },
+        { name: "Automated Resource Management", desc: "Autonomous resource optimization by continuously analyzing application demand and automatically allocating compute, storage, and network resources in real time. It ensures performance assurance and cost efficiency across hybrid and multicloud environments through AI-driven workload placement, scaling, and elasticity management." }
       ]
     },
     observe: {
       title: "Observe - Building Blocks",
       items: [
-        { name: "Monitoring Suite", desc: "Real-time observability of AI model health and data drift." }
+        { name: "Network Performance", desc: "Delivers AI-driven network observability and analytics to monitor, predict, and optimize performance across complex hybrid and multicloud infrastructures. It provides real-time telemetry ingestion, anomaly detection, and automated root-cause analysis, ensuring proactive network assurance and operational resilience." },
+        { name: "Application Observabality", desc: "Real-time, end-to-end visibility into applications, microservices, and infrastructure across hybrid and multicloud environments. It leverages AI-powered automated discovery, dependency mapping, and root-cause analysis to deliver continuous performance optimization and accelerated incident resolution." }
       ]
     },
     build: {
