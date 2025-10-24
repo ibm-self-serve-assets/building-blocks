@@ -1,73 +1,157 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const modalOverlay = document.getElementById("modal-overlay");
-  const modalBody = document.getElementById("modal-body");
-  const closeBtn = document.querySelector(".close-btn");
+  const showModal = (modal) => modal.classList.add("show");
+  const hideModal = (modal) => modal.classList.remove("show");
 
-  const modalData = {
+  /* ---------- TILE MODAL ---------- */
+  const tileModal = document.getElementById("tile-modal");
+  const tileTitle = document.getElementById("tile-modal-title");
+  const tileBody = document.getElementById("tile-modal-body");
+  const tileClose = tileModal.querySelector(".modal-close");
+
+  const tileData = {
     agents: {
-      title: "🤖 Agents",
-      content: `
-        <p><strong>IBM watsonx Orchestrate</strong> and <strong>watsonx.ai</strong> enable intelligent automation and task orchestration 
-        across business processes. This building block provides APIs, SDKs, and automation flows that integrate AI assistants into enterprise workflows.</p>
-        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents" target="_blank">🔗 View Agents Code</a>
-      `
+      title: "Agents - Building Blocks",
+      items: [
+        { name: "Agent Builder", desc: "The Agent Builder, powered by IBM watsonx Agentic Development Kit (ADK), simplifies the creation and deployment of intelligent, context-aware agents. It offers a modular framework for building goal-driven agents that integrate seamlessly into enterprise workflows." },
+        { name: "AI Gateway", desc: "Ability to provide a unified abstraction layer across multiple LLM providers, eliminating vendor lock-in. With its built-in extensibility and model integration capabilities, it allows seamless onboarding and orchestration of models from OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai within a single interoperable framework." },
+        { name: "Multi-Agent Orchestration", desc: "Seamless coordination and interaction among specialized autonomous agents to achieve complex, multi-step objectives. It manages task delegation, context sharing, and decision synchronization across agents." }
+      ]
     },
     data: {
-      title: "🧠 Data-for-AI",
+      title: "Data for AI - Building Blocks",
+      items: [
+        { name: "Vector Search", desc: "Delivers a high-performance, vector-based retrieval engine designed for GenAI pipelines. It enables semantic similarity matching to enhance retrieval-augmented generation (RAG) and is optimized for scalability, low-latency queries, and large-scale AI workloads." },
+        { name: "Question & Answer", desc: "Enables natural language interaction with enterprise data through intelligent query translation. Powered by watsonx.data Text2SQL, it transforms user questions into optimized, executable SQL queries, enabling seamless conversational access to structured datasets." },
+        { name: "Zero-Copy Lakehouse", desc: "Provides a unified query layer that enables direct access to data across databases, data warehouses, and cloud object stores — without replicating or moving it. This architecture minimizes data latency, optimizes storage utilization, and significantly reduces infrastructure costs." },
+        { name: "Data Security & Encryption", desc: "Safeguards sensitive information using advanced encryption, data masking, and fine-grained access controls. It strengthens data governance frameworks and ensures adherence to regulatory and compliance standards." }
+
+      ]
+    },
+    trusted: {
+      title: "Trusted AI - Building Blocks",
+      items: [
+        { name: "Secure IA Lifecycle", desc: "IBM Guardium AI Security ensures safe, compliant, and auditable AI adoption through model access controls, security posture management, and policy-driven governance. Its modular, API-based design enables flexible and scalable protection across hybrid and multicloud environments." },
+        { name: "Runtime Evaluation", desc: "Performs real-time assessment of Generative AI prompts and responses to ensure model reliability, compliance, and safety. Designed for enterprise and regulated environments, it enables continuous policy enforcement, bias detection, and risk monitoring for large language models (LLMs) during runtime." },
+        { name: "Design-Time Evaluations", desc: "Implements AI safety and compliance guardrails using IBM watsonx.governance for both design-time validation and real-time monitoring. Evaluates AI-generated content against bias, toxicity, jailbreaks, and policy violations through configurable risk metrics." }
+      ]
+    },
+    optimize: {
+      title: "Optimize - Building Blocks",
+      items: [
+        { name: "Resource Optimization", desc: "AI-driven scaling and cost control for hybrid deployments." }
+      ]
+    },
+    observe: {
+      title: "Observe - Building Blocks",
+      items: [
+        { name: "Monitoring Suite", desc: "Real-time observability of AI model health and data drift." }
+      ]
+    },
+    build: {
+      title: "Build & Deploy - Building Blocks",
+      items: [
+        { name: "CI/CD Integration", desc: "Automate AI model packaging, testing, and deployment pipelines." }
+      ]
+    }
+  };
+
+  document.querySelectorAll(".tile").forEach(tile => {
+    tile.addEventListener("click", () => {
+      const key = tile.getAttribute("data-category");
+      const data = tileData[key];
+      if (data) {
+        tileTitle.textContent = data.title;
+        tileBody.innerHTML = data.items
+          .map(item => `<p><strong>${item.name}</strong>: ${item.desc}</p>`)
+          .join("");
+        showModal(tileModal);
+      }
+    });
+  });
+
+  tileClose.addEventListener("click", () => hideModal(tileModal));
+  window.addEventListener("click", e => { if (e.target === tileModal) hideModal(tileModal); });
+
+  /* ---------- CARD MODAL ---------- */
+  const cardOverlay = document.getElementById("card-modal-overlay");
+  const cardBody = document.getElementById("card-modal-body");
+  const cardClose = cardOverlay.querySelector(".close-btn");
+
+  const cardData = {
+    agents: {
+      title: `<img src="icons/agent.png" alt="Agents Icon" class="modal-icon"> Agents`,
       content: `
-        <p>Data ingestion, preparation, and governance patterns built on <strong>watsonx.data</strong> to support AI-ready data pipelines. 
-        Includes vector search, RAG services, and fine-tuning data workflows.</p>
-        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai" target="_blank">🔗 Explore Data for AI</a>
+    <p><strong>IBM watsonx Orchestrate</strong> and <strong>watsonx.ai</strong> enable intelligent automation and orchestration across business processes.</p>
+    <ul>
+      <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank">🔗 Agent Builder</a></li>
+      <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank">🔗 AI Gateway</a></li>
+      <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank">🔗 Multi-Agent Orchestration</a></li>
+    </ul>
+  `
+    },
+
+    data: {
+      title: `<img src="icons/data.png" alt="Agents Icon" class="modal-icon"> Data-for-AI`,
+      content: `
+        <p>Provides a unified, high-performance data access and retrieval framework optimized for GenAI workloads. It enables semantic vector search, natural language-to-SQL query translation, and zero-copy data federation across databases and cloud stores—delivering low-latency, scalable, and cost-efficient AI data pipelines.</p>
+      <ul>
+        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/RAG-Accelerator" target="_blank">🔗 Question & Answer - RAG Accelerator</a></li>
+        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/Text-To-SQL" target="_blank">🔗 Question & Answer - Text To SQL </a></li>
+        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank">🔗 Vector Search</a></li>
+        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank">🔗 Data Security & Encryption</a></li>
+        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank">🔗 Zero Copy Lakehouse</a></li>
+    </ul>      
       `
     },
     trusted: {
-      title: "🛡 Trusted-AI",
+      title: `<img src="icons/trusted.png" alt="Agents Icon" class="modal-icon"> Trusted-AI`,
       content: `
-        <p>Ensuring fairness, transparency, and governance with <strong>watsonx.governance</strong>. 
-        Includes model validation, explainability, and bias detection workflows.</p>
-        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai" target="_blank">🔗 Learn More</a>
+        <p>Ensures secure, compliant, and auditable AI adoption across hybrid and multicloud environments through Guardium AI Security and watsonx.governance. It provides design-time and runtime evaluations with advanced guardrails, bias detection, and policy enforcement to maintain trust, safety, and regulatory alignment for large language models (LLMs)</strong>.</p>
+        <ul>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations/generative_ai" target="_blank">🔗 Runtime Evaluations</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank">🔗 Design Time Evaluations</a></li>
+    </ul>  
       `
     },
     optimize: {
-      title: "⚙ Optimize",
+      title: `<img src="icons/optimize.png" alt="Agents Icon" class="modal-icon"> Optimize`,
       content: `
-        <p><strong>IBM Turbonomic</strong> continuously optimizes performance and cost across hybrid cloud environments. 
-        This building block provides FinOps automation and smart resource orchestration examples.</p>
+        <p><strong>IBM Turbonomic</strong> automates performance and cost optimization across hybrid cloud environments.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize" target="_blank">🔗 Open Optimize Block</a>
       `
     },
     observe: {
-      title: "👁 Observe",
+      title: `<img src="icons/observe.png" alt="Agents Icon" class="modal-icon"> Observe`,
       content: `
-        <p>Empower real-time observability and monitoring with <strong>IBM Instana</strong>. 
-        Detect, analyze, and resolve issues proactively through AI-assisted insights.</p>
+        <p>Gain full-stack observability with <strong>IBM Instana</strong> to detect, analyze, and resolve issues proactively.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe" target="_blank">🔗 View Observability</a>
       `
     },
     builddeploy: {
-      title: "⚙ Build & Deploy",
+      title: `<img src="icons/build.png" alt="Agents Icon" class="modal-icon"> Build & Deploy`,
       content: `
-        <p>Deployable configurations that dynamically generate new code snippets from <strong>natural language prompts.</strong>
-        Examples include Infrastructure-as-Code automation, AI-driven code generation tools, and seamless integrations using iPaaS solutions.</p>
-        <a href=https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy target="_blank">🔗 Open Build & Deploy Block</a>
+        <p>Deployable configurations that dynamically generate new code snippets using <strong>natural language prompts</strong>.</p>
+        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy" target="_blank">🔗 Open Build & Deploy Block</a>
       `
     },
   };
 
+
+
   document.querySelectorAll(".card").forEach(card => {
     card.addEventListener("click", () => {
       const key = card.getAttribute("data-modal");
-      modalBody.innerHTML = `<h2>${modalData[key].title}</h2>${modalData[key].content}`;
-      modalOverlay.style.display = "flex";
+      const data = cardData[key];
+      if (data) {
+        cardBody.innerHTML = `<h2>${data.title}</h2>${data.content}`;
+        showModal(cardOverlay);
+      }
     });
   });
 
-  closeBtn.addEventListener("click", () => {
-    modalOverlay.style.display = "none";
-  });
-
-  modalOverlay.addEventListener("click", e => {
-    if (e.target === modalOverlay) modalOverlay.style.display = "none";
+  cardClose.addEventListener("click", () => hideModal(cardOverlay));
+  cardOverlay.addEventListener("click", e => {
+    if (e.target === cardOverlay) hideModal(cardOverlay);
   });
 });
-
