@@ -30,9 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
     trusted: {
       title: "Trusted AI - Building Blocks",
       items: [
-        { name: "Secure IA Lifecycle", desc: "IBM Guardium AI Security ensures safe, compliant, and auditable AI adoption through model access controls, security posture management, and policy-driven governance. Its modular, API-based design enables flexible and scalable protection across hybrid and multicloud environments." },
+        { name: "Design-Time Evaluations", desc: "Implements AI safety and compliance guardrails using IBM watsonx.governance for both design-time validation and real-time monitoring. Evaluates AI-generated content against bias, toxicity, jailbreaks, and policy violations through configurable risk metrics." },
         { name: "Runtime Evaluation", desc: "Performs real-time assessment of Generative AI prompts and responses to ensure model reliability, compliance, and safety. Designed for enterprise and regulated environments, it enables continuous policy enforcement, bias detection, and risk monitoring for large language models (LLMs) during runtime." },
-        { name: "Design-Time Evaluations", desc: "Implements AI safety and compliance guardrails using IBM watsonx.governance for both design-time validation and real-time monitoring. Evaluates AI-generated content against bias, toxicity, jailbreaks, and policy violations through configurable risk metrics." }
+        { name: "Secure IA Lifecycle", desc: "IBM Guardium AI Security ensures safe, compliant, and auditable AI adoption through model access controls, security posture management, and policy-driven governance. Its modular, API-based design enables flexible and scalable protection across hybrid and multicloud environments." }
       ]
     },
     optimize: {
@@ -113,9 +113,9 @@ document.addEventListener("DOMContentLoaded", () => {
       content: `
         <p>Ensures secure, compliant, and auditable AI adoption across hybrid and multicloud environments through Guardium AI Security and watsonx.governance. It provides design-time and runtime evaluations with advanced guardrails, bias detection, and policy enforcement to maintain trust, safety, and regulatory alignment for large language models (LLMs)</strong>.</p>
         <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations/generative_ai" target="_blank">🔗 Runtime Evaluations</a></li>
           <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank">🔗 Design Time Evaluations</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations/generative_ai" target="_blank">🔗 Runtime Evaluations</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li> 
     </ul>  
       `
     },
