@@ -12,7 +12,7 @@ It simplifies document ingestion and vector search setup with **plug-and-play co
 - [Technology Stack](#-technology-stack)
 - [Prerequisites](#-prerequisites)
 - [Project Structure](#-project-structure)
-- [Getting Started](#-getting-started)
+- [Developer Guide](#-developer-guide)
 - [Configuration](#-configuration)
 - [Usage](#-usage)
 - [Examples](#-examples)
@@ -97,7 +97,7 @@ Before you start, ensure the following:
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Developer Guide
 
 ### 1. Clone the Repository
 ```bash
