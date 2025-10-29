@@ -14,7 +14,7 @@ The content is organized into four main categories:
 <img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs.png" alt="Trusted AI Building Blocks" width="700"/>
 
 ### 1. **Design-time Evaluations**  
-- Tools for evluating AI models and agents in your development environment.
+- Tools for evaluating AI models and agents in your development environment.
 - Ensures AI solutions are trustworthy **before deployment**.  
 
 ### 2. **Runtime Evaluations**  
@@ -41,6 +41,7 @@ The content is organized into four main categories:
 
 ## 🤝 Contributing  
 We welcome contributions! Please submit issues, suggest improvements, or open pull requests to expand the resources and keep this repository valuable for all partners.  
+
 
 
 
