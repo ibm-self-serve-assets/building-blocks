@@ -1,6 +1,7 @@
-# Travel Planner Agent Demo Setup Guide
+# 🧭 Travel Planner Agent – Building Block Deployment Guide
 
-This comprehensive guide will walk you through building a sophisticated Travel Planner Agent using IBM watsonx Orchestrate. This intelligent agent represents a powerful example of multi-agent orchestration, demonstrating how to create conversational AI systems that can seamlessly integrate multiple external services and data sources to provide comprehensive, personalized assistance.
+This guide provides a step-by-step walkthrough for deploying and customizing the **Travel Planner Agent**, built using **IBM watsonx Orchestrate**.  
+It demonstrates a multi-agent orchestration system that integrates external services like **Tavily** and **Airbnb** to provide personalized travel planning assistance.
 
 The Travel Planner Agent we'll build is designed to revolutionize how users approach trip planning by offering:
 
@@ -10,53 +11,117 @@ The Travel Planner Agent we'll build is designed to revolutionize how users appr
 - **Interactive Planning Experience**: Providing a conversational interface that guides users through the entire planning process with natural, engaging dialogue
 - **Comprehensive Information Synthesis**: Combining data from multiple sources to deliver well-rounded, actionable travel advice
 
-This demo showcases the power of modern AI orchestration platforms in creating sophisticated, tool-enabled conversational agents that can handle complex, multi-step workflows while maintaining a natural, user-friendly experience.
+---
 
-## Table of Contents
+## 📑 Table of Contents
+1. [Overview](#overview)
+2. [Architecture](#architecture)
+3. [Features](#features)
+4. [Technology Stack](#technology-stack)
+5. [Prerequisites](#prerequisites)
+6. [Project Structure](#project-structure)
+7. [Developer Guide](#developer-guide)
+   - [Step 1: Tavily API Setup](#step-1-tavily-api-setup)
+   - [Step 2: Watsonx Orchestrate Connection Setup](#step-2-watsonx-orchestrate-connection-setup)
+   - [Step 3: Travel Planner Agent Creation](#step-3-travel-planner-agent-creation)
+   - [Step 4: Tool Configuration](#step-4-tool-configuration)
+   - [Step 5: Agent Testing](#step-5-agent-testing)
+   - [Step 6: External Integration](#step-6-external-integration)
+8. [Examples](#examples)
+9. [Business Value](#business-value)
+10. [Use Cases](#use-cases)
+11. [Benefits](#benefits)
+12. [Contributing](#contributing)
+13. [License](#license)
 
-- [Overview](#overview)
-- [Prerequisites](#prerequisites)
-- [Step 1: Tavily API Setup](#step-1-tavily-api-setup)
-- [Step 2: Watsonx Orchestrate Connection Setup](#step-2-watsonx-orchestrate-connection-setup)
-- [Step 3: Travel Planner Agent Creation](#step-3-travel-planner-agent-creation)
-- [Step 4: Tool Configuration](#step-4-tool-configuration)
-- [Step 5: Agent Testing](#step-5-agent-testing)
-- [Step 6: External Integration](#step-6-external-integration)
-- [Troubleshooting](#troubleshooting)
-- [Summary](#summary)
+---
 
-## Overview
+## 🧠 Overview
 
-In this demo, we will create a **Travel Planner Agent** that provides:
+The **Travel Planner Agent** helps users plan personalized trips through intelligent orchestration of AI tools. It performs destination research, accommodation discovery, and itinerary creation — all through a conversational interface powered by IBM watsonx Orchestrate.
 
-- **Destination Research**: Web search capabilities for attractions, activities, and local information
-- **Accommodation Search**: Airbnb integration for finding suitable places to stay
-- **Personalized Recommendations**: Customized travel plans based on user preferences
-- **Interactive Planning**: Conversational interface for trip planning assistance
+**Core Capabilities:**
+- Intelligent destination research using **Tavily API**
+- Smart accommodation recommendations via **Airbnb integration**
+- Personalized itinerary generation based on user input
+- Interactive, natural language trip planning experience
 
-### Architecture
+This demo showcases how AI orchestration can combine multiple services into a single, intuitive travel planning assistant.
 
-The following diagram illustrates the basic agent and tool flow for the Travel Planner Agent:
+---
+
+## 🏗️ Architecture
+
+The architecture uses IBM watsonx Orchestrate as the core orchestration layer, connecting to external MCP servers and APIs.
 
 ![Travel Planner Agent Architecture](./assets/Travel_planner_agent.png)
 
-The agent will utilize three main tools:
-1. **Tavily Web Search** - For researching destinations and attractions
-2. **Airbnb Search** - For finding available accommodations
-3. **Airbnb Listing Details** - For detailed accommodation information
+**Components:**
+1. **Tavily Web Search MCP** – Retrieves attractions, activities, and local insights  
+2. **Airbnb Search MCP** – Finds accommodation options based on preferences  
+3. **Airbnb Listing Details MCP** – Provides detailed property information  
 
-## Prerequisites
+The agent coordinates these tools in a structured workflow to provide complete, context-aware travel recommendations.
 
-Before starting, ensure you have:
+---
 
-- Access to IBM watsonx Orchestrate instance
-- Tavily API account and key
-- Basic understanding of agent development concepts
-- Text editor for HTML file modification
+## ✨ Features
 
-## Step 1: Tavily API Setup
+- **Multi-Tool Integration**: Combines multiple APIs for richer, context-driven responses  
+- **Natural Language Interface**: Users interact conversationally  
+- **Personalization**: Learns from user preferences (budget, duration, location)  
+- **Modular Setup**: Tools can be replaced or extended with new MCP servers  
+- **Deployable Anywhere**: Works within IBM watsonx Orchestrate or embedded in web applications  
 
-### 1.1 Generate Tavily API Key
+---
+
+## 🧰 Technology Stack
+
+| Component | Technology | Purpose |
+|------------|-------------|----------|
+| **Platform** | IBM watsonx Orchestrate | Agent orchestration and workflow management |
+| **Integration Layer** | MCP (Model Context Protocol) | Connects external APIs like Tavily and Airbnb |
+| **External Services** | Tavily API, Airbnb MCP Server | Destination and accommodation data |
+| **Frontend (Optional)** | HTML/JavaScript | Embed the agent in web or demo environments |
+| **Authentication** | Key-Value Pair | Secure access to external APIs |
+| **Language** | Natural Language Prompts | Enables conversational interaction |
+
+---
+
+## ⚙️ Prerequisites
+
+Before you begin, ensure you have:
+- An **IBM watsonx Orchestrate** instance  
+- A valid **Tavily API key**  
+- Access to **Airbnb MCP Server** (publicly available)  
+- Basic understanding of **agent development** concepts  
+- A code/text editor (like VS Code) for HTML modification  
+
+---
+
+## 📁 Project Structure
+
+```
+Travel_Planner_Agent/
+│
+├── assets/                     # Screenshots and architecture diagrams
+├── travel_planner.html          # HTML for web integration
+├── README.md                    # Documentation
+├── config/                      # Configuration and setup visuals
+│   ├── tavily_setup.png
+│   ├── orchestration/
+│
+└── tools/
+    ├── tavily/
+    ├── airbnb/
+```
+
+---
+
+## 🧑‍💻 Developer Guide
+
+### Step 1: Tavily API Setup
+Follow steps to create and configure your **Tavily API key**.  
 
 To configure your Tavily API key, follow these steps:
 
@@ -69,12 +134,10 @@ To configure your Tavily API key, follow these steps:
 
 > **Important**: Keep your API key secure and never share it publicly.
 
-## Step 2: Watsonx Orchestrate Connection Setup
-
-### 2.1 Access Connections Panel
-
-1. Log in to your watsonx Orchestrate instance
-2. Navigate to the **Connections** option in the left sidebar
+### Step 2: Watsonx Orchestrate Connection Setup
+Set up a new connection under **Connections** in watsonx Orchestrate.  
+Authenticate using your Tavily API key and verify both draft and live environments.
+Navigate to the **Connections** option in the left sidebar
 
 ![Connections Panel](./assets/Connections_wxo.png)
 
@@ -134,7 +197,11 @@ To configure your Tavily API key, follow these steps:
 
 2. Click the top menu to return to the main interface
 
-## Step 3: Travel Planner Agent Creation
+### Step 3: Travel Planner Agent Creation
+Use the **Agent Builder** to create a new agent:
+- Name: `Travel_Planner_Agent`
+- Configure behavior and workflow (as provided in the original guide)
+- Include conversational prompts, greeting rules, and tool usage patterns.
 
 ### 3.1 Create New Agent
 
@@ -193,8 +260,7 @@ INTERACTION STYLE:
 Example queries: "I want to visit Austin, Texas", "Plan a weekend trip to San Francisco", "Find me things to do in Paris with good weather"
 ```
 
-## Step 4: Tool Configuration
-
+### Step 4: Tool Configuration
 ### 4.1 Configure Tavily Search Tool
 
 #### 4.1.1 Add MCP Server
@@ -286,7 +352,10 @@ Example queries: "I want to visit Austin, Texas", "Plan a weekend trip to San Fr
 - Airbnb Search
 - Airbnb Listing Details
 
-## Step 5: Agent Testing
+### Step 5: Agent Testing
+Open **Preview**, interact with the agent, and validate responses:
+- Test greetings and behavior.
+- Ensure Tavily and Airbnb tools work correctly.
 
 ### 5.1 Test Agent Functionality
 
@@ -304,8 +373,8 @@ Test the agent with sample queries to ensure all tools are working:
 - Accommodation search requests
 - Combined travel planning requests
 
-## Step 6: External Integration
-
+### Step 6: External Integration
+Embed your agent in an external app:
 ### 6.1 Embed Agent in External Application
 
 To integrate your agent into an external application:
@@ -340,60 +409,84 @@ Test your Travel Planner Agent with these scenarios:
 ![Test Scenario 4](./assets/t4.png)
 ![Test Scenario 5](./assets/t5.png)
 
-## Troubleshooting
+---
 
-### Common Issues and Solutions
+## 🧩 Examples
 
-#### Connection Issues
-- **Problem**: Tavily connection fails to establish
-- **Solution**: Verify API key is correct and has proper permissions
+| Scenario | Example Query | Expected Outcome |
+|-----------|----------------|------------------|
+| Destination Research | “Plan a weekend trip to Paris” | Suggested attractions, local experiences, and weather |
+| Accommodation Search | “Find me Airbnb stays in Goa under ₹5000 per night” | Filtered Airbnb listings |
+| Combined Planning | “Plan a 5-day trip to Singapore for 2 adults” | Complete itinerary with hotels and attractions |
 
-#### Tool Activation Issues
-- **Problem**: Tools not appearing in agent
-- **Solution**: Ensure MCP servers are properly connected and tools are activated
-
-#### Agent Response Issues
-- **Problem**: Agent not following behavior instructions
-- **Solution**: Review and refine the behavior configuration
-
-#### External Integration Issues
-- **Problem**: HTML integration not working
-- **Solution**: Verify orchestration ID and agent ID are correctly copied
-
-### Getting Help
-
-If you encounter issues not covered in this guide:
-1. Check the IBM watsonx Orchestrate documentation
-2. Review the agent and tool configuration
-3. Test individual components separately
-4. Contact support if needed
-
-## Summary
-
-Congratulations! You have successfully created a comprehensive Travel Planner Agent with the following capabilities:
-
-### What You've Built
-
-- **Intelligent Travel Planning**: Agent that researches destinations and provides recommendations
-- **Web Search Integration**: Tavily-powered search for attractions and local information
-- **Accommodation Search**: Airbnb integration for finding suitable places to stay
-- **Interactive Interface**: Conversational agent with personalized responses
-- **External Integration**: Embeddable agent for use in external applications
-
-### Next Steps
-
-- **Enhance the Agent**: Add more tools and capabilities
-- **Customize Behavior**: Refine the agent's personality and responses
-- **Scale Integration**: Deploy to production environments
-- **Monitor Performance**: Track agent usage and optimize responses
-
-### Additional Resources
-
-- [IBM watsonx Orchestrate Documentation](https://developer.watson-orchestrate.ibm.com/)
-- [Tavily API Documentation](https://docs.tavily.com/)
-- [Airbnb MCP Server Documentation](https://github.com/openbnb/mcp-server-airbnb)
-- [Model Context Protocol Servers](https://github.com/modelcontextprotocol/servers) - Free MCP servers to extend your agent capabilities
+Example test screenshots:  
+`t1.png`, `t2.png`, `t3.png`, `t4.png`, and `t5.png`.
 
 ---
 
-**Note**: This demo showcases the power of multi-agent orchestration in creating sophisticated, tool-enabled conversational agents. The principles demonstrated here can be applied to various other use cases and domains.
+## 💼 Business Value
+
+The **Travel Planner Agent** demonstrates enterprise-grade AI orchestration.  
+
+**Key Business Impacts:**
+- Automates multi-source data integration  
+- Enables AI-powered customer experience for travel or lifestyle domains  
+- Serves as a reusable **building block** for other multi-agent scenarios  
+- Highlights IBM watsonx Orchestrate’s potential for rapid automation  
+
+---
+
+## 🌍 Use Cases
+
+- **Travel & Hospitality**: Automated itinerary creation  
+- **AI Demonstrations**: Showcasing orchestration capabilities  
+- **Customer Assistance**: 24/7 trip-planning conversational agent  
+- **Education & Training**: Teaching GenAI orchestration principles  
+- **Data Enrichment**: Combining structured (Airbnb) and unstructured (web) data  
+
+---
+
+## 🚀 Benefits
+
+| Category | Description |
+|-----------|-------------|
+| **Automation** | Streamlines research and booking workflows |
+| **Scalability** | Add new MCP servers easily |
+| **Flexibility** | Works with both structured and unstructured data |
+| **Engagement** | Offers personalized and dynamic responses |
+| **Reusability** | Acts as a template for future multi-agent use cases |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!  
+
+To contribute:
+1. Fork the repository  
+2. Create a branch (`feature/new-tool-support`)  
+3. Commit and push your changes  
+4. Submit a pull request with a summary of updates  
+
+Please include documentation and testing steps in your PR.
+
+---
+
+## ⚖️ License
+
+This project is licensed under the **Apache 2.0 License**.  
+See the [LICENSE](./LICENSE) file for details.
+
+---
+
+## 🧩 Additional Resources
+
+- [IBM watsonx Orchestrate Documentation](https://developer.watson-orchestrate.ibm.com/)
+- [Tavily API Documentation](https://docs.tavily.com/)
+- [Airbnb MCP Server GitHub](https://github.com/openbnb/mcp-server-airbnb)
+- [Model Context Protocol Servers](https://github.com/modelcontextprotocol/servers)
+
+---
+
+**Note:**  
+This building block demonstrates how **multi-agent orchestration** can create intelligent, extensible conversational AI solutions that integrate external tools for real-world outcomes.
