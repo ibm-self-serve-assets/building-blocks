@@ -599,3 +599,108 @@ footer a:hover {
   line-height: 1.6;
   margin-bottom: 1rem;
 }
+
+/* ==== FEEDBACK SECTION ==== */
+#feedback {
+  background: linear-gradient(135deg, #001f4d, #003366);
+  padding: 3rem 2rem;
+  color: #ffffff;
+  text-align: left;
+}
+
+.feedback-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#feedback h2 {
+  color: #61dafb;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+#feedback p {
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+#feedback .btn-primary {
+  margin-top: 1.5rem;
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  background-color: #0062ff;
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.3s ease;
+}
+
+#feedback .btn-primary:hover {
+  background-color: #0044cc;
+}
+
+.feedback-note {
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: #cccccc;
+}
+
+.feedback-link {
+  color: #ffffff;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.feedback-link:hover {
+  color: #00b4ff;
+  text-decoration: underline;
+}
+
+/* ==== ACCESS SECTION ==== */
+#access {
+  background: #001f4d;
+  padding: 3rem 2rem;
+  text-align: left;
+}
+
+.access-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#access h2 {
+  color: #61dafb;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+#access p {
+  color: #e0e0e0;
+  font-size: 1.1rem;
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+.access-link {
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.access-link:hover {
+  color: #00b4ff;
+}
+
+.access-buttons {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.access-buttons a {
+  text-decoration: none;
+}
