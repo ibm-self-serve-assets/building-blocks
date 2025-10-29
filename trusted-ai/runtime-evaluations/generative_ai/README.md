@@ -9,7 +9,7 @@ Ensure your Generative and Traditional AI models are trustworthy, compliant, and
 - [Technology Stack](#technology-stack)
 - [Prerequisites](#prerequisites)
 - [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
+- [Developer Guide](#developer-guide)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Examples](#examples)
@@ -121,7 +121,7 @@ Before starting, ensure you have:
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Developer Guide
 
 ### Clone the repository
 ```bash

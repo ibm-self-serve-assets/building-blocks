@@ -457,16 +457,17 @@ The **Travel Planner Agent** demonstrates enterprise-grade AI orchestration.
 | **Reusability** | Acts as a template for future multi-agent use cases |
 
 ---
+ 
 
 ## 🤝 Contributing
 
 Contributions are welcome!  
 
-To contribute:
-1. Fork the repository  
-2. Create a branch (`feature/new-tool-support`)  
-3. Commit and push your changes  
-4. Submit a pull request with a summary of updates  
+To enhance or extend this building block:
+1. Fork this repo  
+2. Create a feature branch  
+3. Add documentation for your update  
+4. Submit a Pull Request  
 
 Please include documentation and testing steps in your PR.
 
