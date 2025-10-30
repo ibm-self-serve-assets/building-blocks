@@ -2,20 +2,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const showModal = (modal) => modal.classList.add("show");
   const hideModal = (modal) => modal.classList.remove("show");
 
-  /* ---------- TILE MODAL ---------- */
   const tileModal = document.getElementById("tile-modal");
   const tileTitle = document.getElementById("tile-modal-title");
   const tileBody = document.getElementById("tile-modal-body");
   const tileClose = tileModal.querySelector(".modal-close");
 
+  const cardOverlay = document.getElementById("card-modal-overlay");
+  const cardBody = document.getElementById("card-modal-body");
+  const cardClose = cardOverlay.querySelector(".close-btn");
+
+  const createLink = (key, label) =>
+    `<p style="margin-top:1rem;"><a href="#" class="open-modal-link" data-target="${key}" style="color:#00b4ff;text-decoration:none;font-weight:500;">🔗 Access ${label} Repository</a></p>`;
+
   const tileData = {
     agents: {
       title: "Agents - Building Blocks",
       items: [
+
         { name: "Agent Builder", desc: "The Agent Builder, powered by IBM watsonx Agentic Development Kit (ADK), simplifies the creation and deployment of intelligent, context-aware agents. It offers a modular framework for building goal-driven agents that integrate seamlessly into enterprise workflows." },
         { name: "AI Gateway", desc: "Ability to provide a unified abstraction layer across multiple LLM providers, eliminating vendor lock-in. With its built-in extensibility and model integration capabilities, it allows seamless onboarding and orchestration of models from OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai within a single interoperable framework." },
         { name: "Multi-Agent Orchestration", desc: "Seamless coordination and interaction among specialized autonomous agents to achieve complex, multi-step objectives. It manages task delegation, context sharing, and decision synchronization across agents." }
-      ]
+      ],
+      link: createLink("agents", "Agents")
     },
     data: {
       title: "Data for AI - Building Blocks",
@@ -24,8 +32,8 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Question & Answer", desc: "Enables natural language interaction with enterprise data through intelligent query translation. Powered by watsonx.data Text2SQL, it transforms user questions into optimized, executable SQL queries, enabling seamless conversational access to structured datasets." },
         { name: "Zero-Copy Lakehouse", desc: "Provides a unified query layer that enables direct access to data across databases, data warehouses, and cloud object stores — without replicating or moving it. This architecture minimizes data latency, optimizes storage utilization, and significantly reduces infrastructure costs." },
         { name: "Data Security & Encryption", desc: "Safeguards sensitive information using advanced encryption, data masking, and fine-grained access controls. It strengthens data governance frameworks and ensures adherence to regulatory and compliance standards." }
-
-      ]
+      ],
+      link: createLink("data", "Data for AI")
     },
     trusted: {
       title: "Trusted AI - Building Blocks",
@@ -33,58 +41,40 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Design-Time Evaluations", desc: "Assess and validate your AI models during the build phase to ensure optimal performance, fairness, and safety before deployment. Automatically evaluate AI-generated content for bias, toxicity, jailbreak attempts, and policy violations using configurable risk metrics. This proactive approach helps teams identify and address issues early in the development lifecycle, ensuring models are trustworthy and compliant from the start." },
         { name: "Runtime Evaluation", desc: "Maintain continuous trust and compliance after deployment with real-time monitoring of your AI models. Real-time guardrails help ensure your models remain aligned with business and regulatory requirements. Runtime and production evaluations track performance drift, monitor changes in inputs and outputs, and detect bias to maintain ongoing reliability, safety, and compliance. Automated policy enforcement and risk monitoring keep large language models (LLMs) and other AI systems secure and accountable in production." },
         { name: "Secure IA Lifecycle", desc: "Safeguard your AI ecosystem end-to-end with IBM Guardium AI Security. Ensure safe, compliant, and auditable AI adoption through robust model access controls, security posture management, model security, threat resilience, and policy-driven governance. Its modular, API-based architecture delivers flexible and scalable protection, enabling organizations to secure AI systems with confidence." }
-      ]
+      ],
+      link: createLink("trusted", "Trusted AI")
     },
     optimize: {
       title: "Optimize - Building Blocks",
       items: [
-        { name: "FinOps", desc: "Provides deep visibility into IT spend across hybrid and multicloud environments. It enables organizations to optimize cloud costs, forecast budgets, and align technology investments with business outcomes through data-driven insights and automated cost governance."},
+        { name: "FinOps", desc: "Provides deep visibility into IT spend across hybrid and multicloud environments. It enables organizations to optimize cloud costs, forecast budgets, and align technology investments with business outcomes through data-driven insights and automated cost governance." },
         { name: "Automated Resilience and Compliance", desc: "AI-powered observability and decision intelligence platform that unifies data across IT operations, applications, and infrastructure for real-time insight and proactive issue resolution. It leverages generative AI, causal reasoning, and predictive analytics to deliver context-aware recommendations and automated remediation, enhancing operational efficiency and reliability across hybrid environments." },
         { name: "Automated Resource Management", desc: "Autonomous resource optimization by continuously analyzing application demand and automatically allocating compute, storage, and network resources in real time. It ensures performance assurance and cost efficiency across hybrid and multicloud environments through AI-driven workload placement, scaling, and elasticity management." }
-      ]
+      ],
+      link: createLink("optimize", "Optimize")
     },
     observe: {
       title: "Observe - Building Blocks",
       items: [
         { name: "Network Performance", desc: "Delivers AI-driven network observability and analytics to monitor, predict, and optimize performance across complex hybrid and multicloud infrastructures. It provides real-time telemetry ingestion, anomaly detection, and automated root-cause analysis, ensuring proactive network assurance and operational resilience." },
         { name: "Application Observabality", desc: "Real-time, end-to-end visibility into applications, microservices, and infrastructure across hybrid and multicloud environments. It leverages AI-powered automated discovery, dependency mapping, and root-cause analysis to deliver continuous performance optimization and accelerated incident resolution." }
-      ]
+      ],
+      link: createLink("observe", "Observe")
     },
     build: {
       title: "Build & Deploy - Building Blocks",
       items: [
         { name: "Authentication Management", desc: "Adaptive, AI-driven identity and access management (IAM) that secures user authentication across cloud and on-premises applications. It delivers risk-based multifactor authentication, single sign-on (SSO), and identity governance to ensure zero-trust security compliance and seamless user experiences." },
         { name: "Infrastructure as Code", desc: "Automation tool that enables declarative provisioning, management, and versioning of cloud and on-premises resources. It provides idempotent, multi-cloud orchestration through reusable configuration files, ensuring consistent and scalable infrastructure deployment across hybrid environments." },
-        { name: "Code Assistant", desc: "Leverages large language models (LLMs) to accelerate code generation, modernization, and automation across programming languages and platforms. It provides context-aware code recommendations, test generation, and documentation assistance, enabling developers to enhance productivity and reduce technical debt in enterprise software delivery." },
-      ]
+        { name: "Code Assistant", desc: "Leverages large language models (LLMs) to accelerate code generation, modernization, and automation across programming languages and platforms. It provides context-aware code recommendations, test generation, and documentation assistance, enabling developers to enhance productivity and reduce technical debt in enterprise software delivery." }
+      ],
+      link: createLink("builddeploy", "Build & Deploy")
     }
   };
 
-  document.querySelectorAll(".tile").forEach(tile => {
-    tile.addEventListener("click", () => {
-      const key = tile.getAttribute("data-category");
-      const data = tileData[key];
-      if (data) {
-        tileTitle.textContent = data.title;
-        tileBody.innerHTML = data.items
-          .map(item => `<p><strong>${item.name}</strong>: ${item.desc}</p>`)
-          .join("");
-        showModal(tileModal);
-      }
-    });
-  });
-
-  tileClose.addEventListener("click", () => hideModal(tileModal));
-  window.addEventListener("click", e => { if (e.target === tileModal) hideModal(tileModal); });
-
-  /* ---------- CARD MODAL ---------- */
-  const cardOverlay = document.getElementById("card-modal-overlay");
-  const cardBody = document.getElementById("card-modal-body");
-  const cardClose = cardOverlay.querySelector(".close-btn");
-
   const cardData = {
     agents: {
-      title: `<img src="icons/agent.png" alt="Agents Icon" class="modal-icon"> Agents`,
+      title: `<img src="icons/agent.png" class="modal-icon"> Agents`,
       content: `
     <p><strong>IBM watsonx Orchestrate</strong> and <strong>watsonx.ai</strong> enable intelligent automation and orchestration across business processes.</p>
     <ul>
@@ -94,9 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
     </ul>
   `
     },
-
     data: {
-      title: `<img src="icons/data.png" alt="Agents Icon" class="modal-icon"> Data-for-AI`,
+      title: `<img src="icons/data.png" class="modal-icon"> Data-for-AI`,
       content: `
         <p>Provides a unified, high-performance data access and retrieval framework optimized for GenAI workloads. It enables semantic vector search, natural language-to-SQL query translation, and zero-copy data federation across databases and cloud stores—delivering low-latency, scalable, and cost-efficient AI data pipelines.</p>
       <ul>
@@ -109,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `
     },
     trusted: {
-      title: `<img src="icons/trusted.png" alt="Agents Icon" class="modal-icon"> Trusted-AI`,
+      title: `<img src="icons/trusted.png" class="modal-icon"> Trusted-AI`,
       content: `
         <p>Ensures secure, compliant, and auditable AI adoption across hybrid and multicloud environments through Guardium AI Security and watsonx.governance. It provides design-time and runtime evaluations with advanced guardrails, bias detection, and policy enforcement to maintain trust, safety, and regulatory alignment for large language models (LLMs)</strong>.</p>
         <ul>
@@ -120,33 +109,50 @@ document.addEventListener("DOMContentLoaded", () => {
       `
     },
     optimize: {
-      title: `<img src="icons/optimize.png" alt="Agents Icon" class="modal-icon"> Optimize`,
+      title: `<img src="icons/optimize.png" class="modal-icon"> Optimize`,
       content: `
         <p><strong>IBM Turbonomic</strong> automates performance and cost optimization across hybrid cloud environments.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize" target="_blank">🔗 Open Optimize Block</a>
       `
     },
     observe: {
-      title: `<img src="icons/observe.png" alt="Agents Icon" class="modal-icon"> Observe`,
+      title: `<img src="icons/observe.png" class="modal-icon"> Observe`,
       content: `
         <p>Gain full-stack observability with <strong>IBM Instana</strong> to detect, analyze, and resolve issues proactively.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe" target="_blank">🔗 View Observability</a>
       `
     },
     builddeploy: {
-      title: `<img src="icons/build.png" alt="Agents Icon" class="modal-icon"> Build & Deploy`,
+      title: `<img src="icons/build.png" class="modal-icon"> Build & Deploy`,
       content: `
         <p>Deployable configurations that dynamically generate new code snippets using <strong>natural language prompts</strong>.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy" target="_blank">🔗 Open Build & Deploy Block</a>
       `
-    },
+    }
   };
 
+  /* Tile modal interactions */
+  document.querySelectorAll(".tile").forEach(tile => {
+    tile.addEventListener("click", () => {
+      const key = tile.dataset.category;
+      const data = tileData[key];
+      if (data) {
+        tileTitle.textContent = data.title;
+        tileBody.innerHTML =
+          data.items.map(item => `<p><strong>${item.name}</strong>: ${item.desc}</p>`).join("") +
+          (data.link || "");
+        showModal(tileModal);
+      }
+    });
+  });
 
+  tileClose.addEventListener("click", () => hideModal(tileModal));
+  window.addEventListener("click", e => { if (e.target === tileModal) hideModal(tileModal); });
 
+  /* Card modal interactions */
   document.querySelectorAll(".card").forEach(card => {
     card.addEventListener("click", () => {
-      const key = card.getAttribute("data-modal");
+      const key = card.dataset.modal;
       const data = cardData[key];
       if (data) {
         cardBody.innerHTML = `<h2>${data.title}</h2>${data.content}`;
@@ -156,7 +162,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   cardClose.addEventListener("click", () => hideModal(cardOverlay));
-  cardOverlay.addEventListener("click", e => {
-    if (e.target === cardOverlay) hideModal(cardOverlay);
+  cardOverlay.addEventListener("click", e => { if (e.target === cardOverlay) hideModal(cardOverlay); });
+
+  /* Link navigation inside tile modals */
+  document.addEventListener("click", e => {
+    if (e.target.classList.contains("open-modal-link")) {
+      e.preventDefault();
+      const targetKey = e.target.dataset.target;
+      hideModal(tileModal);
+      const card = cardData[targetKey];
+      if (card) {
+        cardBody.innerHTML = `<h2>${card.title}</h2>${card.content}`;
+        showModal(cardOverlay);
+      }
+    }
   });
 });
