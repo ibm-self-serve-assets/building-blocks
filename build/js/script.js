@@ -12,18 +12,38 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardClose = cardOverlay.querySelector(".close-btn");
 
   const createLink = (key, label) =>
-    `<p style="margin-top:1rem;"><a href="#" class="open-modal-link" data-target="${key}" style="color:#00b4ff;text-decoration:none;font-weight:500;">🔗 Access ${label} Repository</a></p>`;
+    `<p style="margin-top:1rem;">
+      <a href="#" class="open-modal-link" data-target="${key}" style="color:#00b4ff;text-decoration:none;font-weight:500;">
+        🔗 Access ${label} Repository
+      </a>
+    </p>`;
+
+  // ✅ SharePoint PPT links
+  const overviewLinks = {
+    agents: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Entry_Points/BB_Agents_EntryPoints.pptx?d=wbbed7561714c4490ab9aada13c749db9&csf=1&web=1&e=U3mtE5",
+    data: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Entry_Points/BB_DataforAI_EntryPoints_in_review.pptx?d=wc76b116996564a87a59a2d4a52104c48&csf=1&web=1&e=VXIObU",
+    trusted: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Entry_Points/BB_TrustedAI_EntryPoints.pptx?d=w1ab4b9fd63fc4b91aca41387df3ac429&csf=1&web=1&e=M8erAv"
+  };
+
+  // ✅ Generates the presentation hyperlink
+  const createOverviewLink = (key, label) =>
+    overviewLinks[key]
+      ? `<p style="margin-top:0.3rem;">
+          <a href="${overviewLinks[key]}" target="_blank" style="color:#00b4ff;text-decoration:none;font-weight:500;">
+            🔗 Overview of ${label} (Presentation)
+          </a>
+         </p>`
+      : "";
 
   const tileData = {
     agents: {
       title: "Agents - Building Blocks",
       items: [
-
         { name: "Agent Builder", desc: "The Agent Builder, powered by IBM watsonx Agentic Development Kit (ADK), simplifies the creation and deployment of intelligent, context-aware agents. It offers a modular framework for building goal-driven agents that integrate seamlessly into enterprise workflows." },
         { name: "AI Gateway", desc: "Ability to provide a unified abstraction layer across multiple LLM providers, eliminating vendor lock-in. With its built-in extensibility and model integration capabilities, it allows seamless onboarding and orchestration of models from OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai within a single interoperable framework." },
         { name: "Multi-Agent Orchestration", desc: "Seamless coordination and interaction among specialized autonomous agents to achieve complex, multi-step objectives. It manages task delegation, context sharing, and decision synchronization across agents." }
       ],
-      link: createLink("agents", "Agents")
+      link: createLink("agents", "Agents") + createOverviewLink("agents", "Agents")
     },
     data: {
       title: "Data for AI - Building Blocks",
@@ -33,16 +53,16 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Zero-Copy Lakehouse", desc: "Provides a unified query layer that enables direct access to data across databases, data warehouses, and cloud object stores — without replicating or moving it. This architecture minimizes data latency, optimizes storage utilization, and significantly reduces infrastructure costs." },
         { name: "Data Security & Encryption", desc: "Safeguards sensitive information using advanced encryption, data masking, and fine-grained access controls. It strengthens data governance frameworks and ensures adherence to regulatory and compliance standards." }
       ],
-      link: createLink("data", "Data for AI")
+      link: createLink("data", "Data for AI") + createOverviewLink("data", "Data for AI")
     },
     trusted: {
       title: "Trusted AI - Building Blocks",
       items: [
         { name: "Design-Time Evaluations", desc: "Assess and validate your AI models during the build phase to ensure optimal performance, fairness, and safety before deployment. Automatically evaluate AI-generated content for bias, toxicity, jailbreak attempts, and policy violations using configurable risk metrics. This proactive approach helps teams identify and address issues early in the development lifecycle, ensuring models are trustworthy and compliant from the start." },
         { name: "Runtime Evaluation", desc: "Maintain continuous trust and compliance after deployment with real-time monitoring of your AI models. Real-time guardrails help ensure your models remain aligned with business and regulatory requirements. Runtime and production evaluations track performance drift, monitor changes in inputs and outputs, and detect bias to maintain ongoing reliability, safety, and compliance. Automated policy enforcement and risk monitoring keep large language models (LLMs) and other AI systems secure and accountable in production." },
-        { name: "Secure IA Lifecycle", desc: "Safeguard your AI ecosystem end-to-end with IBM Guardium AI Security. Ensure safe, compliant, and auditable AI adoption through robust model access controls, security posture management, model security, threat resilience, and policy-driven governance. Its modular, API-based architecture delivers flexible and scalable protection, enabling organizations to secure AI systems with confidence." }
+        { name: "Secure AI Lifecycle", desc: "Safeguard your AI ecosystem end-to-end with IBM Guardium AI Security. Ensure safe, compliant, and auditable AI adoption through robust model access controls, security posture management, model security, threat resilience, and policy-driven governance. Its modular, API-based architecture delivers flexible and scalable protection, enabling organizations to secure AI systems with confidence." }
       ],
-      link: createLink("trusted", "Trusted AI")
+      link: createLink("trusted", "Trusted AI") + createOverviewLink("trusted", "Trusted AI")
     },
     optimize: {
       title: "Optimize - Building Blocks",
@@ -76,36 +96,36 @@ document.addEventListener("DOMContentLoaded", () => {
     agents: {
       title: `<img src="icons/agent.png" class="modal-icon"> Agents`,
       content: `
-    <p><strong>IBM watsonx Orchestrate</strong> and <strong>watsonx.ai</strong> enable intelligent automation and orchestration across business processes.</p>
-    <ul>
-      <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank">🔗 Agent Builder</a></li>
-      <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank">🔗 AI Gateway</a></li>
-      <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank">🔗 Multi-Agent Orchestration</a></li>
-    </ul>
-  `
+        <p><strong>IBM watsonx Orchestrate</strong> and <strong>watsonx.ai</strong> enable intelligent automation and orchestration across business processes.</p>
+        <ul>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank">🔗 Agent Builder</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank">🔗 AI Gateway</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank">🔗 Multi-Agent Orchestration</a></li>
+        </ul>
+      `
     },
     data: {
       title: `<img src="icons/data.png" class="modal-icon"> Data-for-AI`,
       content: `
-        <p>Provides a unified, high-performance data access and retrieval framework optimized for GenAI workloads. It enables semantic vector search, natural language-to-SQL query translation, and zero-copy data federation across databases and cloud stores—delivering low-latency, scalable, and cost-efficient AI data pipelines.</p>
-      <ul>
-        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/RAG-Accelerator" target="_blank">🔗 Question & Answer - RAG Accelerator</a></li>
-        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/Text-To-SQL" target="_blank">🔗 Question & Answer - Text To SQL </a></li>
-        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank">🔗 Vector Search</a></li>
-        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank">🔗 Data Security & Encryption</a></li>
-        <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank">🔗 Zero Copy Lakehouse</a></li>
-    </ul>      
+        <p>Provides a unified, high-performance data access and retrieval framework optimized for GenAI workloads. It enables semantic vector search, natural language-to-SQL translation, and zero-copy data federation across databases and cloud stores.</p>
+        <ul>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/RAG-Accelerator" target="_blank">🔗 Question & Answer - RAG Accelerator</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/Text-To-SQL" target="_blank">🔗 Text To SQL </a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank">🔗 Vector Search</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank">🔗 Data Security & Encryption</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank">🔗 Zero Copy Lakehouse</a></li>
+        </ul>      
       `
     },
     trusted: {
       title: `<img src="icons/trusted.png" class="modal-icon"> Trusted-AI`,
       content: `
-        <p>Ensures secure, compliant, and auditable AI adoption across hybrid and multicloud environments through Guardium AI Security and watsonx.governance. It provides design-time and runtime evaluations with advanced guardrails, bias detection, and policy enforcement to maintain trust, safety, and regulatory alignment for large language models (LLMs)</strong>.</p>
+        <p>Ensures secure, compliant, and auditable AI adoption through Guardium AI Security and watsonx.governance. Supports design-time and runtime evaluations with advanced guardrails, bias detection, and policy enforcement.</p>
         <ul>
           <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank">🔗 Design Time Evaluations</a></li>
           <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations/generative_ai" target="_blank">🔗 Runtime Evaluations</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li> 
-    </ul>  
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li>
+        </ul>      
       `
     },
     optimize: {
@@ -118,7 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
     observe: {
       title: `<img src="icons/observe.png" class="modal-icon"> Observe`,
       content: `
-        <p>Gain full-stack observability with <strong>IBM Instana</strong> to detect, analyze, and resolve issues proactively.</p>
+        <p>Gain end-to-end observability with <strong>IBM Instana</strong> to detect, analyze, and resolve issues proactively.</p>
         <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe" target="_blank">🔗 View Observability</a>
       `
     },
