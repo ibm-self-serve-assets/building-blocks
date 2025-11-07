@@ -1,169 +1,185 @@
 # Design Time Evaluations & Guardrails
 
-An advanced AI guardrails implementation using IBM watsonx.governance SDK for comprehensive AI safety evaluation and monitoring.
+An advanced AI guardrails framework leveraging **IBM watsonx.governance SDK** to deliver robust, enterprise-grade **AI safety evaluation**, compliance validation, and real-time monitoring capabilities.
+
+---
+
+## 📘 Table of Contents
+- [Overview](#overview)  
+- [Architecture](#architecture)  
+- [Features](#features)  
+- [Technology Stack](#technology-stack)  
+- [Prerequisites](#prerequisites)  
+- [Project Structure](#project-structure)  
+- [Developer Guide](#developer-guide)  
+- [Configuration](#configuration)  
+- [Usage](#usage)  
+- [Examples](#examples)  
+- [Coming Soon](#coming-soon)  
+- [Contributing](#contributing)  
+- [License](#license)  
+
+---
 
 ## Overview
 
-This project provides comprehensive AI guardrails for both **design time evaluations** and **real-time monitoring** using IBM's watsonx.governance platform. It implements multiple guardrail metrics to assess AI-generated content for various risks including hate speech, bias, jailbreak attempts, and other harmful content.
+This project provides comprehensive **AI guardrails** for both **design-time evaluations** and **runtime monitoring** using the **IBM watsonx.governance** platform. It integrates a broad range of evaluation metrics for assessing AI-generated content against multiple risk categories — including **hate speech**, **bias**, **jailbreak attempts**, **harmful content**, and **ethical violations**.
 
-### Design Time vs Real-Time Evaluations
+The framework empowers developers to test, validate, and continuously monitor **LLM-based systems** to ensure compliance, fairness, and safety across their AI lifecycle. By combining **pre-deployment validation** with **real-time governance**, it enables organizations to operationalize **trustworthy AI** effectively.
 
-- **Design Time**: Test and validate prompts, agents, and chatbots **before deployment** to ensure robustness and safety
-- **Real-Time**: Monitor and evaluate AI responses **during production** to catch issues as they occur
+---
 
-This dual approach ensures AI systems are both pre-validated and continuously monitored for optimal safety and performance.
+## Architecture
 
-## Understanding the Differences: Design Time vs Real-Time
+The architecture integrates modular components for both design-time and runtime AI evaluation workflows:
 
-While both approaches use the same IBM watsonx.governance API and metrics, they serve different purposes and have distinct characteristics:
+1. **Design-Time Evaluation Engine** – Executes batch-based safety, bias, and relevance assessments before model deployment.  
+2. **Real-Time Monitoring Layer** – Provides continuous inference-time evaluations, logging, and drift detection.  
+3. **Granite Guardian Integration** – Utilizes IBM’s **Granite Guardian LLM** for PII detection, harm classification, and ethical risk scoring.  
+4. **Governance Orchestrator (watsonx.governance SDK)** – Manages metric definitions, data lineage, and evaluation storage.  
+5. **Visualization Layer (Streamlit UI + Jupyter)** – Offers both developer and analyst-friendly interfaces for interactive testing and auditability.
 
-### Overlapping Capabilities
-Many guardrail metrics work effectively in both contexts:
-- **Content Safety**: HAP, PII, harm detection, bias, profanity
-- **Security**: Jailbreak detection, prompt injection prevention
-- **Basic Quality**: Topic relevance, prompt safety risk
-
-### Key Differences
-
-#### **Design Time Evaluations** (Focus of this Repository)
-- **One-shot Analysis**: Single evaluation per test case without temporal tracking
-- **Reference-based Metrics Available**: Can use ground truth for comprehensive evaluation
-  - **Faithfulness**: Compare responses against known correct information
-  - **Answer Relevance**: Evaluate against expected responses
-  - **Context Relevance**: Assess against curated knowledge bases
-- **Extended Metric Range**: Particularly valuable for agentic systems requiring accuracy validation
-- **Batch Processing**: Test multiple scenarios systematically
-- **Ground Truth Available**: Pre-defined expected outcomes enable deeper analysis
-
-
-#### **Real-Time Monitoring** (Production Use)
-- **Temporal Tracking**: Continuous data storage and evaluation over time
-- **Reference-free Metrics Only**: No ground truth available during live interactions
-  - **Content Safety**: HAP, PII, bias detection
-  - **Security**: Jailbreak, prompt injection detection
-  - **Quality Proxies**: Topic relevance, evasiveness detection
-- **Drift Detection**: Monitor changes in AI behavior patterns over time
-- **Performance Constraints**: Must operate within strict latency requirements
-- **Data Persistence**: Store evaluations for compliance and trend analysis
-
-
-### Repository Focus
-
-**This repository primarily demonstrates design time evaluations** where you can:
-- Test prompts and responses against known ground truth
-- Use the full range of watsonx.governance metrics including reference-based ones
-- Perform comprehensive pre-deployment validation
-- Experiment with different threshold configurations
-
-The same API and techniques can be adapted for real-time monitoring by:
-- Implementing data persistence for temporal tracking using watsonx.governance monitoring module
-- Using primarily reference-free metrics but can periodically upload ground truth which is called "feedback data"
-- The monitoring module includes comprehensive drift detection capabilities
+---
 
 ## Features
 
 ### Content Safety Detection
-- **HAP (Hate, Abuse, Profanity)**: Detects harmful language and offensive content
-- **PII Detection**: Identifies and filters personally identifiable information
-- **Harm Detection**: Assesses content for potential harmful intent
-- **Social Bias Detection**: Identifies biased or discriminatory language
-- **Jailbreak Detection**: Prevents prompt injection and manipulation attempts
-- **Violence Detection**: Identifies violent or threatening content
-- **Profanity Detection**: Filters inappropriate language
-- **Unethical Behavior Detection**: Identifies content promoting unethical activities
+- **Hate, Abuse, Profanity (HAP)** detection for text moderation  
+- **PII Detection** for identifying and redacting sensitive user data  
+- **Bias and Harm Evaluation** leveraging reference-based scoring models  
+- **Prompt Injection / Jailbreak Detection** to secure LLM endpoints  
+- **Violence, Profanity, and Ethical Risk Metrics** for compliance-driven domains  
 
 ### Advanced Evaluation Metrics
-- **Topic Relevance**: Ensures content stays on-topic relative to system prompts
-- **Prompt Safety Risk**: Detects off-topic content and prompt injection attempts
-- **Answer Relevance**: Evaluates how well responses address input questions
-- **Context Relevance**: Assesses relevance of provided context to questions
-- **Faithfulness**: Measures consistency between generated content and source material
+- **Topic Relevance** – Ensures contextual alignment with the prompt  
+- **Faithfulness & Groundedness** – Verifies factual accuracy against reference data  
+- **Prompt Safety Risk** – Detects off-topic or manipulative input content  
+- **Context Relevance** – Evaluates semantic linkage between query and response  
 
-### Powered by Granite Guardian
-Most metrics utilize IBM's Granite Guardian model (Beta) for comprehensive risk assessment including:
-- Harm and violence detection
-- Social bias assessment
-- Jailbreak attempt identification
-- Answer relevance evaluation
-- Groundedness verification
+### Dual Evaluation Modes
+- **Design-Time Evaluation** – Batch testing with ground truth datasets  
+- **Real-Time Monitoring** – Continuous runtime scoring with latency-aware evaluation  
+
+---
 
 ## Technology Stack
 
-- **Python 3.10+**
-- **IBM watsonx.governance SDK**
-- **Jupyter Notebooks** for interactive development
-- **python-dotenv** for environment configuration
-- **IBM Cloud SDK** for authentication
+- **Programming Language:** Python 3.10+  
+- **Core SDK:** IBM watsonx.governance SDK  
+- **LLM Engine:** Granite Guardian Models  
+- **Frontend Interface:** Streamlit (interactive UI)  
+- **Backend Framework:** Jupyter Notebooks for prototyping  
+- **Environment Configuration:** python-dotenv  
+- **Cloud Services:** IBM Cloud SDK for authentication & API integration  
+
+---
 
 ## Prerequisites
 
-1. **IBM watsonx.governance Service Instance**
-   - Create an instance at [IBM Cloud Catalog](https://cloud.ibm.com/catalog/services/watsonxgovernance)
+1. IBM watsonx.governance Service Instance — [Create on IBM Cloud](https://cloud.ibm.com/catalog/services/watsonxgovernance)  
+2. IBM Cloud API Key — [Generate here](https://cloud.ibm.com/iam/apikeys)  
+3. Python 3.10+ and `pip` installed  
+4. Access to Granite Guardian Models (Beta)  
+5. Git installed locally  
 
-2. **IBM Cloud API Key**
-   - Generate at [IBM Cloud API Keys](https://cloud.ibm.com/iam/apikeys)
-   - Requires access to watsonx.governance service
+---
 
-## Installation & Setup
+## Project Structure
 
-### 1. Clone and Navigate to Project
+```
+guardrails_v2/
+├── .env                           # Environment variables (not in git)
+├── .gitignore                     # Git ignore rules
+├── CLAUDE.md                      # AI assistant instructions
+├── README.md                      # This file
+├── requirements.txt               # Python dependencies
+├── app.py                         # Streamlit web application
+├── api_config.ipynb               # API configuration and testing notebook
+├── assets/                        # Visual assets and branding
+│   ├── design_time_logo.png       # IBM Building Blocks AI Guardrails logo
+│   └── README.md                  # Assets documentation
+├── lab_exercises/                 # Educational materials and exercises
+│   ├── health_test.py             # Health check script for watsonx services
+│   ├── watsonx-guardrails-lab.md  # Lab exercise instructions
+│   ├── watsonx-instructor-guide.md # Teaching guide for instructors
+│   └── watsonx-supplementary-materials.md # Additional learning resources
+└── Real Time Detections_v1.ipynb # Main demonstration notebook
+```
+
+---
+
+## Developer Guide
+
+### Installation
 ```bash
 git clone <repository-url>
 cd guardrails_v2
-```
-
-### 2. Create Python Environment
-```bash
-# Using conda (recommended)
-conda create -n guardrails-app python=3.10
-conda activate guardrails-app
-
-# Or using venv
-python -m venv guardrails-app
-source guardrails-app/bin/activate  # On Windows: guardrails-app\Scripts\activate
-```
-
-### 3. Install Dependencies
-```bash
-# Install all required packages
+python -m venv guardrails-env
+source guardrails-env/bin/activate
 pip install -r requirements.txt
-
-# Core IBM watsonx.governance SDK (if not in requirements.txt)
 pip install 'ibm-watsonx-gov[metrics]'
 ```
 
-### 4. Environment Configuration
-
-Create a `.env` file in the project root:
-```bash
-cp .env.example .env  # If example exists, or create new file
-```
-
-Add your IBM watsonx credentials to `.env`:
-```env
-# IBM watsonx.governance API Configuration
-WATSONX_APIKEY=your_ibm_cloud_api_key_here
-WATSONX_URL=https://us-south.ml.cloud.ibm.com
-
-# Optional: Service Instance ID (required if you have multiple instances)
-WXG_SERVICE_INSTANCE_ID=your_service_instance_id_here
-
-# Optional: Region (default is us-south)
-# WATSONX_REGION=us-south
-```
-
-**Security Note**: Never commit the `.env` file to version control. It's already included in `.gitignore`.
-
-### 5. Verify Installation
-Option A - Run the Streamlit web app:
+### Verification
 ```bash
 streamlit run app.py
-```
-
-Option B - Start Jupyter and run the main notebook:
-```bash
+# or
 jupyter notebook "Real Time Detections_v1.ipynb"
 ```
+
+---
+
+## Configuration
+
+Create a `.env` file in the project root:
+
+```bash
+WATSONX_APIKEY=your_ibm_cloud_api_key
+WATSONX_URL=https://us-south.ml.cloud.ibm.com
+WXG_SERVICE_INSTANCE_ID=your_service_instance_id
+WATSONX_REGION=us-south
+```
+
+Ensure `.env` is excluded via `.gitignore` for security.
+
+---
+
+## Usage
+
+The system supports **two primary modes of operation**:  
+1. **Design-Time Evaluation** – Pre-deployment guardrail testing  
+2. **Real-Time Monitoring** – Live evaluation and compliance tracking
+
+### Launch Options
+- **Web App (Recommended):** `streamlit run app.py`  
+- **Notebook Mode:** Run `Real Time Detections_v1.ipynb`
+
+### Example Use Cases
+- Prompt robustness and jailbreak testing  
+- Bias and harm evaluation in chatbot responses  
+- Compliance validation for sensitive data (PII filtering)  
+- Relevance assessment in RAG-based systems  
+
+---
+
+## Examples
+
+```python
+from ibm_watsonx_gov.evaluators import MetricsEvaluator
+from ibm_watsonx_gov.metrics import HAPMetric, PIIMetric
+
+evaluator = MetricsEvaluator()
+text = "This is a sample input for evaluation."
+
+result = evaluator.evaluate(
+    data={"input_text": text},
+    metrics=[HAPMetric(), PIIMetric()]
+)
+
+print(result.to_df())
+```
+
+---
 
 ## Usage
 
@@ -383,38 +399,23 @@ result = evaluator.evaluate(
    - Some metrics require specific regions (Dallas/Frankfurt)
    - Set WATSONX_REGION environment variable appropriately
 
-### Getting Help
+---
 
-1. Check [IBM watsonx.governance Documentation](https://ibm.github.io/ibm-watsonx-gov/index.html)
+## Contributing
 
-## Development
+Contributions are welcome! Developers can submit PRs or open issues following IBM open-source contribution policies.  
+Ensure unit tests and code review standards are met before submitting.
 
-### Project Structure
-```
-guardrails_v2/
-├── .env                           # Environment variables (not in git)
-├── .gitignore                     # Git ignore rules
-├── CLAUDE.md                      # AI assistant instructions
-├── README.md                      # This file
-├── requirements.txt               # Python dependencies
-├── app.py                         # Streamlit web application
-├── api_config.ipynb               # API configuration and testing notebook
-├── assets/                        # Visual assets and branding
-│   ├── design_time_logo.png       # IBM Building Blocks AI Guardrails logo
-│   └── README.md                  # Assets documentation
-├── lab_exercises/                 # Educational materials and exercises
-│   ├── health_test.py             # Health check script for watsonx services
-│   ├── watsonx-guardrails-lab.md  # Lab exercise instructions
-│   ├── watsonx-instructor-guide.md # Teaching guide for instructors
-│   └── watsonx-supplementary-materials.md # Additional learning resources
-└── Real Time Detections_v1.ipynb # Main demonstration notebook
-```
+---
 
 ## License
 
-Apache
+Licensed under the **Apache 2.0 License**.  
+Refer to the [LICENSE](LICENSE) file for details.
+
+---
 
 ## Support
 
-For technical support:
-- IBM watsonx.governance: [IBM Support](https://cloud.ibm.com/docs/watsonxgovernance)
+For assistance or technical support, visit [IBM Support Portal](https://cloud.ibm.com/docs/watsonxgovernance).
+
