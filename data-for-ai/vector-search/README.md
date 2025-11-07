@@ -1,146 +1,221 @@
-# Ingestion Service for Vector search for GenAI Pipelines
+# 🧩 Ingestion Service for Vector Search in GenAI Pipelines
 
-Ingestion API provides a modular framework for building GenAI pipelines that combine Docling based parsing and extraction with Milvus as the vector database. It simplifies ingestion and querying pipeline while offering extensible customization options for document loaders, schemas, embedding models, and rerankers. The framework is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines, governance hooks, and evaluation tools.
+The **Ingestion Service API** provides a modular and extensible framework for **GenAI pipelines**, combining **Docling-based parsing and extraction** with **Milvus** as the vector database.  
+It simplifies document ingestion and vector search setup with **plug-and-play components** for document loaders, embedding models, and rerankers — reducing development and testing time from weeks to hours.
 
-## Features
-* **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
-* **Embedding:** Dense, hybrid, or dual embeddings with selectable models
+---
 
-<img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/b259ff95-163e-427c-93f3-15a99462f777" />
+## 📚 Table of Contents
+- [Overview](#-overview)
+- [Architecture](#-architecture)
+- [Features](#-features)
+- [Technology Stack](#-technology-stack)
+- [Prerequisites](#-prerequisites)
+- [Project Structure](#-project-structure)
+- [Developer Guide](#-developer-guide)
+- [Configuration](#-configuration)
+- [Usage](#-usage)
+- [Examples](#-examples)
+- [Coming Soon](#-coming-soon)
+- [Contributing](#-contributing)
+- [License](#-license)
+- [Team](#-team)
 
-## Deploying the Framework
-* **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables. Same value needs to be along with API call to authenticate.
-* **IBM COS:** Configure COS_ENDPOINT, COS_AUTH_ENDPOINT, and COS_SERVICE_INSTANCE_ID for storage services
+---
 
-## Customization
-The API supports customizations at multiple levels:
-* **Ingestion**
-    * Document loaders: HTML, JSON, PDF, Markdown, custom loaders
-    * Collection schema: Configurable via JSON templates
-    * Embedding models: Hybrid, dense, dense+sparse (HuggingFace, watsonx.ai, IBM models)
-    * Document processing: Docling/Markdown processing, picture annotation, table cleanup
-    * Chunkers: Docling hybrid chunker, Markdown text splitter, recursive text splitter
+## 🧠 Overview
 
-## Getting Started
-### Prerequisites
-The following prerequisites are required to spin up the milvus ingest API:
-1. watsonx.data environment set up with milvus DB (https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-adding-milvus-service)
-2. Python3.13 installed locally
-3. git installed locally
-4. watsonx.data Milvus DB host, port and log in (Note: your COS bucket must be public for this ingestion pipeline)
-5. IBM COS Credentials
+This service enables ingestion, embedding, and retrieval of unstructured content into Milvus for **vector-based GenAI applications**.  
+It supports hybrid embeddings, multiple chunking strategies, and flexible customization across loaders, schemas, and processing modules.
 
-### Installation
-1. Clone the repository
-    ```
-    git clone https://github.com/ibm-self-serve-assets/building-blocks.git
-    ```
+---
 
-2. Change directory into `vector-search`
-    ```
-    cd building-blocks/data-for-ai/vector-search/
-    ```
+## 🏗 Architecture
 
-3. Create a python virtual environment
-    ```
-    python3 -m venv virtual-env
-    source virtual-env/bin/activate
-    pip3 install -r requirements.txt
-    ```
+The framework integrates **Docling** for document parsing, **FastAPI** for serving endpoints, and **Milvus** for vector storage and retrieval.
 
-4. Copy env file to .env
-    ```
-    cp env .env
-    ```
+![Alt text for the image](images/reference_architecture.png "Reference Architecture")
 
-5. Configure parameters in .env
-    1. **Milvus credentials**: 
-        * `WXD_MILVUS_HOST` (Milvus host URL from watsonx.data UI)
-        * `WXD_MILVUS_PORT` (Milvus portf rom watsonx.data UI)
-        * `WXD_MILVUS_USER` (value will be 'ibmlhapikey')
-        * `WXD_MILVUS_PASSWORD` (IBM Cloud API Key associated with Milvus account (IBM cloud Service account created for Milvus))
-    2. **IBM COS credentials**: 
-        * `IBM_CLOUD_API_KEY` (IBM Cloud API Key associated with COS (IBM cloud Service account created for Milvus))
-        * `COS_ENDPOINT` (Service endpoint URL for your COS instance)
-        * `COS_SERVICE_INSTANCE_ID` (CRN value of COS Instance)
-    3. `REST_API_KEY`: All API request endpoints require a header `REST_API_KEY`: <your-secret>. Must be any arbitrary string (not empty), set in .env
+**Key Components:**
+- **Docling Processor** → Parses and cleans input documents (PDF, HTML, Markdown, JSON)
+- **Chunking Engine** → Splits text using Docling Hybrid or Recursive Splitter
+- **Embedding Module** → Generates dense or hybrid embeddings using watsonx.ai or Hugging Face
+- **Milvus Integration** → Stores and indexes embeddings for high-performance vector search
+- **REST API Layer** → Provides endpoints for ingestion, querying, and monitoring
 
-6. When finished, deactivate the virtual environment by running this command: 
-    ```
-    deactivate
-    ```
+---
 
-### Starting the Application Locally
-Ensure `.env` file is fully configured with all required credentials. You can start the application by running the following in terminal if you are using Python:
+## ✨ Features
+
+- **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus with minimal configuration  
+- **Embedding Options:** Dense, hybrid, or dual embeddings with customizable models  
+- **Extensibility:** Support for multiple file types (PDF, HTML, JSON, Markdown) and loaders  
+- **Governance Hooks:** Integration-ready for watsonx.governance audit and evaluation  
+- **Customization:** Modular design for easy extension of chunkers, loaders, and processors  
+
+---
+
+## 🧩 Technology Stack
+
+- **FastAPI + Uvicorn** — API framework for serving endpoints  
+- **Docling** — Document parsing and chunking  
+- **Milvus** — Vector database for similarity search  
+- **IBM COS** — Cloud Object Storage integration  
+- **Python 3.13+** — Development runtime  
+- **dotenv** — Environment variable management  
+
+---
+
+## 🔧 Prerequisites
+
+Before you start, ensure the following:
+
+1. **watsonx.data environment** with Milvus database configured  
+2. **Python 3.13+** installed locally  
+3. **git** installed  
+4. **Milvus credentials** from watsonx.data  
+5. **IBM COS credentials** for document access (bucket must be public)
+
+---
+
+## 🧱 Project Structure
+
+```bash
+.
+├── app/
+│   ├── main.py
+│   ├── routes/
+│   ├── utils/
+│   └── models/
+├── .env
+├── requirements.txt
+├── README.md
+└── assets/
+    ├── sample-docs/
+    └── examples/
+```
+
+---
+
+## 🚀 Developer Guide
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/ibm-self-serve-assets/building-blocks.git
+cd building-blocks/data-for-ai/vector-search/
+```
+
+### 2. Set Up a Virtual Environment
+```bash
+python3 -m venv virtual-env
+source virtual-env/bin/activate
+pip install -r requirements.txt
+```
+
+### 3. Configure Environment Variables
+Copy the sample environment file and update required fields:
+```bash
+cp env .env
+```
+
+### 4. Update `.env` Parameters
+#### Milvus Credentials
+```
+WXD_MILVUS_HOST=<milvus-host>
+WXD_MILVUS_PORT=<milvus-port>
+WXD_MILVUS_USER=ibmlhapikey
+WXD_MILVUS_PASSWORD=<IBM-Cloud-API-Key>
+```
+#### IBM COS Credentials
+```
+IBM_CLOUD_API_KEY=<api-key>
+COS_ENDPOINT=<cos-endpoint>
+COS_SERVICE_INSTANCE_ID=<cos-instance-crn>
+```
+#### API Key
+```
+REST_API_KEY=<your-secret>
+```
+
+---
+
+## ⚙️ Configuration
+
+The service uses environment variables for configuration.  
+Ensure `.env` is properly set before launching.
+
+You can authenticate requests by adding this header:
+```
+REST_API_KEY: <your-secret>
+```
+
+---
+
+## 🧪 Usage
+
+### Start the Service
 ```bash
 python3 main.py
 ```
-
-The RAG Service API is built using Uvicorn CLI. You can also run the following within the `/app` directory:
+or with Uvicorn CLI:
 ```bash
 uvicorn app.main:app --host 127.0.0.1 --port 4050 --reload
 ```
 
-### Swagger UI
-The RAG Service API is built with FastAPI, which includes interactive docs with Swagger UI support. 
-To view endpoints, http://127.0.0.1:4050/docs (replace with your configured host/port)
-#### Ingestion
-Use the ingestion endpoint to pull documents from your COS bucket, process them (split/chunk), embed, and upsert into Milvus.
-**Endpoint** 
-```
-POST /ingest-files
-```
-**Required JSON Body**
-```
-{
+### Access Swagger UI
+Visit [http://127.0.0.1:4050/docs](http://127.0.0.1:4050/docs) to view API documentation and try endpoints.
+
+---
+
+## 📊 Examples
+
+**Python Example**
+```python
+import json, requests
+
+url = "http://127.0.0.1:4050/ingest-files"
+payload = json.dumps({
     "bucket_name": "<cos-bucket>",
     "collection_name": "<milvus-collection>",
     "chunk_type": "DOCLING_DOCS"
-}
-```
-* `bucket_name`: Name of the S3/COS bucket containing documents
-* `collection_name`: Target Milvus collection to create or upsert into
-* `chunk_type`: Which chunker to use. Supported values include DOCLING_DOCS, MARKDOWN, and RECURSIVE.
-
-**Headers**
-```
-REST_API_KEY: <your-secret>
-Content-Type: application/json
-```
-
-**Test via Swagger UI**
-The API includes interactive documentation powered by FastAPI + Swagger.
-1. Navigate to `/docs` → expand **POST /ingest-files**.
-2. Click `Try it out` → fill in **bucket_name**, **collection_name**, and **chunk_type**.
-3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
-
-**Sample Test Python endpoint:**
-```
-import json, requests
-url = "http://127.0.0.1:4050/ingest-files"
-
-payload = json.dumps({
-    "bucket_name": "<cos-bucket>"
-    "collection_name": "<milvus-collection>"
-    "chunk_type": "DOCLING_DOCS"
 })
 headers = {
-    "REST_API_KEY": <your-secret>,
+    "REST_API_KEY": "<your-secret>",
     "Content-Type": "application/json"
 }
 
-response = requests.request("POST", url, headers=headers, data=payload)
-
+response = requests.post(url, headers=headers, data=payload)
 print(response.text)
 ```
 
-Verify results through the Swagger UI or by checking the API response.
+---
 
-### **Coming Soon**
-* .png and .jpg VLM Support
-* Additional docling processing functions (image annotation, table exports)
-* **Error Logging:** Structured logs with timestamp, line of code, and error response models
+## 🔬 Coming Soon
 
-## Team
-### Created and Architected By
-Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki
+- **VLM Support:** Ingestion for `.png` and `.jpg` files  
+- **Advanced Docling Features:** Image annotation, table extraction  
+- **Structured Error Logging:** JSON-based trace logs with timestamps  
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!  
+- Fork the repo  
+- Create a feature branch  
+- Commit your changes  
+- Submit a Pull Request  
+
+---
+
+## 🪪 License
+
+Licensed under the **Apache 2.0 License**.  
+See the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👥 Team
+
+**Created and Architected by**  
+Anand Das • Anindya Neogi • Joseph Kim • Shivam Solanki

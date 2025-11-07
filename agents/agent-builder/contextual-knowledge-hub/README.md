@@ -1,29 +1,38 @@
 # IBM Orchestrate Agentic for Contextual Knowledge Hub  
 
-## Overview  
+> A multi-agent workflow powered by **IBM Watsonx Orchestrate** that enables automated, contextual knowledge retrieval across IBM products.  
+
+---
+
+## Table of Contents
+- [Overview](#overview)
+- [Architecture](#architecture)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
+- [Developer Guide](#developer-guide)
+- [Examples](#examples)
+- [Business Value](#business-value)
+- [Use Cases](#use-cases)
+- [Benefits](#benefits)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## 🧠 Overview  
+
 This project demonstrates how to build a **multi-agent workflow** using **Watsonx Orchestrate** to collect, process, and aggregate contextual knowledge across IBM products.  
 
-The **Contextual Knowledge Hub** acts as the **supervisory agent**. It intelligently redirects user queries to product-specific sub-agents, each responsible for answering questions about an IBM product.  
+The **Contextual Knowledge Hub** acts as the **supervisory agent**, intelligently redirecting user queries to product-specific sub-agents — each responsible for providing answers about its corresponding IBM product.  
 
 By the end of this lab, you will have:  
 - A **main orchestrator agent** (Contextual Knowledge Hub)  
 - Multiple **sub-agents** (Watsonx Orchestrate, Watsonx Assistant, Cognos Analytics, Watsonx AI, Watsonx Code Assistant)  
 - A complete end-to-end setup for **automated information retrieval, processing, and Q&A**  
 
----
-
-## Prerequisites  
-
-- Access to **IBM Watsonx Orchestrate** [SaaS](https://cloud.ibm.com/catalog/services/watsonx-orchestrate) or Developer Edition.   
-- IBM Watsonx **[Agentic Development Kit](https://developer.watson-orchestrate.ibm.com/) (ADK)**  
-- Python **3.9+**  
-- Git CLI  
-
----
-
-## Architecture  
-
-The **Contextual Knowledge Hub** orchestrates queries across product-specific sub-agents.  
+--- 
 
 ### Developer Architecture  
 
@@ -41,66 +50,61 @@ flowchart TD
     F -->|Response| B
     B -->|Routes| G[🤖 Wx Code Assistant Agent]
     G -->|Response| B
-    C --> |fetch info|H[🛠️ Tools:
-    get_features
-    get_info
-    get_integration
-    get_pricing
-    get_resources
-    ]
-    D --> |fetch info|I[🛠️ Tools:
-    get_features
-    get_info
-    get_pricing
-    get_resources
-    ]
-    E --> |fetch info|J[🛠️ Tools:
-    get_features
-    get_info
-    get_pricing
-    get_resources]
-    F --> |fetch info|K[🛠️ Tools:
-    get_info
-    get_info_agent_dev
-    get_pricing
-    get_info_knowledge_mgn,
-    get_info_model_cust,
-    get_info_model_lib,
-    get_princing,
-    get_info_rag]
-    G --> |fetch info|L[🛠️ Tools:
-    get_info
-    get_procing]
-    
 ```
 
 ---
 
-## 📂 Project Structure  
+## 🏗 Architecture  
+
+The **Contextual Knowledge Hub** orchestrates user queries across multiple product-specific sub-agents, ensuring contextual, accurate, and AI-driven responses.  
+
+---
+
+## ✨ Features
+
+- Context-Aware Knowledge Routing: Automatically routes user queries to the most relevant IBM product-specific agent for precise, contextual responses.
+
+- Multi-Agent Collaboration: Enables multiple specialized agents to work together seamlessly for comprehensive, cross-product knowledge retrieval.
+
+- Intelligent Query Decomposition: Breaks down complex queries into smaller tasks and aggregates results from relevant IBM systems.
+
+- Adaptive Learning: Continuously improves accuracy and context understanding through feedback loops powered by watsonx.ai.
+
+---
+
+## 🧩 Technology Stack  
+
+- **IBM Watsonx Orchestrate** ([SaaS](https://cloud.ibm.com/catalog/services/watsonx-orchestrate) or Developer Edition)  
+- IBM Watsonx **[Agentic Development Kit (ADK)](https://developer.watson-orchestrate.ibm.com/)**  
+- Python **3.9+** 
+
+---
+
+## 🧱  Project Structure  
 
 ```bash
 ├── agents/                          
 │   ├── agent-builder/              
 │   │   ├── contextual_knowledge_hub/ 
 │   │   │   ├── agents/ 
-│   │   │   │   └── cognos_analytics_agent.yaml 
-│   │   │   │   └── contextual_knowledge_hub.yaml 
-│   │   │   │   └── wx_ai_agent.yaml 
-│   │   │   │   └── wx_assistant_agent.yaml 
-│   │   │   │   └── wx_code_assistant_agent.yaml 
+│   │   │   │   ├── cognos_analytics_agent.yaml 
+│   │   │   │   ├── contextual_knowledge_hub.yaml 
+│   │   │   │   ├── wx_ai_agent.yaml 
+│   │   │   │   ├── wx_assistant_agent.yaml 
+│   │   │   │   ├── wx_code_assistant_agent.yaml 
 │   │   │   │   └── wxo_agent.yaml
 │   │   │   ├── tools/ 
-│   │   │   │   └── cognos_analytics/ 
-│   │   │   │   └── wx.ai/ 
-│   │   │   │   └── wx.assistant/
-│   │   │   │   └── wx.code_assistant/ 
+│   │   │   │   ├── cognos_analytics/ 
+│   │   │   │   ├── wx.ai/ 
+│   │   │   │   ├── wx.assistant/
+│   │   │   │   ├── wx.code_assistant/ 
 │   │   │   │   └── wxo/ 
 │   │   │   └── README.md  
 │   │   └── requirements.txt 
 │   ├── AI_Gateway/  
 │   │   ├── config/  
-│   │   │    ├── anthropic-claude.yaml 
-│   │   │    ├── google-genai.yaml
+│   │   │   ├── anthropic-claude.yaml 
+│   │   │   ├── google-genai.yaml
 │   │   └── README.md 
 │   └── README.md 
 ├── .gitignore
@@ -110,32 +114,55 @@ flowchart TD
 
 ---
 
-##  Developer Guide  
+## 🔧 Prerequisites
 
-### 1 Install IBM Watsonx Orchestrate ADK  
+Before starting, ensure you have:
 
-Getting started with [Agent Development Kit](https://developer.ibm.com/tutorials/getting-started-with-watsonx-orchestrate/)
+1. **IBM watsonx.Orchestrate Instance**
+   - Create via [IBM Cloud Catalog](https://cloud.ibm.com/catalog)
+
+2. **IBM Cloud API Key**
+   - Generate from [IBM Cloud Account Settings](https://cloud.ibm.com/docs/account?topic=account-userapikey)
+
+3. **Service Access**
+   - Access permissions for watsonx.Orchestrate service
+
+4. **Agentic Development Kit (ADK)**
+   - IBM Watsonx [Agentic Development Kit (ADK)](https://developer.watson-orchestrate.ibm.com/)
+
+5. **Python**
+   - Python 3.9+
+
+---
+
+## 🚀 Developer Guide  
+
+### 1. Install IBM Watsonx Orchestrate ADK  
+
+Follow the [Agent Development Kit (ADK) Guide](https://developer.ibm.com/tutorials/getting-started-with-watsonx-orchestrate/):
 
 ```bash
 pip install ibm-watsonx-orchestrate
 ```
 
-Configure the environment:  
-
+Configure your environment:  
 ```bash
 orchestrate env add -n dev_env -u <IBM_ORCHESTRATE_INSTANCE_URL> --iam-url <IAM_URL>
 orchestrate env activate dev_env -a <API_KEY>
 ```
 
-### 2 Register Tools & Agents  
+---
 
-- Go to the folder `contextual-knowledge-hub`
+### 2. Register Tools & Agents  
 
+Go to the **Contextual Knowledge Hub** directory:  
 ```bash
 cd agents/agent-builder/contextual-knowledge-hub
 ```
 
-- Import tools for each product (Watsonx AI, Orchestrate, Assistant, Cognos, Code Assistant).  
+Import tools for each product:  
+
+#### Cognos Analytics  
 ```bash
 orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_features.py -r requirements.txt
 orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_info.py -r requirements.txt
@@ -143,7 +170,7 @@ orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_pricing.
 orchestrate tools import -k python -f tools/cognos_analytics/get_cognos_resources.py -r requirements.txt
 ```
 
-- Adding Wx Assistant Tools
+#### Watsonx Assistant  
 ```bash
 orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_features.py -r requirements.txt
 orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_info.py -r requirements.txt
@@ -151,7 +178,7 @@ orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_pricin
 orchestrate tools import -k python -f tools/wx.assistant/get_wx_assistant_resources.py -r requirements.txt
 ```
 
-- Adding Wx Orchestrate Tools
+#### Watsonx Orchestrate  
 ```bash
 orchestrate tools import -k python -f tools/wxo/get_wxo_features.py -r requirements.txt
 orchestrate tools import -k python -f tools/wxo/get_wxo_info.py -r requirements.txt
@@ -160,7 +187,7 @@ orchestrate tools import -k python -f tools/wxo/get_wxo_pricing.py -r requiremen
 orchestrate tools import -k python -f tools/wxo/get_wxo_resources.py -r requirements.txt
 ```
 
-- Adding Wx AI Tools
+#### Watsonx AI  
 ```bash
 orchestrate tools import -k python -f tools/wx.ai/get_wxai_agent_development.py -r requirements.txt
 orchestrate tools import -k python -f tools/wx.ai/get_wxai_info.py -r requirements.txt
@@ -171,13 +198,13 @@ orchestrate tools import -k python -f tools/wx.ai/get_wxai_pricing.py -r require
 orchestrate tools import -k python -f tools/wx.ai/get_wxai_rag_development.py -r requirements.txt
 ```
 
-- Adding Wx Code Assistant Tools
+#### Watsonx Code Assistant  
 ```bash
 orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_info.py -r requirements.txt
 orchestrate tools import -k python -f tools/wx.code_assistant/get_wxca_pricing.py -r requirements.txt
 ```
 
-- Adding Agents
+#### Agents  
 ```bash
 orchestrate agents import -f agents/cognos_analytics_agent.yaml
 orchestrate agents import -f agents/wxo_agent.yaml
@@ -187,87 +214,74 @@ orchestrate agents import -f agents/wx_ai_agent.yaml
 orchestrate agents import -f agents/wx_code_assistant_agent.yaml
 ```
 
+---
 
-### 3 Configuring Agents on UIOpen the chat UI, configure the **Contextual Knowledge Hub** as the master agent, and add all sub-agents.  
-1. Open the chat server user interface.
-2. Go to Manage Agents.
-3. Choose the Contextual Knowledge Hub (master agent).
-4. Add the following sub-agents to the configuration:
-    - Wx_Orchestrate
-    - Wx_Assistant
-    - Cognos_Analytics
-    - Wx_Code_Assistant
-    - Wx_AI
-5. Confirm that the master agent is properly configured with all sub-agents.
+### 3. Configure Agents in UI  
 
-  <img width="3584" height="2066" alt="wxo" src="https://github.com/user-attachments/assets/eac2c3b0-bbeb-4865-9626-5393bc61c0f5" />
+Open the chat UI, and configure **Contextual Knowledge Hub** as the master agent with sub-agents:  
+
+1. Open the **Chat Server UI**  
+2. Navigate to **Manage Agents**  
+3. Select **Contextual Knowledge Hub (Master Agent)**  
+4. Add sub-agents:  
+   - Wx Orchestrate  
+   - Wx Assistant  
+   - Cognos Analytics  
+   - Wx Code Assistant  
+   - Wx AI  
 
 ---
 
-## Example Queries  
+## 📊 Examples
 
-- *“What are the pricing tiers of Watsonx AI?”* → Routed to **Wx_AI Agent**  
-- *“List features of Cognos Analytics.”* → Routed to **Cognos_Analytics Agent**  
-- *“How does Watsonx Orchestrate integrate with Workday?”* → Routed to **Wx_Orchestrate Agent**  
+| Query | Routed To |
+|--------|------------|
+| “What are the pricing tiers of Watsonx AI?” | Wx_AI Agent |
+| “List features of Cognos Analytics.” | Cognos_Analytics Agent |
+| “How does Watsonx Orchestrate integrate with Workday?” | Wx_Orchestrate Agent |
 
 ---
 
-## Business Value
+## Business Value  
 
-The **Contextual Knowledge Hub** provides business leaders with:  
+The **Contextual Knowledge Hub** empowers enterprises with:  
 
-- **Customer Support Acceleration** → Agents provide **instant product knowledge** without manual searching.  
-- **Reduced Onboarding Time** → New employees leverage contextual knowledge instead of navigating documentation.  
-- **Enterprise Scalability** → Add new products by simply creating new sub-agents.  
-- **Governance & Control** → ADK ensures **auditability, versioning, and safe orchestration**.  
+- **Customer Support Acceleration** → Agents provide instant product knowledge.  
+- **Reduced Onboarding Time** → Contextual answers replace manual documentation searches.  
+- **Enterprise Scalability** → Add new IBM products easily by creating new sub-agents.  
+- **Governance & Control** → ADK ensures auditability, versioning, and safe orchestration.  
 
 ---
 
 ## Use Cases  
 
-- **Product Q&A Hub** → Single point of truth for IBM product questions.  
-- **Sales Enablement** → Agents provide contextual answers during live customer demos.  
-- **Market Research** → Aggregate product details dynamically across sources.  
-- **Knowledge Management** → Central hub for AI-driven employee self-service.  
+- **Product Q&A Hub** → Unified interface for IBM product knowledge.  
+- **Sales Enablement** → Real-time contextual insights during demos.  
+- **Market Research** → Aggregate product details dynamically.  
+- **Knowledge Management** → AI-powered employee self-service.  
 
 ---
 
 ## Benefits  
 
-- Faster **decision-making** with AI-driven contextual responses  
-- Improved **employee productivity** by reducing manual search  
-- Seamless **integration with IBM & external APIs**  
-- Scalable design – new products can be onboarded in hours, not weeks  
-
----
-
-## Executive Architecture (Value Flow)  
-
-```mermaid
-flowchart LR
-    A[Business User] --> B[Contextual Knowledge Hub]
-    B --> C[Instant Product Q&A]
-    B --> D[Sales Enablement]
-    B --> E[Market Research]
-    B --> F[Knowledge Management]
-    C --> G[Increased Customer Satisfaction]
-    D --> H[Faster Sales Cycles]
-    E --> I[Actionable Insights]
-    F --> J[Reduced Training Costs]
-```
+- Faster decision-making with contextual AI  
+- Improved productivity with quick knowledge retrieval  
+- Seamless integration with IBM and third-party APIs  
+- Scalable design – onboard new agents in hours  
 
 ---
 
 ## Contributing  
 
 We welcome contributions from the community!  
-
-- Fork this repo  
-- Create a feature branch  
-- Submit a PR with enhancements  
+1. Fork this repository  
+2. Create a feature branch  
+3. Commit and push your changes  
+4. Submit a pull request (PR)  
 
 ---
 
 ## License  
 
 This project is licensed under the **Apache 2.0 License**.  
+> IBM Corporation 2025. All rights reserved.
