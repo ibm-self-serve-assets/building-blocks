@@ -1,134 +1,163 @@
 # RAG Service
+The RAG Service acts as an orchestration layer for Retrieval-Augmented Generation workflows, combining ingestion, vectorization, and querying into a single managed service. Designed for enterprise AI platforms, it simplifies integration of vector databases, LLMs, and data governance modules while delivering low-latency, high-throughput query execution. This architecture accelerates GenAI solution development by offering reusable, pre-tested components for ingestion, retrieval, and compliance enforcement.
 
-The RAG Service provides a deployable API for orchestrating RAG pipelines. It simplifies ingestion and querying pipeline while offering extensible API parameter-levl customization options for document loaders, schemas, embedding models, and rerankers. The service is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines.
+## 📘 Table of Contents
+- [Overview](#overview)  
+- [Architecture](#architecture)  
+- [Features](#features)  
+- [Technology Stack](#technology-stack)  
+- [Prerequisites](#prerequisites)  
+- [Project Structure](#project-structure)  
+- [Developer Guide](#developer-guide)  
+- [Configuration](#configuration)  
+- [Usage](#usage)  
+- [Examples](#examples)  
+- [Coming Soon](#coming-soon)  
+- [Contributing](#contributing)  
+- [License](#license)  
 
-## Features
+---
 
-* **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
-* **Embedding:** Dense, hybrid, or dual embeddings with selectable models
-* **Retriever & Querying:** Hybrid search, reranking (weighted, RRF, cross-encoder), configurable search parameters
-* **Querying:** LLM integration with configurable models and prompt templates
-* **Governance:** Integration with watsonx.governance for build-time and runtime governance
+
+## Overview
+The **RAG Service** provides a deployable API for orchestrating **Retrieval-Augmented Generation (RAG)** pipelines. It simplifies both **ingestion** and **query orchestration** processes by abstracting complex data handling and embedding operations behind a modular API layer. The service is designed to accelerate enterprise GenAI integration by reducing development cycles—from weeks to hours—through pre-built, configurable pipelines and governance integrations.
+
+---
+
+## Architecture
+The architecture is centered around three primary components — **Ingestion**, **Embedding**, and **Query Retrieval**, all managed through a unified FastAPI interface. The system integrates with **Milvus** as a vector database for similarity search, **IBM COS** for scalable data storage, and **watsonx.ai** for governance and model orchestration.
 
 <img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/7846b5a7-5e22-45bd-94ea-d0176d7a07fc" />
 
-## Deploying the Service
+---
 
-* **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables
-* **watsonx.ai:** Required for Governance SDK, prompt lab, and model hosting
-* **IBM COS:** Configure COS_ENDPOINT, COS_AUTH_ENDPOINT, and COS_SERVICE_INSTANCE_ID for storage services
+## Features
 
-## Customization
+* **Ingestion Pipeline:** Handles document segmentation, chunking, merging, and ingestion into Milvus with fault-tolerant retries.  
+* **Embedding Layer:** Supports multiple strategies (dense, hybrid, or dual embeddings) using pluggable models from Hugging Face, watsonx.ai, or IBM Foundation Models.  
+* **Retriever & Querying Engine:** Implements hybrid search with reranking mechanisms (Weighted, RRF, Cross-Encoder) and configurable parameters for precision retrieval.  
+* **LLM Query Integration:** Seamlessly connects with LLMs via watsonx.ai APIs for dynamic query interpretation and contextual response generation.  
+* **Governance Hooks:** Native integration with **watsonx.governance** to ensure compliance across build-time and runtime inference.  
 
-The API supports customizations at multiple levels:
+---
 
-* **Ingestion**
-  * Document loaders: HTML, JSON, PDF, Markdown, custom loaders
-  * Collection schema: Configurable via JSON templates
-  * Embedding models: Hybrid, dense, dense+sparse (HuggingFace, watsonx.ai, IBM models)
-  * Document processing: Docling/Markdown processing, picture annotation, table cleanup
-  * Chunkers: Docling hybrid chunker, Markdown text splitter, recursive text splitter
+## Technology Stack
 
-* **Querying**
-  * Search parameters: Number of docs retrieved and reranked
-  * Rerankers: Weighted, RRF, cross-encoding
-  * LLM models: Configurable by provider and prompt template
+- **Language:** Python 3.13  
+- **Framework:** FastAPI, Uvicorn  
+- **Vector Database:** Milvus  
+- **Storage:** IBM Cloud Object Storage (COS)  
+- **LLM Orchestration:** watsonx.ai  
+- **Governance SDK:** watsonx.governance  
+- **Containerization (Optional):** Docker / Podman  
 
-## Getting Started
+---
 
-### Prerequisites
+## Prerequisites
 
-The following prerequisites are required to spin up the RAG Service API:
+Before deploying or running the service, ensure the following components are available and configured:
 
-1. **Python3.13** installed locally
-2. Milvus DB Credentials
-3. IBM watsonx.ai environt with project and necessay access control
-4. IBM COS Credentials
-5. git installed locally
+1. **Python 3.13+**
+2. **Milvus** vector DB credentials and instance access  
+3. **IBM watsonx.ai** project with governance SDK access  
+4. **IBM COS** credentials for object storage  
+5. **Git** installed locally  
+6. **Optional:** Docker/Podman for containerized deployment  
+
+---
+
+## Project Structure
+
+```
+RAG-Accelerator/
+│
+├── app/
+│   ├── main.py                # FastAPI entrypoint
+│   ├── routes/                # API route definitions
+│   ├── services/              # Core ingestion and query modules
+│   ├── utils/                 # Helper scripts, COS connectors, and loggers
+│
+├── requirements.txt           # Dependency definitions
+├── env                        # Sample environment file
+├── README.md                  # Documentation
+└── .env                       # Local environment configuration
+```
+
+---
+
+## Developer Guide
 
 ### Installation
 
-1. Clone the repository
+```bash
+git clone https://github.com/ibm-self-serve-assets/building-blocks.git
+cd /data-for-ai/q-and-a/RAG-Accelerator
+python3 -m venv virtual-env
+source virtual-env/bin/activate
+pip install -r requirements.txt
+cp env .env
+```
 
-    ```bash
-    git clone https://github.com/ibm-self-serve-assets/building-blocks.git
-    ```
+### Running Locally
 
-2. Change directory into `RAG-Accelerator`
-
-    ```bash
-    cd /data-for-ai/q-and-a/RAG-Accelerator
-    ```
-
-3. Create a python virtual environment
-
-    ```bash
-    python3 -m venv virtual-env
-    source virtual-env/bin/activate
-    pip3 install -r requirements.txt
-    ```
-
-4. Copy env file to .env
-
-    ```bash
-    cp env .env
-    ```
-
-5. Configure parameters in .env
-    1. **Milvus credentials**:
-        * `WXD_MILVUS_HOST` (Milvus host URL)
-        * `WXD_MILVUS_PORT` (Milvus port)
-        * `WXD_MILVUS_USER` (Username)
-        * `WXD_MILVUS_PASSWORD` (IBM Cloud API Key associated with Milvus account)
-    2. **watsonx.ai credentials**:
-        * `WATSONX_MODEL_ID` (Choose the foundation model ID found in your project on [watsonx.ai](https://dataplatform.cloud.ibm.com/))
-        * `WATSONX_PROJECT_ID` (From your watsonx.ai project dashboard)
-        * `WATSONX_APIKEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
-        * `WATSONX_URL` (Typically "<https://us-south.ml.cloud.ibm.com>")
-    3. **IBM COS credentials**:
-        * `IBM_CLOUD_API_KEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
-        * `COS_ENDPOINT` (Service endpoint URL for your COS instance)
-        * `COS_AUTH_ENDPOINT` (IAM auth endpoint)
-        * `COS_SERVICE_INSTANCE_ID` (Bucket ID found in COS service credentials)
-    4. `REST_API_KEY`: All API request endpoints require a header `REST_API_KEY`: <your-secret>. Must be any arbitrary string (not empty), set in .env
-
-6. When finished, deactivate the virtual environment by running this command:
-
-    ```bash
-    deactivate
-    ```
-
-### Starting the Application Locally
-
-Ensure `.env` file is fully configured with all required credentials. You can start the application by running the following in terminal if you are using Python:
+Ensure `.env` is configured properly, then launch the service:
 
 ```bash
 python3 main.py
 ```
-
-The RAG Service API is built using Uvicorn CLI. You can also run the following within the `/app` directory:
+Or using Uvicorn directly:
 
 ```bash
 uvicorn app.main:app --host 127.0.0.1 --port 4050 --reload
 ```
 
-### Swagger UI
+Access API docs at: [http://127.0.0.1:4050/docs](http://127.0.0.1:4050/docs)
 
-The RAG Service API is built with FastAPI, which includes interactive docs with Swagger UI support.
-To view endpoints, <http://127.0.0.1:4050/docs> (replace with your configured host/port)
+---
 
-## Ingestion
+## Configuration
 
-Use the ingestion endpoint to pull documents from your COS bucket, process them (split/chunk), embed, and upsert into Milvus.
-**Endpoint**
+### Required Environment Variables
 
+**Milvus Configuration**
 ```
-POST /ingest-files
+WXD_MILVUS_HOST=<milvus-host>
+WXD_MILVUS_PORT=<milvus-port>
+WXD_MILVUS_USER=<username>
+WXD_MILVUS_PASSWORD=<ibm-cloud-api-key>
 ```
 
-**Required JSON Body**
-
+**watsonx.ai Configuration**
 ```
+WATSONX_MODEL_ID=<model-id>
+WATSONX_PROJECT_ID=<project-id>
+WATSONX_APIKEY=<api-key>
+WATSONX_URL=https://us-south.ml.cloud.ibm.com
+```
+
+**IBM COS Configuration**
+```
+IBM_CLOUD_API_KEY=<api-key>
+COS_ENDPOINT=<endpoint-url>
+COS_AUTH_ENDPOINT=<iam-auth-endpoint>
+COS_SERVICE_INSTANCE_ID=<instance-id>
+```
+
+**REST API Security Key**
+```
+REST_API_KEY=<your-secret>
+```
+
+---
+
+## Usage
+
+### Ingestion Endpoint
+
+**POST /ingest-files**
+
+Request Body:
+```json
 {
     "bucket_name": "<cos-bucket>",
     "collection_name": "<milvus-collection>",
@@ -136,116 +165,82 @@ POST /ingest-files
 }
 ```
 
-* `bucket_name`: Name of the S3/COS bucket containing documents
-* `collection_name`: Target Milvus collection to create or upsert into
-* `chunk_type`: Which chunker to use. Supported values include DOCLING_DOCS, MARKDOWN, and RECURSIVE.
-
-**Headers**
-
+Headers:
 ```
 REST_API_KEY: <your-secret>
 Content-Type: application/json
 ```
 
-**Test via Swagger UI**
-The API includes interactive documentation powered by FastAPI + Swagger.
+This endpoint pulls documents from COS, processes and embeds them, and pushes vectors into Milvus.
 
-1. Navigate to `/docs` → expand **POST /ingest-files**.
-2. Click `Try it out` → fill in **bucket_name**, **collection_name**, and **chunk_type**.
-3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
+---
 
-**Sample Test Python endpoint:**
+### Query Endpoint
 
-```
-import json, requests
-url = "http://127.0.0.1:4050/ingest-files"
+**POST /query**
 
-payload = json.dumps({
-    "bucket_name": "<cos-bucket>"
-    "collection_name": "<milvus-collection>"
-    "chunk_type": "DOCLING_DOCS"
-})
-headers = {
-    "REST_API_KEY": <your-secret>,
-    "Content-Type": "application/json"
-}
-
-response = requests.request("POST", url, headers=headers, data=payload)
-
-print(response.text)
-```
-
-Verify results through the Swagger UI or by checking the API response.
-
-## Query
-
-Use the query endpoint to pull query Milvus database by natural language (RAG)
-
-**Endpoint**
-
-```
-POST /query
-```
-**Required JSON Body**
-
-```
+Request Body:
+```json
 {
     "collection_name": "<milvus-collection>",
     "query": "<query text>"
 }
 ```
 
-* `collection_name`: Target Milvus collection to fetch data
-* 'query' : Natual language query to fetch data
-
-**Headers**
-
+Headers:
 ```
 REST_API_KEY: <your-secret>
 Content-Type: application/json
 ```
 
-**Test via Swagger UI**
-The API includes interactive documentation powered by FastAPI + Swagger.
+This retrieves contextually relevant information from Milvus using hybrid search and optionally generates an LLM response through watsonx.ai.
 
-1. Navigate to `/docs` → expand **POST /ingest-files**.
-2. Click `Try it out` → fill in **collection name**, **query**
-3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
+---
 
-**Sample Test Python endpoint:**
+## Examples
 
-```
+**Python Example - Query Endpoint**
+```python
 import json, requests
 url = "http://127.0.0.1:4050/query"
-
 payload = json.dumps({
-    "collection_name": "<milvus-collection>"
-    "query": "<query text>"
+    "collection_name": "sample_collection",
+    "query": "What are IBM foundation models?"
 })
 headers = {
-    "REST_API_KEY": <your-secret>,
+    "REST_API_KEY": "my-secret",
     "Content-Type": "application/json"
 }
-
-response = requests.request("POST", url, headers=headers, data=payload)
-
+response = requests.post(url, headers=headers, data=payload)
 print(response.text)
 ```
 
-Verify results through the Swagger UI or by checking the API response.
+---
 
-### **Coming Soon**
+## Coming Soon
 
-* .png and .jpg VLM Support
-* Additional docling processing functions (image annotation, table exports)
-* **Prompt Controls & Guardrails:** Guardrails for runtime governance and prompt safety
-* **Governance SDK:** Evaluation of golden datasets, runtime metrics, LLM-as-a-judge
-* **Memory Layers:** Multi-turn Q&A, cache integration, context management (MemVerge, Zep)
-* **Error Logging:** Structured logs with timestamp, line of code, and error response models
+- Vision-Language Model (VLM) support (.png/.jpg)  
+- Extended Docling capabilities for image annotation & table extraction  
+- **Prompt Guardrails:** Runtime prompt safety with policy enforcement  
+- **Governance SDK Enhancements:** Model evaluation, golden dataset benchmarking, runtime metrics  
+- **Memory Layers:** Multi-turn contextual caching and long-term memory support  
+- **Advanced Logging:** Structured error telemetry and observability integration  
 
-## Team
+---
 
-### Created and Architected By
+## Contributing
 
-Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki
-**Endpoint**
+We welcome contributions! Developers can submit pull requests or open issues in the repository. Ensure that all contributions align with IBM open-source contribution guidelines and include sufficient test coverage.
+
+---
+
+## 👥 Team
+
+**Created and Architected by**  
+Anand Das • Anindya Neogi • Joseph Kim • Shivam Solanki
+
+---
+## License
+
+Licensed under the **Apache 2.0 License**. See the [LICENSE](LICENSE) file for details.
+
