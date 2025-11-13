@@ -1,6 +1,8 @@
 # Real-Time AI Guardrails
 
-This repository contains a Dash-based web application for evaluating text content using IBM watsonx.governance guardrails. The app provides real-time evaluation of content safety, bias detection, RAG quality metrics, and more.
+This repository demonstrates how to use the Watsonx Governance SDK to implement real-time guardrails for generative AI models. These guardrails help detect and block undesired behavior instantly. These AI guardrails **can be applied to both AI inputs** (evaluating and filtering user queries before they reach the model) **and AI outputs** (ensuring generated responses are checked before being returned to end users).
+
+To showcase these capabilities, we provide a Dash-based web application that performs real-time evaluations for content safety, bias detection, RAG quality metrics, and more.
 
 ## Features
 
@@ -143,10 +145,6 @@ Modify `app-config.properties` to customize:
 - Never commit `.env` file to version control
 - Rotate API keys regularly
 - Do not input sensitive or confidential data into the app
-
-## License
-
-Copyright IBM Corporation
 
 ---
 
