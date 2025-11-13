@@ -1,6 +1,6 @@
-# IBM Building Block for Trusted AI: Guardrails (Dash App)
+# Real-Time AI Guardrails
 
-A Dash-based web application for evaluating text content using IBM watsonx.governance guardrails. This app provides real-time evaluation of content safety, bias detection, RAG quality metrics, and more.
+This repository contains a Dash-based web application for evaluating text content using IBM watsonx.governance guardrails. The app provides real-time evaluation of content safety, bias detection, RAG quality metrics, and more.
 
 ## Features
 
