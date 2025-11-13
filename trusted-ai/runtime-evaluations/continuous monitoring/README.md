@@ -1,9 +1,9 @@
-# Runtime Evaluations and Production-Grade Monitoring with IBM WatsonX Governance
+# Continuous Production-Grade Monitoring with IBM WatsonX Governance
 
 This repository contains: 
 
-- **Runtime Evaluations** for **Prompt Governance** in **Large Language Models (LLMs)** using the **IBM WatsonX Governance SDK**. 
-- **Runtime Monitoring** for **Traditional AI Model Governance** 
+- **Continuous Runtime Evaluations** for **Prompt Governance** in **Large Language Models (LLMs)** using the **IBM WatsonX Governance SDK**. 
+- **Continuous Runtime Monitoring** for **Traditional AI Model Governance** 
 
 These evaluations ensure that your AI models are compliant, transparent, and fair during their deployment in real-time.
 
@@ -85,6 +85,8 @@ Before you can start working with Runtime Evaluations for Prompt Governance, mak
 2. https://client-docs.aiopenscale.cloud.ibm.com/html/index.html
 
 ---
+
+
 
 
 
