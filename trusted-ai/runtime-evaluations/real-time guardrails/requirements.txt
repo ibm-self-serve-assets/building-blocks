@@ -1,0 +1,19 @@
+# Dash framework
+dash==2.11.1
+dash_bootstrap_components==1.4.1
+dash-table==5.0.0
+
+# IBM watsonx.governance
+ibm-watsonx-gov>=1.1.0
+ibm-cloud-sdk-core>=3.16.1
+
+# Data processing
+pandas>=2.2.0
+numpy>=1.26.4
+
+# Configuration
+python-dotenv==1.0.0
+jproperties==2.1.1
+
+# Utilities
+requests==2.31.0
