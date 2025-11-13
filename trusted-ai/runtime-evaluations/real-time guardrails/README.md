@@ -79,8 +79,7 @@ The app will start on `http://localhost:8050`
 5. **Run Evaluation**: Click "Run Guardrails" to analyze the text
 6. **View Results**: Results display with color-coding:
    - 🔴 Red: High risk (≥ threshold)
-   - 🟠 Orange: Medium risk (≥ 70% of threshold)
-   - 🟢 Green: Low risk (< 70% of threshold)
+   - 🟢 Green: Low risk (< threshold)
 
 ## Application Structure
 
