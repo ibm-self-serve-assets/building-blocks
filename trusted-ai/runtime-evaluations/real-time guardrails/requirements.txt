@@ -16,4 +16,4 @@ python-dotenv==1.0.0
 jproperties==2.1.1
 
 # Utilities
-requests==2.31.0
+requests==2.32.4
