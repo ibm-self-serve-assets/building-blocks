@@ -7,7 +7,7 @@ To showcase these capabilities, we provide a Dash-based web application that per
 ## Table of Contents
 
 - [Features](#features)
-- [How to Use These Metrics to Block Undesired AI Behavior](#how-to-use-these-metrics-to-block-undesired-ai-behavior)
+  - [How to Use These Metrics to Block Undesired AI Behavior](#how-to-use-these-metrics-to-block-undesired-ai-behavior)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
   - [1. Create Virtual Environment](#1-create-virtual-environment)
@@ -26,13 +26,13 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 ## Features
 
-**Content Safety Metrics:** HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
+- **Content Safety Metrics:** HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
 
-**RAG Evaluation Metrics:** Answer Relevance, Context Relevance, Faithfulness
+- **RAG Evaluation Metrics:** Answer Relevance, Context Relevance, Faithfulness
 
-**Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
+- **Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
 
-**Export Results:*** Download evaluation results as CSV files
+- **Export Results:*** Download evaluation results as CSV files
 
 
 ### How to Use These Metrics to Block Undesired AI Behavior
