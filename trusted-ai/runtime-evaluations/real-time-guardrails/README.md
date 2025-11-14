@@ -123,12 +123,16 @@ real-time-guardrails/
 ├── app.py                    # Main Dash application
 ├── app-config.properties     # UI configuration
 ├── requirements.txt          # Python dependencies
-├── .env                      # Environment variables (credentials)
+├── .env                      # Environment variables (NOT committed to GitHub)
+├── .gitignore               # Git ignore rules
 ├── README.md                 # This file
-└── assets/
-    ├── customStyles.css      # Custom styling
-    └── logo.png              # Logo image
+├── assets/
+│   └── customStyles.css      # Custom CSS styling
+└── images/
+    └── Guardrails vs monitoring.png  # Documentation image
 ```
+
+**Note**: The `.env` file contains sensitive credentials and is excluded from version control via `.gitignore`. You must create your own `.env` file locally following the setup instructions.
 
 ## Key Components
 
