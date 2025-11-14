@@ -1,15 +1,28 @@
 # Real-Time AI Guardrails
 
-This repository demonstrates how to use the Watsonx Governance SDK to implement real-time guardrails for generative AI models. These guardrails help detect and block undesired behavior instantly. These AI guardrails **can be applied to both AI inputs** (evaluating and filtering user queries before they reach the model) **and AI outputs** (ensuring generated responses are checked before being returned to end users).
+This repository demonstrates how to use the Watsonx Governance SDK to implement real-time guardrails for generative AI models. These guardrails help you instantly detect and control undesired behavior. For example, you may choose to block certain responses or guide the model toward a safer or more appropriate completion. **These highly customizable AI guardrails can be applied to both AI inputs** (evaluating and filtering user queries before they reach the model) **and AI outputs** (ensuring generated responses are checked before being returned to end users).
 
 To showcase these capabilities, we provide a Dash-based web application that performs real-time evaluations for content safety, bias detection, RAG quality metrics, and more.
 
 ## Features
 
-- **Content Safety Metrics**: HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
-- **RAG Evaluation Metrics**: Answer Relevance, Context Relevance, Faithfulness
-- **Interactive Dashboard**: Select multiple guardrails, adjust risk thresholds, and view color-coded results
-- **Export Results**: Download evaluation results as CSV files
+**Content Safety Metrics:** HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
+
+**RAG Evaluation Metrics:** Answer Relevance, Context Relevance, Faithfulness
+
+**Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
+
+**Export Results:*** Download evaluation results as CSV files
+
+
+### How to Use These Metrics to Block Undesired AI Behavior
+
+You can block undesired AI behavior by configuring customizable thresholds for each metric.
+
+For content safety metrics, you can set an upper-limit thresholds that determine when content becomes unsafe for your application. Each metric can have its own threshold. For example, if your use case is more sensitive to **Jailbreak** attempts than **HAP**, you can configure a lower upper-limit for the Jailbreak metric to make your guardrail more sensitive to those risks.
+
+For RAG evaluation metrics (Answer Relevance, Context Relevance, Faithfulness), you can set the lower-limit thresholds to enforce quality standards. If a generated answer falls below the required score, you can block the output or trigger an alternative workflow (e.g., regeneration, human review).
+
 
 ## Prerequisites
 
