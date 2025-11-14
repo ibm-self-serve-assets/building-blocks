@@ -4,6 +4,26 @@ This repository demonstrates how to use the Watsonx Governance SDK to implement 
 
 To showcase these capabilities, we provide a Dash-based web application that performs real-time evaluations for content safety, bias detection, RAG quality metrics, and more.
 
+## Table of Contents
+
+- [Features](#features)
+- [How to Use These Metrics to Block Undesired AI Behavior](#how-to-use-these-metrics-to-block-undesired-ai-behavior)
+- [Prerequisites](#prerequisites)
+- [Setup Instructions](#setup-instructions)
+  - [1. Create Virtual Environment](#1-create-virtual-environment)
+  - [2. Activate Virtual Environment](#2-activate-virtual-environment)
+  - [3. Install Dependencies](#3-install-dependencies)
+  - [4. Configure Environment Variables](#4-configure-environment-variables)
+  - [5. Run the Application](#5-run-the-application)
+- [Usage](#usage)
+- [Application Structure](#application-structure)
+- [Key Components](#key-components)
+  - [Metrics Categories](#metrics-categories)
+  - [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+- [API Documentation](#api-documentation)
+- [Security Notes](#security-notes)
+
 ## Features
 
 **Content Safety Metrics:** HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
@@ -99,16 +119,15 @@ The app will start on `http://localhost:8050`
 ## Application Structure
 
 ```
-design-time-dash-app/
+real-time-guardrails/
 ├── app.py                    # Main Dash application
 ├── app-config.properties     # UI configuration
 ├── requirements.txt          # Python dependencies
 ├── .env                      # Environment variables (credentials)
-├── README.md                # This file
+├── README.md                 # This file
 └── assets/
-    ├── customStyles.css     # Custom styling
-    ├── design_time_logo.png # Logo images
-    └── logo.png
+    ├── customStyles.css      # Custom styling
+    └── logo.png              # Logo image
 ```
 
 ## Key Components
