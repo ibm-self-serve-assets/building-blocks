@@ -157,7 +157,7 @@ threadpoolctl==3.6.0
 tiktoken==0.11.0
 tokenizers==0.21.4
 toml==0.10.2
-torch==2.2.2
+torch==2.8.0
 tornado==6.5.2
 tqdm==4.67.1
 trace-attributes==7.1.0
