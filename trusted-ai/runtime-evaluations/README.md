@@ -1,4 +1,6 @@
 
 
 
-<img src="real-time-guardrails/images/Guardrails vs monitoring.png" alt="Guardrails vs monitoring" width="800"/>
+<img src="real-time-guardrails/images/Guardrails vs monitoring.png" 
+     alt="Guardrails vs monitoring" 
+     style="width: 60%;"/>
