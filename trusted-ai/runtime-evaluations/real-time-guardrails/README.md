@@ -26,13 +26,13 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 ## Features
 
-**Content Safety Metrics:** HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
+- **Content Safety Metrics:** HAP, PII Detection, Harm Detection, Violence, Profanity, Social Bias, Jailbreak Detection, Unethical Behavior, Sexual Content, Evasiveness
 
-**RAG Evaluation Metrics:** Answer Relevance, Context Relevance, Faithfulness
+- **RAG Evaluation Metrics:** Answer Relevance, Context Relevance, Faithfulness
 
-**Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
+- **Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
 
-**Export Results:*** Download evaluation results as CSV files
+- **Export Results:*** Download evaluation results as CSV files
 
 
 ### How to Use These Metrics to Block Undesired AI Behavior
