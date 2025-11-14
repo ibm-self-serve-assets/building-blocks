@@ -7,7 +7,7 @@ To showcase these capabilities, we provide a Dash-based web application that per
 ## Table of Contents
 
 - [Features](#features)
-- [How to Use These Metrics to Block Undesired AI Behavior](#how-to-use-these-metrics-to-block-undesired-ai-behavior)
+  - [How to Use These Metrics to Block Undesired AI Behavior](#how-to-use-these-metrics-to-block-undesired-ai-behavior)
 - [Prerequisites](#prerequisites)
 - [Setup Instructions](#setup-instructions)
   - [1. Create Virtual Environment](#1-create-virtual-environment)
