@@ -746,8 +746,12 @@ def handle_evaluation(
                 # For safety metrics: high score = high risk (score >= threshold)
                 if metric_category == "rag":
                     is_high_risk = score_value < threshold_for_metric
+                    # RAG: Block/Pass Output
+                    guardrail_action = "Block Output" if is_high_risk else "Pass Output"
                 else:
                     is_high_risk = score_value >= threshold_for_metric
+                    # Safety: Block/Pass Input
+                    guardrail_action = "Block Input" if is_high_risk else "Pass Input"
 
                 metric_threshold_map[metric_display_name] = threshold_for_metric
                 results_list.append(
@@ -757,7 +761,7 @@ def handle_evaluation(
                         "Threshold": threshold_for_metric,
                         "Category": metric_category,
                         "Risk Level": "High" if is_high_risk else "Low",
-                        "Guardrail Action": "block" if is_high_risk else "pass",
+                        "Guardrail Action": guardrail_action,
                     }
                 )
 
@@ -766,6 +770,13 @@ def handle_evaluation(
             # Calculate statistics using individual thresholds and categories
             high_risk_count = len(
                 [r for r in results_list if r["Risk Level"] == "High"]
+            )
+            # Calculate separate counts for input (safety) and output (RAG) high risk
+            high_risk_input_count = len(
+                [r for r in results_list if r["Risk Level"] == "High" and r["Category"] == "safety"]
+            )
+            high_risk_output_count = len(
+                [r for r in results_list if r["Risk Level"] == "High" and r["Category"] == "rag"]
             )
             max_score = max([r["Score"] for r in results_list]) if results_list else 0
             avg_score = (
@@ -916,7 +927,7 @@ def handle_evaluation(
                         },
                         {
                             "if": {
-                                "filter_query": '{Guardrail Action} = "block"',
+                                "filter_query": '{Guardrail Action} contains "Block"',
                                 "column_id": "Guardrail Action",
                             },
                             "backgroundColor": "#ffebee",
@@ -925,7 +936,7 @@ def handle_evaluation(
                         },
                         {
                             "if": {
-                                "filter_query": '{Guardrail Action} = "pass"',
+                                "filter_query": '{Guardrail Action} contains "Pass"',
                                 "column_id": "Guardrail Action",
                             },
                             "backgroundColor": "#e8f5e8",
@@ -951,29 +962,70 @@ def handle_evaluation(
                         dbc.Row(
                             [
                                 dbc.Col(
-                                    html.H6(
-                                        "Overall Guardrail Action:", className="mb-0"
-                                    ),
-                                    width="auto",
+                                    [
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    html.H6(
+                                                        "Overall Input Action:", className="mb-0"
+                                                    ),
+                                                    width="auto",
+                                                ),
+                                                dbc.Col(
+                                                    dbc.Badge(
+                                                        "PASS" if high_risk_input_count == 0 else "BLOCK",
+                                                        color=(
+                                                            "success"
+                                                            if high_risk_input_count == 0
+                                                            else "danger"
+                                                        ),
+                                                        className="ms-2",
+                                                        style={
+                                                            "fontSize": "1rem",
+                                                            "padding": "0.5rem 1rem",
+                                                        },
+                                                    ),
+                                                    width="auto",
+                                                ),
+                                            ],
+                                            align="center",
+                                        ),
+                                    ],
+                                    width=6,
                                 ),
                                 dbc.Col(
-                                    dbc.Badge(
-                                        "PASS" if high_risk_count == 0 else "BLOCK",
-                                        color=(
-                                            "success"
-                                            if high_risk_count == 0
-                                            else "danger"
+                                    [
+                                        dbc.Row(
+                                            [
+                                                dbc.Col(
+                                                    html.H6(
+                                                        "Overall Output Action:", className="mb-0"
+                                                    ),
+                                                    width="auto",
+                                                ),
+                                                dbc.Col(
+                                                    dbc.Badge(
+                                                        "PASS" if high_risk_output_count == 0 else "BLOCK",
+                                                        color=(
+                                                            "success"
+                                                            if high_risk_output_count == 0
+                                                            else "danger"
+                                                        ),
+                                                        className="ms-2",
+                                                        style={
+                                                            "fontSize": "1rem",
+                                                            "padding": "0.5rem 1rem",
+                                                        },
+                                                    ),
+                                                    width="auto",
+                                                ),
+                                            ],
+                                            align="center",
                                         ),
-                                        className="ms-2",
-                                        style={
-                                            "fontSize": "1rem",
-                                            "padding": "0.5rem 1rem",
-                                        },
-                                    ),
-                                    width="auto",
+                                    ],
+                                    width=6,
                                 ),
                             ],
-                            align="center",
                         ),
                     ]
                 ),
