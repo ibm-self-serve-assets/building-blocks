@@ -46,7 +46,7 @@ For RAG evaluation metrics (Answer Relevance, Context Relevance, Faithfulness), 
 
 ## Prerequisites
 
-- Python 3.11+ (recommended)
+- Python 3.11 (not python 3.13)
 - IBM watsonx.ai account with API credentials
 - IBM watsonx.governance access
 
@@ -55,7 +55,7 @@ For RAG evaluation metrics (Answer Relevance, Context Relevance, Faithfulness), 
 ### 1. Create Virtual Environment
 
 ```bash
-python3 -m venv venv
+python3.11 -m venv my-venv
 ```
 
 ### 2. Activate Virtual Environment
