@@ -1,5 +1,5 @@
 # Dash framework
-dash==2.11.1
+dash==2.15.0
 dash_bootstrap_components==1.4.1
 dash-table==5.0.0
 
