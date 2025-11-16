@@ -1,5 +1,5 @@
 # Python version: 3.11.13
-# Generated for guardrails-app environment
+# For guardrails-app environment
 
 aiohappyeyeballs==2.6.1
 aiohttp==3.12.15
