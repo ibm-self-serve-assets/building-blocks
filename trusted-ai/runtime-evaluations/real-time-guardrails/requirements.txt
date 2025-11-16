@@ -17,7 +17,7 @@ python-dotenv==1.0.0
 jproperties==2.1.1
 
 # Utilities
-requests==2.32.2
+requests==2.32.4
 
 # Evaluation dependencies
 jsonschema>=4.17.0
