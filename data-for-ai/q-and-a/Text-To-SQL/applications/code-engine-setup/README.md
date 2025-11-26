@@ -34,12 +34,6 @@
     - For **Password** enter your IBM Cloud API Key 
     - Select **Create**
 
-   **SSH secret**
-    - Select **Create**
-    - Select **SSH secret**, then **Next**
-    - Enter a secret name, like `my-ssh`
-    - Enter the contents of your SSH **private** key, generated on your local machine using the `ssh keygen -t rsa` command. Note you have to have created an SSH key on your [github.ibm.com](github.ibm.com) (or other GHE respositiory) user (go into **Settings** -> **SSH and GPG Keys** on your github user profile. Add a new SSH key with your `id_rsa.pub` contents)
-    - Select **Create**
 
 6. Create an image build
     
@@ -47,10 +41,9 @@
     
     Under the **Source** tab:
     - Name your build (something like `text_to_sql_app`
-    - For **Code repo URL** use the SSH repo format i.e. `git@github.com:<org>/text_to_sql_app.git`
-    - Choose the SSH secret you creatd in step 4 above
+    - For **Code repo URL** use the SSH repo format i.e. `https://github.com/ibm-self-serve-assets/building-blocks`
     - Choose the branch name, i.e. `main`
-    - Choose the subdirectory where the `Dockerfile` resides if not in top level repo directory
+    - Choose the subdirectory where the `Dockerfile` resides if not in top level repo directory i.e `data-for-ai/q-and-a/Text-To-SQL/applications/text_to_sql_app`
     - Select **Next**
 
     Under the **Strategy** tab:
@@ -80,11 +73,6 @@
     - Under **Optional settings**, **Image start options** change the **Listening port** to 4050
     - Finally click **Create**
 
-## If code resides in public github
-
-Leave out the steps to create the SSH key secret.
-
-Use the normal repository syntax, i.e. `https://github.com/<org>>/<repo>`
 
 ## Accessing the URL on Code Engine
 
