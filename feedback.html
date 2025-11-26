@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Feedback | IBM Technology Building Blocks</title>
+  <link rel="icon" href="https://www.ibm.com/favicon.ico">
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      font-family: 'IBM Plex Sans', Arial, sans-serif;
+      background-color: #0b1736;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .feedback-header {
+      background-color: #000;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .feedback-header img {
+      height: 28px;
+    }
+
+    .feedback-container {
+      max-width: 900px;
+      margin: 4rem auto;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2.5rem;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    }
+
+    h1 {
+      color: #61dafb;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    form {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    label {
+      font-weight: 500;
+      color: #ffffff;
+      text-align: left;
+    }
+
+    select,
+    textarea,
+    input[type="text"] {
+      background-color: #001f4d;
+      border: 1px solid #0044cc;
+      color: #ffffff;
+      border-radius: 6px;
+      padding: 0.8rem;
+      font-size: 1rem;
+      width: 100%;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    select:focus,
+    textarea:focus,
+    input:focus {
+      outline: none;
+      border-color: #00b4ff;
+    }
+
+    .btn-submit {
+      background-color: #0062ff;
+      color: #ffffff;
+      font-weight: 600;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: fit-content;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn-submit:hover {
+      background-color: #0044cc;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1.5rem;
+      color: #00b4ff;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      width: 92%;
+      max-width: 100%;
+    }
+
+    footer {
+      background: #001f4d;
+      color: #ffffff;
+      text-align: left;
+      padding: 0.25rem 1rem;
+    }
+
+    footer a {
+      color: #ffffff;
+    }
+
+    footer a:hover {
+      color: #00b4ff;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="feedback-header">
+    <img src="images/IBM_logo.svg" alt="IBM Logo">
+    <a href="index.html" style="color: #61dafb; text-decoration: none;">← Back to Building Blocks</a>
+  </header>
+
+  <!-- FEEDBACK FORM -->
+  <div class="feedback-container">
+    <h1>Share Your Feedback</h1>
+    <p>
+      We value your input on IBM’s <strong>Technology Building Blocks</strong>.
+      Please use the form below to share your thoughts, suggestions, or requests.
+    </p>
+
+    <form id="feedbackForm">
+      <label for="category">Select Main Category</label>
+      <select id="category" name="category" required>
+        <option value="">-- Select Category --</option>
+        <option value="Agents">Agents</option>
+        <option value="Data for AI">Data for AI</option>
+        <option value="Trusted AI">Trusted AI</option>
+        <option value="Optimize">Optimize</option>
+        <option value="Build & Deploy">Build & Deploy</option>
+      </select>
+
+      <label for="subcategory">Select Subcategory</label>
+      <select id="subcategory" name="subcategory">
+        <option value="">-- Select Subcategory --</option>
+        <optgroup label="Agents">
+          <option>agent-builder</option>
+          <option>ai-gateway</option>
+          <option>multi-agent-orchestration</option>
+        </optgroup>
+        <optgroup label="Data for AI">
+          <option>data-security-and-encryption</option>
+          <option>q-and-a</option>
+          <option>vector-search</option>
+          <option>zero-copy-lakehouse</option>
+        </optgroup>
+        <optgroup label="Trusted AI">
+          <option>design-time-evaluations</option>
+          <option>runtime-evaluations</option>
+          <option>secure-ai-lifecycle</option>
+        </optgroup>
+      </select>
+
+      <label for="feedback">Your Feedback</label>
+      <textarea id="feedback" name="feedback" placeholder="Enter your feedback here..." required></textarea>
+
+      <label for="type">Feedback Type</label>
+      <select id="type" name="type">
+        <option value="">-- Select Type --</option>
+        <option>Enhancement / New Feature</option>
+        <option>Documentation Update</option>
+        <option>Bug Report</option>
+        <option>UI / UX Suggestion</option>
+        <option>General Comment</option>
+      </select>
+
+      <button type="submit" class="btn-submit">Submit Feedback</button>
+    </form>
+
+    <a href="index.html" class="back-link">← Back to Building Blocks Home</a>
+  </div>
+
+  <footer>
+    <p>© 2025 IBM Corporation | <a href="https://github.com/ibm-self-serve-assets/building-blocks" target="_blank"
+        style="color:#e8eaeb;">GitHub Repo</a></p>
+  </footer>
+
+  <!-- SCRIPT: Redirect to GitHub issue template -->
+  <script>
+    document.getElementById("feedbackForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const category = document.getElementById("category").value || "General";
+      const subcategory = document.getElementById("subcategory").value || "N/A";
+      const feedback = encodeURIComponent(document.getElementById("feedback").value);
+      const type = document.getElementById("type").value || "General";
+
+      const title = encodeURIComponent(`[${category}] ${type} Feedback`);
+      const body = encodeURIComponent(
+        `### Category:\n${category}\n\n### Subcategory:\n${subcategory}\n\n### Feedback:\n${decodeURIComponent(feedback)}\n\n---\n_Submitted via Building Blocks Feedback Form_`
+      );
+
+      const githubUrl = `https://github.com/ibm-self-serve-assets/building-blocks/issues/new?title=${title}&body=${body}&labels=feedback`;
+
+      window.open(githubUrl, "_blank");
+    });
+  </script>
+</body>
+
+</html>
