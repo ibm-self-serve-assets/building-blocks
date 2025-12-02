@@ -213,6 +213,73 @@ class MCPToolkitClient:
         # Let the common handler validate and parse the response
         return self._handle_response(resp)
 
+    def get_toolkit_by_id(self, toolkit_id: str) -> Dict[str, Any]:
+        url = f"{self.instance_base_url}/v1/orchestrate/toolkits/{toolkit_id}"
+
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "accept": "application/json"
+        }
+
+        resp = requests.get(url, headers=headers, timeout=self.timeout, verify=self.verify_ssl)
+        return self._handle_response(resp)
+    
+    def list_agents(
+        self,
+        *,
+        include_hidden: bool = False,
+        ids: Optional[str] = None,
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Retrieve a single agent that matches the given filters.
+        """
+
+        base_url = f"{self.instance_base_url}/v1/orchestrate/agents"
+
+        params = {
+            "include_hidden": str(include_hidden).lower(),
+        }
+        if ids:
+            params["ids"] = ids
+
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "accept": "application/json",
+        }
+
+        response = requests.get(
+            base_url,
+            headers=headers,
+            params=params,
+            timeout=self.timeout,
+            verify=self.verify_ssl,
+        )
+
+        agents = self._handle_response(response)
+        return agents
+
+    def filter_agent_by_name(self, agent_list, name):
+        for agent in agent_list:
+            if agent["display_name"] == name:
+                return agent
+        return None
+    
+    def update_agent_tools(self, agent_id, new_tools):
+        url = f"{self.instance_base_url}/v1/orchestrate/agents/{agent_id}"
+        #print(url)
+        
+        headers = {
+            "Authorization": f"Bearer {self.access_token}",
+            "Accept": "application/json"
+        }
+        
+        payload = json.dumps({
+            "tools": new_tools
+        })
+        
+        response = requests.patch(url, data=payload, headers=headers)
+        print(response)
+        return response
 
 if __name__ == "__main__":
     """
@@ -223,38 +290,64 @@ if __name__ == "__main__":
     """
 
     try:
+        # Load environment variables once
+        load_dotenv()
+
         # Build client from environment variables and clsAuth()
         client = MCPToolkitClient.from_env()
 
         # Load other toolkit-specific env variables
-        load_dotenv()
-
         toolkit_name = os.getenv("TOOLKIT_NAME", "my_mcp_toolkit")
         toolkit_description = os.getenv("TOOLKIT_DESCRIPTION", "My MCP toolkit description")
         mcp_url = os.getenv("MCP_URL")
         connection_app_id = os.getenv("CONNECTION_APP_ID")
+        agent_name = os.getenv("AGENT_NAME")
 
-        if not mcp_url:
-            raise ValueError("Environment variable 'MCP_URL' is not set.")
-        if not connection_app_id:
-            raise ValueError("Environment variable 'CONNECTION_APP_ID' is not set.")
+        # Validate required environment variables
+        missing_vars = [var for var, val in {
+            "MCP_URL": mcp_url,
+            "CONNECTION_APP_ID": connection_app_id,
+            "AGENT_NAME": agent_name
+        }.items() if not val]
+
+        if missing_vars:
+            raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
 
         print("Using instance base URL:", client.instance_base_url)
 
-        # Actually create the toolkit
+        # Create the MCP toolkit
         result = client.create_mcp_toolkit(
             name=toolkit_name,
             description=toolkit_description,
             mcp_url=mcp_url,
             connection_appid=connection_app_id,
-            tools=['*']  # or pass a specific list of tools
+            tools=['*']
         )
+        toolkit_id = result.get("id")
+        print("Created toolkit successfully, with id:", toolkit_id)
 
-        print("Created toolkit successfully. Server response:")
-        print(json.dumps(result, indent=2))
+        # Fetch toolkit details
+        toolkit_details = client.get_toolkit_by_id(toolkit_id)
+        print("Toolkit fetched by ID:")
+        print(json.dumps(toolkit_details, indent=2))
+
+        tools = toolkit_details.get("tools", [])
+        print("Toolkit tools:", tools)
+
+        # List all agents
+        agents = client.list_agents()
+        agent = client.filter_agent_by_name(agents, agent_name)
+
+        if agent:
+            agent_id = agent.get("id")
+            print("Required agent found with id:", agent_id)
+            # Update agent tools safely
+            client.update_agent_tools(agent_id, tools)
+            print("Agent tools updated successfully.")
+        else:
+            print(f"Agent '{agent_name}' not found. Skipping tool update.")
 
     except MCPToolkitError as e:
-        # Capture structured API errors
         print("MCPToolkitError occurred:")
         print("Message:", str(e))
         if e.status_code is not None:
@@ -263,5 +356,4 @@ if __name__ == "__main__":
             print("Response body:", e.response_body)
 
     except Exception as e:
-        # Catch any other unexpected errors
         print("Unexpected error occurred:", str(e))
