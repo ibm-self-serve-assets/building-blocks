@@ -138,9 +138,9 @@ Embed instructions:
 
 ## Demo Video
 
-### Smart Choice Supplier Agent Demo
-
-[![Watch the Video](https://img.shields.io/badge/▶️%20Play%20Video-000?style=for-the-badge)](demo/Smart_Choice_Supplier_Agent.mp4)
+<video width="720" controls>
+  <source src="https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/agents/multi-agent-orchestration/Smart-Choice-Supplier/demo/Smart_Choice_Supplier_Agent.mp4" type="video/mp4">
+</video>
 
 After running the sequence, capture screenshots and a demo video for presentation.
 
