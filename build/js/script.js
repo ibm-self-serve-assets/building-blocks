@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
+  /* ---------------------- Stop Video Helper ---------------------- */
+  function stopVideoPlayback() {
+    const video = document.getElementById("demoVideo");
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+      video.src = "";
+      video.load();
+    }
+  }
+
+  /* ---------------------- Modal Helpers ---------------------- */
   const showModal = (modal) => modal.classList.add("show");
   const hideModal = (modal) => modal.classList.remove("show");
 
@@ -11,6 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const cardBody = document.getElementById("card-modal-body");
   const cardClose = cardOverlay.querySelector(".close-btn");
 
+  tileModal.style.transition = "background 0.25s ease";
+
+  /* ---------------------- Config / Links ---------------------- */
+
   const createLink = (key, label) =>
     `<p style="margin-top:1rem;">
       <a href="#" class="open-modal-link" data-target="${key}" style="color:#00b4ff;text-decoration:none;font-weight:500;">
@@ -18,183 +34,245 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>
     </p>`;
 
-  // ✅ SharePoint PPT links
   const overviewLinks = {
-    agents: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Entry_Points/BB_Agents_EntryPoints.pptx?d=wbbed7561714c4490ab9aada13c749db9&csf=1&web=1&e=U3mtE5",
-    data: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Entry_Points/BB_DataforAI_EntryPoints_in_review.pptx?d=wc76b116996564a87a59a2d4a52104c48&csf=1&web=1&e=VXIObU",
-    trusted: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Entry_Points/BB_TrustedAI_EntryPoints.pptx?d=w1ab4b9fd63fc4b91aca41387df3ac429&csf=1&web=1&e=M8erAv"
+    agents: "https://ibm.sharepoint.com/:p:/r/.../BB_Agents_EntryPoints.pptx",
+    data: "https://ibm.sharepoint.com/:p:/r/.../BB_DataforAI_EntryPoints.pptx",
+    trusted: "https://ibm.sharepoint.com/:p:/r/.../BB_TrustedAI_EntryPoints.pptx"
   };
 
-  // ✅ Generates the presentation hyperlink
+  const demoLinks = {
+    agents:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/agents/multi-agent-orchestration/Smart-Choice-Supplier/demo/Smart_Choice_Supplier_Agent.mp4",
+    data: "https://example.com/data-demo.mp4",
+    trusted: "https://example.com/trusted-demo.mp4"
+  };
+
   const createOverviewLink = (key, label) =>
     overviewLinks[key]
-      ? `<p style="margin-top:0.3rem;">
-          <a href="${overviewLinks[key]}" target="_blank" style="color:#00b4ff;text-decoration:none;font-weight:500;">
-            🔗 Overview of ${label} (Presentation)
-          </a>
-         </p>`
+      ? `<p><a href="${overviewLinks[key]}" target="_blank" style="color:#00b4ff;">🔗 Overview of ${label} (Presentation)</a></p>`
       : "";
 
+  const createDemoLink = (key, label) =>
+    demoLinks[key]
+      ? `<p><a href="#" class="play-demo-link" data-demo="${demoLinks[key]}" data-category="${key}" style="color:#ff6f00;font-weight:500;">🎬 Watch ${label} Demo</a></p>`
+      : "";
+
+  /* ---------------------- Tile Data ---------------------- */
   const tileData = {
     agents: {
       title: "Agents - Building Blocks",
       items: [
-        { name: "Agent Builder", desc: "The Agent Builder, powered by IBM watsonx Agentic Development Kit (ADK), simplifies the creation and deployment of intelligent, context-aware agents. It offers a modular framework for building goal-driven agents that integrate seamlessly into enterprise workflows." },
-        { name: "AI Gateway", desc: "Ability to provide a unified abstraction layer across multiple LLM providers, eliminating vendor lock-in. With its built-in extensibility and model integration capabilities, it allows seamless onboarding and orchestration of models from OpenAI, Anthropic, Google, AWS Bedrock, Azure OpenAI, Mistral, Ollama, and IBM watsonx.ai within a single interoperable framework." },
-        { name: "Multi-Agent Orchestration", desc: "Seamless coordination and interaction among specialized autonomous agents to achieve complex, multi-step objectives. It manages task delegation, context sharing, and decision synchronization across agents." }
+        { name: "Agent Builder", desc: "Build modular, goal-driven enterprise agents." },
+        { name: "AI Gateway", desc: "Unified abstraction layer for LLMs." },
+        { name: "Multi-Agent Orchestration", desc: "Coordinate agents for complex workflows." }
       ],
-      link: createLink("agents", "Agents") + createOverviewLink("agents", "Agents")
+      link:
+        createLink("agents", "Agents") +
+        createOverviewLink("agents", "Agents") +
+        createDemoLink("agents", "Agents")
     },
+
     data: {
       title: "Data for AI - Building Blocks",
       items: [
-        { name: "Vector Search", desc: "Delivers a high-performance, vector-based retrieval engine designed for GenAI pipelines. It enables semantic similarity matching to enhance retrieval-augmented generation (RAG) and is optimized for scalability, low-latency queries, and large-scale AI workloads." },
-        { name: "Question & Answer", desc: "Enables natural language interaction with enterprise data through intelligent query translation. Powered by watsonx.data Text2SQL, it transforms user questions into optimized, executable SQL queries, enabling seamless conversational access to structured datasets." },
-        { name: "Zero-Copy Lakehouse", desc: "Provides a unified query layer that enables direct access to data across databases, data warehouses, and cloud object stores — without replicating or moving it. This architecture minimizes data latency, optimizes storage utilization, and significantly reduces infrastructure costs." },
-        { name: "Data Security & Encryption", desc: "Safeguards sensitive information using advanced encryption, data masking, and fine-grained access controls. It strengthens data governance frameworks and ensures adherence to regulatory and compliance standards." }
+        { name: "Vector Search", desc: "High-performance semantic retrieval." },
+        { name: "Question & Answer", desc: "Natural language → SQL." },
+        { name: "Zero-Copy Lakehouse", desc: "Query without replication." },
+        { name: "Data Security", desc: "Governed, secure access." }
       ],
-      link: createLink("data", "Data for AI") + createOverviewLink("data", "Data for AI")
+      link:
+        createLink("data", "Data for AI") +
+        createOverviewLink("data", "Data for AI") +
+        createDemoLink("data", "Data for AI")
     },
+
     trusted: {
       title: "Trusted AI - Building Blocks",
       items: [
-        { name: "Design-Time Evaluations", desc: "Assess and validate your AI models during the build phase to ensure optimal performance, fairness, and safety before deployment. Automatically evaluate AI-generated content for bias, toxicity, jailbreak attempts, and policy violations using configurable risk metrics. This proactive approach helps teams identify and address issues early in the development lifecycle, ensuring models are trustworthy and compliant from the start." },
-        { name: "Runtime Evaluation", desc: "Maintain continuous trust and compliance after deployment with real-time monitoring of your AI models. Real-time guardrails help ensure your models remain aligned with business and regulatory requirements. Runtime and production evaluations track performance drift, monitor changes in inputs and outputs, and detect bias to maintain ongoing reliability, safety, and compliance. Automated policy enforcement and risk monitoring keep large language models (LLMs) and other AI systems secure and accountable in production." },
-        { name: "Secure AI Lifecycle", desc: "Safeguard your AI ecosystem end-to-end with IBM Guardium AI Security. Ensure safe, compliant, and auditable AI adoption through robust model access controls, security posture management, model security, threat resilience, and policy-driven governance. Its modular, API-based architecture delivers flexible and scalable protection, enabling organizations to secure AI systems with confidence." }
+        { name: "Design-Time Evaluations", desc: "Safety & bias checks." },
+        { name: "Runtime Evaluation", desc: "Live guardrails for AI." },
+        { name: "Secure AI Lifecycle", desc: "End-to-end governance." }
       ],
-      link: createLink("trusted", "Trusted AI") + createOverviewLink("trusted", "Trusted AI")
-    },
-    optimize: {
-      title: "Optimize - Building Blocks",
-      items: [
-        { name: "FinOps", desc: "Provides deep visibility into IT spend across hybrid and multicloud environments. It enables organizations to optimize cloud costs, forecast budgets, and align technology investments with business outcomes through data-driven insights and automated cost governance." },
-        { name: "Automated Resilience and Compliance", desc: "AI-powered observability and decision intelligence platform that unifies data across IT operations, applications, and infrastructure for real-time insight and proactive issue resolution. It leverages generative AI, causal reasoning, and predictive analytics to deliver context-aware recommendations and automated remediation, enhancing operational efficiency and reliability across hybrid environments." },
-        { name: "Automated Resource Management", desc: "Autonomous resource optimization by continuously analyzing application demand and automatically allocating compute, storage, and network resources in real time. It ensures performance assurance and cost efficiency across hybrid and multicloud environments through AI-driven workload placement, scaling, and elasticity management." }
-      ],
-      link: createLink("optimize", "Optimize")
-    },
-    observe: {
-      title: "Observe - Building Blocks",
-      items: [
-        { name: "Network Performance", desc: "Delivers AI-driven network observability and analytics to monitor, predict, and optimize performance across complex hybrid and multicloud infrastructures. It provides real-time telemetry ingestion, anomaly detection, and automated root-cause analysis, ensuring proactive network assurance and operational resilience." },
-        { name: "Application Observabality", desc: "Real-time, end-to-end visibility into applications, microservices, and infrastructure across hybrid and multicloud environments. It leverages AI-powered automated discovery, dependency mapping, and root-cause analysis to deliver continuous performance optimization and accelerated incident resolution." }
-      ],
-      link: createLink("observe", "Observe")
-    },
-    build: {
-      title: "Build & Deploy - Building Blocks",
-      items: [
-        { name: "Authentication Management", desc: "Adaptive, AI-driven identity and access management (IAM) that secures user authentication across cloud and on-premises applications. It delivers risk-based multifactor authentication, single sign-on (SSO), and identity governance to ensure zero-trust security compliance and seamless user experiences." },
-        { name: "Infrastructure as Code", desc: "Automation tool that enables declarative provisioning, management, and versioning of cloud and on-premises resources. It provides idempotent, multi-cloud orchestration through reusable configuration files, ensuring consistent and scalable infrastructure deployment across hybrid environments." },
-        { name: "Code Assistant", desc: "Leverages large language models (LLMs) to accelerate code generation, modernization, and automation across programming languages and platforms. It provides context-aware code recommendations, test generation, and documentation assistance, enabling developers to enhance productivity and reduce technical debt in enterprise software delivery." }
-      ],
-      link: createLink("builddeploy", "Build & Deploy")
+      link:
+        createLink("trusted", "Trusted AI") +
+        createOverviewLink("trusted", "Trusted AI") +
+        createDemoLink("trusted", "Trusted AI")
     }
   };
+
+  /* ---------------------- Card Data ---------------------- */
 
   const cardData = {
     agents: {
       title: `<img src="icons/agent.png" class="modal-icon"> Agents`,
       content: `
-        <p><strong>IBM watsonx Orchestrate</strong> and <strong>watsonx.ai</strong> enable intelligent automation and orchestration across business processes.</p>
+        <p>Intelligent workflow orchestration powered by Watsonx.</p>
         <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank">🔗 Agent Builder</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank">🔗 AI Gateway</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank">🔗 Multi-Agent Orchestration</a></li>
-        </ul>
-      `
+          <li><a href="#">🔗 Agent Builder</a></li>
+          <li><a href="#">🔗 AI Gateway</a></li>
+          <li><a href="#">🔗 Multi-Agent Orchestration</a></li>
+        </ul>`
     },
+
     data: {
       title: `<img src="icons/data.png" class="modal-icon"> Data-for-AI`,
-      content: `
-        <p>Provides a unified, high-performance data access and retrieval framework optimized for GenAI workloads. It enables semantic vector search, natural language-to-SQL translation, and zero-copy data federation across databases and cloud stores.</p>
-        <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/RAG-Accelerator" target="_blank">🔗 Question & Answer - RAG Accelerator</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/Text-To-SQL" target="_blank">🔗 Text To SQL </a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank">🔗 Vector Search</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank">🔗 Data Security & Encryption</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank">🔗 Zero Copy Lakehouse</a></li>
-        </ul>      
-      `
+      content: `<p>Unified data retrieval for GenAI pipelines.</p>`
     },
+
     trusted: {
       title: `<img src="icons/trusted.png" class="modal-icon"> Trusted-AI`,
-      content: `
-        <p>Ensures secure, compliant, and auditable AI adoption through Guardium AI Security and watsonx.governance. Supports design-time and runtime evaluations with advanced guardrails, bias detection, and policy enforcement.</p>
-        <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank">🔗 Design Time Evaluations</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations/generative_ai" target="_blank">🔗 Runtime Evaluations</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li>
-        </ul>      
-      `
-    },
-    optimize: {
-      title: `<img src="icons/optimize.png" class="modal-icon"> Optimize`,
-      content: `
-        <p><strong>IBM Turbonomic</strong> automates performance and cost optimization across hybrid cloud environments.</p>
-        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize" target="_blank">🔗 Open Optimize Block</a>
-      `
-    },
-    observe: {
-      title: `<img src="icons/observe.png" class="modal-icon"> Observe`,
-      content: `
-        <p>Gain end-to-end observability with <strong>IBM Instana</strong> to detect, analyze, and resolve issues proactively.</p>
-        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe" target="_blank">🔗 View Observability</a>
-      `
-    },
-    builddeploy: {
-      title: `<img src="icons/build.png" class="modal-icon"> Build & Deploy`,
-      content: `
-        <p>Deployable configurations that dynamically generate new code snippets using <strong>natural language prompts</strong>.</p>
-        <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy" target="_blank">🔗 Open Build & Deploy Block</a>
-      `
+      content: `<p>Safe & governed AI across lifecycle.</p>`
     }
   };
 
-  /* Tile modal interactions */
-  document.querySelectorAll(".tile").forEach(tile => {
+  /* ---------------------- Tile Click ---------------------- */
+  document.querySelectorAll(".tile").forEach((tile) => {
     tile.addEventListener("click", () => {
+      stopVideoPlayback();
       const key = tile.dataset.category;
       const data = tileData[key];
-      if (data) {
-        tileTitle.textContent = data.title;
-        tileBody.innerHTML =
-          data.items.map(item => `<p><strong>${item.name}</strong>: ${item.desc}</p>`).join("") +
-          (data.link || "");
-        showModal(tileModal);
-      }
+
+      tileTitle.textContent = data.title;
+      tileBody.innerHTML =
+        data.items.map((i) => `<p><strong>${i.name}</strong>: ${i.desc}</p>`).join("") + data.link;
+
+      tileModal.style.background = "rgba(0,0,0,0.15)";
+      showModal(tileModal);
     });
   });
 
-  tileClose.addEventListener("click", () => hideModal(tileModal));
-  window.addEventListener("click", e => { if (e.target === tileModal) hideModal(tileModal); });
+  /* ---------------------- Close Button ---------------------- */
+  tileClose.addEventListener("click", () => {
+    stopVideoPlayback();
+    hideModal(tileModal);
+    tileModal.style.background = "rgba(0,0,0,0.15)";
+  });
 
-  /* Card modal interactions */
-  document.querySelectorAll(".card").forEach(card => {
+  /* ---------------------- Close on Background Click ---------------------- */
+  window.addEventListener("click", (e) => {
+    if (e.target === tileModal) {
+      stopVideoPlayback();
+      hideModal(tileModal);
+      tileModal.style.background = "rgba(0,0,0,0.15)";
+    }
+  });
+
+  /* ---------------------- Card Modal ---------------------- */
+  document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", () => {
+      stopVideoPlayback();
       const key = card.dataset.modal;
       const data = cardData[key];
-      if (data) {
-        cardBody.innerHTML = `<h2>${data.title}</h2>${data.content}`;
-        showModal(cardOverlay);
-      }
+
+      cardBody.innerHTML = `<h2>${data.title}</h2>${data.content}`;
+      showModal(cardOverlay);
     });
   });
 
   cardClose.addEventListener("click", () => hideModal(cardOverlay));
-  cardOverlay.addEventListener("click", e => { if (e.target === cardOverlay) hideModal(cardOverlay); });
 
-  /* Link navigation inside tile modals */
-  document.addEventListener("click", e => {
+  /* ---------------------- Tile → Card Navigation ---------------------- */
+  document.addEventListener("click", (e) => {
     if (e.target.classList.contains("open-modal-link")) {
       e.preventDefault();
-      const targetKey = e.target.dataset.target;
+      stopVideoPlayback();
       hideModal(tileModal);
-      const card = cardData[targetKey];
-      if (card) {
-        cardBody.innerHTML = `<h2>${card.title}</h2>${card.content}`;
-        showModal(cardOverlay);
-      }
+
+      const key = e.target.dataset.target;
+      const data = cardData[key];
+
+      cardBody.innerHTML = `<h2>${data.title}</h2>${data.content}`;
+      showModal(cardOverlay);
+    }
+  });
+
+  /* ---------------------- PLAY DEMO VIDEO INSIDE MODAL ---------------------- */
+  document.addEventListener("click", (e) => {
+    if (e.target.classList.contains("play-demo-link")) {
+      e.preventDefault();
+
+      const videoUrl = e.target.dataset.demo;
+      const category = e.target.dataset.category;
+
+      stopVideoPlayback();
+
+      tileTitle.textContent = "Smart Choice Supplier";
+      tileModal.style.background = "rgba(0,0,0,0.75)";
+
+      // Loading Spinner
+      tileBody.innerHTML = `
+        <div id="video-loading-spinner" style="
+          width:80px;height:80px;
+          border:8px solid #888;
+          border-top-color:#00b4ff;
+          border-radius:50%;
+          animation:spin 1s linear infinite;
+          margin:120px auto;
+        "></div>
+
+        <style>
+            @keyframes spin {from {transform: rotate(0);} to {transform: rotate(360deg);} }
+        </style>
+      `;
+
+      showModal(tileModal);
+
+      /* ---------- Load Video After Small Delay ---------- */
+      setTimeout(() => {
+        tileBody.innerHTML = `
+          <button id="back-btn" style="
+            background:none;
+            border:1px solid #00b4ff;
+            padding:6px 14px;
+            border-radius:6px;
+            color:#00b4ff;
+            cursor:pointer;
+            font-size:15px;
+            margin-bottom:20px;
+          ">⟵ Return to Agents Info</button>
+
+          <video 
+            id="demoVideo"
+            controls 
+            autoplay 
+            preload="auto"
+            style="
+              width:100%;
+              max-width:1600px;
+              height:auto;
+              max-height: calc(100vh - 260px);
+              object-fit:contain;
+              background:#000;
+              border-radius: 14px;
+              display:block;
+              margin:0 auto;
+            "
+          >
+            <source src="${videoUrl}" type="video/mp4">
+          </video>
+        `;
+
+        const video = document.getElementById("demoVideo");
+
+        /* Hide spinner when video loads */
+        video.addEventListener("canplay", () => {
+          const spinner = document.getElementById("video-loading-spinner");
+          spinner && spinner.remove();
+        });
+
+        /* ---------- Back Button ---------- */
+        document.getElementById("back-btn").addEventListener("click", () => {
+          stopVideoPlayback();
+          const data = tileData[category];
+
+          tileTitle.textContent = data.title;
+          tileBody.innerHTML =
+            data.items.map((i) => `<p><strong>${i.name}</strong>: ${i.desc}</p>`).join("") +
+            data.link;
+
+          tileModal.style.background = "rgba(0,0,0,0.15)";
+        });
+      }, 300);
     }
   });
 });
