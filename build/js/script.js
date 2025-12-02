@@ -25,6 +25,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tileModal.style.transition = "background 0.25s ease";
 
+  /* ---------------------- Demo Titles ---------------------- */
+  const demoTitles = {
+    agents: "Smart Choice Supplier Agent Demo",
+    data: "Text2SQL Demo",
+    trusted: "Customer Care Guardrail Demo"
+  };
+
   /* ---------------------- Config / Links ---------------------- */
 
   const createLink = (key, label) =>
@@ -43,8 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const demoLinks = {
     agents:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/agents/multi-agent-orchestration/Smart-Choice-Supplier/demo/Smart_Choice_Supplier_Agent.mp4",
-    data: "https://example.com/data-demo.mp4",
-    trusted: "https://example.com/trusted-demo.mp4"
+
+    data: "https://example.com/text2sql-demo.mp4",
+
+    trusted:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/trusted-ai/design-time-evaluations/gen-ai-evaluations/demo/Customer_Care_Guardrail_Demo.mp4"
   };
 
   const createOverviewLink = (key, label) =>
@@ -186,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---------------------- PLAY DEMO VIDEO INSIDE MODAL ---------------------- */
+  /* ---------------------- PLAY DEMO VIDEO (Per Category Titles) ---------------------- */
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("play-demo-link")) {
       e.preventDefault();
@@ -196,10 +206,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       stopVideoPlayback();
 
-      tileTitle.textContent = "Smart Choice Supplier";
+      /* SET TITLE BASED ON CATEGORY */
+      tileTitle.textContent = demoTitles[category];
+
       tileModal.style.background = "rgba(0,0,0,0.75)";
 
-      // Loading Spinner
       tileBody.innerHTML = `
         <div id="video-loading-spinner" style="
           width:80px;height:80px;
@@ -229,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
             cursor:pointer;
             font-size:15px;
             margin-bottom:20px;
-          ">⟵ Return to Agents Info</button>
+          ">⟵ Return</button>
 
           <video 
             id="demoVideo"
