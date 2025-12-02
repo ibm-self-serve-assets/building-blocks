@@ -129,10 +129,21 @@ Embed instructions:
 4. `From the current list can you please pick best suppliers one from each country`
 5. `For this suppliers data can you please add country risk level and risk factors as new column`
 
-<img width="1482" alt="image" src="https://github.ibm.com/user-attachments/assets/059c3519-2def-4705-87cb-240cfd12eb01" />
-<img width="1500" alt="image" src="https://github.ibm.com/user-attachments/assets/beca5008-0383-4e98-8a04-7e277012680c" />
 
-**Demo video:** [Watch here](https://ibm-my.sharepoint.com/:v:/p/dheeraj_arremsetty/EQCULbWYEtdMtMYxsM5B9UsBZigPGSeAjfMGFqnjvSNoqw?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=8zUXXs)
+![Screenshot 1](images/screenshoot_1.png)
+
+![Screenshot 2](images/screenshoot_2.png)
+
+---
+
+## Demo Video
+
+### Smart Choice Supplier Agent Demo
+
+<video width="600" controls>
+  <source src="demo/Smart%20Choice%20Supplier%20Agent.mov" type="video/quicktime">
+  Your browser does not support the video tag.
+</video>
 
 After running the sequence, capture screenshots and a demo video for presentation.
 
