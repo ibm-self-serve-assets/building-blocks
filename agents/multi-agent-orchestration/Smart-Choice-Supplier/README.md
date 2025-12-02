@@ -140,7 +140,7 @@ Embed instructions:
 
 ### Smart Choice Supplier Agent Demo
 
-[▶Watch the demo](demo/Smart%20Choice%20Supplier%20Agent.mov)
+[![Watch the Video](https://img.shields.io/badge/▶️%20Play%20Video-000?style=for-the-badge)](demo/Smart_Choice_Supplier_Agent.mp4)
 
 After running the sequence, capture screenshots and a demo video for presentation.
 
