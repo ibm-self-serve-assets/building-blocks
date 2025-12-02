@@ -140,10 +140,7 @@ Embed instructions:
 
 ### Smart Choice Supplier Agent Demo
 
-<video width="600" controls>
-  <source src="demo/Smart%20Choice%20Supplier%20Agent.mov" type="video/quicktime">
-  Your browser does not support the video tag.
-</video>
+[▶Watch the demo](demo/Smart%20Choice%20Supplier%20Agent.mov)
 
 After running the sequence, capture screenshots and a demo video for presentation.
 
