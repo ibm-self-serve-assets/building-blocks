@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Smart Choice Supplier Agent - Real-time supplier data from AI agent">
+  <title>Smart Choice Supplier Agent</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: 'Arial', sans-serif; }
+    .hero { background: linear-gradient(to right, #1E40AF, #3B82F6); }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <nav class="bg-white shadow sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16">
+        <div class="flex items-center"><h1 class="text-xl font-bold text-gray-800">Smart Choice Supplier Agent</h1></div>
+        <div class="flex items-center space-x-4"><span class="text-gray-600">Embeddable Watsonx Orchestrate</span></div>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero text-white py-12 text-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-4">Smart Choice Supplier Agent</h2>
+      <p class="text-lg mb-6">Real-time supplier data powered by AI agent. Ask questions and see live updates.</p>
+    </div>
+  </section>
+
+  <section class="py-8 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-gray-50 p-6 rounded-lg shadow">
+        <form id="prompt-form" class="mb-4 flex flex-col md:flex-row md:items-center md:space-x-4 space-y-3 md:space-y-0">
+          <div class="flex-1 relative">
+            <label for="prompt-input" class="block text-sm font-medium text-gray-700 mb-1">
+              Ask the Smart Choice Supplier Agent
+            </label>
+            <div class="relative">
+              <input
+                id="prompt-input"
+                name="prompt-input"
+                class="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-indigo-500 focus:ring-indigo-500"
+                placeholder="e.g., coffee suppliers in India"
+                autocomplete="off"
+              />
+              <button
+                type="button"
+                id="prompt-dropdown-toggle"
+                class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+                aria-label="Show prompt options"
+              >
+                ▼
+              </button>
+              <ul
+                id="prompt-suggestions-list"
+                class="hidden absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-lg"
+              ></ul>
+            </div>
+          </div>
+          <button
+            type="button"
+            id="prompt-submit-button"
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-6 py-2 text-white font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          >
+            Submit
+          </button>
+        </form>
+        <div class="mb-6 text-sm text-gray-600 space-y-1">
+          <p>
+            Ask natural questions. The agent returns a dynamic JSON list (data) and this page renders columns from the keys.
+          </p>
+          <p class="text-xs text-gray-500">
+            Common fields: supplier_name, country, delivery_days, reliability_score, items, trade_volume, item_code, description, risk.
+          </p>
+        </div>
+        <div id="root" class="min-h-[400px]"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Results</h2>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <div id="supplier-table">
+          <div id="table-container" class="overflow-x-auto">
+            <table id="supplier-data-table" class="min-w-full table-auto">
+              <thead id="table-head" class="bg-gray-50"></thead>
+              <tbody id="table-body" class="bg-white divide-y divide-gray-200">
+                <tr>
+                  <td class="px-6 py-12 text-center text-gray-500">
+                    <div class="text-center">
+                      <div class="text-4xl mb-4">📊</div>
+                      <p class="text-lg">No data yet</p>
+                      <p class="text-sm">Ask the agent a question to populate results</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="mt-8 bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold text-gray-800 mb-2">Visualization</h3>
+        <p id="results-chart-message" class="text-sm text-gray-500 mb-4">
+          Chart will appear when numeric data is available.
+        </p>
+        <div class="relative">
+          <canvas id="results-chart" class="w-full max-h-96 hidden"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p>&copy; 2025 Smart Choice Supplier Agent. Powered by IBM WatsonX Orchestrate.</p>
+    </div>
+  </footer>
+
+  <script>
+    let messageReplaceInterval = null;
+    let chartInstance = null;
+
+    const PROMPT_SUGGESTIONS = [
+      "Give me all Coffee suppliers from India",
+      "filter suppliers below 20 delivery days",
+      "give me all suppliers with reliability above 90",
+      "show item codes with descriptions",
+      "list countries with high risk",
+      "supplier trade stats"
+    ];
+
+    const promptInput = document.getElementById('prompt-input');
+    const promptSubmitButton = document.getElementById('prompt-submit-button');
+    const promptSuggestionsList = document.getElementById('prompt-suggestions-list');
+    const promptToggle = document.getElementById('prompt-dropdown-toggle');
+
+    function renderPromptSuggestions(filterText = '') {
+      if (!promptSuggestionsList) return;
+
+      const normalizedFilter = filterText.trim().toLowerCase();
+      const filtered = PROMPT_SUGGESTIONS.filter(item =>
+        item.toLowerCase().includes(normalizedFilter)
+      );
+
+      promptSuggestionsList.innerHTML = '';
+
+      if (!filtered.length) {
+        const emptyItem = document.createElement('li');
+        emptyItem.className = 'px-4 py-2 text-sm text-gray-500';
+        emptyItem.textContent = 'No suggestions';
+        promptSuggestionsList.appendChild(emptyItem);
+        return;
+      }
+
+      filtered.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 cursor-pointer';
+        li.textContent = item;
+        li.addEventListener('mousedown', function (event) {
+          event.preventDefault();
+          if (promptInput) {
+            promptInput.value = item;
+          }
+          hidePromptSuggestions();
+        });
+        promptSuggestionsList.appendChild(li);
+      });
+    }
+
+    function showPromptSuggestions(filterText = '') {
+      if (!promptSuggestionsList) return;
+      renderPromptSuggestions(filterText);
+      promptSuggestionsList.classList.remove('hidden');
+    }
+
+    function hidePromptSuggestions() {
+      if (!promptSuggestionsList) return;
+      promptSuggestionsList.classList.add('hidden');
+    }
+
+    if (promptInput && promptSuggestionsList && promptToggle) {
+      promptInput.addEventListener('focus', function () {
+        showPromptSuggestions(promptInput.value);
+      });
+
+      promptInput.addEventListener('input', function (event) {
+        showPromptSuggestions(event.target.value);
+      });
+
+      promptInput.addEventListener('blur', function () {
+        setTimeout(hidePromptSuggestions, 150);
+      });
+
+      promptToggle.addEventListener('click', function () {
+        if (promptSuggestionsList.classList.contains('hidden')) {
+          showPromptSuggestions(promptInput.value);
+          promptInput.focus();
+        } else {
+          hidePromptSuggestions();
+        }
+      });
+
+      document.addEventListener('click', function (event) {
+        if (!promptSuggestionsList.contains(event.target) && event.target !== promptInput && event.target !== promptToggle) {
+          hidePromptSuggestions();
+        }
+      });
+    }
+
+    if (promptSubmitButton && promptInput) {
+      promptSubmitButton.addEventListener('click', function () {
+        const promptText = promptInput.value.trim();
+        if (!promptText) {
+          promptInput.focus();
+          return;
+        }
+
+        if (window.wxChatInstance && typeof window.wxChatInstance.send === 'function') {
+          try {
+            window.wxChatInstance.send(promptText);
+          } catch (error) {
+            console.error('Failed to send message to chat:', error);
+          }
+        } else {
+          console.warn('Chat instance not ready or send function unavailable. Message not sent:', promptText);
+        }
+      });
+
+      promptInput.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          promptSubmitButton.click();
+        }
+      });
+    }
+
+    window.wxOConfiguration = {
+      orchestrationID: "<insert orchestration id here>",
+      hostURL: "https://dl.watson-orchestrate.ibm.com",
+      rootElementID: "root",
+      showLauncher: true,
+      chatOptions: {
+        agentId: "<insert agent id here>",
+        onLoad: function(instance) {
+          console.log('WatsonX chat loaded, setting up event handlers...');
+          window.wxChatInstance = instance;
+          if (instance) {
+            try {
+              console.log('Chat instance available. Methods:', Object.keys(instance));
+              if (instance.chat && instance.chat.sendMessage) {
+                console.log('Chat sendMessage found under instance.chat.sendMessage');
+              }
+            } catch (debugError) {
+              console.warn('Unable to inspect chat instance:', debugError);
+            }
+          } else {
+            console.warn('Chat instance is undefined in onLoad callback');
+          }
+
+          startMessageReplacer();
+
+          instance.on('receive', function(event) {
+            console.log('Response received from bot:', event);
+            try {
+              const extracted = extractJSONFromResponse(event);
+              console.log('Extracted JSON:', extracted);
+
+              updateDynamicTable({ data: extracted.data || [] });
+            } catch (error) {
+              console.error('Error processing response:', error);
+              showError('Error processing response: ' + error.message);
+            }
+          });
+          console.log('Event handlers registered - table will update with responses');
+        }
+      }
+    };
+
+    function startMessageReplacer() {
+      if (messageReplaceInterval) {
+        clearInterval(messageReplaceInterval);
+      }
+
+      messageReplaceInterval = setInterval(function() {
+        const rootElement = document.getElementById('root');
+        if (!rootElement) return;
+
+        rootElement.querySelectorAll('*').forEach(function(element) {
+          const text = element.textContent || '';
+          if (text.includes('"message"') && text.includes('"data"') && text.trim().startsWith('{')) {
+            try {
+              const parsed = JSON.parse(text.trim());
+              let messageText = null;
+
+              if (parsed.message && typeof parsed.message === 'string') {
+                messageText = parsed.message;
+              } else if (parsed.properties && parsed.properties.message && typeof parsed.properties.message === 'string') {
+                messageText = parsed.properties.message;
+              } else if (parsed.properties && parsed.properties.message) {
+                const msg = parsed.properties.message;
+                if (typeof msg === 'string') {
+                  messageText = msg;
+                } else if (msg.items && Array.isArray(msg.items) && msg.items.length > 0 && typeof msg.items[0] === 'string') {
+                  messageText = msg.items[0];
+                }
+              }
+
+              if (messageText && (text.includes('"type"') || text.includes('"properties"') || text.includes('"wrap_data"') || text.length > messageText.length * 3)) {
+                element.textContent = messageText;
+                if (element.innerHTML) {
+                  element.innerHTML = messageText.replace(/\n/g, '<br>');
+                }
+              }
+            } catch (e) {
+              const jsonMatch = text.match(/\{[\s\S]*"message"[\s\S]*\}/);
+              if (jsonMatch) {
+                try {
+                  const parsed = JSON.parse(jsonMatch[0]);
+                  let messageText = null;
+
+                  if (parsed.message && typeof parsed.message === 'string') {
+                    messageText = parsed.message;
+                  } else if (parsed.properties && parsed.properties.message) {
+                    const msg = parsed.properties.message;
+                    if (typeof msg === 'string') {
+                      messageText = msg;
+                    } else if (msg.items && Array.isArray(msg.items) && msg.items.length > 0) {
+                      messageText = typeof msg.items[0] === 'string' ? msg.items[0] : '';
+                    }
+                  }
+
+                  if (messageText) {
+                    element.textContent = text.replace(jsonMatch[0], messageText);
+                    if (element.innerHTML) {
+                      element.innerHTML = element.innerHTML.replace(jsonMatch[0], messageText.replace(/\n/g, '<br>'));
+                    }
+                  }
+                } catch (e2) {}
+              }
+            }
+          }
+        });
+      }, 500);
+    }
+
+    function extractJSONFromResponse(event) {
+      let responseContent = '';
+      if (event.message && event.message.content) {
+        if (Array.isArray(event.message.content)) {
+          responseContent = event.message.content
+            .filter(item => item.type === 'text')
+            .map(item => item.text || item.content)
+            .join(' ');
+        } else if (typeof event.message.content === 'string') {
+          responseContent = event.message.content;
+        }
+      }
+      console.log('Raw response content:', responseContent);
+      try {
+        const jsonMatch = responseContent.match(/\{[\s\S]*\}/);
+        const parsed = JSON.parse(jsonMatch ? jsonMatch[0] : responseContent);
+
+        if (parsed && typeof parsed.message === 'string') {
+          return {
+            data: Array.isArray(parsed.data) ? parsed.data : [],
+            message: parsed.message
+          };
+        }
+
+        if (parsed && parsed.type === 'object') {
+          let message = '';
+          if (parsed.message && typeof parsed.message === 'string') {
+            message = parsed.message;
+          } else if (parsed.properties && parsed.properties.message) {
+            if (typeof parsed.properties.message === 'string') {
+              message = parsed.properties.message;
+            } else if (parsed.properties.message.items && Array.isArray(parsed.properties.message.items) && parsed.properties.message.items.length > 0) {
+              message = typeof parsed.properties.message.items[0] === 'string' ? parsed.properties.message.items[0] : '';
+            }
+          }
+
+          if (Array.isArray(parsed.data)) {
+            return { data: parsed.data, message: message };
+          }
+          if (parsed.properties && parsed.properties.data && Array.isArray(parsed.properties.data.items)) {
+            return { data: parsed.properties.data.items, message: message };
+          }
+          if (parsed.properties) {
+            const props = parsed.properties;
+            const suppliers = Array.isArray(props?.suppliers?.items) ? props.suppliers.items : [];
+            const productSuppliers = Array.isArray(props?.product_suppliers?.items) ? props.product_suppliers.items : [];
+            const merged = mergeSuppliersArrays(suppliers, productSuppliers);
+            if (merged.length) {
+              return { data: merged, message: message };
+            }
+            const itemCodes = Array.isArray(props?.item_codes?.items) ? props.item_codes.items : [];
+            if (itemCodes.length) {
+              return { data: itemCodes, message: message };
+            }
+            const countryRisk = Array.isArray(props?.country_risk?.items) ? props.country_risk.items : [];
+            if (countryRisk.length) {
+              return { data: countryRisk, message: message };
+            }
+            return { data: [], message: message };
+          }
+        }
+        return { data: Array.isArray(parsed) ? parsed : [], message: '' };
+      } catch (parseError) {
+        console.error('JSON parsing error:', parseError);
+        throw new Error('Invalid JSON response: ' + responseContent);
+      }
+    }
+
+    function mergeSuppliersArrays(suppliers, productSuppliers) {
+      const merged = new Map();
+      (productSuppliers || []).forEach(ps => {
+        merged.set(ps.supplier_name, { supplier_name: ps.supplier_name, country: ps.country, delivery_days: ps.delivery_days });
+      });
+      (suppliers || []).forEach(sp => {
+        const prev = merged.get(sp.supplier_name) || { supplier_name: sp.supplier_name };
+        merged.set(sp.supplier_name, {
+          supplier_name: sp.supplier_name,
+          country: prev.country,
+          delivery_days: prev.delivery_days,
+          reliability_score: sp.reliability_score,
+          items: sp.items,
+          trade_volume: sp.trade_volume
+        });
+      });
+      return Array.from(merged.values());
+    }
+
+    function updateDynamicTable(jsonData) {
+      const tableHead = document.getElementById('table-head');
+      const tableBody = document.getElementById('table-body');
+      const rows = Array.isArray(jsonData?.data) ? jsonData.data : [];
+
+      if (!rows.length) {
+        tableHead.innerHTML = '';
+        tableBody.innerHTML = `
+          <tr>
+            <td class="px-6 py-12 text-center text-gray-500">No data returned</td>
+          </tr>`;
+        updateChart([]);
+        return;
+      }
+
+      const headerSet = new Set();
+      rows.forEach(r => Object.keys(r || {}).forEach(k => headerSet.add(k)));
+      const headers = Array.from(headerSet);
+
+      tableHead.innerHTML = '<tr>' + headers.map(h => `
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${h.replace(/_/g,' ')}</th>
+      `).join('') + '</tr>';
+
+      tableBody.innerHTML = '';
+      rows.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-gray-50';
+        tr.innerHTML = headers.map(h => `
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">${safeCell(r[h])}</td>
+        `).join('');
+        tableBody.appendChild(tr);
+      });
+
+      updateChart(rows);
+
+    }
+
+    function safeCell(val) {
+      if (val === null || val === undefined) return 'N/A';
+      if (Array.isArray(val)) return val.join(', ');
+      if (typeof val === 'object') return JSON.stringify(val);
+      return String(val);
+    }
+
+    function detectChartFields(rows) {
+      if (!Array.isArray(rows) || !rows.length) {
+        return null;
+      }
+
+      const candidateFields = Object.keys(rows[0] || {});
+      let labelField = null;
+      let valueField = null;
+
+      for (const field of candidateFields) {
+        const allStrings = rows.every(row => typeof row[field] === 'string' && row[field].trim() !== '');
+        if (allStrings) {
+          labelField = field;
+          break;
+        }
+      }
+
+      const isNumeric = value => {
+        if (typeof value === 'number' && !Number.isNaN(value)) return true;
+        if (typeof value === 'string' && value.trim() !== '') {
+          const parsed = Number(value);
+          return !Number.isNaN(parsed);
+        }
+        return false;
+      };
+
+      for (const field of candidateFields) {
+        const allNumeric = rows.every(row => isNumeric(row[field]));
+        if (allNumeric) {
+          valueField = field;
+          break;
+        }
+      }
+
+      if (!labelField) {
+        labelField = '__index__';
+      }
+
+      if (!valueField) {
+        return { labelField, valueField: null };
+      }
+
+      return { labelField, valueField };
+    }
+
+    function updateChart(rows) {
+      const chartCanvas = document.getElementById('results-chart');
+      const chartMessage = document.getElementById('results-chart-message');
+
+      if (!chartCanvas || !chartMessage) return;
+
+      if (!Array.isArray(rows) || !rows.length) {
+        chartCanvas.classList.add('hidden');
+        chartMessage.textContent = 'Chart will appear when numeric data is available.';
+        if (chartInstance) {
+          chartInstance.destroy();
+          chartInstance = null;
+        }
+        return;
+      }
+
+      const fields = detectChartFields(rows);
+      if (!fields || !fields.valueField) {
+        chartCanvas.classList.add('hidden');
+        chartMessage.textContent = 'No numeric fields detected to plot a chart.';
+        if (chartInstance) {
+          chartInstance.destroy();
+          chartInstance = null;
+        }
+        return;
+      }
+
+      const { labelField, valueField } = fields;
+      const labels = rows.map((row, index) => {
+        if (labelField === '__index__') {
+          return `Row ${index + 1}`;
+        }
+        return String(row[labelField]);
+      });
+      const values = rows.map(row => Number(row[valueField]));
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartCanvas.classList.remove('hidden');
+      chartMessage.textContent = `Showing ${valueField.replace(/_/g, ' ')} by ${labelField === '__index__' ? 'row' : labelField.replace(/_/g, ' ')}.`;
+
+      const ctx = chartCanvas.getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: valueField.replace(/_/g, ' '),
+            data: values,
+            backgroundColor: 'rgba(79, 70, 229, 0.6)',
+            borderColor: 'rgba(79, 70, 229, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${valueField.replace(/_/g, ' ')}: ${context.formattedValue}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: {
+                autoSkip: false,
+                maxRotation: 45,
+                minRotation: 0
+              }
+            },
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    }
+
+
+    function showError(message) {
+      const tableBody = document.getElementById('table-body');
+      document.getElementById('table-head').innerHTML = '';
+      tableBody.innerHTML = `
+        <tr>
+          <td class="px-6 py-12 text-center text-red-500">${message}</td>
+        </tr>`;
+    }
+
+    setTimeout(function () {
+      const script = document.createElement('script');
+      script.src = `${window.wxOConfiguration.hostURL}/wxochat/wxoLoader.js?embed=true`;
+      script.addEventListener('load', function () { wxoLoader.init(); });
+      document.head.appendChild(script);
+    }, 0);
+  </script>
+</body>
+</html>

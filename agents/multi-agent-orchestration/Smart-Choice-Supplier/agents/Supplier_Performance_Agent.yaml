@@ -1,0 +1,15 @@
+spec_version: v1
+style: planner
+# structured_output: {type: "object", additionalProperties: false, properties: {data: {type: "array", items: {type: "object", additionalProperties: false, properties: {supplier_name: {type: "string"}, reliability_score: {type: "number"}, items: {type: "number"}, trade_volume: {type: "number"}}}}}}
+name: Supplier_Performance_Agent_planner
+llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+description: |
+  Planner agent that returns supplier performance as a flat JSON array.
+
+instructions: |
+  - Call get_supplier_risk_data and get_supplier_trade_stats.
+  - Merge on supplier_name and return {"data": [{supplier_name, reliability_score, items, trade_volume}]} as JSON.
+
+tools:
+  - get_supplier_risk_data
+  - get_supplier_trade_stats
