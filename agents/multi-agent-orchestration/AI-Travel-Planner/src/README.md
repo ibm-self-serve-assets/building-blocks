@@ -185,12 +185,128 @@ The output will display agent id as follows.
 ```bash
 Agent created successfully, with id: <generated_agent_id> 
 ```
+# Step 4 – MCP Toolkit Setup & Agent Tool Mapping
 
-## Step 4: Tool Configuration
+## Overview
 
-### 4.1 Configure Tavily Search Tool
-TBD
+This step creates the **MCP Toolkit** inside IBM watsonx Orchestrate using your MCP server (e.g., Tavily MCP).  
+After creating the toolkit, the script automatically:
 
+1. Fetches the toolkit definition from the server  
+2. Extracts the resolved tool list  
+3. Locates your Travel Planner Agent by name  
+4. Updates the agent’s tool configuration  
+5. Attaches all toolkit tools to the agent  
+
+This makes the agent fully capable of calling tools like:
+
+- `tavily-search`  
+- `tavily-extract`  
+- (any other MCP-exposed tools)
+
+---
+
+## Important Methods (from `MCPToolkitClient`)
+
+| Method | Purpose | HTTP Endpoint |
+|--------|---------|---------------|
+| `create_mcp_toolkit()` | Creates a new MCP toolkit | `POST /v1/orchestrate/toolkits` |
+| `get_toolkit_by_id()` | Fetches toolkit details (including tools) | `GET /v1/orchestrate/toolkits/{id}` |
+| `list_agents()` | Returns all agents in the instance | `GET /v1/orchestrate/agents` |
+| `filter_agent_by_name()` | Finds agent by its display name | — (local helper) |
+| `update_agent_tools()` | Updates the agent’s tool list | `PATCH /v1/orchestrate/agents/{id}` |
+
+These methods together enable toolkit creation and automatic agent-tool mapping.
+
+---
+
+## Required `.env` Variables
+
+Ensure the following variables are set in your `.env`:
+
+```bash
+# Watsonx Orchestrate instance
+WXO_SERVICE_URL="https://api.<region>.watson-orchestrate.cloud.ibm.com/instances/<INSTANCE_ID>"
+
+# Toolkit configuration
+TOOLKIT_NAME="Tavily_Server_DA_2"
+TOOLKIT_DESCRIPTION="Toolkit exposing Tavily MCP tools"
+
+# MCP details
+MCP_URL="https://mcp.tavily.com/mcp/?tavilyApiKey=<YOUR_API_KEY>"
+CONNECTION_APP_ID="<connection_id_created_in_step2>"
+
+# Agent to attach tools to
+AGENT_NAME="Travel_Planner_Agent"
+```
+
+If any required variables are missing, the script stops with:
+
+```
+Missing required environment variables
+```
+
+---
+
+## How to Run the Script
+
+Run the Step 4 script:
+
+```bash
+python3 step4_toolkit_and_agent_tools_setup.py
+```
+
+This will:
+
+- Load `.env`
+- Authenticate using `clsAuth`
+- Create the toolkit
+- Fetch the toolkit definition
+- Extract tool list
+- Find the agent
+- Attach the tools to the agent
+
+---
+
+## Expected Output
+
+A successful run prints:
+
+```
+Using instance base URL: https://api.us-south.watson-orchestrate.cloud.ibm.com/instances/...
+
+Created toolkit successfully, with id: <toolkit_id>
+
+Toolkit fetched by ID:
+{ ... full toolkit metadata JSON ... }
+
+Toolkit tools:
+[
+  { "id": "tavily-search", ... },
+  { "id": "tavily-extract", ... }
+]
+
+Required agent found with id: <agent_id>
+<Response [200]>
+Agent tools updated successfully.
+```
+
+If the agent is missing:
+
+```
+Agent 'Travel_Planner_Agent' not found. Skipping tool update.
+```
+
+If toolkit creation fails:
+
+```
+MCPToolkitError occurred:
+Message: HTTP 401 error while calling MCP toolkit API.
+Status code: 401
+Response body: {...}
+```
+
+---
 ## Step 5: Agent Testing
 
 ### 5.1 Test Agent Functionality
