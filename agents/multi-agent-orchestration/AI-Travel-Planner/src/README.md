@@ -86,9 +86,36 @@ Before starting, ensure you have:
 
 ## Step 2: Watsonx Orchestrate Connection Setup
 
-### 2.1 Access Connections Panel
+### 2.1 Create connection
 
-TBD
+The script provides an automated way to create an WxO connection and related credential using the WXO Orchestration API.
+It reads configuration values from environment variables (already covered in the Prerequisites section) and sends a POST request to register a new connection and credential.
+
+### 2.1 Overview
+
+The script defines an clsConnection class responsible for:
+
+1. Loading environment variables using python-dotenv
+
+2. Preparing the connection creation payload
+
+3. Requesting and using an authentication token (via the clsAuth class from wxo_token)
+
+4. Sending a POST request to the WXO Orchestration API
+
+5. Returning the created connection metadata
+
+6. At runtime, it creates an instance of the class, submits the request, and prints the newly created connection ID.
+
+### 2.2 Configure connection Details
+
+Configure your connection using the environment variables defined in your .env file.
+
+Use:
+
+1. `WXO_CONNECTION_NAME` — sets the connection’s display name
+2. `WXO_CONNECTION_TYPE` — defines the connection’s authentication type. Here the value will be 'api_key_auth'.
+3. `WXO_CONNECTION_API_KEY` — The api key value created during Tavily API Setup step.
 
 ## Step 3: Travel Planner Agent Creation
 The script provides an automated way to create an AI Agent using the WXO Orchestration API.
