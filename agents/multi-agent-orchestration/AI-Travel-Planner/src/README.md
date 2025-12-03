@@ -16,13 +16,10 @@ This demo showcases the power of modern AI orchestration platforms in creating s
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
-- [Step 1: Tavily API Setup](#step-1-tavily-api-setup)
 - [Step 2: Watsonx Orchestrate Connection Setup](#step-2-watsonx-orchestrate-connection-setup)
 - [Step 3: Travel Planner Agent Creation](#step-3-travel-planner-agent-creation)
 - [Step 4: Tool Configuration](#step-4-tool-configuration)
-- [Step 5: Agent Testing](#step-5-agent-testing)
-- [Step 6: External Integration](#step-6-external-integration)
-- [Troubleshooting](#troubleshooting)
+
 - [Summary](#summary)
 
 ## Overview
@@ -34,16 +31,6 @@ In this demo, we will create a **Travel Planner Agent** that provides:
 - **Personalized Recommendations**: Customized travel plans based on user preferences
 - **Interactive Planning**: Conversational interface for trip planning assistance
 
-### Architecture
-
-The following diagram illustrates the basic agent and tool flow for the Travel Planner Agent:
-
-![Travel Planner Agent Architecture](./assets/Travel_planner_agent.png)
-
-The agent will utilize three main tools:
-1. **Tavily Web Search** - For researching destinations and attractions
-2. **Airbnb Search** - For finding available accommodations
-3. **Airbnb Listing Details** - For detailed accommodation information
 
 ## Prerequisites
 
@@ -76,12 +63,6 @@ Before starting, ensure you have:
 | WXO_CONNECTION_API_KEY | Connection | connection api key | Connection API key |
 | WXO_CONNECTION_TYPE | Connection | api_key_auth | Connection auth type  |
 | WXO_CONNECTION_NAME | Connection | connection name | Connection name|
-
-
-## Step 1: Tavily API Setup
-
-### 1.1 Generate Tavily API Key
-
 
 
 ## Step 2: Watsonx Orchestrate Connection Setup
@@ -307,42 +288,6 @@ Response body: {...}
 ```
 
 ---
-## Step 5: Agent Testing
-
-### 5.1 Test Agent Functionality
-
-
-
-## Step 6: External Integration
-
-## Troubleshooting
-
-### Common Issues and Solutions
-
-#### Connection Issues
-- **Problem**: Tavily connection fails to establish
-- **Solution**: Verify API key is correct and has proper permissions
-
-#### Tool Activation Issues
-- **Problem**: Tools not appearing in agent
-- **Solution**: Ensure MCP servers are properly connected and tools are activated
-
-#### Agent Response Issues
-- **Problem**: Agent not following behavior instructions
-- **Solution**: Review and refine the behavior configuration
-
-#### External Integration Issues
-- **Problem**: HTML integration not working
-- **Solution**: Verify orchestration ID and agent ID are correctly copied
-
-### Getting Help
-
-If you encounter issues not covered in this guide:
-1. Check the IBM watsonx Orchestrate documentation
-2. Review the agent and tool configuration
-3. Test individual components separately
-4. Contact support if needed
-
 ## Summary
 
 Congratulations! You have successfully created a comprehensive Travel Planner Agent with the following capabilities:
@@ -355,12 +300,7 @@ Congratulations! You have successfully created a comprehensive Travel Planner Ag
 - **Interactive Interface**: Conversational agent with personalized responses
 - **External Integration**: Embeddable agent for use in external applications
 
-### Next Steps
 
-- **Enhance the Agent**: Add more tools and capabilities
-- **Customize Behavior**: Refine the agent's personality and responses
-- **Scale Integration**: Deploy to production environments
-- **Monitor Performance**: Track agent usage and optimize responses
 
 ### Additional Resources
 
