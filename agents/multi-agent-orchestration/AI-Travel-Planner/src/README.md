@@ -146,6 +146,18 @@ Example is as below.
 ```bash
 AGENT_LLM="watsonx/meta-llama/llama-3-2-90b-vision-instruct"
 ```
+### 3.5 Usage
+Run the script directly to create AI agent on Orchestrate.
+
+```bash
+python3 step3_travel_planner_agent_creation.py
+```
+
+The output will display agent id as follows.
+
+```bash
+Agent created successfully, with id: <generated_agent_id> 
+```
 
 ## Step 4: Tool Configuration
 
