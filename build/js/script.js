@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     observe: {
       title: `<img src="icons/observe.png" class="modal-icon"> Observe`,
-      content: `<p>Safe & governed AI across lifecycle.</p>
+      content: `<p>Holistic Application and Network Monitoring.</p>
        <ul>
           <li><a href="#">🔗 Application Observability</a></li>
           <li><a href="#">🔗 Network Performance</a></li>
@@ -185,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     optimize: {
       title: `<img src="icons/optimize.png" class="modal-icon"> Optimize`,
-      content: `<p>Safe & governed AI across lifecycle.</p>
+      content: `<p>Integrated Resilience, FinOps Resource Automation.</p>
        <ul>
           <li><a href="#">🔗 Automated Resilience & Compliance</a></li>
           <li><a href="#">🔗 FinOps</a></li>
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     builddeploy: {
       title: `<img src="icons/build.png" class="modal-icon"> Build & Deploy`,
-      content: `<p>Safe & governed AI across lifecycle.</p>
+      content: `<p>Authentication-Driven Infrastructure Automation With Assistance.</p>
        <ul>
           <li><a href="#">🔗 iPaaS</a></li>
           <li><a href="#">🔗 Authentication Management</a></li>
