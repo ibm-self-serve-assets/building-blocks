@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  /* ---------------------- Stop Video Helper ---------------------- */
   function stopVideoPlayback() {
     const video = document.getElementById("demoVideo");
     if (video) {
@@ -10,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  /* ---------------------- Modal Helpers ---------------------- */
   const showModal = (modal) => modal.classList.add("show");
   const hideModal = (modal) => modal.classList.remove("show");
 
@@ -25,14 +23,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tileModal.style.transition = "background 0.25s ease";
 
-  /* ---------------------- Demo Titles ---------------------- */
   const demoTitles = {
     agents: "Smart Choice Supplier Agent Demo",
     data: "Text2SQL Demo",
     trusted: "Customer Care Guardrail Demo"
   };
-
-  /* ---------------------- Config / Links ---------------------- */
 
   const createLink = (key, label) =>
     `<p style="margin-top:1rem;">
@@ -42,9 +37,12 @@ document.addEventListener("DOMContentLoaded", () => {
     </p>`;
 
   const overviewLinks = {
-    agents: "https://ibm.sharepoint.com/:p:/r/.../BB_Agents_EntryPoints.pptx",
-    data: "https://ibm.sharepoint.com/:p:/r/.../BB_DataforAI_EntryPoints.pptx",
-    trusted: "https://ibm.sharepoint.com/:p:/r/.../BB_TrustedAI_EntryPoints.pptx"
+    agents: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/AI/Agents/BB_Agents_EntryPoints.pptx?d=wbbed7561714c4490ab9aada13c749db9&csf=1&web=1&e=HJRmXc",
+    data: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/AI/Data%20for%20AI/BB_DataforAI_EntryPoints.pptx?d=we335fabd3bb14a089f51d8dea6e30204&csf=1&web=1&e=XwS4ZJ",
+    trusted: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/AI/Trusted%20AI/BB_TrustedAI_EntryPoints.pptx?d=w67201531f05f40859f7648f41fd47a69&csf=1&web=1&e=ljt6Tu",
+    optimize: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Optimize/BB_Optimize_EntryPoints.pptx?d=w3215882eb8b2488a844ca73422ea46af&csf=1&web=1&e=nZYgb5",
+    observe: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Observe/BB_Observe_EntryPoints.pptx?d=w8792b7275f854b1bb261156bc8f47a6d&csf=1&web=1&e=3cazpo",
+    build: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Build%26Deploy/BB_Build%26Deploy_EntryPoints.pptx?d=wc9be1050d7d44f4683ff30dee22e2e1e&csf=1&web=1&e=aAlhJ6"
   };
 
   const demoLinks = {
@@ -67,7 +65,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ? `<p><a href="#" class="play-demo-link" data-demo="${demoLinks[key]}" data-category="${key}" style="color:#ff6f00;font-weight:500;">🎬 Watch ${label} Demo</a></p>`
       : "";
 
-  /* ---------------------- Tile Data ---------------------- */
   const tileData = {
     agents: {
       title: "Agents - Building Blocks",
@@ -107,10 +104,41 @@ document.addEventListener("DOMContentLoaded", () => {
         createLink("trusted", "Trusted AI") +
         createOverviewLink("trusted", "Trusted AI") +
         createDemoLink("trusted", "Trusted AI")
-    }
-  };
+    },
 
-  /* ---------------------- Card Data ---------------------- */
+    optimize: {
+      title: "Optimize - Building Blocks",
+      items: [
+        { name: "Automated Resilience & Compliance", desc: "Observe, Automate, Govern, Accelerate." },
+        { name: "FinOps", desc: "Visibility, Automation, Governance, Value" },
+        { name: "Automated Resource Management", desc: "Automate, Assess, Remediate, Scale." }
+      ],
+      link:
+        createOverviewLink("optimize", "Optimize")
+    },
+
+    observe: {
+      title: "Observe - Building Blocks",
+      items: [
+        { name: "Application Observability", desc: "Observing, Tracing, and Analyzing Application." },
+        { name: "Network Performance", desc: "Speed, Latency, Bandwidth, Jitter, Loss" }
+      ],
+      link:
+        createOverviewLink("observe", "Observe")
+    },
+
+    build: {
+      title: "Build & Deploy - Building Blocks",
+      items: [
+        { name: "iPaaS", desc: "Integrating and connecting diverse applications." },
+        { name: "Authentication Management", desc: "Visibility, Automation, Governance, Value" },
+        { name: "Infrastructure as Code", desc: "Stateful creation and management of cloud resources." },
+        { name: "Code Assistant", desc: "Accelerate development, improve code quality." }
+      ],
+      link:
+        createOverviewLink("build", "Build & Deploy")
+    },
+  };
 
   const cardData = {
     agents: {
@@ -118,20 +146,62 @@ document.addEventListener("DOMContentLoaded", () => {
       content: `
         <p>Intelligent workflow orchestration powered by Watsonx.</p>
         <ul>
-          <li><a href="#">🔗 Agent Builder</a></li>
-          <li><a href="#">🔗 AI Gateway</a></li>
-          <li><a href="#">🔗 Multi-Agent Orchestration</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank" rel="noopener noreferrer">🔗 Agent Builder</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank" rel="noopener noreferrer">🔗 AI Gateway</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank" rel="noopener noreferrer">🔗 Multi-Agent Orchestration</a></li>
         </ul>`
     },
 
     data: {
       title: `<img src="icons/data.png" class="modal-icon"> Data-for-AI`,
-      content: `<p>Unified data retrieval for GenAI pipelines.</p>`
+      content: `<p>Unified data retrieval for GenAI pipelines.</p>
+       <ul>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank" rel="noopener noreferrer">🔗 Zero Copy Lakehouse</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank" rel="noopener noreferrer">🔗 Vector Search</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a" target="_blank" rel="noopener noreferrer">🔗 Q&A</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank" rel="noopener noreferrer">🔗 Data Security & Encryption</a></li>
+        </ul>`
     },
 
     trusted: {
       title: `<img src="icons/trusted.png" class="modal-icon"> Trusted-AI`,
-      content: `<p>Safe & governed AI across lifecycle.</p>`
+      content: `<p>Safe & governed AI across lifecycle.</p>
+       <ul>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank" rel="noopener noreferrer">🔗 Design time Evaluations</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations" target="_blank" rel="noopener noreferrer">🔗 Agent & AI Observability</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/compliance-accelerators" target="_blank" rel="noopener noreferrer">🔗 Compliance Accelerators</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank" rel="noopener noreferrer">🔗 Secure AI Lifecycle</a></li>
+        </ul>`
+    },
+
+    observe: {
+      title: `<img src="icons/observe.png" class="modal-icon"> Observe`,
+      content: `<p>Safe & governed AI across lifecycle.</p>
+       <ul>
+          <li><a href="#">🔗 Application Observability</a></li>
+          <li><a href="#">🔗 Network Performance</a></li>
+        </ul>`
+    },
+
+    optimize: {
+      title: `<img src="icons/optimize.png" class="modal-icon"> Optimize`,
+      content: `<p>Safe & governed AI across lifecycle.</p>
+       <ul>
+          <li><a href="#">🔗 Automated Resilience & Compliance</a></li>
+          <li><a href="#">🔗 FinOps</a></li>
+          <li><a href="#">🔗 Automated Resource Management</a></li>
+        </ul>`
+    },
+
+    builddeploy: {
+      title: `<img src="icons/build.png" class="modal-icon"> Build & Deploy`,
+      content: `<p>Safe & governed AI across lifecycle.</p>
+       <ul>
+          <li><a href="#">🔗 iPaaS</a></li>
+          <li><a href="#">🔗 Authentication Management</a></li>
+          <li><a href="#">🔗 Infrastructure as Code</a></li>
+          <li><a href="#">🔗 Code Assistant</a></li>
+        </ul>`
     }
   };
 
