@@ -19,7 +19,7 @@ This repository hosts the **Smart Choice Supplier Agent** orchestration stack, b
 - `planner_import.sh` – command script to import all tools and agents
 
 ## Agents Architecture
-<img width="1044" alt="image" src="https://github.ibm.com/user-attachments/assets/a6927c2d-47a4-48e3-994d-47d2ea3d3375" />
+<img width="2088" height="1554" alt="a6927c2d-47a4-48e3-994d-47d2ea3d3375" src="https://github.com/user-attachments/assets/4c1cbc27-a6a8-423f-8753-c200237415f5" />
 
 
 
