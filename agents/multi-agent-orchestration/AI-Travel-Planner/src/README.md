@@ -54,85 +54,41 @@ Before starting, ensure you have:
 - Basic understanding of agent development concepts
 - Text editor for HTML file modification
 
+
+### .env file variables
+
+
+| Variable | Section | Example/Default Value | Description |
+|----------|---------|----------------------|-------------|
+| WXO_SERVICE_URL | Orchestrate service | https://api.{hostname}/instances/{tenant_id} | Watsonx Orchestrate instance base URL  |
+| WXO_API_KEY | Orchestrate service | Your API key | API key for service authentication |
+| WXO_TOKEN_URL | Orchestrate service | https://iam.cloud.ibm.com/identity/token | IBM Cloud IAM token endpoint |
+| AGENT_NAME | AI Agent | Travel_Planner_Agent | Name of the AI agent  |
+| AGENT_DESCRIPTION | AI Agent | You are a Personalized Travel Planner Agent... | Agent purpose description |
+| AGENT_INSTRUCTIONS | AI Agent | You are a Personalized Travel Planner Agent... | Workflow, rules, interaction style (use \n) |
+| AGENT_LLM | AI Agent | watsonx/meta-llama/llama-3-2-90b-vision-instruct | Language model identifier  |
+| TOOLKIT_NAME | Toolkit | my_mcp_toolkit | MCP toolkit name  |
+| TOOL_NAME_SEARCH | Toolkit | tavily_search | Search tool name |
+| TOOL_NAME_EXTRACT | Toolkit | tavily_extract | Extract tool name |
+| TOOLKIT_DESCRIPTION | Toolkit | my_mcp_toolkit description | Toolkit description  |
+| MCP_URL | Toolkit | MCP URL with API key | MCP server URL  |
+| CONNECTION_APP_ID | Connection | connection app id | MCP connection app ID|
+| WXO_CONNECTION_API_KEY | Connection | connection api key | Connection API key |
+| WXO_CONNECTION_TYPE | Connection | api_key_auth | Connection auth type  |
+| WXO_CONNECTION_NAME | Connection | connection name | Connection name|
+
+
 ## Step 1: Tavily API Setup
 
 ### 1.1 Generate Tavily API Key
 
-To configure your Tavily API key, follow these steps:
 
-![Tavily API Key Setup](./assets/Tavily_apikey.png)
-
-1. Navigate to the [Tavily Dashboard](https://tavily.com)
-2. Sign up or log in to your account
-3. Generate your API key from the dashboard
-4. Copy the key and save it securely for later use
-
-> **Important**: Keep your API key secure and never share it publicly.
 
 ## Step 2: Watsonx Orchestrate Connection Setup
 
 ### 2.1 Access Connections Panel
 
-1. Log in to your watsonx Orchestrate instance
-2. Navigate to the **Connections** option in the left sidebar
-
-![Connections Panel](./assets/Connections_wxo.png)
-
-### 2.2 Create New Connection
-
-1. Click **Add Connection** to begin the connection process
-
-![Add Connection](./assets/add_connection.png)
-
-2. Enter connection details:
-   - **Connection ID**: `Tavily_MCP`
-   - Click **Save and Continue**
-
-![Establishing Connection](./assets/establishing_connection.png)
-
-### 2.3 Configure Authentication
-
-1. Expand the **Authentication type** menu
-
-![Authentication Type Selection](./assets/tavily_authentication_type.png)
-
-2. Select **Key Value Pair**
-
-![Key Value Pair Selection](./assets/tavily_select_kay_value.png)
-
-3. Configure the credentials:
-   - **Key name**: `TAVILY_API_KEY`
-   - **Value**: Paste your Tavily API key
-   - Click **Connect**
-
-![Tavily Credentials Configuration](./assets/tavily_select_kay_value.png)
-
-### 2.4 Test Connection
-
-1. Verify your draft connection shows as **Connected**
-
-![Connection Test](./assets/tavily_connection_test.png)
-
-2. Click **Next** to proceed
-
-### 2.5 Configure Live Environment
-
-1. Repeat the authentication setup for the Live environment
-2. Use the same credentials as the draft environment
-
-![Add Live Connection](./assets/tavily_add_connection.png)
-
-3. Click **Add Connection** when complete
-
-![Final Add Connection](./assets/tavily_final_add_connection.png)
-
-### 2.6 Verify Connection Status
-
-1. Confirm both draft and live environments are ready
-
-![Validate Connection](./assets/tavily_validate_connection.png)
-
-2. Click the top menu to return to the main interface
+TBD
 
 ## Step 3: Travel Planner Agent Creation
 
@@ -196,149 +152,15 @@ Example queries: "I want to visit Austin, Texas", "Plan a weekend trip to San Fr
 ## Step 4: Tool Configuration
 
 ### 4.1 Configure Tavily Search Tool
-
-#### 4.1.1 Add MCP Server
-
-1. Navigate to the **Tools** section within the agent page
-2. Click **Add Tool** and select **MCP Server**
-
-![Add Tool to Agent](./assets/agent_add_tool.png)
-![Add Tool Options](./assets/agent_add_tool_2.png)
-![MCP Server Selection](./assets/agent_add_tool_3.png)
-
-3. Click **Add MCP Server**
-
-![Add MCP Server](./assets/add_mcp.png)
-
-#### 4.1.2 Configure Tavily Server
-
-1. Select your `Tavily_MCP` connection from the list
-
-![Configure Tavily](./assets/configure_travily.png)
-
-2. Enter the command: `npx -y tavily-mcp@0.1.3`
-3. Click **Connect**
-
-![Tavily NPX Command](./assets/travily_npx.png)
-
-4. Click **Done** to complete the server setup
-
-![Tavily Done](./assets/Travily_done.png)
-
-#### 4.1.3 Activate Tavily Search Tool
-
-1. Identify the `tavily_search` tool in the available tools list
-2. Switch the **Activation toggle** to **On**
-
-![Tavily Search Tool](./assets/tavily_search.png)
-
-3. Click **X** to close the server view
-
-![Close Server View](./assets/close_server.png)
-
-4. Verify the Tavily search tool is now added to your agent tools
-
-![Tavily Edit Details](./assets/tavily_edit_details.png)
-
-5. (Optional) Click the option menu to edit tool details
-
-![Tavily Edit](./assets/taviliy_edit.png)
-
-6. For this demo, we'll keep the default query parameters. Click **Cancel**
-
-![Tavily Edit Save](./assets/tavily_edit_save.png)
-
-**Success**: Tavily web search tool has been successfully added to your Travel Planner Agent.
-
-### 4.2 Configure Airbnb Tools
-
-#### 4.2.1 Add Airbnb MCP Server
-
-1. Click **Add Tool** again
-
-![Airbnb Add Tool](./assets/airbnb_add_tool.png)
-![Add Tool Options](./assets/agent_add_tool_2.png)
-![MCP Server Selection](./assets/agent_add_tool_3.png)
-
-2. Click **Add MCP Server**
-
-![Add MCP Server](./assets/add_mcp.png)
-
-3. Configure the publicly available Airbnb MCP server:
-   - **Server Name**: `Travel-Planner-Airbnb`
-   - **Description**: `This is travel planner Airbnb server`
-   - **Install command**: `npx -y @openbnb/mcp-server-airbnb --ignore-robots-txt`
-
-![Airbnb Tool Connect](./assets/airbnb_tool_connect.png)
-
-#### 4.2.2 Activate Airbnb Tools
-
-1. Activate the available Airbnb tools from the server
-
-![Airbnb Tools](./assets/airbnb_tools.png)
-
-2. Verify all three tools are now configured in your Travel Planner Agent
-
-![All Three Tools](./assets/airbnb_3_tools.png)
-
-**Success**: Your Travel Planner Agent now has all required tools configured:
-- Tavily Web Search
-- Airbnb Search
-- Airbnb Listing Details
+TBD
 
 ## Step 5: Agent Testing
 
 ### 5.1 Test Agent Functionality
 
-1. Navigate to the **Preview** screen
-2. Type a test message: `"Hello, how can you help me?"`
 
-![Agent Testing](./assets/Agent_testing.png)
-
-3. Verify the agent responds with the expected greeting and behavior
-
-### 5.2 Validate Tool Integration
-
-Test the agent with sample queries to ensure all tools are working:
-- Destination research queries
-- Accommodation search requests
-- Combined travel planning requests
 
 ## Step 6: External Integration
-
-### 6.1 Embed Agent in External Application
-
-To integrate your agent into an external application:
-
-1. Navigate to the **Channels** section within the Travel Planner agent page
-
-![Travel Planner Embedded](./assets/Travel_planner_embeded.png)
-
-2. Copy the **Orchestration ID** and **Agent ID** as shown
-
-![Orchestration ID](./assets/orchestration_id.png)
-
-3. Open the `travel_planner.html` file in a text editor
-4. Update the script section with your orchestration and agent IDs
-
-![Orchestration ID HTML](./assets/Orchestration_id_html.png)
-
-### 6.2 Test External Integration
-
-1. Open the HTML file in a web browser
-2. Verify the agent is properly embedded and functional
-
-![HTML Ready](./assets/html_ready.png)
-
-### 6.3 Sample Test Scenarios
-
-Test your Travel Planner Agent with these scenarios:
-
-![Test Scenario 1](./assets/t1.png)
-![Test Scenario 2](./assets/t2.png)
-![Test Scenario 3](./assets/t3.png)
-![Test Scenario 4](./assets/t4.png)
-![Test Scenario 5](./assets/t5.png)
 
 ## Troubleshooting
 
