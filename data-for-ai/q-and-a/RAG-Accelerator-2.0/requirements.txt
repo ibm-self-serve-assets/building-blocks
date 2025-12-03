@@ -1,0 +1,9 @@
+elasticsearch==8.18.1
+langchain
+ibm_watsonx_ai==1.3.38
+langchain_elasticsearch==0.3.2
+langchain_milvus==0.2.0
+pymilvus==2.5.11
+langchain_community
+cassio==0.1.10
+fastapi
