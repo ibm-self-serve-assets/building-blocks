@@ -23,10 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   tileModal.style.transition = "background 0.25s ease";
 
+  /* ---------- STATIC TITLES FOR VIDEO MODAL ---------- */
   const demoTitles = {
-    agents: "Smart Choice Supplier Agent Demo",
+    agents: "Multi Agent Orchestration Demo",
     data: "Text2SQL Demo",
-    trusted: "Customer Care Guardrail Demo"
+    data_rag: "Retrieval-Augmented Generation Demo",
+    trusted: "Design Time Evaluations Guardrail Demo"
+  };
+
+  /* ---------- STATIC LABELS FOR DEMO LINK TEXT ---------- */
+  const demoLabels = {
+    agents: "Multi Agent Orchestration",
+    data: "Text2SQL",
+    data_rag: "Retrieval-Augmented Generation",
+    trusted: "Design Time Evaluations Guardrail"
   };
 
   const createLink = (key, label) =>
@@ -45,26 +55,33 @@ document.addEventListener("DOMContentLoaded", () => {
     build: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Build%26Deploy/BB_Build%26Deploy_EntryPoints.pptx?d=wc9be1050d7d44f4683ff30dee22e2e1e&csf=1&web=1&e=aAlhJ6"
   };
 
+  /* ---------- DEMO VIDEO FILE LINKS ---------- */
   const demoLinks = {
     agents:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/agents/multi-agent-orchestration/Smart-Choice-Supplier/demo/Smart_Choice_Supplier_Agent.mp4",
 
-    data: "https://example.com/text2sql-demo.mp4",
+    data_rag:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/data-for-ai/q-and-a/RAG-Accelerator/demo/QnA_RAG_BB.mp4",
+
+    data:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/data-for-ai/q-and-a/Text-To-SQL/demo/text_to_sql_demo.mp4",
 
     trusted:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/trusted-ai/design-time-evaluations/gen-ai-evaluations/demo/Customer_Care_Guardrail_Demo.mp4"
   };
 
+  /* ---------- NEW STATIC DEMO LINK GENERATOR ---------- */
   const createOverviewLink = (key, label) =>
     overviewLinks[key]
       ? `<p><a href="${overviewLinks[key]}" target="_blank" style="color:#00b4ff;">🔗 Overview of ${label} (Presentation)</a></p>`
       : "";
 
-  const createDemoLink = (key, label) =>
+  const createDemoLink = (key) =>
     demoLinks[key]
-      ? `<p><a href="#" class="play-demo-link" data-demo="${demoLinks[key]}" data-category="${key}" style="color:#ff6f00;font-weight:500;">🎬 Watch ${label} Demo</a></p>`
+      ? `<p><a href="#" class="play-demo-link" data-demo="${demoLinks[key]}" data-category="${key}" style="color:#ff6f00;font-weight:500;">🎬 Watch ${demoLabels[key]} Demo</a></p>`
       : "";
 
+  /* ---------------------- TILE DATA ---------------------- */
   const tileData = {
     agents: {
       title: "Agents - Building Blocks",
@@ -76,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
       link:
         createLink("agents", "Agents") +
         createOverviewLink("agents", "Agents") +
-        createDemoLink("agents", "Agents")
+        createDemoLink("agents")
     },
 
     data: {
@@ -90,7 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
       link:
         createLink("data", "Data for AI") +
         createOverviewLink("data", "Data for AI") +
-        createDemoLink("data", "Data for AI")
+        createDemoLink("data") +
+        createDemoLink("data_rag")
     },
 
     trusted: {
@@ -103,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
       link:
         createLink("trusted", "Trusted AI") +
         createOverviewLink("trusted", "Trusted AI") +
-        createDemoLink("trusted", "Trusted AI")
+        createDemoLink("trusted")
     },
 
     optimize: {
@@ -113,8 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "FinOps", desc: "Visibility, Automation, Governance, Value" },
         { name: "Automated Resource Management", desc: "Automate, Assess, Remediate, Scale." }
       ],
-      link:
-        createOverviewLink("optimize", "Optimize")
+      link: createOverviewLink("optimize", "Optimize")
     },
 
     observe: {
@@ -123,8 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Application Observability", desc: "Observing, Tracing, and Analyzing Application." },
         { name: "Network Performance", desc: "Speed, Latency, Bandwidth, Jitter, Loss" }
       ],
-      link:
-        createOverviewLink("observe", "Observe")
+      link: createOverviewLink("observe", "Observe")
     },
 
     build: {
@@ -135,20 +151,20 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Infrastructure as Code", desc: "Stateful creation and management of cloud resources." },
         { name: "Code Assistant", desc: "Accelerate development, improve code quality." }
       ],
-      link:
-        createOverviewLink("build", "Build & Deploy")
-    },
+      link: createOverviewLink("build", "Build & Deploy")
+    }
   };
 
+  /* ---------------------- CARD DATA ---------------------- */
   const cardData = {
     agents: {
       title: `<img src="icons/agent.png" class="modal-icon"> Agents`,
       content: `
         <p>Intelligent workflow orchestration powered by Watsonx.</p>
         <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank" rel="noopener noreferrer">🔗 Agent Builder</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank" rel="noopener noreferrer">🔗 AI Gateway</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank" rel="noopener noreferrer">🔗 Multi-Agent Orchestration</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/contextual-knowledge-hub" target="_blank">🔗 Agent Builder</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ai-gateway" target="_blank">🔗 AI Gateway</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration" target="_blank">🔗 Multi-Agent Orchestration</a></li>
         </ul>`
     },
 
@@ -156,10 +172,10 @@ document.addEventListener("DOMContentLoaded", () => {
       title: `<img src="icons/data.png" class="modal-icon"> Data-for-AI`,
       content: `<p>Unified data retrieval for GenAI pipelines.</p>
        <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank" rel="noopener noreferrer">🔗 Zero Copy Lakehouse</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank" rel="noopener noreferrer">🔗 Vector Search</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a" target="_blank" rel="noopener noreferrer">🔗 Q&A</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank" rel="noopener noreferrer">🔗 Data Security & Encryption</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/zero-copy-lakehouse" target="_blank">🔗 Zero Copy Lakehouse</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/vector-search" target="_blank">🔗 Vector Search</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a" target="_blank">🔗 Q&A</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/data-security-and-encryption" target="_blank">🔗 Data Security & Encryption</a></li>
         </ul>`
     },
 
@@ -167,10 +183,10 @@ document.addEventListener("DOMContentLoaded", () => {
       title: `<img src="icons/trusted.png" class="modal-icon"> Trusted-AI`,
       content: `<p>Safe & governed AI across lifecycle.</p>
        <ul>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank" rel="noopener noreferrer">🔗 Design time Evaluations</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations" target="_blank" rel="noopener noreferrer">🔗 Agent & AI Observability</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/compliance-accelerators" target="_blank" rel="noopener noreferrer">🔗 Compliance Accelerators</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank" rel="noopener noreferrer">🔗 Secure AI Lifecycle</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank">🔗 Design time Evaluations</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations" target="_blank">🔗 Agent & AI Observability</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/compliance-accelerators" target="_blank">🔗 Compliance Accelerators</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li>
         </ul>`
     },
 
@@ -205,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  /* ---------------------- Tile Click ---------------------- */
+  /* ---------------------- TILE CLICK ---------------------- */
   document.querySelectorAll(".tile").forEach((tile) => {
     tile.addEventListener("click", () => {
       stopVideoPlayback();
@@ -214,30 +230,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
       tileTitle.textContent = data.title;
       tileBody.innerHTML =
-        data.items.map((i) => `<p><strong>${i.name}</strong>: ${i.desc}</p>`).join("") + data.link;
+        data.items.map((i) => `<p><strong>${i.name}</strong>: ${i.desc}</p>`).join("") +
+        data.link;
 
       tileModal.style.background = "rgba(0,0,0,0.15)";
       showModal(tileModal);
     });
   });
 
-  /* ---------------------- Close Button ---------------------- */
+  /* ---------------------- CLOSE TILE MODAL ---------------------- */
   tileClose.addEventListener("click", () => {
     stopVideoPlayback();
     hideModal(tileModal);
-    tileModal.style.background = "rgba(0,0,0,0.15)";
   });
 
-  /* ---------------------- Close on Background Click ---------------------- */
   window.addEventListener("click", (e) => {
     if (e.target === tileModal) {
       stopVideoPlayback();
       hideModal(tileModal);
-      tileModal.style.background = "rgba(0,0,0,0.15)";
     }
   });
 
-  /* ---------------------- Card Modal ---------------------- */
+  /* ---------------------- CARD MODAL ---------------------- */
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", () => {
       stopVideoPlayback();
@@ -251,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   cardClose.addEventListener("click", () => hideModal(cardOverlay));
 
-  /* ---------------------- Tile → Card Navigation ---------------------- */
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("open-modal-link")) {
       e.preventDefault();
@@ -266,7 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---------------------- PLAY DEMO VIDEO (Per Category Titles) ---------------------- */
+  /* ---------------------- PLAY DEMO VIDEO ---------------------- */
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("play-demo-link")) {
       e.preventDefault();
@@ -276,9 +289,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       stopVideoPlayback();
 
-      /* SET TITLE BASED ON CATEGORY */
       tileTitle.textContent = demoTitles[category];
-
       tileModal.style.background = "rgba(0,0,0,0.75)";
 
       tileBody.innerHTML = `
@@ -292,13 +303,12 @@ document.addEventListener("DOMContentLoaded", () => {
         "></div>
 
         <style>
-            @keyframes spin {from {transform: rotate(0);} to {transform: rotate(360deg);} }
+          @keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
         </style>
       `;
 
       showModal(tileModal);
 
-      /* ---------- Load Video After Small Delay ---------- */
       setTimeout(() => {
         tileBody.innerHTML = `
           <button id="back-btn" style="
@@ -324,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
               max-height: calc(100vh - 260px);
               object-fit:contain;
               background:#000;
-              border-radius: 14px;
+              border-radius:14px;
               display:block;
               margin:0 auto;
             "
@@ -335,16 +345,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const video = document.getElementById("demoVideo");
 
-        /* Hide spinner when video loads */
         video.addEventListener("canplay", () => {
           const spinner = document.getElementById("video-loading-spinner");
           spinner && spinner.remove();
         });
 
-        /* ---------- Back Button ---------- */
         document.getElementById("back-btn").addEventListener("click", () => {
           stopVideoPlayback();
-          const data = tileData[category];
+
+          // FIX: RAG maps back to the "data" tile
+          const resolvedCategory = category === "data_rag" ? "data" : category;
+          const data = tileData[resolvedCategory];
 
           tileTitle.textContent = data.title;
           tileBody.innerHTML =
@@ -356,4 +367,5 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 300);
     }
   });
+
 });
