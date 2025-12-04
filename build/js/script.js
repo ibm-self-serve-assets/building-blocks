@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     data: "Text2SQL",
     data_rag: "Retrieval-Augmented Generation",
     trusted: "Design Time Evaluations Guardrail",
-    optimize: "Application Observability"
+    optimize: "Application Observability",
+    observe: "Instana and Turbonomic in FinOps"
   };
 
   const createLink = (key, label) =>
@@ -70,8 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
     trusted:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/trusted-ai/design-time-evaluations/gen-ai-evaluations/demo/Customer_Care_Guardrail_Demo.mp4",
 
+    observe:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/observe/application-observability/Application_Observability_Instana.mp4",
+
     optimize:
-      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/observe/application-observability/Application_Observability_Instana.mp4"
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/optimize/finops/FinOps.mp4"
   };
 
   /* ---------- NEW STATIC DEMO LINK GENERATOR ---------- */
@@ -146,7 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Application Observability", desc: "Observing, Tracing, and Analyzing Application." },
         { name: "Network Performance", desc: "Speed, Latency, Bandwidth, Jitter, Loss" }
       ],
-      link: createOverviewLink("observe", "Observe")
+      link: 
+        createOverviewLink("observe", "Observe") +
+        createDemoLink("observe")
     },
 
     build: {
