@@ -60,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
     agents:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/agents/multi-agent-orchestration/Smart-Choice-Supplier/demo/Smart_Choice_Supplier_Agent.mp4",
 
-    data_rag:
-      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/data-for-ai/q-and-a/RAG-Accelerator/demo/QnA_RAG_BB.mp4",
-
     data:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/data-for-ai/q-and-a/Text-To-SQL/demo/text_to_sql_demo.mp4",
+
+    data_rag:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/data-for-ai/q-and-a/RAG-Accelerator/demo/QnA_RAG_BB.mp4",
 
     trusted:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/trusted-ai/design-time-evaluations/gen-ai-evaluations/demo/Customer_Care_Guardrail_Demo.mp4"
