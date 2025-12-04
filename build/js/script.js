@@ -36,7 +36,8 @@ document.addEventListener("DOMContentLoaded", () => {
     agents: "Multi Agent Orchestration",
     data: "Text2SQL",
     data_rag: "Retrieval-Augmented Generation",
-    trusted: "Design Time Evaluations Guardrail"
+    trusted: "Design Time Evaluations Guardrail",
+    optimize: "Application Observability"
   };
 
   const createLink = (key, label) =>
@@ -67,7 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/data-for-ai/q-and-a/RAG-Accelerator/demo/QnA_RAG_BB.mp4",
 
     trusted:
-      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/trusted-ai/design-time-evaluations/gen-ai-evaluations/demo/Customer_Care_Guardrail_Demo.mp4"
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/trusted-ai/design-time-evaluations/gen-ai-evaluations/demo/Customer_Care_Guardrail_Demo.mp4",
+
+    optimize:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/observe/application-observability/Application_Observability_Instana.mp4"
   };
 
   /* ---------- NEW STATIC DEMO LINK GENERATOR ---------- */
@@ -131,7 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "FinOps", desc: "Visibility, Automation, Governance, Value" },
         { name: "Automated Resource Management", desc: "Automate, Assess, Remediate, Scale." }
       ],
-      link: createOverviewLink("optimize", "Optimize")
+      link: 
+        createOverviewLink("optimize", "Optimize") +
+        createDemoLink("optimize")
     },
 
     observe: {
