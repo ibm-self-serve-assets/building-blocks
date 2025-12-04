@@ -166,6 +166,53 @@ Use the below url to use the swagger : http://localhost:8000/docs
       "query": "What is the uniqueness of the field product_number in product table"
       }'
    ```
+
+
+   <b> Text2SQL response before enrichment </b>
+   ```
+      {
+   "Text2SQL_Generation": {
+      "input_query": "What is the uniqueness of the field product_number in product table",
+      "generated_sql_queries": [],
+      "model_id": "meta-llama/llama-3-3-70b-instruct",
+      "resource_usage": {
+         "token_count": 4048,
+         "cuh": 0.0003976528,
+         "capacity_unit_hours": 0.0003976528,
+         "capacity_unit_hours_billed": 0,
+         "model_usages": [
+         {
+            "model_type": "embedding",
+            "model_id": "slate_30m_english_rtrvr_v2",
+            "input_token_count": 18,
+            "output_token_count": 0
+         },
+         {
+            "model_type": "foundation",
+            "model_id": "meta-llama/llama-3-3-70b-instruct",
+            "input_token_count": 3939,
+            "output_token_count": 91
+         }
+         ]
+      },
+      "error": {
+         "trace": "2mhxbx8a5zex4o5u5blgjp0it",
+         "errors": [
+         {
+            "code": "unable_to_perform",
+            "message": "SAL0249E: There is not enough information in the database to answer your question."
+         }
+         ]
+      },
+      .....
+   }}
+
+   ```
+
+   <b>Text2SQL response after enrichment </b>
+
+
+
    In the response `generated_sql_queries` it has generated a SQL query which gets the distinct count(unique) of product number from the table product.
    
    Response Body
