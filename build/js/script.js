@@ -37,8 +37,9 @@ document.addEventListener("DOMContentLoaded", () => {
     data: "Text2SQL",
     data_rag: "Retrieval-Augmented Generation",
     trusted: "Design Time Evaluations Guardrail",
-    optimize: "Application Observability",
-    observe: "Instana and Turbonomic in FinOps"
+    optimize: "Instana and Turbonomic in FinOps",
+    observe: "Application Observability"
+    
   };
 
   const createLink = (key, label) =>
