@@ -17,7 +17,7 @@ from app.src.utils import config
 
 
 # Get parameters from config
-parameter_sets = config.parameters
+parameter_sets = config.PARAMETERS
 parameter_sets_list = list(parameter_sets.keys())
 parameters=rag_helper_functions.get_parameter_sets(parameter_sets_list)
 
@@ -47,7 +47,7 @@ def connection_setup(connection_name):
     connection_list = ['milvus_connect','elasticsearch_connect','datastax_connect']
     if(next((conn for conn in connection_list if conn == connection_name), None)):
         print(connection_name, "Connection found in the project")
-        db_connection = config.milvius
+        db_connection = config.WXD_MILVUS
 
         # Create the Elasticsearch client instance
         print("Reading from the connection..")
