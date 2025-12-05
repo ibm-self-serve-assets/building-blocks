@@ -10,27 +10,18 @@ PARAMETERS = {
         "rag_es_min_score" : os.getenv("RAG_ES_MIN_SCORE"),
         "include_all_html_tags" : os.getenv("RAG_INCLUDE_ALL_HTML_TAGS"),
         "vector_store_index_name": os.getenv("RAG_VECTOR_STORE_INDEX_NAME"),
-        "watsonx_ai_api_key": os.getenv("RAG_WATSONX_AI_API_KEY")
+        "watsonx_ai_api_key": os.getenv("RAG_WATSONX_AI_API_KEY"),
+        "elastic_search_template_file": os.getenv("RAG_ELASTIC_SEARCH_TEMPLATE_FILE")
+        
     },
     "RAG_advanced_parameter_set" : {
-    "embedding_model_id":  os.getenv("RAG_ADV_MILVUS_EMBEDDING_MODEL_ID"),
-    "milvus_hybrid_search" :  os.getenv("RAG_ADV_MILVUS_HYBRID_SEARCH"),
-    "milvus_reranker" :  os.getenv("RAG_ADV_MILVUS_RERANKER")
+        "embedding_model_id":  os.getenv("RAG_ADV_MILVUS_EMBEDDING_MODEL_ID"),
+        "milvus_hybrid_search" :  os.getenv("RAG_ADV_MILVUS_HYBRID_SEARCH"),
+        "milvus_reranker" :  os.getenv("RAG_ADV_MILVUS_RERANKER"),
+        "elastic_search_model_id" :  os.getenv("RAG_ADV_ELASTIC_SEARCH_MODEL_ID"),
+        "elastic_search_vector_type" :  os.getenv("RAG_ADV_ELASTIC_SEARCH_VECTOR_TYPE"),
+        "chunk_size" :  os.getenv("RAG_ADV_CHUNK_SIZE"),
+        "chunk_overlap" :  os.getenv("RAG_ADV_CHUNK_OVERLAP"),
+        "index_chunk_size" :  os.getenv("RAG_ADV_INDEX_CHUNK_SIZE")
     }
 }
-
-# Milius connection
-WXD_MILVUS = {
-    'database': os.getenv("WXD_MILVUS_DATABASE"),
-    'password': os.getenv("WXD_MILVUS_PASSWORD"), 
-    'port': os.getenv("WXD_MILVUS_PORT"), 
-    'host': os.getenv("WXD_MILVUS_HOST"),
-    'ssl': os.getenv("WXD_MILVUS_SSL"),
-    'username': os.getenv("WXD_MILVUS_USERNAME"),
-    '.': {
-        'name': os.getenv("WXD_MILVUS_NAME"),
-        'description': os.getenv("WXD_MILVUS_DESCRIPTION"),
-        'asset_id': os.getenv("WXD_MILVUS_ASSET_ID"),
-        'asset_type': os.getenv("WXD_MILVUS_ASSET_TYPE")
-        }
-    }

@@ -13,6 +13,7 @@ from pymilvus import(IndexType,Status,connections,FieldSchema,DataType,Collectio
 from dotenv import load_dotenv
 
 from app.src.utils import rag_helper_functions
+from app.src.utils import db_connection
 from app.src.utils import config
 
 
@@ -40,22 +41,24 @@ client = init_environment()
 
 # connection_name = "milvus_connect"
 
-def connection_setup(connection_name):
+def connection_setup(connection_name, question):
     # This is tested only for milvius
 
     print(connection_name)
     connection_list = ['milvus_connect','elasticsearch_connect','datastax_connect']
     if(next((conn for conn in connection_list if conn == connection_name), None)):
         print(connection_name, "Connection found in the project")
-        db_connection = config.WXD_MILVUS
 
+        connections = client.connections.get_details()
+            
+        ids = [resource['metadata']['id'] for resource in connections['resources'] if resource['entity']['name'] == connection_name]
+        connection_id = ids[0]
+        db_connection = client.connections.get_details(connection_id)['entity']['properties']
         # Create the Elasticsearch client instance
         print("Reading from the connection..")
         ssl_certificate_content = db_connection.get('ssl_certificate') if db_connection.get('ssl_certificate') else ""
-        
-        connection_datatypesource_id=client.connections.get_details(db_connection['.']['asset_id'])['entity']['datasource_type']
-
-        connection_type = client.connections.get_datasource_type_details_by_id(connection_datatypesource_id)['entity']['name']
+        connection_datatypesource_id = [resource['entity']['datasource_type'] for resource in connections['resources'] if resource['entity']['name'] == connection_name]
+        connection_type = client.connections.get_datasource_type_details_by_id(connection_datatypesource_id[0])['entity']['name']
         
         print("Successfully retrieved the connection details")
         print("Connection type is identified as:",connection_type)
@@ -63,7 +66,7 @@ def connection_setup(connection_name):
         if connection_type=="elasticsearch":
             print('connection check', parameters['elastic_search_model_id'])
             es_client=rag_helper_functions.create_and_check_elastic_client(db_connection, parameters['elastic_search_model_id'])
-            return es_client
+            return es_client, connection_type
         elif connection_type=="milvus" or connection_type=="milvuswxd":
             milvus_credentials = rag_helper_functions.connect_to_milvus_database(db_connection, parameters)
             return milvus_credentials, connection_type
@@ -80,14 +83,16 @@ def connection_setup(connection_name):
     else:
         db_connection=""
         raise ValueError(f"No connection named {connection_name} found in the project.")
-    
 
+# Elastic search query template
+
+def search_query_template(connection_type, conn_credentials, question, parameters):
 
     if connection_type=="elasticsearch":
-        wslib.download_file(parameters['elastic_search_template_file'])
+        es_client = conn_credentials
         with open(parameters['elastic_search_template_file']) as f:
             es_query_json = json.load(f)
-
+    
         es_query_str = json.dumps(es_query_json)
         if 'dense' in parameters['elastic_search_vector_type']:
             from langchain_elasticsearch import ElasticsearchEmbeddings
@@ -127,70 +132,14 @@ def connection_setup(connection_name):
                 page_number = hit['_source']['metadata']['page_number']
 
 
-                print(f"\nRelevance Score  : {score}\nTitle            : {title}\nSource     : {source}\nDocument Content : {page_content}\nDocument URL : {url}\nPage Number : {page_number}")
-
+                # print(f"\nRelevance Score  : {score}\nTitle            : {title}\nSource     : {source}\nDocument Content : {page_content}\nDocument URL : {url}\nPage Number : {page_number}")
+            
         except Exception as e:
                 print("\nAn error occurred while querying elastic search, please retry after sometime:", e)
 
 
-# 2. Using the Langchain Retrievers
-
-def get_embedding(environment, parameters, project_id, wml_credentials, WML_SERVICE_URL):
-    if environment == "cloud":
-        credentials = Credentials(
-            api_key=parameters['watsonx_ai_api_key'],
-            url=WML_SERVICE_URL
-        )
-        embedding = Embeddings(
-            model_id=parameters['embedding_model_id'],
-            credentials=credentials,
-            project_id=project_id,
-            verify=True
-        )
-    elif environment == "on-prem":
-        try:
-            if client.foundation_models.EmbeddingModels.__members__:
-                if client.foundation_models.EmbeddingModels(parameters["embedding_model_id"]).name:
-                    embedding = Embeddings(
-                        model_id=parameters['embedding_model_id'],
-                        credentials=wml_credentials,
-                        project_id=project_id,
-                        verify=True
-                    )
-                else:
-                    print("Local on-prem embedding models not found, using models from IBM Cloud API")
-                    credentials = Credentials(
-                        api_key=parameters['watsonx_ai_api_key'],
-                        url=parameters['watsonx_ai_url']
-                    )
-                    embedding = Embeddings(
-                        model_id=parameters['embedding_model_id'],
-                        credentials=credentials,
-                        space_id=parameters["wx_ai_inference_space_id"],
-                        verify=True
-                    )
-        except Exception as e:
-            print(f"Exception in loading Embedding Models: {str(e)}")
-            raise
-    else:
-        raise ValueError(f"Invalid environment: {environment}. Must be 'cloud' or 'on-prem'.")
-    
-    return embedding
-
-
-def generate_answer(payload):
-
-    print(payload)
-
-    question = payload['query']
-    connection_name = payload['collection_name']
-
-    # Tested for milvus
-    milvus_credentials, connection_type = connection_setup(connection_name)
     embedding = get_embedding(environment, parameters, project_id, wml_credentials, WML_SERVICE_URL)
-
-    # import pdb; pdb.set_trace()
-
+    
     # ### Vector Search Query to obtain most relevant result using the Langchain retrievers
     match connection_type:
         case "elasticsearch":
@@ -216,12 +165,13 @@ def generate_answer(payload):
                         )
             
             print("ElasticsearchRetriever Created with",parameters['elastic_search_model_id'])
-            results = retriever.invoke(question)
-            print(f"Question: {question}")
-            print("Response: ")
-            print([{"page_content": doc.page_content, "metadata":doc.metadata['_source']['metadata'], "score": doc.metadata['_score'] or doc.metadata['_rank']} for doc in results])
+            search_result = retriever.invoke(question)
+            # print(f"Question: {question}")
+            # print("Response: ")
+            # print([{"page_content": doc.page_content, "metadata":doc.metadata['_source']['metadata'], "score": doc.metadata['_score'] or doc.metadata['_rank']} for doc in results])
             
         case "milvus" | "milvuswxd":
+            milvus_credentials = conn_credentials
             from langchain_milvus import Milvus, BM25BuiltInFunction
             if environment=="cloud":
                 credentials=Credentials(
@@ -307,10 +257,70 @@ def generate_answer(payload):
 
         case _:
             raise ValueError(f"Unsupported connection_type: {connection_type}")
+        
+    print("Retun Results")
+        
 
+    return search_result
+        
+
+
+# 2. Using the Langchain Retrievers
+
+def get_embedding(environment, parameters, project_id, wml_credentials, WML_SERVICE_URL):
+    if environment == "cloud":
+        credentials = Credentials(
+            api_key=parameters['watsonx_ai_api_key'],
+            url=WML_SERVICE_URL
+        )
+        embedding = Embeddings(
+            model_id=parameters['embedding_model_id'],
+            credentials=credentials,
+            project_id=project_id,
+            verify=True
+        )
+    elif environment == "on-prem":
+        try:
+            if client.foundation_models.EmbeddingModels.__members__:
+                if client.foundation_models.EmbeddingModels(parameters["embedding_model_id"]).name:
+                    embedding = Embeddings(
+                        model_id=parameters['embedding_model_id'],
+                        credentials=wml_credentials,
+                        project_id=project_id,
+                        verify=True
+                    )
+                else:
+                    print("Local on-prem embedding models not found, using models from IBM Cloud API")
+                    credentials = Credentials(
+                        api_key=parameters['watsonx_ai_api_key'],
+                        url=parameters['watsonx_ai_url']
+                    )
+                    embedding = Embeddings(
+                        model_id=parameters['embedding_model_id'],
+                        credentials=credentials,
+                        space_id=parameters["wx_ai_inference_space_id"],
+                        verify=True
+                    )
+        except Exception as e:
+            print(f"Exception in loading Embedding Models: {str(e)}")
+            raise
+    else:
+        raise ValueError(f"Invalid environment: {environment}. Must be 'cloud' or 'on-prem'.")
+    
+    return embedding
+
+
+def generate_answer(payload):
+    question = payload['query']
+    connection_name = payload['collection_name']
+
+    # Tested for milvus
+    if connection_name == "milvus_connect":
+        milvus_credentials, connection_type = connection_setup(connection_name, question)
+        search_result = search_query_template(connection_type, milvus_credentials, question, parameters)
+
+    if connection_name == "elasticsearch_connect":
+        es_client, connection_type = connection_setup(connection_name, question)
+        search_result = search_query_template(connection_type, es_client,question, parameters)
 
     return search_result, search_result[0]
-
-
-# question ="How can I create a project in watsonx.ai?"
-# generate_text(question)

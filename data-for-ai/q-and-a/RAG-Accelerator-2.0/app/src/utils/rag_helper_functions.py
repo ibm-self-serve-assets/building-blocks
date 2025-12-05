@@ -11,14 +11,14 @@ import time
 from ibm_watsonx_ai import APIClient
 
 from app.src.utils import config
+
 all_parameters = config.PARAMETERS
 
 def get_parameter_sets(parameter_sets):
-    print(parameter_sets)
 
     parameters = {}
     for parameter_set in parameter_sets:
-        parameters.update(config.all_parameters[parameter_set])
+        parameters.update(all_parameters[parameter_set])
     print("parameter sets retrieved")
     return parameters
 
