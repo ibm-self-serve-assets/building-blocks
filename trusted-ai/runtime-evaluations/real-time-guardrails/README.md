@@ -30,6 +30,8 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 - **RAG Evaluation Metrics:** Answer Relevance, Context Relevance, Faithfulness
 
+- **Response Quality Metrics (LLM as Judge and Custom Metrics):** Answer Completeness, Conciseness, Helpfulness, Action-Oriented Validator
+
 - **Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
 
 - **Export Results:*** Download evaluation results as CSV files
@@ -147,6 +149,12 @@ real-time-guardrails/
 - Assesses quality of retrieval-augmented generation
 - Measures relevance and faithfulness
 - Validates context usage
+
+**Response Quality Metrics**
+- Evaluates the completeness of the agent's response
+- Evaluates the conciseness of the agent's response
+- Evaluates the helpfulness of the agent's response
+- Evaluates whether the agent's response is action oriented
 
 ### Configuration
 
