@@ -34,7 +34,7 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 - **Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
 
-- **Export Results:*** Download evaluation results as CSV files
+- **Export Results:** Download evaluation results as CSV files
 
 <img src="images/demo-landing-page.png" 
      alt="demo-landing-page" 
