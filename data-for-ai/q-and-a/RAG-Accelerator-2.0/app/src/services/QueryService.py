@@ -42,9 +42,16 @@ client = init_environment()
 # connection_name = "milvus_connect"
 
 def connection_setup(connection_name, question):
-    # This is tested only for milvius
+    """
+    Get the milvius data source credentails or connect to elastic search instance.
 
-    print(connection_name)
+    Parameters:
+    - connection_name (str): Name of the connection
+    - question (str) : user query
+
+    Returns:
+    - milvius credentials (dict)/ es_client(client instance) and connection_type (str).
+    """
     connection_list = ['milvus_connect','elasticsearch_connect','datastax_connect']
     if(next((conn for conn in connection_list if conn == connection_name), None)):
         print(connection_name, "Connection found in the project")
@@ -87,6 +94,19 @@ def connection_setup(connection_name, question):
 # Elastic search query template
 
 def search_query_template(connection_type, conn_credentials, question, parameters):
+
+    """
+    Check the connection type and perform search query.
+
+    Parameters:
+    - connection_type (str): Type of connection
+    - conn_credentials (dict): A dictionary containing the connection parameters for Milvus/Elasticsearch client instance.
+    - question (str) : user query
+    - parameters (dict): Configuration parameters to perform search operations.
+
+    Returns:
+    - search_results (dict): The search results.
+    """
 
     if connection_type=="elasticsearch":
         es_client = conn_credentials
@@ -258,9 +278,6 @@ def search_query_template(connection_type, conn_credentials, question, parameter
         case _:
             raise ValueError(f"Unsupported connection_type: {connection_type}")
         
-    print("Retun Results")
-        
-
     return search_result
         
 
@@ -311,6 +328,17 @@ def get_embedding(environment, parameters, project_id, wml_credentials, WML_SERV
 
 
 def generate_answer(payload):
+
+    """
+    Generate answer to the user query.
+
+    Parameters:
+    - payload (dict): It contains user query and connection_name
+
+    Returns:
+    - search_result (dict) Results of the search operation.
+    """
+
     question = payload['query']
     connection_name = payload['collection_name']
 

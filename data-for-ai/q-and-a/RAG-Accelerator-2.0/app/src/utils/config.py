@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()  # Load values from .env
 
-# parameter configuration
+# parameter configuration for milvus and elastic search
 PARAMETERS = {
     "RAG_parameter_set" : {
         "vectorsearch_top_n_results" : os.getenv("RAG_VECTORSEARCH_TOP_N_RESULTS"),
