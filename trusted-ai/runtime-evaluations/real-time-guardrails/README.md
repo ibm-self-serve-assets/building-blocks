@@ -88,9 +88,21 @@ pip install -r requirements.txt
 The `.env` file should already be present with your credentials. Verify it contains:
 
 ```env
-WATSONX_APIKEY=your_api_key_here
+## IBM watsonx.governance API Configuration
+WATSONX_APIKEY=your_watsonx_api_key_here
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
+
+## Service Instance ID (required if you have multiple instances)
 WXG_SERVICE_INSTANCE_ID=your_service_instance_id_here
+
+## Project ID for watsonx.governance
+WXG_PROJECT_ID=your_project_id_here
+
+## Optional: Region (default is us-south)
+# WATSONX_REGION=us-south
+
+## OpenAI API Key (if using OpenAI as LLM judge)
+# OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 To get your credentials:
