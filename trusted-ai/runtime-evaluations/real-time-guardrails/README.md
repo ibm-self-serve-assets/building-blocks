@@ -38,7 +38,7 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 <img src="images/demo-landing-page.png" 
      alt="demo-landing-page" 
-     style="width: 80%;"/>
+     style="width: 90%;"/>
 
 ### How to Use These Metrics to Block Undesired AI Behavior
 
