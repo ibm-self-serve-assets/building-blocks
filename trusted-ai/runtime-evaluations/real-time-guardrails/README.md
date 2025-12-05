@@ -36,7 +36,7 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 - **Export Results:*** Download evaluation results as CSV files
 
-<img src="real-time-guardrails/images/demo-landing-page.png" 
+<img src="images/demo-landing-page.png" 
      alt="demo-landing-page" 
      style="width: 80%;"/>
 
