@@ -88,9 +88,21 @@ pip install -r requirements.txt
 The `.env` file should already be present with your credentials. Verify it contains:
 
 ```env
-WATSONX_APIKEY=your_api_key_here
+## IBM watsonx.governance API Configuration
+WATSONX_APIKEY=your_watsonx_api_key_here
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
+
+## Service Instance ID (required if you have multiple instances)
 WXG_SERVICE_INSTANCE_ID=your_service_instance_id_here
+
+## Project ID for watsonx.governance
+WXG_PROJECT_ID=your_project_id_here
+
+## Optional: Region (default is us-south)
+# WATSONX_REGION=us-south
+
+## OpenAI API Key (if using OpenAI as LLM judge)
+# OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 To get your credentials:
@@ -108,13 +120,10 @@ The app will start on `http://localhost:8050`
 ## Usage
 
 1. **Select Guardrails**: Use the left sidebar to choose which metrics to evaluate
-2. **Enter Text**: Type or paste text into the main input area
-3. **Configure Threshold**: Adjust the risk threshold slider (default: 0.7)
-4. **Advanced Options** (optional): Click "Show Advanced" for RAG-specific inputs
-   - Context: Provide context for RAG evaluation
-   - Generated Response: Enter AI-generated text to evaluate
-5. **Run Evaluation**: Click "Run Guardrails" to analyze the text
-6. **View Results**: Results display with color-coding:
+2. **Select an Example**: Select one of the existing examples, or enter text directly in the text box
+3. **Configure Threshold**: Adjust the risk threshold
+4. **Run Evaluation**: Click "Run Guardrails" to analyze the text
+5. **View Results**: Results display with color-coding:
    - 🔴 Red: High risk 
    - 🟢 Green: Low risk
 
