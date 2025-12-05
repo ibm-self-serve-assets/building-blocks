@@ -285,6 +285,19 @@ def search_query_template(connection_type, conn_credentials, question, parameter
 # 2. Using the Langchain Retrievers
 
 def get_embedding(environment, parameters, project_id, wml_credentials, WML_SERVICE_URL):
+    """
+    Generate embedding.
+
+    Parameters:
+    - environment (str): cloud/on-prem
+    - parameters (str): connection parameters
+    - project_id (str): IBM cloud project id
+    - wml_credentials (str): WML credentials
+    - WML_SERVICE_URL (str): service url
+
+    Returns:
+    - embedding  returns embedded results.
+    """
     if environment == "cloud":
         credentials = Credentials(
             api_key=parameters['watsonx_ai_api_key'],
