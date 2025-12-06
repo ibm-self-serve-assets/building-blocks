@@ -165,7 +165,7 @@ typing_extensions==4.15.0
 tzdata==2025.2
 ujson==5.11.0
 unlzw3==0.2.3
-urllib3==2.5.0
+urllib3==2.6.0
 uvicorn==0.36.0
 warc3-wet==0.2.5
 warc3-wet-clueweb09==0.2.5
