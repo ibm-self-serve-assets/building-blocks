@@ -1,0 +1,25 @@
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "match": {
+            "text": {
+              "query": "{{model_text}}",
+              "boost": 1
+            }
+          }
+        },
+        {
+          "text_expansion": {
+            "vector.tokens": {
+              "model_id": "{{model_id}}",
+              "model_text": "{{model_text}}",
+              "boost": 1
+            }
+          }
+        }
+      ]
+    }
+  }
+}
