@@ -4,3 +4,4 @@ data-for-ai/q-and-a/RAG-Accelerator-2.0/.env
 **/*.pyc
 venv/
 .env/
+data-for-ai/q-and-a/RAG-Accelerator-2.0/.env
