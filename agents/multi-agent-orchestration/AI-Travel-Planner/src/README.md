@@ -24,12 +24,17 @@ This demo showcases the power of modern AI orchestration platforms in creating s
 
 ## Overview
 
-In this demo, we will create a **Travel Planner Agent** that provides:
+In this project, we have developed an AI agent along with all necessary connections and  tools using a standalone Python code block. The documentation is primarily centered around this standalone implementation, as it represents the core functionality and logic of the system.
 
-- **Destination Research**: Web search capabilities for attractions, activities, and local information
-- **Accommodation Search**: Airbnb integration for finding suitable places to stay
-- **Personalized Recommendations**: Customized travel plans based on user preferences
-- **Interactive Planning**: Conversational interface for trip planning assistance
+Additionally, a Dash application is included for reference purposes for each file. Its role is to demonstrate how the AI agent can be integrated into a front-end user interface (FUI).
+
+####  File Structure and Naming Convention
+
+Each step in the project is represented by two files:
+
+A standalone Python file that contains the actual implementation.
+
+A corresponding Dash app file (ending with _dash_app.py) that provides a front-end demonstration of that step
 
 
 ## Prerequisites
