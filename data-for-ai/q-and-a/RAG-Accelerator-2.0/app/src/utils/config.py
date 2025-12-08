@@ -24,7 +24,6 @@ PARAMETERS = {
         "watsonx_deployment_id": os.getenv("RAG_WATSONX_DEPLOYMENT_ID"),
         "watsonx_space_id": os.getenv("RAG_WATSONX_SPACE_ID"),
         "watsonx_project_id": os.getenv("RAG_WATSONX_PROJECT_ID"),
-        "watsonx_model_id": os.getenv("RAG_WATSONX_MODEL_ID"),
         "watsonx_max_tokens": os.getenv("RAG_WATSONX_MAX_TOKENS"),
         "watsonx_min_tokens": os.getenv("RAG_WATSONX_MIN_TOKENS")
     },
