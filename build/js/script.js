@@ -141,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Automated Resource Management", desc: "Automate, Assess, Remediate, Scale." }
       ],
       link: 
+        createLink("optimize", "Optimize") +
         createOverviewLink("optimize", "Optimize") +
         createDemoLink("optimize")
     },
@@ -152,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Network Performance", desc: "Speed, Latency, Bandwidth, Jitter, Loss" }
       ],
       link: 
+        createLink("observe", "Observe") +
         createOverviewLink("observe", "Observe") +
         createDemoLink("observe")
     },
@@ -164,7 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Infrastructure as Code", desc: "Stateful creation and management of cloud resources." },
         { name: "Code Assistant", desc: "Accelerate development, improve code quality." }
       ],
-      link: createOverviewLink("build", "Build & Deploy")
+      link: 
+        createLink("build", "Build & Deploy") +
+        createOverviewLink("build", "Build & Deploy")
     }
   };
 
