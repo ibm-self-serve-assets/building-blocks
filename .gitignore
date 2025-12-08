@@ -1,0 +1,6 @@
+.DS_Store
+data-for-ai/q-and-a/RAG-Accelerator-2.0/.env
+**/__pycache__/**
+**/*.pyc
+venv/
+.env/
