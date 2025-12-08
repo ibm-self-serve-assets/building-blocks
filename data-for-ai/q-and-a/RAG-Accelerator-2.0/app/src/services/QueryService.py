@@ -13,7 +13,6 @@ from pymilvus import(IndexType,Status,connections,FieldSchema,DataType,Collectio
 from dotenv import load_dotenv
 
 from app.src.utils import rag_helper_functions
-from app.src.utils import db_connection
 from app.src.utils import config
 
 
@@ -24,15 +23,14 @@ parameters=rag_helper_functions.get_parameter_sets(parameter_sets_list)
 
 load_dotenv()  # Load values from .env
 
-environment = os.getenv("ENVIRONMENT")
-runtime_region = os.getenv("RUNTIME_REGION")
-WML_SERVICE_URL = os.getenv("WML_SERVICE_URL")
-ibm_api_key = os.getenv("IBM_API_KEY")
-project_id = os.getenv("PROJECT_ID")
+environment = parameters['environment'].strip().lower() if parameters['environment'] else "cloud"
+runtime_region = parameters['runtime_env_region']
+WML_SERVICE_URL = f"https://{runtime_region}.ml.cloud.ibm.com"
+ibm_api_key = parameters['watsonx_ai_api_key']
+project_id = parameters['watsonx_project_id']
 wml_credentials = {"apikey": ibm_api_key, "url": WML_SERVICE_URL}
 
 def init_environment():
-
     client = APIClient(wml_credentials)
     client.set.default_project(project_id)
     return client
