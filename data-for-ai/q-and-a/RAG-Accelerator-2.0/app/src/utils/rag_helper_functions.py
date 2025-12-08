@@ -4,15 +4,29 @@ import re
 import json    
 import string
 from functools import reduce
-
+from dotenv import load_dotenv
+import logging
+from logging.config import dictConfig
 # import ipywidgets as widgets
 from IPython.display import display, HTML, clear_output,Markdown
 import time
 from ibm_watsonx_ai import APIClient
-
 from app.src.utils import config
 
+# -----------------------------------------------------
+# Load .env
+# -----------------------------------------------------
+load_dotenv()
+
+# Logging configuration controlled via .env
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+logging.basicConfig(level=LOG_LEVEL, format=LOG_FORMAT)
+logger = logging.getLogger("rag_helper_functions")
+
 all_parameters = config.PARAMETERS
+parameter_sets_list = list(all_parameters.keys())
 
 def get_parameter_sets(parameter_sets):
 
@@ -42,6 +56,7 @@ def update_parameter_set(client,paramset_name,parameter_to_be_updated):
     parameter_set_details = client.parameter_sets.update(paramset_id, parameter_values_updated_list, "parameters")
     return True
 
+parameters=get_parameter_sets(parameter_sets_list)
 
 def promote_assets(client, asset_type, asset_name, parameters, project_asset_id, project_id, space_uid):
     task_type = "list"
@@ -60,7 +75,6 @@ def promote_assets(client, asset_type, asset_name, parameters, project_asset_id,
         space_asset_id=client.spaces.promote(project_asset_id, project_id, space_uid)
         print(f"Promoted the asset {asset_name} to deployment space.")
     return space_asset_id
-
 
 def create_and_check_elastic_client(es_connection, elastic_search_model_id):
     from elasticsearch import Elasticsearch
@@ -122,7 +136,6 @@ def create_and_check_elastic_client(es_connection, elastic_search_model_id):
     except Exception as e:
         raise ValueError(f"Error: {str(e)}")
     
-
 async def create_and_check_async_elastic_client(es_connection, elastic_search_model_id):
     from elasticsearch import AsyncElasticsearch
     """
@@ -182,7 +195,6 @@ async def create_and_check_async_elastic_client(es_connection, elastic_search_mo
 
     except Exception as e:
         raise ValueError(f"Error: {str(e)}")
-
 
 def connect_to_milvus_database(db_connection, parameters):
     import re
@@ -334,7 +346,6 @@ def check_datastax_ks_exists(db_connection, session):
         raise Exception(f"Failed to check keyspace in DataStax: {e}")
         return None
     
-
 def connect_to_astradb_using_cassandra(db_connection, parameters, scb_path=None):
     """
     Connects to AstraDB using Cassandra Driver.
@@ -460,7 +471,6 @@ def get_premium_retrieval(query, parameters, lakehouse_url=None, ai_bearer_token
     except Exception as e:
         print('Error retreiving documents from the data premium:',e)
 
-
 def get_overlap(a,b):
     # returns maximum overlab (in characters) of suffix of a and prefix of b
     # less than 20 characters overlap are considered no overlap
@@ -570,7 +580,6 @@ def merge_documents(documents, document_source_field):
 
     return documents_final, length_reduction
 
-
 def remove_duplicate_records(split_docs):
     import hashlib
     from collections import Counter
@@ -589,8 +598,50 @@ def remove_duplicate_records(split_docs):
                 del id_list[d_id]
     return split_docs
 
+def query_llm(client, deployment_id, question, query_filter):
+    """
+    Sends a question to Watsonx AI RAG deployment.
+    Returns:
+        tuple: (answer_str, documents, expert_response, log_id)
+    """
+    prompt_variables = {
+        "question": question,
+        "context": ""
+    }
 
-def query_llm(client, deployment_id, question,query_filter=None):
+    logger.info(f"parameters['watsonx_max_tokens']: {parameters['watsonx_max_tokens']}")
+    params = {
+        "prompt_variables": prompt_variables,
+        "decoding_method": "greedy",
+        "max_new_tokens": int(parameters['watsonx_max_tokens'])
+    }
+
+    if query_filter:
+        params["query_filter"] = query_filter
+
+    response = client.deployments.generate(
+        deployment_id=deployment_id,
+        params=params
+    )
+
+    result = response["results"][0]
+    documents = result.get("documents", {})
+    hallucination_detection = result.get("Hallucination Detection", "NA")
+    answer = {
+        "response": result.get("generated_text", "").lstrip(),
+        "Hallucination Detection": hallucination_detection
+    }
+    log_id = response.get("metadata", {}).get("id", "")
+    expert_response = "No expert profile found for your question in the available documents."
+    expert_result = result.get("expert_response")
+    if expert_result is not None:
+        experts_list = expert_result.get('body').get('recommended_top_experts')
+        if len(experts_list) > 0:
+            expert_response = experts_list[0]
+
+    return answer, documents, expert_response, log_id
+
+def query_llm_old(client, deployment_id, question,query_filter=None):
     payload = {"question": question}
     if query_filter:
         payload['query_filter'] = query_filter
@@ -614,7 +665,6 @@ def query_llm(client, deployment_id, question,query_filter=None):
     # End of expert profile section
 
     return answer,documents,expert_response, log_id
-
 
 def display_results(question, documents, debug=False, answer=None, retreival_flag=False):
     
@@ -736,10 +786,6 @@ def qa_with_llm(client, deployment_id, retreival_flag=False):
     filters_header = widgets.HTML("<h3>Filters</h3>")
 
     return display(widgets.VBox([ui_title, question_textbox, filters_header, field_textbox, value_textbox, submit_button, result_output]))
-
-
-
-
 
 
 # Sample Materials, provided under license.</a> <br>

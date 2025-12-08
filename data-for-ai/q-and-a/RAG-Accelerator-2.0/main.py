@@ -2,9 +2,13 @@ import os
 import logging
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-#from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from app.route.query import routes as query_api
+from app.route.qna import routes as qna_ai_service_route
+from app.src.utils import config
+from app.src.utils import rag_helper_functions
+
 
 # Load environment variables
 load_dotenv()
@@ -15,26 +19,28 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-logger = logging.getLogger("api-service")
+logger = logging.getLogger("main")
+
+# Get parameters from config
+parameter_sets = config.PARAMETERS
+parameter_sets_list = list(parameter_sets.keys())
+parameters=rag_helper_functions.get_parameter_sets(parameter_sets_list)
+
 
 # Environment variable fallback
-SERVER_URL = os.getenv("SERVER_URL", "http://localhost:4050")
-ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+SERVER_URL =  parameters["server_url"].strip() if parameters["server_url"] else "http://localhost:4050"
+ALLOWED_ORIGINS = parameters.get("allowed_origins", "*").split(",")
 
 # FastAPI application instance
 app = FastAPI(
-    title="Milvus RAG API",
-    description="Hybrid search RAG with Milvus",
+    title="RAG Accelerator 2.0 API Service",
+    description="RAG Accelerator 2.0 API Service for querying Milvus collections and watsonx.ai LLM.",
     version="1.0.1-fastapi",
     servers=[{"url": SERVER_URL}],
 )
 
-from app.route.query import routes as query_api
 app.include_router(query_api.query_api_route)
-
-# Middleware for trusted hosts
-# TRUSTED_HOSTS = os.getenv("TRUSTED_HOSTS", "localhost,127.0.0.1").split(",")
-# app.add_middleware(TrustedHostMiddleware, allowed_hosts=TRUSTED_HOSTS)
+app.include_router(qna_ai_service_route.qna_ai_service_route)
 
 # Middleware for CORS
 app.add_middleware(
