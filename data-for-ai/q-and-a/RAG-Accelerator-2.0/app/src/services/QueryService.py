@@ -5,8 +5,6 @@ from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
 from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
 from ibm_watsonx_ai import APIClient
 import json
-import os
-import shutil 
 import warnings
 warnings.filterwarnings("ignore")
 from pymilvus import(IndexType,Status,connections,FieldSchema,DataType,Collection,CollectionSchema,utility)

@@ -4,7 +4,6 @@ import time
 import logging
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, Security
-from fastapi.security import APIKeyHeader
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
 from app.src.model.QnAAIServiceModel import QueryRequest, QueryResponse
 import app.src.services.QnAAIService as service

@@ -1,7 +1,6 @@
 import os
 import json
 import logging
-from logging.config import dictConfig
 from dotenv import load_dotenv
 from app.src.utils import config
 from app.src.utils import rag_helper_functions

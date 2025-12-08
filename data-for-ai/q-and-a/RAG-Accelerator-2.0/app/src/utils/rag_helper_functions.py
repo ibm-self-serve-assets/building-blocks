@@ -2,14 +2,11 @@ import requests
 import os
 import re
 import json    
-import string
 from functools import reduce
 from dotenv import load_dotenv
 import logging
-from logging.config import dictConfig
 import ipywidgets as widgets
 from IPython.display import display, HTML, clear_output,Markdown
-import time
 from ibm_watsonx_ai import APIClient
 from app.src.utils import config
 
@@ -92,7 +89,9 @@ def create_and_check_elastic_client(es_connection, elastic_search_model_id):
         # Create the Elasticsearch client instance
         print("Reading from the connection..")
         ssl_certificate_content = es_connection.get('ssl_certificate') if es_connection.get('ssl_certificate') else ""
-        cert_file_path = 'es_conn.crt'
+        cert_file_path = "es_conn.crt"
+
+        logger.info("Writing SSL certificate to %s", ssl_certificate_content)
         
         with open(cert_file_path, 'w') as file:
             file.write(ssl_certificate_content)
