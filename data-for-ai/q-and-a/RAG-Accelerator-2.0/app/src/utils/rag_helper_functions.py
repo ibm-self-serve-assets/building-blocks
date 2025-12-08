@@ -7,7 +7,7 @@ from functools import reduce
 from dotenv import load_dotenv
 import logging
 from logging.config import dictConfig
-# import ipywidgets as widgets
+import ipywidgets as widgets
 from IPython.display import display, HTML, clear_output,Markdown
 import time
 from ibm_watsonx_ai import APIClient
