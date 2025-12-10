@@ -90,8 +90,6 @@ def create_and_check_elastic_client(es_connection, elastic_search_model_id):
         print("Reading from the connection..")
         ssl_certificate_content = es_connection.get('ssl_certificate') if es_connection.get('ssl_certificate') else ""
         cert_file_path = "es_conn.crt"
-
-        logger.info("Writing SSL certificate to %s", ssl_certificate_content)
         
         with open(cert_file_path, 'w') as file:
             file.write(ssl_certificate_content)
@@ -229,12 +227,12 @@ def connect_to_milvus_database(db_connection, parameters):
 
     print("Successfully connected to milvus database")
 
-    # Validate the vector_store_index_name using regular expression
-    regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
+    # # Validate the vector_store_index_name using regular expression
+    # regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
     
-    # Ensure the index name follows the regex pattern
-    if not re.match(regex, parameters['vector_store_index_name']):
-        raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
+    # # Ensure the index name follows the regex pattern
+    # if not re.match(regex, parameters['vector_store_index_name']):
+    #     raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
 
     return milvus_credentials
 
@@ -299,12 +297,12 @@ def connect_to_datastax(db_connection,parameters):
         session = cluster.connect()
         print("Successfully connected to Datastax.")
 
-        # Validate the vector_store_index_name using regular expression
-        regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
+        # # Validate the vector_store_index_name using regular expression
+        # regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
         
-        # Ensure the index name follows the regex pattern
-        if not re.match(regex, parameters['vector_store_index_name']):
-            raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
+        # # Ensure the index name follows the regex pattern
+        # if not re.match(regex, parameters['vector_store_index_name']):
+        #     raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
 
     except Exception as e:
         if session!=None:
@@ -393,12 +391,12 @@ def connect_to_astradb_using_cassandra(db_connection, parameters, scb_path=None)
         session = cluster.connect()
         print("Successfully connected to AstraDB aaS Datastax using Cassandra Driver.")
 
-        # Validate the vector_store_index_name using regular expression
-        regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
+        # # Validate the vector_store_index_name using regular expression
+        # regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
 
-        # Ensure the index name follows the regex pattern
-        if not re.match(regex, parameters['vector_store_index_name']):
-            raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
+        # # Ensure the index name follows the regex pattern
+        # if not re.match(regex, parameters['vector_store_index_name']):
+        #     raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
 
     except Exception as e:
         if session!=None:
@@ -603,6 +601,7 @@ def query_llm(client, deployment_id, question, query_filter):
     Returns:
         tuple: (answer_str, documents, expert_response, log_id)
     """
+    
     prompt_variables = {
         "question": question,
         "context": ""
