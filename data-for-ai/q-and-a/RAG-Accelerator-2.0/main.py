@@ -5,7 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from app.route.query import routes as query_api
-from app.route.qna import routes as qna_ai_service_route
+from app.route.qna import routes as qna_ai_service_api
+from app.route.ingest import routes as ingest_api
 from app.src.utils import config
 from app.src.utils import rag_helper_functions
 
@@ -39,8 +40,9 @@ app = FastAPI(
     servers=[{"url": SERVER_URL}],
 )
 
+app.include_router(ingest_api.ingest_api_route)
 app.include_router(query_api.query_api_route)
-app.include_router(qna_ai_service_route.qna_ai_service_route)
+app.include_router(qna_ai_service_api.qna_ai_service_route)
 
 # Middleware for CORS
 app.add_middleware(
