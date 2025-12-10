@@ -8,7 +8,6 @@ from fastapi.security import APIKeyHeader
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
 from app.src.model.QueryDataModel import QueryDataInput, QueryDataResponse
 import app.src.services.QueryService as query_service
-# from app.src.services.COSService import COSService
 
 
 # Configure logging
@@ -24,7 +23,7 @@ load_dotenv()
 # Initialize router
 query_api_route = APIRouter(
     prefix="",
-    tags=["Query a Milvus collection."]
+    tags=["Query a Milvus and Elastic Search Vector DB"]
 )
 
 # API Key header
@@ -55,8 +54,8 @@ config = query_service.init_environment()
 
 # Routes
 @query_api_route.post("/query", 
-    description="Query a Milvus collection.",
-    summary="Query a Milvus collection.",
+    description="Query Milvus and Elastic Search Vector DB",
+    summary="Query Milvus and Elastic Search Vector DB",
     response_model=QueryDataResponse
 )
 async def get_ui_data(
@@ -68,8 +67,9 @@ async def get_ui_data(
     
     config['query'] = query_data_input.query
     config['num_results'] = query_data_input.num_results
-    config['num_rerank_results']= query_data_input.num_rerank_results
-    config['collection_name'] = query_data_input.collection_name
+    config['num_rerank_results'] = query_data_input.num_rerank_results
+    config['connection_name'] = query_data_input.connection_name
+    config['index_name'] = query_data_input.index_name
 
     info = {}
 
@@ -89,12 +89,12 @@ async def get_ui_data(
         return QueryDataResponse(
             data=data,
             status="success",
-            message=f"Successfully queried Milvus."
+            message=f"Successfully queried Vector DB"
         )
 
     except Exception as e:
         logging.error(f"Failed to query Milvus: {e}")
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to query Milvus."
+            detail="Failed to query Vector DB"
         )
