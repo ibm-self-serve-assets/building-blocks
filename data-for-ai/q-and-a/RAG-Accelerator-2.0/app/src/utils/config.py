@@ -10,14 +10,16 @@ PARAMETERS = {
         "runtime_env_region": os.getenv("RUNTIME_REGION"),
         "user_access_token": os.getenv("USER_ACCESS_TOKEN"),
         "ibm_iam_url": os.getenv("IBM_IAM_URL"),
-        "server_url": os.getenv("SERVER_URL")
+        "server_url": os.getenv("SERVER_URL"),
+        "astradb_scb_zip_filename":os.getenv("ASTRADB_SCB_ZIP_FILENAME"),
+        "connection_name":os.getenv("CONNECTION_NAME")
     },
     "RAG_parameter_set" : {
         "vectorsearch_top_n_results" : os.getenv("RAG_VECTORSEARCH_TOP_N_RESULTS"),
         "es_number_of_shards" : os.getenv("RAG_ES_NUMBER_OF_SHARDS"),
         "rag_es_min_score" : os.getenv("RAG_ES_MIN_SCORE"),
         "include_all_html_tags" : os.getenv("RAG_INCLUDE_ALL_HTML_TAGS"),
-        "vector_store_index_name": os.getenv("RAG_VECTOR_STORE_INDEX_NAME"),
+        # "vector_store_index_name": os.getenv("RAG_VECTOR_STORE_INDEX_NAME"),
         "watsonx_ai_api_key": os.getenv("RAG_WATSONX_AI_API_KEY"),
         "elastic_search_template_file": os.getenv("RAG_ELASTIC_SEARCH_TEMPLATE_FILE"),
         "watsonx_url": os.getenv("RAG_WATSONX_URL"),
