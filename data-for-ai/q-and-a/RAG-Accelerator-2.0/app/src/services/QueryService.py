@@ -89,7 +89,7 @@ def connection_setup(connection_name, question):
 
 # Elastic search query template
 
-def search_query_template(connection_type, conn_credentials, question, parameters):
+def search_query_template(connection_type, conn_credentials, index_name, question, parameters):
 
     """
     Check the connection type and perform search query.
@@ -133,7 +133,7 @@ def search_query_template(connection_type, conn_credentials, question, parameter
 
         try:
             response = es_client.search(
-                index=parameters["vector_store_index_name"], 
+                index=index_name, 
                 size=parameters['vectorsearch_top_n_results'],
                 **query_temp_args
             )
@@ -173,7 +173,7 @@ def search_query_template(connection_type, conn_credentials, question, parameter
             from langchain_elasticsearch import ElasticsearchRetriever
             retriever = ElasticsearchRetriever(
                             es_client=es_client,
-                            index_name=parameters["vector_store_index_name"],
+                            index_name=index_name,
                             body_func=custom_body_func,
                             content_field="text",
                             # document_mapper = document_mapper,
@@ -227,7 +227,7 @@ def search_query_template(connection_type, conn_credentials, question, parameter
                     print("Exception in loading Embedding Models:" + str(e))
                 
             hybrid_search = True if parameters['milvus_hybrid_search'].lower()=="true" else False
-            dense_index_param = {"metric_type": "L2", "index_type": "IVF_FLAT","params": {"nlist": 1024},}
+            dense_index_param = {"metric_type": "L2", "index_type": "IVF_FLAT","params": {"nlist": 1024}}
             print(f"using the embedding model {parameters['embedding_model_id']} for dense embeddings.")
             if hybrid_search:
                 sparse_index_param = {"metric_type": "BM25","index_type": "SPARSE_INVERTED_INDEX", "params": {"drop_ratio_build": 0.2}}
@@ -240,7 +240,7 @@ def search_query_template(connection_type, conn_credentials, question, parameter
                 connection_args=milvus_credentials,
                 primary_field='id',
                 consistency_level="Strong",
-                collection_name=parameters["vector_store_index_name"] 
+                collection_name=index_name 
                 )
                 search_result = vector_store.similarity_search_with_score(question,  ranker_type=parameters["milvus_reranker"], ranker_params = {"k": 60}  if parameters["milvus_reranker"]=="rrf" else {"weights": [0.6, 0.4]})
             else:
@@ -250,7 +250,7 @@ def search_query_template(connection_type, conn_credentials, question, parameter
                     connection_args=milvus_credentials,
                     primary_field='id',
                     consistency_level="Strong",
-                    collection_name=parameters["vector_store_index_name"] 
+                    collection_name=index_name 
                 )
                 search_result = vector_store.similarity_search_with_score_by_vector(embedding.embed_query(question), k=parameters['vectorsearch_top_n_results'])
             print(search_result[0])
@@ -264,9 +264,9 @@ def search_query_template(connection_type, conn_credentials, question, parameter
             from langchain_community.vectorstores import Cassandra
             vector_store = Cassandra(
                 embedding=embedding,
-                table_name=parameters["vector_store_index_name"] 
+                table_name=index_name 
             )
-            print("Datastax vector store Created on the index",parameters["vector_store_index_name"] )
+            print("Datastax vector store Created on the index",index_name)
             
             search_result= vector_store.similarity_search_with_score_by_vector(embedding.embed_query(question), k=parameters['vectorsearch_top_n_results'])
             print("\nQuestion:",question, "\nSearch Results:", search_result)
@@ -349,15 +349,16 @@ def generate_answer(payload):
     """
 
     question = payload['query']
-    connection_name = payload['collection_name']
+    connection_name = payload['connection_name']
+    index_name = payload['index_name']
 
     # Tested for milvus
     if connection_name == "milvus_connect":
         milvus_credentials, connection_type = connection_setup(connection_name, question)
-        search_result = search_query_template(connection_type, milvus_credentials, question, parameters)
+        search_result = search_query_template(connection_type, milvus_credentials, index_name, question, parameters)
 
     if connection_name == "elasticsearch_connect":
         es_client, connection_type = connection_setup(connection_name, question)
-        search_result = search_query_template(connection_type, es_client,question, parameters)
+        search_result = search_query_template(connection_type, es_client, index_name, question, parameters)
 
     return search_result, search_result[0]
