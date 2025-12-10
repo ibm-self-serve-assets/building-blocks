@@ -110,3 +110,7 @@ websocket-client==1.9.0
 widgetsnbextension==4.0.15
 yarl==1.22.0
 zstandard==0.25.0
+unstructured
+"unstructured[pptx]"
+"unstructured[docx]"
+"unstructured[md]"
