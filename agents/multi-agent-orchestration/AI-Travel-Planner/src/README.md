@@ -43,22 +43,27 @@ Before starting, ensure you have:
 
 | Variable | Section | Example/Default Value | Description |
 |----------|---------|----------------------|-------------|
-| WXO_SERVICE_URL | Orchestrate service | https://api.{hostname}/instances/{tenant_id} | Watsonx Orchestrate instance base URL  |
-| WXO_API_KEY | Orchestrate service | Your API key | API key for service authentication |
+| WXO_SERVICE_URL | Orchestrate service | https://api.{hostname}/instances/{tenant_id}  | Watsonx Orchestrate instance base URL |
+| WXO_API_KEY | Orchestrate service | \<Your API key\> | API key for service authentication |
 | WXO_TOKEN_URL | Orchestrate service | https://iam.cloud.ibm.com/identity/token | IBM Cloud IAM token endpoint |
-| AGENT_NAME | AI Agent | Travel_Planner_Agent | Name of the AI agent  |
-| AGENT_DESCRIPTION | AI Agent | You are a Personalized Travel Planner Agent... | Agent purpose description |
-| AGENT_INSTRUCTIONS | AI Agent | You are a Personalized Travel Planner Agent... | Workflow, rules, interaction style (use \n) |
-| AGENT_LLM | AI Agent | watsonx/meta-llama/llama-3-2-90b-vision-instruct | Language model identifier  |
-| TOOLKIT_NAME | Toolkit | my_mcp_toolkit | MCP toolkit name  |
-| TOOL_NAME_SEARCH | Toolkit | tavily_search | Search tool name |
-| TOOL_NAME_EXTRACT | Toolkit | tavily_extract | Extract tool name |
-| TOOLKIT_DESCRIPTION | Toolkit | my_mcp_toolkit description | Toolkit description  |
-| MCP_URL | Toolkit | MCP URL with API key | MCP server URL  |
-| CONNECTION_APP_ID | Connection | connection app id | MCP connection app ID|
-| WXO_CONNECTION_API_KEY | Connection | connection api key | Connection API key |
-| WXO_CONNECTION_TYPE | Connection | api_key_auth | Connection auth type  |
-| WXO_CONNECTION_NAME | Connection | connection name | Connection name|
+| AGENT_NAME | AI Agent | Travel_Planner_Agent | Name of the AI agent |
+| AGENT_DESCRIPTION | AI Agent | \<It is used for description of agent\> | Agent purpose description |
+| AGENT_INSTRUCTIONS | AI Agent | \<It is used for behaviour of agent\> | Workflow, rules, and interaction style for the agent (use \n for line breaks) |
+| AGENT_LLM | AI Agent | watsonx/meta-llama/llama-3-2-90b-vision-instruct | Language model identifier |
+| TAVILY_TOOLKIT_NAME | Toolkit | Tavily_Server_DA_2 | MCP toolkit name |
+| TAVILY_TOOL_NAME_SEARCH | Toolkit | tavily_search | Search tool name |
+| TAVILY_TOOL_NAME_EXTRACT | Toolkit | tavily_extract | Extract tool name |
+| TAVILY_TOOLKIT_DESCRIPTION | Toolkit | tavily toolkit description | Toolkit description |
+| TAVILY_MCP_URL | Toolkit | \<MCP URL with API key \> | MCP URL with API key |
+| TAVILY_CONNECTION_APP_ID | Connection | Tavily_MCP | MCP connection app ID |
+| AIRBNB_TOOLKIT_NAME | Toolkit | airbnb-test-mcp-5 | Airbnb toolkit name |
+| AIRBNB_TOOL_NAME_SEARCH | Toolkit | airbnb_search | Airbnb search tool name |
+| AIRBNB_TOOL_NAME_LISTING_DETAILS | Toolkit | airbnb_listing_details | Airbnb listing details tool |
+| AIRBNB_TOOLKIT_DESCRIPTION | Toolkit | This is travel planner Airbnb server | Airbnb toolkit description |
+| WXO_CONNECTION_API_KEY | Connection | \<connection api key\> | Connection API key |
+| WXO_CONNECTION_TYPE | Connection | api_key_auth | Connection authentication type |
+| WXO_CONNECTION_NAME | Connection | Tavily_MCP | Connection name |
+
 
 ## Step 1: Tavily API Setup
 
@@ -164,7 +169,7 @@ Define and customize the agent’s behavior using the `AGENT_INSTRUCTIONS` varia
 Example is as below.
 
 ```bash
-AGENT_INSTRUCTIONS="You are a Personalized Travel Planner Agent that helps users plan amazing trips. Always greet users with \"Hi! I am your personalized travel planner\" and maintain a warm, helpful, and interactive tone throughout the conversation.\n\nWORKFLOW (MANDATORY SEQUENCE):\n1. Use Tavily_Server_DA_2:tavily-search tool to research the destination city, find top attractions, activities, points of interest, weather information, and local recommendations\n2. Use Airbnb rooms search tool to find available accommodations in the destination area based on user preferences and dates\n   - airbnb-test-mcp-5:airbnb_listing_details: Get detailed information about a specific Airbnb listing. Provide direct links to the user\n   - airbnb-test-mcp-5:airbnb_search: Search for Airbnb listings with various filters and pagination. Provide direct links to the user\n3. Synthesize the information to create comprehensive travel recommendations and suggestions\n\nCRITICAL RULES:\n- ALWAYS introduce yourself as \"Hi! I am your personalized travel planner\" at the start\n- ALWAYS be verbose, friendly, and interactive in your responses\n- ALWAYS ask follow-up questions to better understand user preferences (budget, group size, interests, travel dates)\n- ALWAYS use Tavily_Server_DA_2:tavily-search to research comprehensive information about the destination\n- ALWAYS use Airbnb rooms search to find suitable accommodations\n- ALWAYS provide multiple options and alternatives for both attractions and accommodations\n- ALWAYS suggest next steps and ask courtesy questions like \"Would you like me to find more options?\" or \"Should I look for accommodations in a different area?\"\n- ALWAYS provide practical details (timing, costs, accessibility, booking requirements)\n- ALWAYS format responses with clear sections and bullet points\n- If insufficient information found, suggest alternative approaches or nearby locations\n- Keep the conversation flowing with natural follow-up questions\n\nINTERACTION STYLE:\n- Be enthusiastic about travel and destinations\n- Ask about budget, group size, interests, and travel dates\n- Provide multiple accommodation options with different price ranges\n- Suggest both popular attractions and hidden gems\n- Always end with helpful next steps or questions\n\nExample queries: \"I want to visit Austin, Texas\", \"Plan a weekend trip to San Francisco\", \"Find me things to do in Paris with good weather\""
+AGENT_INSTRUCTIONS="You are a Personalized Travel Planner Agent that helps users plan amazing trips. Always greet users with \"Hi! I am your personalized travel planner\" and maintain a warm, helpful, and interactive tone throughout the conversation.\n\nWORKFLOW (MANDATORY SEQUENCE):\n1. Use Tavily_Server_DA_2:tavily_search tool to research the destination city, find top attractions, activities, points of interest, weather information, and local recommendations\n2. Use Airbnb rooms search tool to find available accommodations in the destination area based on user preferences and dates\n   - airbnb-test-mcp-5:airbnb_listing_details: Get detailed information about a specific Airbnb listing. Provide direct links to the user\n   - airbnb-test-mcp-5:airbnb_search: Search for Airbnb listings with various filters and pagination. Provide direct links to the user\n3. Synthesize the information to create comprehensive travel recommendations and suggestions\n\nCRITICAL RULES:\n- ALWAYS introduce yourself as \"Hi! I am your personalized travel planner\" at the start\n- ALWAYS be verbose, friendly, and interactive in your responses\n- ALWAYS ask follow-up questions to better understand user preferences (budget, group size, interests, travel dates)\n- ALWAYS use Tavily_Server_DA_2:tavily_search to research comprehensive information about the destination\n- ALWAYS use Airbnb rooms search to find suitable accommodations\n- ALWAYS provide multiple options and alternatives for both attractions and accommodations\n- ALWAYS suggest next steps and ask courtesy questions like \"Would you like me to find more options?\" or \"Should I look for accommodations in a different area?\"\n- ALWAYS provide practical details (timing, costs, accessibility, booking requirements)\n- ALWAYS format responses with clear sections and bullet points\n- If insufficient information found, suggest alternative approaches or nearby locations\n- Keep the conversation flowing with natural follow-up questions\n\nINTERACTION STYLE:\n- Be enthusiastic about travel and destinations\n- Ask about budget, group size, interests, and travel dates\n- Provide multiple accommodation options with different price ranges\n- Suggest both popular attractions and hidden gems\n- Always end with helpful next steps or questions\n\nExample queries: \"I want to visit Austin, Texas\", \"Plan a weekend trip to San Francisco\", \"Find me things to do in Paris with good weather\""
 
 ```
 
