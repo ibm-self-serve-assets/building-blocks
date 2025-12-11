@@ -176,7 +176,51 @@ print(response.text)
 
 Verify results through the Swagger UI or by checking the API response.
 
+## QnA Query
+
+Use the QnA query endpoint to execute the question using the prompt that is deployed in Watson Studio.
+
+**Endpoint**
+
+```
+POST /ai/qna/query
+```
+**Required JSON Body**
+
+```
+{
+  "question": "how to perform decision optimization?",
+  "query_filter": {
+    "additionalProp1": {}
+  }
+}
+```
+**Test via Swagger UI**
+The API includes interactive documentation powered by FastAPI + Swagger.
+
+1. Navigate to `/docs` → expand **POST /ai/qna/query**.
+2. Click `Try it out` → fill in **question**, **query_filter** if any
+3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
+
+**Sample Test Python endpoint:**
+
+```
+import json, requests
+url = "http://127.0.0.1:4050/ai/qna/query"
+
+payload = json.dumps({
+    "question" : "how to perform decision optimization?"   
+})
+
+response = requests.request("POST", url, data=payload)
+
+print(response.text)
+```
+
+Verify results through the Swagger UI or by checking the API response.
+
+
 ## Team
 
-Rishit Barochia, Ashwini Nair and Susum R
+Rishit Barochia, Ashwini Nair, Susum R and Sharath Kumar
 
