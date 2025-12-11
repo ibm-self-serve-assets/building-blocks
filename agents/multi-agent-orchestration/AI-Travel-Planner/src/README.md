@@ -16,6 +16,7 @@ This demo showcases the power of modern AI orchestration platforms in creating s
 
 - [Overview](#overview)
 - [Prerequisites](#prerequisites)
+- [Step 1: Tavily API Setup](#step-1-tavily-api-setup)
 - [Step 2: Watsonx Orchestrate Connection Setup](#step-2-watsonx-orchestrate-connection-setup)
 - [Step 3: Travel Planner Agent Creation](#step-3-travel-planner-agent-creation)
 - [Step 4: Tool Configuration](#step-4-tool-configuration)
@@ -25,16 +26,6 @@ This demo showcases the power of modern AI orchestration platforms in creating s
 ## Overview
 
 In this project, we have developed an AI agent along with all necessary connections and  tools using a standalone Python code block. The documentation is primarily centered around this standalone implementation, as it represents the core functionality and logic of the system.
-
-Additionally, a Dash application is included for reference purposes for each file. Its role is to demonstrate how the AI agent can be integrated into a front-end user interface (FUI).
-
-####  File Structure and Naming Convention
-
-Each step in the project is represented by two files:
-
-A standalone Python file that contains the actual implementation.
-
-A corresponding Dash app file (ending with _dash_app.py) that provides a front-end demonstration of that step
 
 
 ## Prerequisites
@@ -69,7 +60,18 @@ Before starting, ensure you have:
 | WXO_CONNECTION_TYPE | Connection | api_key_auth | Connection auth type  |
 | WXO_CONNECTION_NAME | Connection | connection name | Connection name|
 
+## Step 1: Tavily API Setup
 
+### 1.1 Generate Tavily API Key
+
+To configure your Tavily API key, follow these steps:
+
+1. Navigate to the [Tavily Dashboard](https://tavily.com)
+2. Sign up or log in to your account
+3. Generate your API key from the dashboard
+4. Copy the key and save it securely for later use
+
+> **Important**: Keep your API key secure and never share it publicly.
 ## Step 2: Watsonx Orchestrate Connection Setup
 
 ### 2.1 Create connection
