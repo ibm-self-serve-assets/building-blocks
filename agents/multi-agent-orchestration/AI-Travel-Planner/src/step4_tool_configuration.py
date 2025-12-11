@@ -1,10 +1,10 @@
 import os
 import json
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, List
 
 import requests
 from dotenv import load_dotenv
-from wxo_token import clsAuth  # assumes you already have this implemented
+from wxo_token import clsAuth 
 
 
 class MCPToolkitError(Exception):
@@ -51,7 +51,6 @@ class MCPToolkitClient:
         :param timeout: Request timeout in seconds for all HTTP calls.
         :param verify_ssl: Whether to verify SSL certificates.
         """
-        # Strip any trailing slash to avoid double slashes in URLs
         self.instance_base_url = instance_base_url.rstrip("/")
         self.access_token = access_token
         self.timeout = timeout
@@ -71,17 +70,9 @@ class MCPToolkitClient:
 
         Expected env vars:
         - WXO_SERVICE_URL  -> instance base URL
-
-        :param token: Optional pre-fetched token. If not provided, this method
-                      will call clsAuth().get_ibm_token().
-        :param timeout: Request timeout in seconds.
-        :param verify_ssl: Whether to verify SSL certificates.
-        :return: MCPToolkitClient instance.
         """
-        # Load .env if present (no-op if already loaded)
         load_dotenv()
 
-        # Base URL of your Watsonx Orchestrate instance
         base_url = os.getenv("WXO_SERVICE_URL")
         if not base_url:
             raise ValueError(
@@ -89,7 +80,6 @@ class MCPToolkitClient:
                 "Please set it to your Watsonx Orchestrate instance URL."
             )
 
-        # If token not provided, get it via your existing auth helper
         if token is None:
             auth_object = clsAuth()
             token = auth_object.get_ibm_token()
@@ -102,38 +92,49 @@ class MCPToolkitClient:
         )
 
     def _build_headers(self) -> Dict[str, str]:
-        """
-        Build the default HTTP headers for API calls.
-
-        :return: Dictionary of headers.
-        """
         return {
             "Authorization": f"Bearer {self.access_token}",
             "Content-Type": "application/json",
         }
 
-    def _handle_response(self, resp: requests.Response) -> Dict[str, Any]:
-        """
-        Common response handler. Returns JSON on success,
-        raises MCPToolkitError on failure.
+    def _payload_tavily(self, name, description, mcp_url, tools, connection_appid):
+        return {
+            "name": name,
+            "description": description,
+            "mcp": {
+                "server_url": mcp_url,
+                "tools": tools,
+                "connections": {"id": connection_appid},
+            },
+        }
 
-        :param resp: requests.Response object.
-        :return: Parsed JSON response as a dict.
-        :raises MCPToolkitError: if response status is not 2xx.
-        """
+    def _payload_airbnb(self, name, description, tools):
+        return {
+            "name": name,
+            "description": description,
+            "mcp": {
+                "source": "public-registry",
+                "tools": tools,
+                "command": "npx",
+                "args": ["-y", "@openbnb/mcp-server-airbnb", "--ignore-robots-txt"],
+            },
+        }
+
+    def _handle_response(self, resp: requests.Response) -> Dict[str, Any]:
         try:
             resp.raise_for_status()
         except requests.HTTPError as e:
-            # Try to parse JSON error, fallback to raw text
             try:
                 body = resp.json()
             except ValueError:
                 body = resp.text
 
-            # Helpful debug print (optional, can be replaced with logging)
             print("Request failed:")
             print("Status:", resp.status_code)
-            print("Response body:", json.dumps(body, indent=2) if isinstance(body, dict) else body)
+            print(
+                "Response body:",
+                json.dumps(body, indent=2) if isinstance(body, dict) else body,
+            )
 
             raise MCPToolkitError(
                 message=f"HTTP {resp.status_code} error while calling MCP toolkit API.",
@@ -141,11 +142,9 @@ class MCPToolkitClient:
                 response_body=body,
             ) from e
 
-        # Successful response: parse JSON payload
         try:
             return resp.json()
         except ValueError as e:
-            # Non-JSON body is unexpected for this API
             raise MCPToolkitError(
                 message="Response from MCP toolkit API is not valid JSON.",
                 status_code=resp.status_code,
@@ -159,49 +158,31 @@ class MCPToolkitClient:
         description: str,
         mcp_url: str,
         connection_appid: str,
+        tool_name: str,
         tools: Optional[list] = None,
     ) -> Dict[str, Any]:
         """
-        Create a remote MCP toolkit (e.g. Tavily) using the toolkits API.
-
-        :param name: Toolkit name (must follow API rules: letters, digits,
-                     hyphen, underscore; cannot start with a digit).
-        :param description: Human-readable description of the toolkit.
-        :param mcp_url: MCP server URL (e.g. Tavily MCP endpoint).
-        :param connection_appid: Identifier of the connection app (must match
-                                 the connection created in Watsonx Orchestrate).
-        :param tools: List of tool names to expose. Use ['*'] to expose all.
-                      Default: ['*'].
-        :return: Parsed JSON response from the API as a dict.
-                 Typically includes toolkit ID and metadata.
-        :raises MCPToolkitError: on HTTP or JSON parsing errors.
+        Create a remote MCP toolkit (e.g. Tavily or Airbnb) using the toolkits API.
         """
-        # Endpoint URL for creating toolkits
         url = f"{self.instance_base_url}/v1/orchestrate/toolkits"
 
-        # Use '*' (all tools) if not specified
         if tools is None:
             tools = ["*"]
 
-        # Build the JSON payload. You can extend this easily with
-        # more fields if needed (e.g., command, args, env, source).
-        payload = {
-            "name": name,
-            "description": description,
-            "mcp": {
-                # If you use public registry instead of direct server, uncomment and adjust:
-                # "source": "public-registry",
-                "server_url": mcp_url,
-                "tools": tools,
-                "connections": {
-                    "id": connection_appid
-                },
-            },
+        builders = {
+            "TAVILY": lambda: self._payload_tavily(
+                name, description, mcp_url, tools, connection_appid
+            ),
+            "AIRBNB": lambda: self._payload_airbnb(name, description, tools),
         }
 
+        key = tool_name.upper()
+        if key not in builders:
+            raise ValueError(f"Unsupported tool_name: {tool_name}")
+
+        payload = builders[key]()
         headers = self._build_headers()
 
-        # Perform the HTTP POST request with timeout and SSL options
         resp = requests.post(
             url,
             json=payload,
@@ -210,7 +191,6 @@ class MCPToolkitClient:
             verify=self.verify_ssl,
         )
 
-        # Let the common handler validate and parse the response
         return self._handle_response(resp)
 
     def get_toolkit_by_id(self, toolkit_id: str) -> Dict[str, Any]:
@@ -218,22 +198,20 @@ class MCPToolkitClient:
 
         headers = {
             "Authorization": f"Bearer {self.access_token}",
-            "accept": "application/json"
+            "accept": "application/json",
         }
 
-        resp = requests.get(url, headers=headers, timeout=self.timeout, verify=self.verify_ssl)
+        resp = requests.get(
+            url, headers=headers, timeout=self.timeout, verify=self.verify_ssl
+        )
         return self._handle_response(resp)
-    
+
     def list_agents(
         self,
         *,
         include_hidden: bool = False,
         ids: Optional[str] = None,
     ) -> Optional[Dict[str, Any]]:
-        """
-        Retrieve a single agent that matches the given filters.
-        """
-
         base_url = f"{self.instance_base_url}/v1/orchestrate/agents"
 
         params = {
@@ -260,90 +238,179 @@ class MCPToolkitClient:
 
     def filter_agent_by_name(self, agent_list, name):
         for agent in agent_list:
-            if agent["display_name"] == name:
+            if agent.get("display_name") == name:
                 return agent
         return None
-    
+
     def update_agent_tools(self, agent_id, new_tools):
         url = f"{self.instance_base_url}/v1/orchestrate/agents/{agent_id}"
-        #print(url)
-        
+
         headers = {
             "Authorization": f"Bearer {self.access_token}",
-            "Accept": "application/json"
+            "Accept": "application/json",
         }
-        
-        payload = json.dumps({
-            "tools": new_tools
-        })
-        
+
+        payload = json.dumps({"tools": new_tools})
+
         response = requests.patch(url, data=payload, headers=headers)
         print(response)
         return response
+
+
+def merge_tools(*tool_lists: List[Any]) -> List[Any]:
+    """
+    Merge multiple tool lists (from different toolkits) into one,
+    avoiding duplicates. Works whether tools are dicts or strings.
+    """
+    merged = []
+    seen = set()
+
+    for tool_list in tool_lists:
+        if not tool_list:
+            continue
+        for t in tool_list:
+            if isinstance(t, dict):
+                key = t.get("id") or t.get("name") or json.dumps(t, sort_keys=True)
+            else:
+                key = str(t)
+
+            if key in seen:
+                continue
+            seen.add(key)
+            merged.append(t)
+
+    return merged
+
 
 if __name__ == "__main__":
     """
     Example usage:
     - Reads config from .env
-    - Creates the client
-    - Calls create_mcp_toolkit and prints the server result
+    - Creates Tavily toolkit (2 tools)
+    - Creates Airbnb toolkit (2 tools)
+    - Merges toolkit tool IDs
+    - Updates agent with exactly 4 tools
     """
 
     try:
-        # Load environment variables once
         load_dotenv()
 
-        # Build client from environment variables and clsAuth()
         client = MCPToolkitClient.from_env()
 
-        # Load other toolkit-specific env variables
-        toolkit_name = os.getenv("TOOLKIT_NAME", "my_mcp_toolkit")
-        toolkit_description = os.getenv("TOOLKIT_DESCRIPTION", "My MCP toolkit description")
-        mcp_url = os.getenv("MCP_URL")
-        connection_app_id = os.getenv("CONNECTION_APP_ID")
         agent_name = os.getenv("AGENT_NAME")
-
-        # Validate required environment variables
-        missing_vars = [var for var, val in {
-            "MCP_URL": mcp_url,
-            "CONNECTION_APP_ID": connection_app_id,
-            "AGENT_NAME": agent_name
-        }.items() if not val]
-
-        if missing_vars:
-            raise ValueError(f"Missing required environment variables: {', '.join(missing_vars)}")
+        if not agent_name:
+            raise ValueError("Environment variable 'AGENT_NAME' is required.")
 
         print("Using instance base URL:", client.instance_base_url)
 
-        # Create the MCP toolkit
-        result = client.create_mcp_toolkit(
+        # TAVILY TOOLKIT
+        toolkit_name = os.getenv("TAVILY_TOOLKIT_NAME", "my_mcp_toolkit_1")
+        toolkit_description = os.getenv(
+            "TAVILY_TOOLKIT_DESCRIPTION", "my_mcp_toolkit description"
+        )
+
+        tavily_tool_name_search = os.getenv(
+            "TAVILY_TOOL_NAME_SEARCH", "tavily_search"
+        )
+        tavily_tool_name_extract = os.getenv(
+            "TAVILY_TOOL_NAME_EXTRACT", "tavily_extract"
+        )
+        tavily_tools_requested = [
+            tavily_tool_name_search,
+            tavily_tool_name_extract,
+        ]
+
+        mcp_url = os.getenv("TAVILY_MCP_URL")
+        connection_app_id = os.getenv("TAVILY_CONNECTION_APP_ID")
+
+        missing_vars = [
+            var
+            for var, val in {
+                "TAVILY_MCP_URL": mcp_url,
+                "TAVILY_CONNECTION_APP_ID": connection_app_id,
+            }.items()
+            if not val
+        ]
+        if missing_vars:
+            raise ValueError(
+                f"Missing required environment variables: {', '.join(missing_vars)}"
+            )
+
+        print(f"\n=== Creating Tavily toolkit: {toolkit_name} ===")
+        tavily_result = client.create_mcp_toolkit(
             name=toolkit_name,
             description=toolkit_description,
             mcp_url=mcp_url,
             connection_appid=connection_app_id,
-            tools=['*']
+            tool_name="TAVILY",
+            tools=tavily_tools_requested,
         )
-        toolkit_id = result.get("id")
-        print("Created toolkit successfully, with id:", toolkit_id)
+        tavily_toolkit_id = tavily_result.get("id")
+        print("Created Tavily toolkit successfully, with id:", tavily_toolkit_id)
 
-        # Fetch toolkit details
-        toolkit_details = client.get_toolkit_by_id(toolkit_id)
-        print("Toolkit fetched by ID:")
-        print(json.dumps(toolkit_details, indent=2))
+        tavily_toolkit_details = client.get_toolkit_by_id(tavily_toolkit_id)
+        print("Tavily toolkit fetched by ID:")
+        print(json.dumps(tavily_toolkit_details, indent=2))
 
-        tools = toolkit_details.get("tools", [])
-        print("Toolkit tools:", tools)
+        # These are IDs for tavily_search + tavily_extract
+        tavily_tools = tavily_toolkit_details.get("tools", [])
+        print("Tavily toolkit tools (GUIDs):", tavily_tools)
 
-        # List all agents
+        # AIRBNB TOOLKIT
+        airbnb_toolkit_name = os.getenv("AIRBNB_TOOLKIT_NAME")
+        airbnb_toolkit_description = os.getenv(
+            "AIRBNB_TOOLKIT_DESCRIPTION", "This is travel planner Airbnb server"
+        )
+        airbnb_tool_name_search = os.getenv(
+            "AIRBNB_TOOL_NAME_SEARCH", "airbnb_search"
+        )
+        airbnb_tool_name_listing = os.getenv(
+            "AIRBNB_TOOL_NAME_LISTING_DETAILS", "airbnb_listing_details"
+        )
+        airbnb_tools_requested = [
+            airbnb_tool_name_search,
+            airbnb_tool_name_listing,
+        ]
+
+        airbnb_tools = []
+
+        if airbnb_toolkit_name:
+            print(f"\n=== Creating Airbnb toolkit: {airbnb_toolkit_name} ===")
+            airbnb_result = client.create_mcp_toolkit(
+                name=airbnb_toolkit_name,
+                description=airbnb_toolkit_description,
+                mcp_url="",          # Not used for Airbnb
+                connection_appid="", # Not used for Airbnb
+                tool_name="AIRBNB",
+                tools=airbnb_tools_requested,
+            )
+            airbnb_toolkit_id = airbnb_result.get("id")
+            print("Created Airbnb toolkit successfully, with id:", airbnb_toolkit_id)
+
+            airbnb_toolkit_details = client.get_toolkit_by_id(airbnb_toolkit_id)
+            print("Airbnb toolkit fetched by ID:")
+            print(json.dumps(airbnb_toolkit_details, indent=2))
+
+            # These are  IDs for airbnb_search + airbnb_listing_details
+            airbnb_tools = airbnb_toolkit_details.get("tools", [])
+            print("Airbnb toolkit tools (GUIDs):", airbnb_tools)
+        else:
+            print("AIRBNB_TOOLKIT_NAME not set. Skipping Airbnb toolkit creation.")
+
+        # MERGE TOOLS (Tavily + Airbnb)
+        merged_tools = merge_tools(tavily_tools, airbnb_tools)
+        print("Merged tools count (should be 2–4):", len(merged_tools))
+        print("Merged tools:", merged_tools)
+
+        # UPDATE AGENT
         agents = client.list_agents()
         agent = client.filter_agent_by_name(agents, agent_name)
 
         if agent:
             agent_id = agent.get("id")
             print("Required agent found with id:", agent_id)
-            # Update agent tools safely
-            client.update_agent_tools(agent_id, tools)
-            print("Agent tools updated successfully.")
+            client.update_agent_tools(agent_id, merged_tools)
+            print("Agent tools updated successfully with Tavily + Airbnb.")
         else:
             print(f"Agent '{agent_name}' not found. Skipping tool update.")
 
