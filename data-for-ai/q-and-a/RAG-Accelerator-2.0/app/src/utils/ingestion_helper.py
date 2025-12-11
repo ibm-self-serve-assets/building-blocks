@@ -1,31 +1,8 @@
-# from ibm_watsonx_ai import Credentials
-# from langchain_ibm import WatsonxEmbeddings
-# from elasticsearch import Elasticsearch, helpers
-# from ibm_watsonx_ai import Credentials
-# from ibm_watsonx_ai.foundation_models import Embeddings
-# from ibm_watsonx_ai.metanames import EmbedTextParamsMetaNames as EmbedParams
-# from ibm_watsonx_ai.foundation_models.utils.enums import EmbeddingTypes
-# from ibm_watsonx_ai.metanames import GenTextParamsMetaNames as GenParams
-# from ibm_watsonx_ai import APIClient
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import BSHTMLLoader, DirectoryLoader,PyPDFLoader
-# import numpy as np
-# import hashlib
 from bs4 import BeautifulSoup
-# import multiprocessing
-# import json
 import os
-# import asyncio
-# import re
-# import zipfile
-# from threading import Thread
-# import shutil 
 import warnings
-# import tqdm
-# import time
-
-# from pymilvus import(IndexType,Status,connections,FieldSchema,DataType,Collection,CollectionSchema,utility)
-# from langchain_milvus import Milvus, BM25BuiltInFunction
 
 warnings.filterwarnings("ignore")
 
