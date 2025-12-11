@@ -355,76 +355,20 @@ def generate_hash(content):
     return hashlib.sha256(content.encode()).hexdigest()
 
 
-# def insert_docs_to_vector_store(vector_store,split_docs,insert_type="docs"):
-#     with tqdm(total=len(split_docs), desc="Inserting Documents", unit="docs") as pbar:
-#         try:
-#             for i in range(0, len(split_docs), index_chunk_size):
-#                 chunk = split_docs[i:i + index_chunk_size]
-#                 if insert_type=="docs":
-#                     id_chunk = [generate_hash(doc.page_content+'\nTitle: '+doc.metadata['title']+'\nUrl: '+doc.metadata['document_url']+'\nPage: '+doc.metadata['page_number']) for doc in chunk]
-#                 elif insert_type=="profiles":
-#                     id_chunk = [generate_hash(doc.page_content) for doc in chunk]
-#                 vector_store.add_documents(chunk, ids=id_chunk)
-#                 pbar.update(len(chunk))
-#             print("Documents are inserted into vector database")
-#         except Exception as e:
-#             print(f"An error occurred: {e}")
-
-
-import re
-
-def sanitize(text: str):
-    if not isinstance(text, str):
-        text = str(text)
-    text = text.replace("\x00", "")  # remove null bytes
-    text = re.sub(r"[\x00-\x1f\x7f]", " ", text)  # control characters
-    return text
-
-
-def insert_docs_to_vector_store(vector_store, split_docs, insert_type="docs"):
+def insert_docs_to_vector_store(vector_store,split_docs,insert_type="docs"):
     with tqdm(total=len(split_docs), desc="Inserting Documents", unit="docs") as pbar:
-        for i in range(0, len(split_docs), index_chunk_size):
-            chunk = split_docs[i:i + index_chunk_size]
-
-            # sanitize
-            for doc in chunk:
-                doc.page_content = sanitize(doc.page_content)
-                doc.metadata = doc.metadata or {}
-                doc.metadata.setdefault("title", "")
-                doc.metadata.setdefault("document_url", "")
-                doc.metadata.setdefault("page_number", "")
-
-            # build IDs
-            if insert_type == "docs":
-                id_chunk = [
-                    generate_hash(
-                        doc.page_content +
-                        "\nTitle: " + str(doc.metadata["title"]) +
-                        "\nUrl: " + str(doc.metadata["document_url"]) +
-                        "\nPage: " + str(doc.metadata["page_number"])
-                    )
-                    for doc in chunk
-                ]
-            else:
-                id_chunk = [generate_hash(doc.page_content) for doc in chunk]
-
-            # Try inserting entire chunk
-            try:
+        try:
+            for i in range(0, len(split_docs), index_chunk_size):
+                chunk = split_docs[i:i + index_chunk_size]
+                if insert_type=="docs":
+                    id_chunk = [generate_hash(doc.page_content+'\nTitle: '+doc.metadata['title']+'\nUrl: '+doc.metadata['document_url']+'\nPage: '+doc.metadata['page_number']) for doc in chunk]
+                elif insert_type=="profiles":
+                    id_chunk = [generate_hash(doc.page_content) for doc in chunk]
                 vector_store.add_documents(chunk, ids=id_chunk)
                 pbar.update(len(chunk))
-                continue  # all good → next chunk
-
-            except Exception:
-                # Fallback to one-by-one
-                for doc, doc_id in zip(chunk, id_chunk):
-                    try:
-                        vector_store.add_documents([doc], ids=[doc_id])
-                        pbar.update(1)
-                    except Exception as e:
-                        print(f"Dropped document (failed to index): {doc_id}")
-
-        print("Finished inserting documents")
-
+            print("Documents are inserted into vector database")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
 def ingest_files(payload):
 
