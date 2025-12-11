@@ -71,7 +71,7 @@ async def get_ui_data(
         
         tic = time.perf_counter()
 
-        payload, doc_length = ingest_service.ingest_files(config)
+        doc_length = ingest_service.ingest_files(config)
 
         info["ingest-time"] = time.perf_counter() - tic
 

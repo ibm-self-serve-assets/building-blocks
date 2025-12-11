@@ -62,14 +62,14 @@ client = init_environment()
 
 def connection_setup(connection_name):
     """
-    Get the milvius data source credentails or connect to elastic search instance.
+    Get the milvus data source credentails or connect to elastic search instance.
 
     Parameters:
     - connection_name (str): Name of the connection
   
 
     Returns:
-    - milvius credentials (dict)/ es_client(client instance) and connection_type (str).
+    - milvus credentials (dict)/ es_client(client instance) and connection_type (str).
     """
 
     connection_list = ['milvus_connect','elasticsearch_connect','datastax_connect']
@@ -373,13 +373,13 @@ def insert_docs_to_vector_store(vector_store,split_docs,insert_type="docs"):
 def ingest_files(payload):
 
     """
-    Generate answer to the user query.
+    Ingest data from cos into vector database
 
     Parameters:
-    - payload (dict): It contains user query and connection_name
+    - payload (dict): It contains connection_name,bucket_name,directory and index_name
 
     Returns:
-    - search_result (dict) Results of the search operation.
+    - doc_length (int): split documents count
     """
     connection_name = payload['connection_name']
     bucket_name = payload['bucket_name']
@@ -483,7 +483,7 @@ def ingest_files(payload):
         
         insert_docs_to_vector_store(vector_store,split_docs,"docs")
         
-        return payload,doc_length
+        return doc_length
     
     except Exception as e:
         
