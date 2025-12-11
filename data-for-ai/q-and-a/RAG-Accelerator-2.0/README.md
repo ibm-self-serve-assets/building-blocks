@@ -1,38 +1,24 @@
 # RAG Service
 
-The RAG Service provides a deployable API for orchestrating RAG pipelines. It simplifies ingestion and querying pipeline while offering extensible API parameter-levl customization options for document loaders, schemas, embedding models, and rerankers. The service is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines.
-
-## Features
-
-* **Ingestion Pipeline:** Chunking, merging, and ingestion into Milvus
-* **Embedding:** Dense, hybrid, or dual embeddings with selectable models
-* **Retriever & Querying:** Hybrid search, reranking (weighted, RRF, cross-encoder), configurable search parameters
-* **Querying:** LLM integration with configurable models and prompt templates
-* **Governance:** Integration with watsonx.governance for build-time and runtime governance
+The RAG Service provides a deployable API for orchestrating RAG pipelines. It simplifies ingestion and querying pipeline while offering extensible API parameter-level customization options for document loaders, schemas, embedding models, and rerankers. The service is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines.
 
 <img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/7846b5a7-5e22-45bd-94ea-d0176d7a07fc" />
 
-## Deploying the Service
+---
 
-* **REST API:** You can set the value of `REST_API_KEY` with a unique value in the environment variables
-* **watsonx.ai:** Required for Governance SDK, prompt lab, and model hosting
-* **IBM COS:** Configure COS_ENDPOINT, COS_AUTH_ENDPOINT, and COS_SERVICE_INSTANCE_ID for storage services
+## Features
 
-## Customization
+- Supports files: `.pdf`, `.docx`, `.pptx`, `.html`, `.md`, `.txt`; ZIP files are extracted automatically.
+- Splits documents into chunks, preserves metadata, and generates embeddings using watsonx.ai.  
+- Supports Elasticsearch (with deployed embedding model), Milvus (dense/hybrid), and DataStax/Cassandra.  
+- Inserts documents in batches with progress tracking, handling large datasets efficiently.  
+- Generates unique IDs for each chunk and supports dense or hybrid embeddings for vector databases.
+- Connects to the chosen vector database (Elasticsearch, Milvus, or DataStax) . 
+- **Elasticsearch**: Uses Elastic Learned Sparse Encoder (ELSER) or dense models with LangChain to retrieve relevant documents . 
+- **Milvus / DataStax**: Uses embedding models with LangChain for document retrieval.
+- Supports hybrid search strategies for Milvus and Elasticsearch, combining dense and sparse search methods.
 
-The API supports customizations at multiple levels:
-
-* **Ingestion**
-  * Document loaders: HTML, JSON, PDF, Markdown, custom loaders
-  * Collection schema: Configurable via JSON templates
-  * Embedding models: Hybrid, dense, dense+sparse (HuggingFace, watsonx.ai, IBM models)
-  * Document processing: Docling/Markdown processing, picture annotation, table cleanup
-  * Chunkers: Docling hybrid chunker, Markdown text splitter, recursive text splitter
-
-* **Querying**
-  * Search parameters: Number of docs retrieved and reranked
-  * Rerankers: Weighted, RRF, cross-encoding
-  * LLM models: Configurable by provider and prompt template
+---
 
 ## Getting Started
 
@@ -40,11 +26,16 @@ The API supports customizations at multiple levels:
 
 The following prerequisites are required to spin up the RAG Service API:
 
-1. **Python3.13** installed locally
-2. Milvus DB Credentials
-3. IBM watsonx.ai environt with project and necessay access control
-4. IBM COS Credentials
-5. git installed locally
+1. **Python3.11** installed locally
+2. IBM watsonx.ai environment with project and necessary access control
+3. IBM COS Credentials
+4. git installed locally
+5. Create and configure the **platform connection asset** for your vector database: Make sure to follow the same name while creating connection as stated below.
+  - `elasticsearch_connect`  
+  - `milvus_connect`  
+  - `datastax_connect` 
+6. Upload files or ZIP archives containing supported documents to the COS bucket before ingestion.
+7. An Elasticsearch template is provided at `RAG-Accelerator-2.0/app/src/utils/elastic_search/elastic_search_ELSER_BM25_hybrid_template.json`. Please ensure that the local path to this file is correctly set in your `.env` file.
 
 ### Installation
 
@@ -54,10 +45,10 @@ The following prerequisites are required to spin up the RAG Service API:
     git clone https://github.com/ibm-self-serve-assets/building-blocks.git
     ```
 
-2. Change directory into `RAG-Accelerator`
+2. Change directory into `RAG-Accelerator-2.0`
 
     ```bash
-    cd /data-for-ai/q-and-a/RAG-Accelerator
+    cd /data-for-ai/q-and-a/RAG-Accelerator-2.0
     ```
 
 3. Create a python virtual environment
@@ -67,32 +58,10 @@ The following prerequisites are required to spin up the RAG Service API:
     source virtual-env/bin/activate
     pip3 install -r requirements.txt
     ```
+    
+4. Configure the required parameters in a `.env` file. Use the provided `.env.template` in the same folder as a reference—fill in your credentials and save it as `.env`. This file is loaded by `config.py` in the `utils` folder following a specific format. If you add new parameters to `.env`, update `config.py` accordingly to ensure proper customization of the code.
 
-4. Copy env file to .env
-
-    ```bash
-    cp env .env
-    ```
-
-5. Configure parameters in .env
-    1. **Milvus credentials**:
-        * `WXD_MILVUS_HOST` (Milvus host URL)
-        * `WXD_MILVUS_PORT` (Milvus port)
-        * `WXD_MILVUS_USER` (Username)
-        * `WXD_MILVUS_PASSWORD` (IBM Cloud API Key associated with Milvus account)
-    2. **watsonx.ai credentials**:
-        * `WATSONX_MODEL_ID` (Choose the foundation model ID found in your project on [watsonx.ai](https://dataplatform.cloud.ibm.com/))
-        * `WATSONX_PROJECT_ID` (From your watsonx.ai project dashboard)
-        * `WATSONX_APIKEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
-        * `WATSONX_URL` (Typically "<https://us-south.ml.cloud.ibm.com>")
-    3. **IBM COS credentials**:
-        * `IBM_CLOUD_API_KEY` ([IBM Cloud API Key](<https://cloud.ibm.com/iam/apikeys>))
-        * `COS_ENDPOINT` (Service endpoint URL for your COS instance)
-        * `COS_AUTH_ENDPOINT` (IAM auth endpoint)
-        * `COS_SERVICE_INSTANCE_ID` (Bucket ID found in COS service credentials)
-    4. `REST_API_KEY`: All API request endpoints require a header `REST_API_KEY`: <your-secret>. Must be any arbitrary string (not empty), set in .env
-
-6. When finished, deactivate the virtual environment by running this command:
+5. When finished, deactivate the virtual environment by running this command:
 
     ```bash
     deactivate
@@ -119,7 +88,8 @@ To view endpoints, <http://127.0.0.1:4050/docs> (replace with your configured ho
 
 ## Ingestion
 
-Use the ingestion endpoint to pull documents from your COS bucket, process them (split/chunk), embed, and upsert into Milvus.
+Use the ingestion endpoint to pull documents from your COS bucket, process them (split/chunk), embed, and insert into milvus/elastic search vector databases.
+
 **Endpoint**
 
 ```
@@ -130,28 +100,18 @@ POST /ingest-files
 
 ```
 {
-    "bucket_name": "<cos-bucket>",
-    "collection_name": "<milvus-collection>",
-    "chunk_type": "DOCLING_DOCS"
+  "bucket_name": "bucket name",
+  "connection_name": "elasticsearch_connect/milvus_connect",
+  "directory": "directory name",
+  "index_name": "es index/ milvus collection name"
 }
-```
-
-* `bucket_name`: Name of the S3/COS bucket containing documents
-* `collection_name`: Target Milvus collection to create or upsert into
-* `chunk_type`: Which chunker to use. Supported values include DOCLING_DOCS, MARKDOWN, and RECURSIVE.
-
-**Headers**
-
-```
-REST_API_KEY: <your-secret>
-Content-Type: application/json
 ```
 
 **Test via Swagger UI**
 The API includes interactive documentation powered by FastAPI + Swagger.
 
 1. Navigate to `/docs` → expand **POST /ingest-files**.
-2. Click `Try it out` → fill in **bucket_name**, **collection_name**, and **chunk_type**.
+2. Click `Try it out` → fill in **bucket_name** where you have uploaded the files, **index_name** which is es index/ milvus collection name, **connection name** and **directory** where the files are loaded from cos.
 3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
 
 **Sample Test Python endpoint:**
@@ -161,16 +121,13 @@ import json, requests
 url = "http://127.0.0.1:4050/ingest-files"
 
 payload = json.dumps({
-    "bucket_name": "<cos-bucket>"
-    "collection_name": "<milvus-collection>"
-    "chunk_type": "DOCLING_DOCS"
+  "bucket_name": "bucket name",
+  "connection_name": "elasticsearch_connect/milvus_connect",
+  "directory": "directory name",
+  "index_name": "es index/ milvus collection name"
 })
-headers = {
-    "REST_API_KEY": <your-secret>,
-    "Content-Type": "application/json"
-}
 
-response = requests.request("POST", url, headers=headers, data=payload)
+response = requests.request("POST", url, data=payload)
 
 print(response.text)
 ```
@@ -190,26 +147,16 @@ POST /query
 
 ```
 {
-    "collection_name": "<milvus-collection>",
-    "query": "<query text>"
+  "connection_name": "elasticsearch_connect/milvus_connect",
+  "index_name": "es index/ milvus collection name used during ingestion",
+  "query": "sample query"
 }
 ```
-
-* `collection_name`: Target Milvus collection to fetch data
-* 'query' : Natual language query to fetch data
-
-**Headers**
-
-```
-REST_API_KEY: <your-secret>
-Content-Type: application/json
-```
-
 **Test via Swagger UI**
 The API includes interactive documentation powered by FastAPI + Swagger.
 
 1. Navigate to `/docs` → expand **POST /ingest-files**.
-2. Click `Try it out` → fill in **collection name**, **query**
+2. Click `Try it out` → fill in **connection name**, **index_name** which is es index/ milvus collection name and **query**
 3. Click `Execute`. Verify the 200 response and review any ingestion statistics returned.
 
 **Sample Test Python endpoint:**
@@ -219,33 +166,21 @@ import json, requests
 url = "http://127.0.0.1:4050/query"
 
 payload = json.dumps({
-    "collection_name": "<milvus-collection>"
-    "query": "<query text>"
+  "connection_name": "elasticsearch_connect/milvus_connect",
+  "index_name": "es index/ milvus collection name used during ingestion",
+  "query": "sample query"
 })
-headers = {
-    "REST_API_KEY": <your-secret>,
-    "Content-Type": "application/json"
-}
 
-response = requests.request("POST", url, headers=headers, data=payload)
+response = requests.request("POST", url, data=payload)
 
 print(response.text)
 ```
 
 Verify results through the Swagger UI or by checking the API response.
 
-### **Coming Soon**
-
-* .png and .jpg VLM Support
-* Additional docling processing functions (image annotation, table exports)
-* **Prompt Controls & Guardrails:** Guardrails for runtime governance and prompt safety
-* **Governance SDK:** Evaluation of golden datasets, runtime metrics, LLM-as-a-judge
-* **Memory Layers:** Multi-turn Q&A, cache integration, context management (MemVerge, Zep)
-* **Error Logging:** Structured logs with timestamp, line of code, and error response models
-
 ## Team
 
 ### Created and Architected By
 
-Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki
+Rishit Barochia, Ashwini Nair and Susum R
 **Endpoint**
