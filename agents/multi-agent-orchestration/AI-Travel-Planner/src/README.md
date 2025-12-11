@@ -105,6 +105,21 @@ Use:
 2. `WXO_CONNECTION_TYPE` — defines the connection’s authentication type. Here the value will be 'api_key_auth'.
 3. `WXO_CONNECTION_API_KEY` — The api key value created during Tavily API Setup step.
 
+### 2.3 Usage
+Run the script directly to create AI agent on Orchestrate.
+
+```bash
+python3 step2_wxo_connection_setup.py
+```
+
+The output will display information as follows.
+
+```bash
+Response text: {"connection_id":"<connection_id>","app_id":"Tavily_MCP","tenant_id":"<tenant_id>","name":"Tavily_MCP","description":"","icon":""}
+Response text: {"config_id":"<config_id>","app_id":"Tavily_MCP","tenant_id":"<tenant_id>"}
+Response text: {"runtime_credential_id":"<runtime_credential_id>","config_id":"<config_id>","app_id":"Tavily_MCP","tenant_id":"<tenant_id>"}
+```
+
 ## Step 3: Travel Planner Agent Creation
 The script provides an automated way to create an AI Agent using the WXO Orchestration API.
 It reads configuration values from environment variables (already covered in the Prerequisites section) and sends a POST request to register a new agent.
