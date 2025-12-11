@@ -2,8 +2,6 @@
 
 The RAG Service provides a deployable API for orchestrating RAG pipelines. It simplifies ingestion and querying pipeline while offering extensible API parameter-level customization options for document loaders, schemas, embedding models, and rerankers. The service is designed to save significant development and testing time — from hours to weeks compared to manual setup — by providing ready-to-use pipelines.
 
-<img width="562" height="375" alt="rag drawio" src="https://github.com/user-attachments/assets/7846b5a7-5e22-45bd-94ea-d0176d7a07fc" />
-
 ---
 
 ## Features
