@@ -222,5 +222,5 @@ Verify results through the Swagger UI or by checking the API response.
 
 ## Team
 
-Rishit Barochia, Ashwini Nair, Susum R and Sharath Kumar
+Rishit Barochia, Ashwini Nair, Susum R and Sharath Kumar RK
 
