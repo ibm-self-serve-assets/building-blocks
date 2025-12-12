@@ -20,6 +20,8 @@ This demo showcases the power of modern AI orchestration platforms in creating s
 - [Step 2: Watsonx Orchestrate Connection Setup](#step-2-watsonx-orchestrate-connection-setup)
 - [Step 3: Travel Planner Agent Creation](#step-3-travel-planner-agent-creation)
 - [Step 4: Tool Configuration](#step-4-tool-configuration)
+- [Step 5: Agent Testing](#step-5-agent-testing)
+
 
 - [Summary](#summary)
 
@@ -55,7 +57,7 @@ Before starting, ensure you have:
 | TAVILY_TOOL_NAME_EXTRACT | Toolkit | tavily_extract | Extract tool name |
 | TAVILY_TOOLKIT_DESCRIPTION | Toolkit | tavily toolkit description | Toolkit description |
 | TAVILY_MCP_URL | Toolkit | \<MCP URL with API key \> | MCP URL with API key |
-| TAVILY_CONNECTION_APP_ID | Connection | Tavily_MCP | MCP connection app ID |
+| TAVILY_CONNECTION_APP_ID | Toolkit | Tavily_MCP | MCP connection app ID |
 | AIRBNB_TOOLKIT_NAME | Toolkit | airbnb-test-mcp-5 | Airbnb toolkit name |
 | AIRBNB_TOOL_NAME_SEARCH | Toolkit | airbnb_search | Airbnb search tool name |
 | AIRBNB_TOOL_NAME_LISTING_DETAILS | Toolkit | airbnb_listing_details | Airbnb listing details tool |
@@ -313,6 +315,28 @@ Message: HTTP 401 error while calling MCP toolkit API.
 Status code: 401
 Response body: {...}
 ```
+
+---
+## Step 5: Agent Testing
+
+### 5.1 Test Agent Functionality
+
+1. Navigate to the **Preview** screen
+2. Type a test message: `"Hello, how can you help me?"`
+
+![Agent Testing](./assets/Agent_initial_prompt.png)
+
+3. Verify the agent responds with the expected greeting and behavior
+
+### 5.2 Validate Tool Integration
+
+Test the agent with sample queries to ensure all tools are working:
+- Destination research queries
+- Accommodation search requests
+- Combined travel planning requests
+
+Please find the [attached testing video of Travel Planner agent for reference](https://github.com/ibm-self-serve-assets/building-blocks/blob/dev_travel_planner_by_wxo_apis/agents/multi-agent-orchestration/AI-Travel-Planner/src/assets/TravelPlannerScreenRecording.mp4). 
+
 
 ---
 ## Summary
