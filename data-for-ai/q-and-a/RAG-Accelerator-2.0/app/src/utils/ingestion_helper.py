@@ -65,58 +65,63 @@ class DocumentProcessor:
         Returns:
             list: List of loaded Document objects
         """
-        loaders = [
-            DirectoryLoader(
-                directory,
-                glob="**/*.html",
-                show_progress=True,
-                recursive=True,
-                loader_cls=BSHTMLLoader if self.parameters['include_all_html_tags'].lower() == "false"
-                else StructuredHTMLLoader
-            ),
-            DirectoryLoader(directory, glob="**/*.pdf", show_progress=True, loader_cls=PyPDFLoader),
-            DirectoryLoader(directory, glob="**/*.pptx", show_progress=True),
-            DirectoryLoader(directory, glob="**/*.docx", show_progress=True),
-            DirectoryLoader(directory, glob="**/*.md", show_progress=True),
-            DirectoryLoader(directory, glob="**/*.txt", show_progress=True)
-        ]
+        try:
+            loaders = [
+                DirectoryLoader(
+                    directory,
+                    glob="**/*.html",
+                    show_progress=True,
+                    recursive=True,
+                    loader_cls=BSHTMLLoader if self.parameters['include_all_html_tags'].lower() == "false"
+                    else StructuredHTMLLoader
+                ),
+                DirectoryLoader(directory, glob="**/*.pdf", show_progress=True, loader_cls=PyPDFLoader),
+                DirectoryLoader(directory, glob="**/*.pptx", show_progress=True),
+                DirectoryLoader(directory, glob="**/*.docx", show_progress=True),
+                DirectoryLoader(directory, glob="**/*.md", show_progress=True),
+                DirectoryLoader(directory, glob="**/*.txt", show_progress=True)
+            ]
 
-        documents = []
-        total_loaded = 0
+            documents = []
+            total_loaded = 0
 
-        logger.info("\n=== Document Loading Summary ===")
-        for loader in loaders:
-            try:
-                logger.info(f"\nLoading {loader.glob} files...")
-                data = loader.load()
+            logger.info("\n=== Document Loading Summary ===")
+            for loader in loaders:
+                try:
+                    logger.info(f"\nLoading {loader.glob} files...")
+                    data = loader.load()
 
-                if not data:
-                    logger.info(f"No documents found for {loader.glob}")
+                    if not data:
+                        logger.info(f"No documents found for {loader.glob}")
+                        continue
+
+                    documents.extend(data)
+                    total_loaded += len(data)
+
+                    logger.info(f"Loaded {len(data)} documents from {loader.glob}:")
+                    for i, doc in enumerate(data, 1):
+                        source = doc.metadata.get('source', 'Unknown source')
+                        title = doc.metadata.get('title', os.path.basename(source))
+                        logger.info(f"  {i}. {title} ({source})")
+
+                except Exception as e:
+                    logger.error(f"Error loading documents with {loader.glob}: {str(e)}")
                     continue
 
-                documents.extend(data)
-                total_loaded += len(data)
+            logger.info(f"\n=== Loading Complete ===")
+            logger.info(f"Total documents loaded: {total_loaded}")
+            if total_loaded > 0:
+                logger.info("Document types loaded:")
+                for loader in loaders:
+                    count = sum(1 for doc in documents if doc.metadata.get('source', '').endswith(loader.glob[4:].replace('*', '')))
+                    if count > 0:
+                        logger.info(f"  - {loader.glob}: {count} documents")
 
-                logger.info(f"Loaded {len(data)} documents from {loader.glob}:")
-                for i, doc in enumerate(data, 1):
-                    source = doc.metadata.get('source', 'Unknown source')
-                    title = doc.metadata.get('title', os.path.basename(source))
-                    logger.info(f"  {i}. {title} ({source})")
-
-            except Exception as e:
-                logger.info(f"Error loading documents with {loader.glob}: {str(e)}")
-                continue
-
-        logger.info(f"\n=== Loading Complete ===")
-        logger.info(f"Total documents loaded: {total_loaded}")
-        if total_loaded > 0:
-            logger.info("Document types loaded:")
-            for loader in loaders:
-                count = sum(1 for doc in documents if doc.metadata.get('source', '').endswith(loader.glob[4:].replace('*', '')))
-                if count > 0:
-                    logger.info(f"  - {loader.glob}: {count} documents")
-
-        return documents
+            return documents
+        
+        except Exception as e:
+            logger.error(f"Error during loading documents {e}")
+            raise
 
     def _enrich_metadata(self, doc):
         """
@@ -128,33 +133,38 @@ class DocumentProcessor:
         Returns:
             tuple: (content, metadata) for the document
         """
-        document_url = ""
-        document_title = doc.metadata.get("title", doc.metadata['source'].split("/")[-1].split(".")[0])
+        try:
+            document_url = ""
+            document_title = doc.metadata.get("title", doc.metadata['source'].split("/")[-1].split(".")[0])
 
-        if ".html" in doc.metadata['source']:
-            try:
-                with open(doc.metadata['source'], 'r', encoding='utf-8') as html_file:
-                    html_content = html_file.read()
-                soup = BeautifulSoup(html_content, 'html.parser')
-                canonical_tag = soup.find('link', {'rel': 'canonical'})
-                title_tag = soup.find('title')
+            if ".html" in doc.metadata['source']:
+                try:
+                    with open(doc.metadata['source'], 'r', encoding='utf-8') as html_file:
+                        html_content = html_file.read()
+                    soup = BeautifulSoup(html_content, 'html.parser')
+                    canonical_tag = soup.find('link', {'rel': 'canonical'})
+                    title_tag = soup.find('title')
 
-                if canonical_tag:
-                    document_url = canonical_tag.get('href')
+                    if canonical_tag:
+                        document_url = canonical_tag.get('href')
 
-                if title_tag:
-                    document_title = title_tag.get_text()
-            except Exception as e:
-                print(f"Error processing HTML metadata for {doc.metadata['source']}: {str(e)}")
+                    if title_tag:
+                        document_title = title_tag.get_text()
+                except Exception as e:
+                    print(f"Error processing HTML metadata for {doc.metadata['source']}: {str(e)}")
+                    
+            metadata = {
+                "title": document_title,
+                "source": doc.metadata['source'],
+                "document_url": document_url,
+                "page_number": str(doc.metadata['page']) if 'page' in doc.metadata else ''
+            }
 
-        metadata = {
-            "title": document_title,
-            "source": doc.metadata['source'],
-            "document_url": document_url,
-            "page_number": str(doc.metadata['page']) if 'page' in doc.metadata else ''
-        }
-
-        return doc.page_content, metadata
+            return doc.page_content, metadata
+        
+        except Exception as e:
+            logger.error(f"Error during enriching metadata {e}")
+            raise
 
     def split_documents(self, documents, rag_helper_functions):
         """
@@ -167,45 +177,50 @@ class DocumentProcessor:
         Returns:
             list: List of split Document objects
         """
-        content = []
-        metadata = []
+        try:
+            content = []
+            metadata = []
 
-        for doc in documents:
-            try:
-                doc_content, doc_metadata = self._enrich_metadata(doc)
-                content.append(doc_content)
-                metadata.append(doc_metadata)
-            except Exception as e:
-                print(f"Error processing document {doc.metadata.get('source', 'unknown')}: {str(e)}")
-                continue
+            for doc in documents:
+                try:
+                    doc_content, doc_metadata = self._enrich_metadata(doc)
+                    content.append(doc_content)
+                    metadata.append(doc_metadata)
+                except Exception as e:
+                    print(f"Error processing document {doc.metadata.get('source', 'unknown')}: {str(e)}")
+                    continue
 
-        text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
-            chunk_size=self.parameters['ingestion_chunk_size'],
-            chunk_overlap=self.parameters['ingestion_chunk_overlap'],
-            disallowed_special=()
-        )
+            text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+                chunk_size=self.parameters['ingestion_chunk_size'],
+                chunk_overlap=self.parameters['ingestion_chunk_overlap'],
+                disallowed_special=()
+            )
 
-        split_documents = text_splitter.create_documents(content, metadatas=metadata)
-        print(f"{len(documents)} Documents are split into {len(split_documents)} documents with chunk size {self.parameters['ingestion_chunk_size']}")
+            split_documents = text_splitter.create_documents(content, metadatas=metadata)
+            print(f"{len(documents)} Documents are split into {len(split_documents)} documents with chunk size {self.parameters['ingestion_chunk_size']}")
 
-        # Add chunk sequencing
-        chunk_id = 0
-        chunk_source = ''
-        for chunk in split_documents:
-            chunk.metadata["title"] = chunk.metadata.get("title", "Unknown Title")
-            chunk.page_content = f"Document Title: {chunk.metadata['title']}\n Document Content: {chunk.page_content}"
+            # Add chunk sequencing
+            chunk_id = 0
+            chunk_source = ''
+            for chunk in split_documents:
+                chunk.metadata["title"] = chunk.metadata.get("title", "Unknown Title")
+                chunk.page_content = f"Document Title: {chunk.metadata['title']}\n Document Content: {chunk.page_content}"
 
-            if chunk_source == '' or chunk_source != chunk.metadata["source"]:
-                chunk_id = 1
-                chunk_source = chunk.metadata["source"]
-            chunk.metadata["chunk_seq"] = chunk_id
-            chunk_id += 1
+                if chunk_source == '' or chunk_source != chunk.metadata["source"]:
+                    chunk_id = 1
+                    chunk_source = chunk.metadata["source"]
+                chunk.metadata["chunk_seq"] = chunk_id
+                chunk_id += 1
 
-        # Remove duplicates
-        split_docs = rag_helper_functions.remove_duplicate_records(split_documents)
-        print(f'After de-duplication, there are {len(split_docs)} documents present')
+            # Remove duplicates
+            split_docs = rag_helper_functions.remove_duplicate_records(split_documents)
+            print(f'After de-duplication, there are {len(split_docs)} documents present')
 
-        return split_docs
+            return split_docs
+        
+        except Exception as e:
+            logger.error(f"Error during splitting documents into chunks {e}")
+            raise
    
 
     def process_directory(self, directory, rag_helper_functions):
