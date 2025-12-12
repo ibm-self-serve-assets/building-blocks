@@ -80,7 +80,7 @@ async def get_ui_data(
 
         return IngestDataResponse(
             status="success",
-            message=f"Data Ingestion successful for {doc_length} document chunks into vector database"
+            message=f"Data Ingestion successful for {doc_length} document chunks into vector database!"
         )
 
     except Exception as e:
