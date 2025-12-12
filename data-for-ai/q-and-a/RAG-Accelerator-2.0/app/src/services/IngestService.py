@@ -368,7 +368,8 @@ def insert_docs_to_vector_store(vector_store,split_docs,insert_type="docs"):
                 pbar.update(len(chunk))
             print("Documents are inserted into vector database")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            logger.info(f"An error occurred: {e}")
+            raise
 
 def ingest_files(payload):
 
