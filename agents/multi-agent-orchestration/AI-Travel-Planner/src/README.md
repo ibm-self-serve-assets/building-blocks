@@ -195,72 +195,87 @@ The output will display agent id as follows.
 ```bash
 Agent created successfully, with id: <generated_agent_id> 
 ```
-# Step 4 – MCP Toolkit Setup & Agent Tool Mapping
+---
+## Step 4 – MCP Toolkit Setup & Agent Tool Mapping  
+**(Tavily MCP + Airbnb MCP)**
 
-## Overview
+### Overview
 
-This step creates the **MCP Toolkit** inside IBM watsonx Orchestrate using your MCP server (e.g., Tavily MCP).  
-After creating the toolkit, the script automatically:
+This step creates **MCP Toolkits** inside **IBM watsonx Orchestrate** using one or more MCP servers (for example, **Tavily MCP** and **Airbnb MCP**).  
+After creating the toolkits, the script automatically:
 
-1. Fetches the toolkit definition from the server  
-2. Extracts the resolved tool list  
-3. Locates your Travel Planner Agent by name  
-4. Updates the agent’s tool configuration  
-5. Attaches all toolkit tools to the agent  
+1. Fetches each toolkit definition from the server  
+2. Extracts the resolved tool list (internal tool GUIDs)  
+3. Merges tools across toolkits (avoiding duplicates)  
+4. Locates your Travel Planner Agent by name  
+5. Updates the agent’s tool configuration  
+6. Attaches all resolved toolkit tools to the agent  
 
 This makes the agent fully capable of calling tools like:
 
-- `tavily-search`  
-- `tavily-extract`  
+- `tavily_search`  
+- `tavily_extract`  
+- `airbnb_search`  
+- `airbnb_listing_details`  
 - (any other MCP-exposed tools)
 
----
-
-## Important Methods (from `MCPToolkitClient`)
+### Important Methods (from `MCPToolkitClient`)
 
 | Method | Purpose | HTTP Endpoint |
-|--------|---------|---------------|
-| `create_mcp_toolkit()` | Creates a new MCP toolkit | `POST /v1/orchestrate/toolkits` |
+|------|---------|---------------|
+| `create_mcp_toolkit()` | Creates a new MCP toolkit (Tavily or Airbnb) | `POST /v1/orchestrate/toolkits` |
 | `get_toolkit_by_id()` | Fetches toolkit details (including tools) | `GET /v1/orchestrate/toolkits/{id}` |
 | `list_agents()` | Returns all agents in the instance | `GET /v1/orchestrate/agents` |
 | `filter_agent_by_name()` | Finds agent by its display name | — (local helper) |
 | `update_agent_tools()` | Updates the agent’s tool list | `PATCH /v1/orchestrate/agents/{id}` |
 
-These methods together enable toolkit creation and automatic agent-tool mapping.
+These methods together enable **multi-toolkit creation** and **automatic agent–tool mapping**.
 
----
 
-## Required `.env` Variables
+### Required `.env` Variables
 
-Ensure the following variables are set in your `.env`:
+Watsonx Orchestrate Instance (Required)
 
 ```bash
-# Watsonx Orchestrate instance
 WXO_SERVICE_URL="https://api.<region>.watson-orchestrate.cloud.ibm.com/instances/<INSTANCE_ID>"
-
-# Toolkit configuration
-TOOLKIT_NAME="Tavily_Server_DA_2"
-TOOLKIT_DESCRIPTION="Toolkit exposing Tavily MCP tools"
-
-# MCP details
-MCP_URL="https://mcp.tavily.com/mcp/?tavilyApiKey=<YOUR_API_KEY>"
-CONNECTION_APP_ID="<connection_id_created_in_step2>"
-
-# Agent to attach tools to
 AGENT_NAME="Travel_Planner_Agent"
 ```
 
-If any required variables are missing, the script stops with:
+
+Tavily MCP Toolkit (Required)
+
+```bash
+TAVILY_TOOLKIT_NAME="tavily_mcp_toolkit"
+TAVILY_TOOLKIT_DESCRIPTION="Toolkit exposing Tavily MCP tools"
+
+TAVILY_MCP_URL="https://mcp.tavily.com/mcp/?tavilyApiKey=<YOUR_API_KEY>"
+TAVILY_CONNECTION_APP_ID="<connection_id_created_in_step2>"
+
+TAVILY_TOOL_NAME_SEARCH="tavily_search"
+TAVILY_TOOL_NAME_EXTRACT="tavily_extract"
+```
+
+If any Tavily-required variables are missing, the script stops with:
 
 ```
-Missing required environment variables
+Missing required environment variables: TAVILY_MCP_URL, TAVILY_CONNECTION_APP_ID
 ```
 
----
 
-## How to Run the Script
+Airbnb MCP Toolkit
 
-Run the Step 4 script:
+```bash
+AIRBNB_TOOLKIT_NAME="airbnb_mcp_toolkit"
+AIRBNB_TOOLKIT_DESCRIPTION="Toolkit exposing Airbnb MCP tools"
+
+AIRBNB_TOOL_NAME_SEARCH="airbnb_search"
+AIRBNB_TOOL_NAME_LISTING_DETAILS="airbnb_listing_details"
+```
+
+If `AIRBNB_TOOLKIT_NAME` is not set, Airbnb toolkit creation is skipped.
+
+
+### How to Run the Script
 
 ```bash
 python3 step4_toolkit_and_agent_tools_setup.py
@@ -270,44 +285,43 @@ This will:
 
 - Load `.env`
 - Authenticate using `clsAuth`
-- Create the toolkit
-- Fetch the toolkit definition
-- Extract tool list
+- Create the Tavily MCP toolkit
+- Fetch Tavily toolkit definition
+- Optionally create the Airbnb MCP toolkit
+- Fetch Airbnb toolkit definition
+- Merge tool lists
 - Find the agent
-- Attach the tools to the agent
+- Attach all resolved tools to the agent
 
----
 
-## Expected Output
 
-A successful run prints:
+### Expected Output
 
 ```
 Using instance base URL: https://api.us-south.watson-orchestrate.cloud.ibm.com/instances/...
 
-Created toolkit successfully, with id: <toolkit_id>
+=== Creating Tavily toolkit: tavily_mcp_toolkit ===
+Created Tavily toolkit successfully, with id: <tavily_toolkit_id>
 
-Toolkit fetched by ID:
-{ ... full toolkit metadata JSON ... }
+=== Creating Airbnb toolkit: airbnb_mcp_toolkit ===
+Created Airbnb toolkit successfully, with id: <airbnb_toolkit_id>
 
-Toolkit tools:
-[
-  { "id": "tavily-search", ... },
-  { "id": "tavily-extract", ... }
-]
+Merged tools count (should be 2–4): 4
 
 Required agent found with id: <agent_id>
 <Response [200]>
-Agent tools updated successfully.
+Agent tools updated successfully with Tavily + Airbnb.
 ```
 
-If the agent is missing:
+### Error Scenarios
+
+Agent Not Found
 
 ```
 Agent 'Travel_Planner_Agent' not found. Skipping tool update.
 ```
 
-If toolkit creation fails:
+Toolkit Creation Failure
 
 ```
 MCPToolkitError occurred:
@@ -315,6 +329,17 @@ Message: HTTP 401 error while calling MCP toolkit API.
 Status code: 401
 Response body: {...}
 ```
+
+### Outcome
+
+After Step 4 completes successfully:
+
+- Tavily MCP toolkit is registered  
+- Airbnb MCP toolkit is registered (if enabled)  
+- Tool GUIDs are resolved from each toolkit  
+- Tools are merged without duplication  
+- Agent is updated with all tools  
+- Agent can invoke **multiple MCP providers** in a single flow  
 
 ---
 ## Step 5: Agent Testing
