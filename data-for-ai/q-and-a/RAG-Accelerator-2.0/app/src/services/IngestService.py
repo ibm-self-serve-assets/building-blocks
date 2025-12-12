@@ -489,6 +489,7 @@ def ingest_files(payload):
     except Exception as e:
         
         logger.info("Failed to ingest data in vector database. Please check logs.")
+        raise
         
         
         
