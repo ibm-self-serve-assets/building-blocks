@@ -88,7 +88,7 @@ def connection_setup(connection_name):
         connection_type = client.connections.get_datasource_type_details_by_id(connection_datatypesource_id[0])['entity']['name']
         
         logger.info("Successfully retrieved the connection details")
-        print("Connection type is identified as:",connection_type)
+        logger.info(f"Connection type is identified as:{connection_type}")
     
         if connection_type=="elasticsearch":
             print('connection check', parameters['elastic_search_model_id'])
@@ -112,17 +112,22 @@ def connection_setup(connection_name):
         
 
 def get_embedding(environment, parameters, project_id, wml_credentials, WML_SERVICE_URL):
-    if environment == "cloud":
-        credentials = Credentials(
-            api_key=parameters['watsonx_ai_api_key'],
-            url=WML_SERVICE_URL
-        )
-        embedding = Embeddings(
+
+    if environment=="cloud":
+        try:
+            credentials=Credentials(
+                api_key = parameters['watsonx_ai_api_key'],
+                url = wml_service_url)
+            embedding = Embeddings(
             model_id=parameters['embedding_model_id'],
             credentials=credentials,
             project_id=project_id,
             verify=True
-        )
+            )
+        except Exception as e:
+            logger.error("Exception in loading Embedding Models:" + str(e))
+            raise
+        
     elif environment == "on-prem":
         try:
             if client.foundation_models.EmbeddingModels.__members__:
@@ -155,121 +160,21 @@ def get_embedding(environment, parameters, project_id, wml_credentials, WML_SERV
     
     return embedding
 
-
-def create_es_dense_index(es_client,index_name):
-    try:
-        es_client.options(ignore_status=400).indices.create(
-                    index=index_name,
-                    mappings={
-                        'properties': {
-                            'vector.tokens': {
-                                'type': 'dense_vector',
-                            },
-                        }
-                    },
-                    settings={
-                        'index': {
-                            'default_pipeline': 'dense-ingest-pipeline',
-                        },
-                        "number_of_shards": parameters["es_number_of_shards"],
-                    }
-        )
-        es_client.ingest.put_pipeline(
-                    id='dense-ingest-pipeline',
-                    processors=[
-                        {
-                            'inference': {
-                                'model_id': parameters['elastic_search_model_id'],
-                                'input_output': [
-                                    {
-                                        'input_field': 'text',
-                                        'output_field': 'vector.tokens',
-                                    }
-                                ]
-                            }
-                        }
-                    ]
-                )
-        logger.info(f'Elastic search index created with {parameters["elastic_search_model_id"]}!')
-    except Exception as e:
-        logger.info('Error creating elastic index', e)
-
-
-def create_vector_store(es_client,milvus_credentials,connection_type,index_name,parameters):
-    if connection_type=="elasticsearch":
-        from langchain_elasticsearch import ElasticsearchStore
-        if 'dense' in parameters['elastic_search_vector_type']:
-            create_es_dense_index(es_client,index_name)
-            vector_store=ElasticsearchStore(
-                            es_connection=es_client,
-                            index_name=index_name,
-                            strategy=ElasticsearchStore.ApproxRetrievalStrategy(query_model_id=parameters['elastic_search_model_id']),
-                            )
-        else:
-            vector_store=ElasticsearchStore(
-                            es_connection=es_client,
-                            index_name=index_name,
-                            strategy=ElasticsearchStore.SparseVectorRetrievalStrategy(model_id=parameters['elastic_search_model_id']),
-                            custom_index_settings={"number_of_shards": parameters["es_number_of_shards"]}
-                            )
-        print("Elastic Search Vector Store Created with",parameters['elastic_search_model_id'])
-    elif connection_type=="milvus" or connection_type=="milvuswxd":
-        from langchain_milvus import Milvus
-        print("using the model",parameters['embedding_model_id'], "to create embeddings")
-        embedding = get_embedding(environment, parameters, project_id, wml_credentials, wml_service_url) if environment == "cloud" else get_embedding(environment, parameters, project_id, wml_credentials, None)  
-      
-        dense_index_param = {"metric_type": "L2", "index_type": "IVF_FLAT","params": {"nlist": 1024},}
-        sparse_index_param = {"metric_type": "BM25","index_type": "SPARSE_INVERTED_INDEX", "params": {"drop_ratio_build": 0.2}}
-
-        hybrid_search = True if parameters['milvus_hybrid_search'].lower()=="true" else False
-        if hybrid_search:
-            print("Adding sparse and Dense embeddings")
-            vector_store = Milvus(
-            embedding_function=embedding,
-            builtin_function=BM25BuiltInFunction(output_field_names="sparse"), 
-            index_params=[dense_index_param, sparse_index_param],
-            vector_field=["dense", "sparse"],
-            connection_args=milvus_credentials,
-            primary_field='id',
-            consistency_level="Strong",
-            collection_name=index_name
-            )
-        else:
-            print("Adding Dense embeddings")
-            vector_store = Milvus(
-                embedding_function=embedding,
-                index_params=dense_index_param,
-                connection_args=milvus_credentials,
-                primary_field='id',
-                consistency_level="Strong",
-                collection_name=index_name
-            )
-        logger.info("Milvus Vector Store Created")
-
-    elif connection_type == "datastax" or connection_type=="datastax-astradb":
-        print("using the model",parameters['embedding_model_id'], "to create embeddings")
-        embedding = get_embedding(environment, parameters, project_id, wml_credentials,wml_service_url) if environment == "cloud" else get_embedding(environment, parameters, project_id, wml_credentials, None)  
-        from langchain_community.vectorstores import Cassandra
-        vector_store = Cassandra(
-            embedding=embedding,
-            table_name=index_name
-        )
-        logger.info("Datastax Vector Store Created")
-
-    return vector_store
-
-
 def create_collection(index_name):
     if environment=="cloud":
-        credentials=Credentials(
-            api_key = parameters['watsonx_ai_api_key'],
-            url = wml_service_url)
-        embedding = Embeddings(
-          model_id=parameters['embedding_model_id'],
-          credentials=credentials,
-          project_id=project_id,
-          verify=True
-        )
+        try:
+            credentials=Credentials(
+                api_key = parameters['watsonx_ai_api_key'],
+                url = wml_service_url)
+            embedding = Embeddings(
+            model_id=parameters['embedding_model_id'],
+            credentials=credentials,
+            project_id=project_id,
+            verify=True
+            )
+        except Exception as e:
+            logger.error("Exception in loading Embedding Models:" + str(e))
+            raise   
     elif environment=="on-prem":
         try:
             if client.foundation_models.EmbeddingModels.__members__:
@@ -292,64 +197,137 @@ def create_collection(index_name):
                   verify=True
                 )
         except Exception as e:
-            logger.info("Exception in loading Embedding Models:" + str(e))
+            print("Exception in loading Embedding Models:" + str(e))
+            raise
 
     embedding_dim = embedding.embed_documents(['a'])[0]
 
-    # Creates/ retrieves collection
-    
-    if index_name not in utility.list_collections():
-        dense_index_params = {"metric_type": "L2", "index_type": "IVF_FLAT","params": {"nlist": 1024},}
-        sparse_index_params = {"metric_type": "BM25","index_type": "SPARSE_INVERTED_INDEX", "params": {"drop_ratio_build": 0.2}}
+    # Creates/retrieves collection
+    try:
+        if index_name not in utility.list_collections():
+            dense_index_params = {"metric_type": "L2", "index_type": "IVF_FLAT","params": {"nlist": 1024},}
+            sparse_index_params = {"metric_type": "BM25","index_type": "SPARSE_INVERTED_INDEX", "params": {"drop_ratio_build": 0.2}}
 
-        hybrid_search = True if parameters['milvus_hybrid_search'].lower()=="true" else False
-        if hybrid_search:
-            fields = [
-                FieldSchema("id", DataType.VARCHAR, is_primary=True, max_length=65535, auto_id=False),
-                FieldSchema("dense", DataType.FLOAT_VECTOR, dim=len(embedding_dim)),
-                FieldSchema("sparse", DataType.SPARSE_FLOAT_VECTOR),
-                FieldSchema("title", DataType.VARCHAR, max_length=65535),
-                FieldSchema("source", DataType.VARCHAR, max_length=65535),
-                FieldSchema("document_url", DataType.VARCHAR, max_length=65535),
-                FieldSchema("page_number", DataType.VARCHAR, max_length=65535),
-                FieldSchema("chunk_seq", DataType.INT32),
-                FieldSchema("text", DataType.VARCHAR, max_length=65535, enable_analyzer=True)
-            ]
-            bm25_func = Function(
-                name=f"bm25_text",
-                function_type=FunctionType.BM25,
-                input_field_names=['text'],
-                output_field_names=['sparse'],
-                )
-            coll_schema = CollectionSchema(fields)
-            coll_schema.add_function(bm25_func)
-            coll = Collection(name=index_name, schema=coll_schema)
+            hybrid_search = True if parameters['milvus_hybrid_search'].lower()=="true" else False
+            if hybrid_search:
+                fields = [
+                    FieldSchema("id", DataType.VARCHAR, is_primary=True, max_length=65535, auto_id=False),
+                    FieldSchema("dense", DataType.FLOAT_VECTOR, dim=len(embedding_dim)),
+                    FieldSchema("sparse", DataType.SPARSE_FLOAT_VECTOR),
+                    FieldSchema("title", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("source", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("document_url", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("page_number", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("chunk_seq", DataType.INT32),
+                    FieldSchema("text", DataType.VARCHAR, max_length=65535, enable_analyzer=True)
+                ]
+                bm25_func = Function(
+                    name=f"bm25_text",
+                    function_type=FunctionType.BM25,
+                    input_field_names=['text'],
+                    output_field_names=['sparse'],
+                    )
+                coll_schema = CollectionSchema(fields)
+                coll_schema.add_function(bm25_func)
+                coll = Collection(name=index_name, schema=coll_schema)
 
-            coll.create_index(field_name="dense", index_params=dense_index_params)
-            coll.create_index(field_name="sparse", index_params=sparse_index_params)
-        else:
-            fields = [
-                FieldSchema("id", DataType.VARCHAR, is_primary=True, max_length=65535, auto_id=False),
-                FieldSchema("vector", DataType.FLOAT_VECTOR, dim=len(embedding_dim)),
-                FieldSchema("title", DataType.VARCHAR, max_length=65535),
-                FieldSchema("source", DataType.VARCHAR, max_length=65535),
-                FieldSchema("document_url", DataType.VARCHAR, max_length=65535),
-                FieldSchema("page_number", DataType.VARCHAR, max_length=65535),
-                FieldSchema("chunk_seq", DataType.INT32),
-                FieldSchema("text", DataType.VARCHAR, max_length=65535)
-            ]
-            coll_schema = CollectionSchema(fields)
-            coll = Collection(name=index_name, schema=coll_schema)
-        
-            coll.create_index(field_name="vector", index_params=dense_index_params)
+                coll.create_index(field_name="dense", index_params=dense_index_params)
+                coll.create_index(field_name="sparse", index_params=sparse_index_params)
+            else:
+                fields = [
+                    FieldSchema("id", DataType.VARCHAR, is_primary=True, max_length=65535, auto_id=False),
+                    FieldSchema("vector", DataType.FLOAT_VECTOR, dim=len(embedding_dim)),
+                    FieldSchema("title", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("source", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("document_url", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("page_number", DataType.VARCHAR, max_length=65535),
+                    FieldSchema("chunk_seq", DataType.INT32),
+                    FieldSchema("text", DataType.VARCHAR, max_length=65535)
+                ]
+                coll_schema = CollectionSchema(fields)
+                coll = Collection(name=index_name, schema=coll_schema)
             
-        logger.info('Milvus collection is created!')
-    else:
-        coll = Collection(name=index_name)
-        logger.info('Milvus collection is retrieved!')
+                coll.create_index(field_name="vector", index_params=dense_index_params)
+                
+            logger.info('Milvus collection is created!')
+        else:
+            coll = Collection(name=index_name)
+            logger.info('Milvus collection is retrieved!')
 
-    return coll
+        return coll
+    
+    except Exception as e:  
+        logger.error(f"Error while creating or retreiving collection {e}")
+        raise
+    
 
+def create_vector_store(es_client,milvus_credentials,connection_type,index_name,parameters):
+    try:
+        if connection_type=="elasticsearch":
+            from langchain_elasticsearch import ElasticsearchStore
+            if 'dense' in parameters['elastic_search_vector_type']:
+                vector_store=ElasticsearchStore(
+                                es_connection=es_client,
+                                index_name=index_name,
+                                strategy=ElasticsearchStore.ApproxRetrievalStrategy(query_model_id=parameters['elastic_search_model_id']),
+                                )
+            else:
+                vector_store=ElasticsearchStore(
+                                es_connection=es_client,
+                                index_name=index_name,
+                                strategy=ElasticsearchStore.SparseVectorRetrievalStrategy(model_id=parameters['elastic_search_model_id']),
+                                custom_index_settings={"number_of_shards": parameters["es_number_of_shards"]}
+                                )
+            logger.info(f"Elastic Search Vector Store Created with{parameters['elastic_search_model_id']}")
+        elif connection_type=="milvus" or connection_type=="milvuswxd":
+            from langchain_milvus import Milvus
+            print("using the model",parameters['embedding_model_id'], "to create embeddings")
+            embedding = get_embedding(environment, parameters, project_id, wml_credentials, wml_service_url) if environment == "cloud" else get_embedding(environment, parameters, project_id, wml_credentials, None)  
+        
+            dense_index_param = {"metric_type": "L2", "index_type": "IVF_FLAT","params": {"nlist": 1024},}
+            sparse_index_param = {"metric_type": "BM25","index_type": "SPARSE_INVERTED_INDEX", "params": {"drop_ratio_build": 0.2}}
+
+            hybrid_search = True if parameters['milvus_hybrid_search'].lower()=="true" else False
+            if hybrid_search:
+                print("Adding sparse and Dense embeddings")
+                vector_store = Milvus(
+                embedding_function=embedding,
+                builtin_function=BM25BuiltInFunction(output_field_names="sparse"), 
+                index_params=[dense_index_param, sparse_index_param],
+                vector_field=["dense", "sparse"],
+                connection_args=milvus_credentials,
+                primary_field='id',
+                consistency_level="Strong",
+                collection_name=index_name
+                )
+            else:
+                print("Adding Dense embeddings")
+                vector_store = Milvus(
+                    embedding_function=embedding,
+                    index_params=dense_index_param,
+                    connection_args=milvus_credentials,
+                    primary_field='id',
+                    consistency_level="Strong",
+                    collection_name=index_name
+                )
+            logger.info("Milvus Vector Store Created")
+
+        elif connection_type == "datastax" or connection_type=="datastax-astradb":
+            print("using the model",parameters['embedding_model_id'], "to create embeddings")
+            embedding = get_embedding(environment, parameters, project_id, wml_credentials,wml_service_url) if environment == "cloud" else get_embedding(environment, parameters, project_id, wml_credentials, None)  
+            from langchain_community.vectorstores import Cassandra
+            vector_store = Cassandra(
+                embedding=embedding,
+                table_name=index_name
+            )
+            logger.info("Datastax Vector Store Created")
+
+        return vector_store
+    
+    except Exception as e:
+        logger.error(f"Error while creating vector store {e}")
+        raise
+        
 
 def generate_hash(content):
     return hashlib.sha256(content.encode()).hexdigest()
@@ -366,10 +344,12 @@ def insert_docs_to_vector_store(vector_store,split_docs,insert_type="docs"):
                     id_chunk = [generate_hash(doc.page_content) for doc in chunk]
                 vector_store.add_documents(chunk, ids=id_chunk)
                 pbar.update(len(chunk))
-            print("Documents are inserted into vector database")
+            logger.info("Documents are inserted into vector database")
         except Exception as e:
-            logger.info(f"An error occurred: {e}")
+            logger.error(f"An error occurred during  data ingestion: {e}")
             raise
+        
+        
 
 def ingest_files(payload):
 
@@ -392,10 +372,13 @@ def ingest_files(payload):
         es_client = None
         milvus_credentials = None
         
+        # Connect to vector database
         if connection_name == "milvus_connect":
+            logger.info("Connecting to milvus")
             milvus_credentials, connection_type = connection_setup(connection_name)
                     
         if connection_name == "elasticsearch_connect":
+            logger.info("Connecting to elastic search")
             es_client, connection_type = connection_setup(connection_name)
      
         logger.info(f"Downloading files from COS bucket: {bucket_name}")
@@ -434,9 +417,12 @@ def ingest_files(payload):
         
         doc_length = len(split_docs)
         
+        # Create collection/index
+        
         if connection_type=="milvus" or connection_type=="milvuswxd":
+            logger.info("Creating milvus collection")
             create_collection(index_name)
-            
+                    
         if connection_type=="elasticsearch":
             try:
                 es_client.options(ignore_status=400).indices.create(
@@ -476,24 +462,21 @@ def ingest_files(payload):
                 print(f'Elastic search index created with {parameters["elastic_search_model_id"]}!')
             except Exception as e:
                 print(f'Error creating index: {e}')
-        
-        
+                raise
+            
+        # Creating a vector store
+        logger.info("Creating Vector store")
         vector_store=create_vector_store(es_client,milvus_credentials,connection_type,index_name, parameters)
         
-        logger.info("Inserting Documents")
-        
+        # Inserting documents into vector store
+        logger.info("Inserting Documents into vector store")
         insert_docs_to_vector_store(vector_store,split_docs,"docs")
         
         return doc_length
     
     except Exception as e:
         
-        logger.info("Failed to ingest data in vector database. Please check logs.")
+        logger.error("Failed to ingest data in vector database. Please check logs.")
         raise
         
-        
-        
     
-
-
-
