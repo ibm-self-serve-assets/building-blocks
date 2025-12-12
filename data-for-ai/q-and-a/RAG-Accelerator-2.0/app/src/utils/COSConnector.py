@@ -164,35 +164,41 @@ class COSService:
         Returns a list of extracted file paths.
         """
         import os, zipfile, tempfile, shutil
+        
+        try:
 
-        bucket_name = bucket_name or self.bucket_name
+            bucket_name = bucket_name or self.bucket_name
 
-        if extract_to is None:
-            temp_dir_obj = tempfile.TemporaryDirectory()
-            extract_to = temp_dir_obj.name
-            self._temp_dir_obj = temp_dir_obj  # save for cleanup
+            if extract_to is None:
+                temp_dir_obj = tempfile.TemporaryDirectory()
+                extract_to = temp_dir_obj.name
+                self._temp_dir_obj = temp_dir_obj  # save for cleanup
 
-        zip_local_path = os.path.join(extract_to, os.path.basename(zip_key))
-        self.cos_client.download_file(Bucket=bucket_name, Key=zip_key, Filename=zip_local_path)
+            zip_local_path = os.path.join(extract_to, os.path.basename(zip_key))
+            self.cos_client.download_file(Bucket=bucket_name, Key=zip_key, Filename=zip_local_path)
 
-        extracted_files = []
+            extracted_files = []
 
-        with zipfile.ZipFile(zip_local_path, 'r') as z:
-            for member in z.namelist():
-                member_path = member.replace("\\", "/").strip("/")
-                full_path = os.path.join(extract_to, member_path)
+            with zipfile.ZipFile(zip_local_path, 'r') as z:
+                for member in z.namelist():
+                    member_path = member.replace("\\", "/").strip("/")
+                    full_path = os.path.join(extract_to, member_path)
 
-                if member.endswith("/"):
-                    os.makedirs(full_path, exist_ok=True)
-                    continue
+                    if member.endswith("/"):
+                        os.makedirs(full_path, exist_ok=True)
+                        continue
 
-                os.makedirs(os.path.dirname(full_path), exist_ok=True)
-                with z.open(member) as src, open(full_path, "wb") as dst:
-                    shutil.copyfileobj(src, dst)
+                    os.makedirs(os.path.dirname(full_path), exist_ok=True)
+                    with z.open(member) as src, open(full_path, "wb") as dst:
+                        shutil.copyfileobj(src, dst)
 
-                extracted_files.append(full_path)
+                    extracted_files.append(full_path)
 
-        return extracted_files
+            return extracted_files
+        
+        except Exception as e:
+            logging.exception(f"Error extracting zip from cos : {e}")
+            raise
     
         
     def get_all_objects_from_cos(self,download_files: bool = True,temp_dir: str = None) -> Union[List[Dict[str, str]], List[str]]:
@@ -310,7 +316,6 @@ class COSService:
         except Exception as e:
             logging.exception(f"Error getting objects for ingestion: {e}")
             raise
-
 
     # def cleanup_temp_files(self):
     #     """
