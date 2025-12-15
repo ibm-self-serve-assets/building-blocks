@@ -146,7 +146,6 @@ app.index_string = """
         <p>Powered by IBM WatsonX Orchestrate | Start planning your next adventure!</p>
     </div>
 
-<!-- Start: Replace this script section with your WXO Travel Planner information.  -->
     <script>
       window.wxOConfiguration = {
         orchestrationID: "1b3c867ca6584d63860ce3566176953f_aed25cef-6a4a-4ce2-b63f-ce59843bd2f8",
@@ -156,7 +155,17 @@ app.index_string = """
         crn: "crn:v1:bluemix:public:watsonx-orchestrate:us-south:a/1b3c867ca6584d63860ce3566176953f:aed25cef-6a4a-4ce2-b63f-ce59843bd2f8::",
         chatOptions: {
             agentId: "f1254898-dfe6-43d5-a7c1-908005521305", 
-        }
+        },
+            layout: {
+                form: 'custom',
+                customElement: document.getElementById('root'),
+                showOrchestrateHeader: true
+            },
+            style: {
+                headerColor: '#6b7280',
+                userMessageBackgroundColor: '#667eea',
+                primaryColor: '#764ba2'
+            }
       };
       setTimeout(function () {
         const script = document.createElement('script');
@@ -167,7 +176,6 @@ app.index_string = """
         document.head.appendChild(script);
       }, 0);                     
     </script>
-<!-- End: Replace this script section with your WXO Travel Planner information -->
 
     {%config%}
     {%scripts%}
