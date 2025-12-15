@@ -280,7 +280,7 @@ If `AIRBNB_TOOLKIT_NAME` is not set, Airbnb toolkit creation is skipped.
 ### How to Run the Script
 
 ```bash
-python3 step4_toolkit_and_agent_tools_setup.py
+python3 step4_tool_configuration.py
 ```
 
 This will:
