@@ -22,7 +22,7 @@ load_dotenv()
 # Initialize router
 ingest_api_route = APIRouter(
     prefix="",
-    tags=["Ingest data into elastic search and milvus vector db"]
+    tags=["Ingest data into Elastic Search and Milvus Vector DB"]
 )
 
 # API Key header
@@ -49,8 +49,8 @@ config = ingest_service.init_environment()
 
 # Routes
 @ingest_api_route.post("/ingest-files", 
-    description="Ingest data",
-    summary="Ingest data",
+    description="Ingest data into Elastic Search and Milvus Vector DB",
+    summary="Ingest data into Elastic Search and Milvus Vector DB",
     response_model=IngestDataResponse
 )
 async def get_ui_data(
