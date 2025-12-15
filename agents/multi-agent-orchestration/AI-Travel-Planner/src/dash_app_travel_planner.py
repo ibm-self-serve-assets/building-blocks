@@ -146,6 +146,7 @@ app.index_string = """
         <p>Powered by IBM WatsonX Orchestrate | Start planning your next adventure!</p>
     </div>
 
+<!-- Start: Replace this script section with your WXO Travel Planner information.  -->
     <script>
       window.wxOConfiguration = {
         orchestrationID: "1b3c867ca6584d63860ce3566176953f_aed25cef-6a4a-4ce2-b63f-ce59843bd2f8",
@@ -166,6 +167,7 @@ app.index_string = """
         document.head.appendChild(script);
       }, 0);                     
     </script>
+<!-- End: Replace this script section with your WXO Travel Planner information -->
 
     {%config%}
     {%scripts%}
