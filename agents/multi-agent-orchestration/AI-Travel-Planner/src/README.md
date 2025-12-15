@@ -21,6 +21,8 @@ This demo showcases the power of modern AI orchestration platforms in creating s
 - [Step 3: Travel Planner Agent Creation](#step-3-travel-planner-agent-creation)
 - [Step 4: Tool Configuration](#step-4-tool-configuration)
 - [Step 5: Agent Testing](#step-5-agent-testing)
+- [Step 6: Dash application](#step-6-dash-application)
+
 
 
 - [Summary](#summary)
@@ -362,6 +364,59 @@ Test the agent with sample queries to ensure all tools are working:
 
 Please find the [attached testing video of Travel Planner agent for reference](https://github.com/ibm-self-serve-assets/building-blocks/blob/dev_travel_planner_by_wxo_apis/agents/multi-agent-orchestration/AI-Travel-Planner/src/assets/TravelPlannerScreenRecording.mp4). 
 
+---
+## Step 6: Dash application
+This step involves integrating your personalized **Travel Planner** agent into a Dash web application. The app is built with [Dash](https://dash.plotly.com/) and leverages **IBM WatsonX Orchestrate** to provide AI-powered travel assistance.
+
+### 6.1 Security Configuration
+
+The embedded chat widget will **not function** until security is properly configured.  
+
+You can configure security by following the [official Watson Orchestrate documentation on security](https://developer.watson-orchestrate.ibm.com/agents/integrate_agents#security-configuration).
+
+Alternatively, security can be temporarily disabled using the [REST API endpoint `/v1/embed/secure/config`](https://developer.ibm.com/apis/catalog/watsonorchestrate--custom-assistants/api/API--watsonorchestrate--agentic-experience#Create_Config_private_embed_config_post).
+
+
+**Example of API Payload:**
+
+```json
+{
+  "is_security_enabled": false
+}
+```
+
+###  6.2 Integrating Your Travel Planner Agent into Dash app
+
+1. Navigate to the **Channels** section within the Travel Planner agent page from watsonx orchestrate (wxo) console.
+2. Locate the **Embedded agent** section and click the copy icon to copy the entire script snippet.
+
+![Dash application](./assets/embedded_script_info_of_agent.png)
+
+3. Open the `step6_dash_app_travel_planner.py` file in a text editor
+4. Replace the existing script section in the file with the script you copied from above step.
+
+![Dash application](./assets/dash_app_code_block_for_update.png)
+
+### 6.3 Running the Dash Application
+
+1. Run application
+   
+```bash
+python3 step6_dash_app_travel_planner.py
+```
+  You should see output similar to:
+
+```bash
+Dash is running on http://127.0.0.1:8050/
+
+ * Serving Flask app 'step6_dash_app_travel_planner'
+ * Debug mode: on
+```
+
+2. Open your browser and go to http://127.0.0.1:8050 to access the Travel Planner.
+3. The AI Travel Planner chat widget will appear at the bottom right corner of the page. Click on it to start planning your travel with the agent.
+  
+![Dash application](./assets/dash_app_initial_prompt.png)
 
 ---
 ## Summary
