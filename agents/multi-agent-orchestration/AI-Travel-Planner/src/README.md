@@ -419,6 +419,38 @@ Dash is running on http://127.0.0.1:8050/
 ![Dash application](./assets/dash_app_initial_prompt.png)
 
 ---
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+#### Connection Issues
+- **Problem**: Tavily connection fails to establish
+- **Solution**: Verify API key is correct and has proper permissions
+
+#### Tool Activation Issues
+- **Problem**: Tools not appearing in agent
+- **Solution**: Ensure MCP servers are properly connected and tools are activated
+
+#### Agent Response Issues
+- **Problem**: Agent not following behavior instructions
+- **Solution**: Review and refine the behavior configuration
+
+#### Dash Application Issues
+- **Problem:** The travel agent is not loading
+- **Solution:** 
+  1. Ensure the script section of the embedded agent from wxo console is correctly copied and pasted into the Dash app.  
+  2. Confirm that the security configuration has been properly set up.
+
+
+### Getting Help
+
+If you encounter issues not covered in this guide:
+1. Check the IBM watsonx Orchestrate documentation
+2. Review the agent and tool configuration
+3. Test individual components separately
+4. Contact support if needed
+---
 ## Summary
 
 Congratulations! You have successfully created a comprehensive Travel Planner Agent with the following capabilities:
