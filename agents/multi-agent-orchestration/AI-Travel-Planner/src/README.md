@@ -389,12 +389,14 @@ Alternatively, security can be temporarily disabled using the [REST API endpoint
 ###  6.2 Integrating Your Travel Planner Agent into Dash app
 
 1. Navigate to the **Channels** section within the Travel Planner agent page from watsonx orchestrate (wxo) console.
-2. Locate the **Embedded agent** section and click the copy icon to copy the entire script snippet.
+2. Locate the **Embedded Agent** section and copy the required field values highlighted in red, such as `orchestrationID`, `hostURL`, `crn`, and `agentId` (inside `chatOptions`). You will need to paste these values later into the Dash app’s Python file.
+
 
 ![Dash application](./assets/embedded_script_info_of_agent.png)
 
 3. Open the `step6_dash_app_travel_planner.py` file in a text editor
-4. Replace the existing script section in the file with the script you copied from above step.
+4. In the `step6_dash_app_travel_planner.py` file, locate the code where the embedded agent details are defined. Replace the existing values with the ones you copied earlier from the **Embedded Agent** section, ensuring that `orchestrationID`, `hostURL`, `crn`, and `agentId` (inside `chatOptions`) are updated correctly. Save the file after making the changes.
+
 
 ![Dash application](./assets/dash_app_code_block_for_update.png)
 
