@@ -371,7 +371,7 @@ This step involves integrating your personalized **Travel Planner** agent into a
 
 ### 6.1 Security Configuration
 
-The embedded chat widget will **not function** until security is properly configured.  
+The embedded chat widget will not function until security is properly configured.  
 
 You can configure security by following the [official Watson Orchestrate documentation on security](https://developer.watson-orchestrate.ibm.com/agents/integrate_agents#security-configuration).
 
