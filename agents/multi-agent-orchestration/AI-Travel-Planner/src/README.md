@@ -198,8 +198,9 @@ The output will display agent id as follows.
 Agent created successfully, with id: <generated_agent_id> 
 ```
 ---
-## Step 4 – MCP Toolkit Setup & Agent Tool Mapping  
-**(Tavily MCP + Airbnb MCP)**
+## Step 4: Tool Configuration
+
+**MCP Toolkit Setup & Agent Tool Mapping - Tavily MCP + Airbnb MCP**
 
 ### Overview
 
