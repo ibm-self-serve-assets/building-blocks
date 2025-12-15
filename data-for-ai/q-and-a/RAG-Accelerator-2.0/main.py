@@ -35,7 +35,7 @@ ALLOWED_ORIGINS = parameters.get("allowed_origins", "*").split(",")
 # FastAPI application instance
 app = FastAPI(
     title="RAG Accelerator 2.0 API Service",
-    description="RAG Accelerator 2.0 API Service for querying Milvus collections and watsonx.ai LLM.",
+    description="RAG Accelerator 2.0 API Service for ingesting data and querying vector databases and watsonx.ai LLM",
     version="1.0.1-fastapi",
     servers=[{"url": SERVER_URL}],
 )
