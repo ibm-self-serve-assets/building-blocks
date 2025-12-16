@@ -742,6 +742,7 @@ main_layout = dbc.Row(
                             placeholder="Enter text to evaluate...",
                             rows=2,
                             className="mb-3",
+                            disabled=True,
                         ),
                         # RAG Context field (only for RAG metrics)
                         dbc.Collapse(
@@ -761,6 +762,7 @@ main_layout = dbc.Row(
                                                     placeholder="Enter context...",
                                                     rows=2,
                                                     className="mb-2",
+                                                    disabled=True,
                                                 ),
                                             ]
                                         )
@@ -787,6 +789,7 @@ main_layout = dbc.Row(
                                                     placeholder="Enter generated response...",
                                                     rows=4,
                                                     className="mb-2",
+                                                    disabled=True,
                                                 ),
                                             ]
                                         )
