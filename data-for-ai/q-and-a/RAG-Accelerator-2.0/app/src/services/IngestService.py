@@ -49,8 +49,12 @@ environment = parameters["environment"]
 wml_service_url = parameters["watsonx_url"]
 ibm_api_key = parameters["watsonx_ai_api_key"]
 project_id = parameters["watsonx_project_id"]
-wml_credentials = {"apikey": ibm_api_key, "url": wml_service_url} 
-index_chunk_size = 5
+wml_credentials = {"apikey": ibm_api_key, "url": wml_service_url}
+
+index_chunk_size = int(parameters["index_chunk_size"])
+chunk_size = int(parameters["chunk_size"])
+chunk_overlap = int(parameters["chunk_overlap"])
+
 
 def init_environment():
 
@@ -402,8 +406,8 @@ def ingest_files(payload):
         logger.info("Processing documents")
         processor_params = {
             "include_all_html_tags": "false",
-            "ingestion_chunk_size": 256,
-            "ingestion_chunk_overlap": 128
+            "ingestion_chunk_size": chunk_size,
+            "ingestion_chunk_overlap": chunk_overlap
         }
 
         processor = DocumentProcessor(processor_params)
