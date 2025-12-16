@@ -24,7 +24,7 @@ The following steps are required to use the service:
 2. A data asset to query
    1. Currently supported text2sql dialects: presto
 
-### Provision watsonx.data Intelligence
+### Step 1: Provision watsonx.data Intelligence
 
 1. Provision an instance of watsonx.data Intelligence in your cloud account: [Cloud Catalog](https://cloud.ibm.com/catalog#all_products)
    1. Current regions that support text2sql: Toronto
@@ -36,19 +36,39 @@ The following steps are required to use the service:
 4. Create a S2S authentication for watsonx.data intelligence and watsonx.data. [Guide](https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-s2s_auth)
 
 
-### Create a Data Connection to Import Data Assets
+### Step 2: Create Project, Data Connection and get the additional information required to run the application 
 
 1. Navigate back to your watsonx.data Intelligence project
-2. Follow this [Guide](https://dataplatform.cloud.ibm.com/docs/content/wsj/manage-data/create-conn.html?context=wx&locale=en) to add a data connection
-3. Create a connection using IBM watsonx.data presto connector
-   1. Launch to watsonx.data web console
-   2. Navigate to `Home` -> `configurations` -> `connection information`
-   3. Export the JSON with connection information for presto
-   4. Use the information perovided in JSON to create a data source connection for watsonx.data presto connection in watsonx.data intelligence.
-   5. Test the connection
+   a. Launch watsonx.data Intelligence
+   ![alt text](images/launch_watsonx_data.png)
+   b. Create a project and copy the project ID
+   ![alt text](images/get_project_id.png)
+2. Create a connection using IBM watsonx.data presto connector
+   a. Launch to watsonx.data web console
+   ![alt text](images/launch_watsonx_data.png)
+   b. Navigate to `Home` -> `configurations`
+   ![alt text](images/wxd_configuration.png)
+   c. Click on `connection information`
+   ![alt text](images/connection_information.png)
+   d. Export the JSON with connection information for presto
+   ![alt text](images/export_presto_connection_json.png)
+3. Follow this [Guide](https://dataplatform.cloud.ibm.com/docs/content/wsj/manage-data/create-conn.html?context=wx&locale=en) to add a data connection
+4. Use the information perovided in JSON to create a data source connection for watsonx.data presto connection in watsonx.data intelligence.
+   a. Import the connection details
+   ![alt text](images/import_presto_connection.png)
+   b. Test the connection
+   ![alt text](images/test_connection.png)
+5. Get the category ID from watsonx.data intelligence.
+   a. Navigate to category under data governance
+   ![alt text](images/category.png)
+   b. Select your category
+   ![alt text](images/select_category.png)
+   c. Get the category ID
+   ![alt text](images/get_category_id.png)
+6. Get the IBM Cloud API Key, IBM cloud auth token url. 
 
 
-### Deploy Metadata Enrichment FastAPI Application.
+### Step 3: Deploy Metadata Enrichment FastAPI Application.
 
 Follow this link to deploy your application on Code Engine. [Guide](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/q-and-a/Text-To-SQL/applications/code-engine-setup)
 
@@ -70,14 +90,14 @@ pip install -r requirements.txt
 3. Set the .env variables:
 
 ```
-   AUTH_URL = "<IBM_CLOUD_AUTH_TOKEN_URL>"
-   API_KEY = "<IBM_CLOUD_API_KEY>"
-   WXDI_URL = "<WATSONX_DATA_INTELLIGENCE_API_URL>"
-   PROJECT_ID = "<PROJECT_ID>"
-   CONNECTION_ID = "<DATA_SOURCE_CONNECTION_ID>" # WATSONX.DATA PRESTO CONNECTOR
-   CATEGORY_ID = "<WATSONX_DATA_INTELLIGENCE_DATA_GOVERNANCE_CATEGORY_ID>"
-   TEXT2SQL_ONBOARD_URL = "<TEXT2SQL_ONBOARD_API_URL>"
-   TEXT2SQL_GENERATE_URL = "<TEXT2SQL_GENERATE_API_URL>"
+   AUTH_URL = "<IBM_CLOUD_API_AUTH_TOKEN_URL>" (e.g "https://iam.cloud.ibm.com/identity/token")
+   API_KEY = "<IBM_CLOUD_API_KEY>" # Create an IBM cloud API Key from your IBM cloud account
+   WXDI_URL = "<WATSONX_DATA_INTELLIGENCE_API_URL>" (e.g "https://api.ca-tor.dai.cloud.ibm.com")
+   PROJECT_ID = "<PROJECT_ID>" # Refer Step 2
+   CONNECTION_ID = "<DATA_SOURCE_CONNECTION_ID>" # WATSONX.DATA PRESTO CONNECTOR # Refer Step 2,3 and 4
+   CATEGORY_ID = "<WATSONX_DATA_INTELLIGENCE_DATA_GOVERNANCE_CATEGORY_ID>" # Refer Step 5
+   TEXT2SQL_ONBOARD_URL = "<TEXT2SQL_ONBOARD_API_URL>" (e.g "https://api.ca-tor.dai.cloud.ibm.com/semantic_automation/v1/onboard_for_text_2_sql")
+   TEXT2SQL_GENERATE_URL = "<TEXT2SQL_GENERATE_API_URL>" (e.g "https://api.ca-tor.dai.cloud.ibm.com/semantic_automation/v1/text_to_sql")
 ```
 4. Run your application using the below command:
 
@@ -167,8 +187,8 @@ Use the below url to use the swagger : http://localhost:8000/docs
       }'
    ```
 
+   <b>Text2SQL response before enrichment</b>
 
-   <b> Text2SQL response before enrichment </b>
    ```
       {
    "Text2SQL_Generation": {
@@ -205,13 +225,10 @@ Use the below url to use the swagger : http://localhost:8000/docs
          ]
       },
       .....
-   }}
-
    ```
 
-   <b>Text2SQL response after enrichment </b>
 
-
+   <b>Text2SQL response after enrichment</b>
 
    In the response `generated_sql_queries` it has generated a SQL query which gets the distinct count(unique) of product number from the table product.
    

@@ -34,8 +34,11 @@ To showcase these capabilities, we provide a Dash-based web application that per
 
 - **Interactive Dashboard:** Select multiple guardrails, adjust risk thresholds, and view color-coded results
 
-- **Export Results:*** Download evaluation results as CSV files
+- **Export Results:** Download evaluation results as CSV files
 
+<img src="images/demo-landing-page.png" 
+     alt="demo-landing-page" 
+     style="width: 90%;"/>
 
 ### How to Use These Metrics to Block Undesired AI Behavior
 
@@ -45,6 +48,7 @@ For content safety metrics, you can set an upper-limit thresholds that determine
 
 For RAG evaluation metrics (Answer Relevance, Context Relevance, Faithfulness), you can set the lower-limit thresholds to enforce quality standards. If a generated answer falls below the required score, you can block the output or trigger an alternative workflow (e.g., regeneration, human review).
 
+For response quality metrics, you can use LLM as judge or define your rule based or code based custom metrica. For example, **Conciseness** uses LLM as judge to evaluate the agent's response in terms of conciseness. **Action-oriented validator**, on the other hand, is a custom rule-based custom metric that evlaute's the agent's response in terms of how action oriented it ia. These metrics can be used to block agent's response (output) or trigger an alternative workflow (e.g., regeneration, human review).
 
 ## Prerequisites
 

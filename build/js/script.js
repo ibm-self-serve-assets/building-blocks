@@ -141,6 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Automated Resource Management", desc: "Automate, Assess, Remediate, Scale." }
       ],
       link: 
+        createLink("optimize", "Optimize") +
         createOverviewLink("optimize", "Optimize") +
         createDemoLink("optimize")
     },
@@ -152,6 +153,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Network Performance", desc: "Speed, Latency, Bandwidth, Jitter, Loss" }
       ],
       link: 
+        createLink("observe", "Observe") +
         createOverviewLink("observe", "Observe") +
         createDemoLink("observe")
     },
@@ -164,7 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Infrastructure as Code", desc: "Stateful creation and management of cloud resources." },
         { name: "Code Assistant", desc: "Accelerate development, improve code quality." }
       ],
-      link: createOverviewLink("build", "Build & Deploy")
+      link: 
+        createLink("build", "Build & Deploy") +
+        createOverviewLink("build", "Build & Deploy")
     }
   };
 
@@ -207,8 +211,8 @@ document.addEventListener("DOMContentLoaded", () => {
       title: `<img src="icons/observe.png" class="modal-icon"> Observe`,
       content: `<p>Holistic Application and Network Monitoring.</p>
        <ul>
-          <li><a href="#">🔗 Application Observability</a></li>
-          <li><a href="#">🔗 Network Performance</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe/application-observability">🔗 Application Observability</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe/network-performance">🔗 Network Performance</a></li>
         </ul>`
     },
 
@@ -216,9 +220,9 @@ document.addEventListener("DOMContentLoaded", () => {
       title: `<img src="icons/optimize.png" class="modal-icon"> Optimize`,
       content: `<p>Integrated Resilience, FinOps Resource Automation.</p>
        <ul>
-          <li><a href="#">🔗 Automated Resilience & Compliance</a></li>
-          <li><a href="#">🔗 FinOps</a></li>
-          <li><a href="#">🔗 Automated Resource Management</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/automated-resilience-and-compliance">🔗 Automated Resilience & Compliance</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/finops">🔗 FinOps</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/automated-resource-mgmt">🔗 Automated Resource Management</a></li>
         </ul>`
     },
 
@@ -226,10 +230,10 @@ document.addEventListener("DOMContentLoaded", () => {
       title: `<img src="icons/build.png" class="modal-icon"> Build & Deploy`,
       content: `<p>Authentication-Driven Infrastructure Automation With Assistance.</p>
        <ul>
-          <li><a href="#">🔗 iPaaS</a></li>
-          <li><a href="#">🔗 Authentication Management</a></li>
-          <li><a href="#">🔗 Infrastructure as Code</a></li>
-          <li><a href="#">🔗 Code Assistant</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/ipaas">🔗 iPaaS</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/authentication-mgmt">🔗 Authentication Management</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/Iaas">🔗 Infrastructure as Code</a></li>
+          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/code-assistant">🔗 Code Assistant</a></li>
         </ul>`
     }
   };
