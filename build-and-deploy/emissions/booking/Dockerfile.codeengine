@@ -1,0 +1,67 @@
+# Dockerfile for IBM Code Engine - Single Port Deployment
+# Runs both nginx (static files) and Node.js (API proxy) on port 8080
+
+# Stage 1: Build the React application
+FROM node:18-alpine AS builder
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install ALL dependencies (including devDependencies for build)
+RUN npm ci && npm cache clean --force
+
+# Copy application source
+COPY . .
+
+# Build arguments for environment variables
+ARG REACT_APP_ENVIZI_API_KEY
+ARG REACT_APP_ENVIZI_API_URL
+
+# Set environment variables for build
+ENV REACT_APP_ENVIZI_API_KEY=${REACT_APP_ENVIZI_API_KEY}
+ENV REACT_APP_ENVIZI_API_URL=${REACT_APP_ENVIZI_API_URL}
+
+# Build the React application
+RUN npm run build
+
+# Stage 2: Production image with both nginx and Node.js
+FROM node:18-alpine
+
+# Install nginx and supervisor
+RUN apk add --no-cache nginx supervisor
+
+# Create necessary directories
+RUN mkdir -p /var/log/supervisor /run/nginx /app
+
+# Copy Node.js application files
+WORKDIR /app
+COPY package*.json ./
+COPY server.js ./
+
+# Install only production dependencies for Node.js
+RUN npm ci --only=production && npm cache clean --force
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=3001
+
+# Copy built React application from builder stage
+COPY --from=builder /app/build /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/http.d/default.conf
+
+# Copy supervisord configuration
+COPY supervisord.conf /etc/supervisord.conf
+
+# Expose port 8080 (IBM Code Engine default)
+EXPOSE 8080
+
+# Health check (checks nginx endpoint)
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --quiet --tries=1 --spider http://localhost:8080/health || exit 1
+
+# Start supervisord (manages both nginx and Node.js)
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

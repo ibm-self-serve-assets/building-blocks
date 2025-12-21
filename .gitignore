@@ -1,1 +1,61 @@
+# OS
 .DS_Store
+Thumbs.db
+
+# -------------------------------
+#  For python projects
+
+
+
+
+# -------------------------------
+# For React projects
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+build/
+dist/
+out/
+
+# Environment
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+coverage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.turbo/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Misc
+*.pem
+old/
+test/
+
