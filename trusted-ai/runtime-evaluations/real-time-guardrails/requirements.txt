@@ -92,7 +92,7 @@ jupyterlab_widgets==3.0.16
 langchain==0.3.27
 langchain-classic==1.0.0
 langchain-community==0.4.1
-langchain-core==0.3.80
+langchain-core==0.3.81
 langchain-ibm==0.3.20
 langchain-openai==0.3.19
 langchain-text-splitters==0.3.11
