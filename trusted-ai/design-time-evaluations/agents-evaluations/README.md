@@ -1,70 +1,168 @@
 # Agent Evaluations for IBM watsonx.governance
 
-Production-ready Python package for evaluating AI agents using IBM watsonx.governance metrics.
+A production-ready Python package for evaluating AI agents and RAG (Retrieval-Augmented Generation) applications using IBM watsonx.governance metrics.
 
-## 📦 Package: wx_gov_agent_eval
+## Overview
 
-**Production-ready evaluation framework** for RAG and agentic AI applications built with LangChain and IBM watsonx.
+`wx_gov_agent_eval` provides a comprehensive evaluation framework for AI agents built with LangChain and IBM watsonx. It enables you to measure and track key quality metrics for your AI applications including:
 
-### ✅ Status
+- **Context relevance** - How relevant retrieved context is to the query
+- **Faithfulness** - Whether generated answers are grounded in the provided context
+- **Answer similarity** - How closely answers match ground truth
+- **Tool call accuracy** - Correctness of agent tool/function calls
+- **Content safety** - Detection of PII, harmful content, and other safety concerns
+- **Performance metrics** - Latency and token cost tracking
 
-**Fully validated and production-ready** (as of 2025-12-24)
+## Prerequisites
 
-- ✅ All code tested and working
-- ✅ Evaluation metrics functional
-- ✅ Complete documentation
-- ✅ Example code provided
+Before using this package, you'll need:
 
-### 🚀 Installation
+- **Python 3.9-3.12** (Python 3.11 recommended, 3.13+ not yet supported)
+- **IBM watsonx account** with access to:
+  - IBM watsonx.ai (for LLM models)
+  - IBM watsonx.governance (for evaluation metrics)
+- **API credentials**:
+  - `WATSONX_APIKEY` - Your IBM Cloud API key
+  - `WXG_PROJECT_ID` - Your watsonx project ID
 
-#### Prerequisites
+Don't have access? [Sign up for IBM watsonx](https://www.ibm.com/watsonx)
 
-- Python 3.9-3.12 (Python 3.11 recommended)
-- Virtual environment (recommended)
+## Quick Start
 
-#### Option 1: Simple Installation (Recommended)
+### 1. Installation
 
 ```bash
+# Clone the repository
+git clone <your-repo-url>
+cd agents-evaluations
+
 # Create virtual environment
 python3.11 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Upgrade pip
+# Install dependencies
 pip install --upgrade pip
-
-# Install all dependencies
 pip install -r requirements.txt
 ```
 
-**Note**: The `requirements.txt` is structured to handle dependency resolution automatically. However, if you encounter dependency conflicts, use Option 2 below.
+### 2. Configure Credentials
 
-#### Option 2: Step-by-Step Installation (If conflicts occur)
-
-If you experience dependency conflicts with Option 1, install in this specific order:
+Set your IBM watsonx credentials as environment variables:
 
 ```bash
-# Step 1: Create and activate virtual environment
-python3.11 -m venv venv
-source venv/bin/activate
+export WATSONX_APIKEY="your-api-key"
+export WXG_PROJECT_ID="your-project-id"
+```
 
-# Step 2: Upgrade pip
-pip install --upgrade pip
+Or create a `.env` file in the project root:
 
-# Step 3: Install core IBM packages first (this resolves most dependencies)
+```
+WATSONX_APIKEY=your-api-key
+WXG_PROJECT_ID=your-project-id
+```
+
+### 3. Run Example
+
+```bash
+python example_usage.py
+```
+
+### 4. Verify Installation
+
+```bash
+# Quick verification
+python -c "from wx_gov_agent_eval import BasicRAGEvaluator; print('✅ Installation successful!')"
+
+# Run integration tests
+python test_integration.py
+```
+
+## Key Features
+
+### Three Evaluation Modes
+
+1. **BasicRAGEvaluator** - Evaluate simple RAG agents with local vector stores
+2. **AdvancedRAGEvaluator** - Evaluate multi-source RAG with intelligent routing (local documents + web search)
+3. **ToolCallingEvaluator** - Evaluate agents with custom tool/function calling capabilities
+
+### Comprehensive Metrics
+
+- **Quality Metrics**: Context relevance, faithfulness, answer similarity
+- **Safety Metrics**: PII detection, harmful content detection (HAP/HARM)
+- **Performance Metrics**: Latency tracking, token usage, cost estimation
+- **Tool Metrics**: Tool call accuracy for function-calling agents
+
+### Flexible Evaluation
+
+- Single-query evaluation
+- Batch evaluation with parallel processing
+- Real-time or post-processing metric computation
+- Integration with IBM watsonx.governance experiment tracking
+
+## Basic Usage
+
+```python
+from wx_gov_agent_eval import BasicRAGEvaluator
+
+# Initialize evaluator
+evaluator = BasicRAGEvaluator()
+
+# Prepare your documents
+documents = [
+    {"id": "1", "document": "Python is a high-level programming language..."},
+    {"id": "2", "document": "Machine learning enables systems to learn from data..."}
+]
+
+# Build the agent
+evaluator.build_agent(documents=documents)
+
+# Evaluate a single query
+result = evaluator.evaluate_single(
+    input_text="What is Python?",
+    ground_truth="Python is a high-level programming language known for simplicity.",
+    interaction_id="query-1"
+)
+
+# View metrics
+print(f"Generated Answer: {result['generated_text']}")
+print(f"Metrics: {result.get('metrics', {})}")
+
+# Display all results
+evaluator.display_results()
+```
+
+See [example_usage.py](example_usage.py) for more complete examples including batch evaluation and advanced RAG.
+
+## Installation Options
+
+### Option 1: Simple Installation (Recommended)
+
+Most users can install all dependencies with a single command:
+
+```bash
+pip install -r requirements.txt
+```
+
+### Option 2: Step-by-Step Installation
+
+If you encounter dependency conflicts, install in this specific order:
+
+```bash
+# Step 1: Install core IBM packages first
 pip install ibm-watsonx-gov==1.2.2 \
             ibm-watsonx-ai>=1.3.0 \
             ibm-agent-analytics>=0.5.0 \
-            pandas>=2.1.0,\<2.2.0 \
+            pandas>=2.1.0,<2.2.0 \
             python-dotenv
 
-# Step 4: Install LangChain and supporting packages
-pip install langchain>=0.3.0,\<0.4.0 \
-            langchain-core>=0.3.0,\<0.4.0 \
-            langchain-community>=0.3.0,\<0.4.0 \
-            langchain-ibm>=0.3.0,\<0.4.0 \
-            langgraph>=0.3.0,\<0.4.0
+# Step 2: Install LangChain packages
+pip install langchain>=0.3.0,<0.4.0 \
+            langchain-core>=0.3.0,<0.4.0 \
+            langchain-community>=0.3.0,<0.4.0 \
+            langchain-ibm>=0.3.0,<0.4.0 \
+            langgraph>=0.3.0,<0.4.0
 
-# Step 5: Install vector store and utilities
+# Step 3: Install vector store and utilities
 pip install chromadb>=0.4.22 \
             unitxt \
             scikit-learn \
@@ -73,193 +171,103 @@ pip install chromadb>=0.4.22 \
             jsonpath-ng \
             pypdf
 
-# Step 6: Install Jupyter (if needed for notebooks)
+# Step 4: (Optional) Install Jupyter for notebooks
 pip install jupyter ipykernel ipython nbformat
 ```
 
-**Why this order?**
-- Installing IBM packages first ensures opentelemetry and analytics dependencies are resolved correctly
-- ChromaDB must be >= 0.4.22 to avoid Rust bindings bugs (version 1.1.1 has critical bugs)
+**Why this order?** Installing IBM packages first ensures opentelemetry and analytics dependencies are resolved correctly.
 
-#### Quick Start After Installation
+## Documentation
 
-```bash
-# Set environment variables
-export WATSONX_APIKEY="your-api-key"
-export WXG_PROJECT_ID="your-project-id"  # or WATSONX_PROJECT_ID
+- **[Package Documentation](wx_gov_agent_eval/README.md)** - Detailed API documentation
+- **[Example Code](example_usage.py)** - Complete working examples
+- **[Integration Tests](test_integration.py)** - Test suite for verification
 
-# Run example
-python example_usage.py
-```
+## Troubleshooting
 
-#### Verify Installation
-
-```bash
-# Quick verification
-python -c "from wx_gov_agent_eval import BasicRAGEvaluator; print('✅ Installation successful!')"
-
-# Full validation
-python validate_package.py
-
-# Run tests
-python test_integration.py
-```
-
-### 📚 Documentation
-
-- **[Package README](wx_gov_agent_eval/README.md)** - Comprehensive package documentation
-- **[example_usage.py](example_usage.py)** - Complete working examples
-- **[test_integration.py](test_integration.py)** - Integration tests
-
-### 🔧 Key Features
-
-1. **BasicRAGEvaluator** - Simple RAG agent evaluation with local vector stores
-2. **AdvancedRAGEvaluator** - Multi-source RAG with intelligent routing (local + web search)
-3. **ToolCallingEvaluator** - Custom tool/function calling agent evaluation
-
-### 📊 Metrics Evaluated
-
-- Context relevance
-- Faithfulness
-- Answer similarity
-- Tool call accuracy
-- Content safety (PII, HAP, HARM detection)
-- Latency and token cost tracking
-
-### ⚙️ Requirements
-
-- **Python**: 3.9-3.12 (3.11 recommended)
-- **IBM watsonx.governance**: 1.2.2
-- **IBM agent analytics**: Required for evaluation metrics
-- See [requirements.txt](requirements.txt) for full list
-
-### 🎯 Critical Dependencies
-
-⚠️ **Important**: The `ibm-agent-analytics` packages are **required** but not declared as dependencies by IBM SDK:
-
-```
-ibm-agent-analytics>=0.5.0
-ibm-agent-analytics-common>=0.1.0
-ibm-agent-analytics-core>=0.9.0
-```
-
-These are included in `requirements.txt` and must be installed for evaluation metrics to work.
-
-### 📁 Package Structure
-
-```
-wx_gov_agent_eval/
-├── __init__.py              # Package exports
-├── config.py                # Configuration classes
-├── base_evaluator.py        # Abstract base class
-├── basic_rag.py            # Basic RAG evaluator
-├── advanced_rag.py         # Advanced RAG with routing
-├── tool_calling.py         # Tool calling evaluator
-└── utils/
-    ├── auth.py             # Authentication helpers
-    ├── vector_store.py     # Vector store utilities
-    ├── metrics.py          # Metrics helpers
-    └── batch_processing.py # Batch evaluation utilities
-```
-
-### 🧪 Testing
-
-```bash
-# Validate package structure
-python validate_package.py
-
-# Run integration tests
-python test_integration.py
-```
-
-### 🔧 Troubleshooting
-
-#### Dependency Conflicts
-
-If you encounter dependency conflicts during installation:
-
-1. **Use Python 3.11**: Some packages don't support Python 3.13+ yet
-2. **Try Option 2 installation**: Step-by-step installation resolves conflicts
-3. **Check ChromaDB version**: Must be >= 0.4.22 (not 1.1.1 which has bugs)
+### Common Issues
 
 #### Missing ibm-agent-analytics
 
-If you see this warning:
-```
-No module named 'ibm_agent_analytics'
-```
+**Symptom**: `No module named 'ibm_agent_analytics'`
 
-**Solution**: Install the agent analytics packages:
+**Solution**:
 ```bash
 pip install ibm-agent-analytics ibm-agent-analytics-common ibm-agent-analytics-core
 ```
 
-These packages are **required** for evaluation metrics but not declared by IBM SDK.
+These packages are required for evaluation metrics but not automatically installed by IBM SDK. They are included in `requirements.txt`.
 
-#### Evaluation Fails with NameError
+#### Evaluation NameError
 
-If evaluation fails with errors like:
-- `NameError: name 'AIEventRecorder' is not defined`
-- `NameError: name 'get_current_trace_id' is not defined`
+**Symptom**: `NameError: name 'AIEventRecorder' is not defined` or similar
 
-**Solution**: You're missing `ibm-agent-analytics` packages. Install them as shown above.
+**Solution**: Install `ibm-agent-analytics` packages (see above)
 
 #### ChromaDB Rust Bindings Error
 
-If you see:
-```
-pyo3_runtime.PanicException: range start index 10 out of range
-```
+**Symptom**: `pyo3_runtime.PanicException: range start index 10 out of range`
 
-**Solution**: Upgrade ChromaDB:
+**Solution**: Upgrade ChromaDB to version >= 0.4.22
 ```bash
 pip install --upgrade "chromadb>=0.4.22"
 ```
 
-#### Model Not Found Error
+#### Python Version Issues
 
-If you see:
+**Symptom**: Installation fails or packages incompatible
+
+**Solution**: Use Python 3.11 (recommended) or 3.9-3.12. Python 3.13+ is not yet fully supported.
+
+#### Dependency Conflicts
+
+**Solution**: Use Option 2 (step-by-step installation) which resolves conflicts by installing packages in the correct order.
+
+## Package Structure
+
 ```
-Model 'ibm/slate-30m-english-rtrvr' was not found
-```
-
-**Solution**: The package uses the updated model ID `ibm/slate-30m-english-rtrvr-v2`. This is already configured in the code. If you're using an old version, update to the latest package.
-
-### 📝 Example Usage
-
-```python
-from wx_gov_agent_eval import BasicRAGEvaluator
-
-# Create evaluator
-evaluator = BasicRAGEvaluator()
-
-# Build agent with your documents
-evaluator.build_agent(documents=my_docs)
-
-# Evaluate
-result = evaluator.evaluate_single(
-    input_text="What is Python?",
-    ground_truth="Python is a programming language..."
-)
-
-# View results
-evaluator.display_results()
+wx_gov_agent_eval/
+├── README.md               # Package documentation
+├── __init__.py             # Package exports
+├── config.py               # Configuration classes
+├── base_evaluator.py       # Abstract base evaluator
+├── basic_rag.py           # Basic RAG evaluator
+├── advanced_rag.py        # Advanced RAG with routing
+├── tool_calling.py        # Tool calling evaluator
+└── utils/
+    ├── auth.py            # Authentication helpers
+    ├── vector_store.py    # Vector store utilities
+    ├── metrics.py         # Metrics computation
+    └── batch_processing.py # Batch evaluation
 ```
 
-See [example_usage.py](example_usage.py) for complete examples.
+## Requirements
 
-### 🤝 Contributing
+- **Python**: 3.9-3.12 (3.11 recommended)
+- **IBM watsonx.governance**: 1.2.2
+- **IBM watsonx.ai**: >= 1.3.0
+- **IBM agent analytics**: >= 0.5.0 (critical for metrics)
+- **LangChain**: >= 0.3.0, < 0.4.0
+- **ChromaDB**: >= 0.4.22
 
-This package is production-ready and has been thoroughly validated. See [VALIDATION_REPORT.md](VALIDATION_REPORT.md) for details.
+See [requirements.txt](requirements.txt) for the complete list.
 
-### 📄 License
+## Contributing
 
-[Add your license here]
+Contributions are welcome! This package has been thoroughly tested and validated for production use.
 
-### 👥 Authors
+## Support
 
-IBM Trusted AI Team
+For issues, questions, or feedback:
+- Open an issue in this repository
+- Contact the IBM watsonx support team
+
+## License
+
+[Specify your license - Apache 2.0, MIT, etc.]
 
 ---
 
-For detailed package documentation, see [wx_gov_agent_eval/README.md](wx_gov_agent_eval/README.md)
+**Built by IBM Trusted AI**
+
+For detailed API documentation, see [wx_gov_agent_eval/README.md](wx_gov_agent_eval/README.md)
