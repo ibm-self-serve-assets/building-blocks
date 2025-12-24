@@ -1,420 +1,350 @@
-# Design Time Evaluations & Guardrails
+# Prompt Template Evaluation for IBM watsonx.governance
 
-An advanced AI guardrails implementation using IBM watsonx.governance SDK for comprehensive AI safety evaluation and monitoring.
+A production-ready Python package for evaluating prompt template assets using IBM watsonx.governance metrics. Supports both SLM (built-in models) and LLM-as-Judge evaluation approaches.
 
 ## Overview
 
-This project provides comprehensive AI guardrails for both **design time evaluations** and **real-time monitoring** using IBM's watsonx.governance platform. It implements multiple guardrail metrics to assess AI-generated content for various risks including hate speech, bias, jailbreak attempts, and other harmful content.
+`wx_gov_prompt_eval` provides a comprehensive evaluation framework for prompt templates used in RAG (Retrieval-Augmented Generation) and other generative AI applications. It enables you to measure and track key quality metrics including:
 
-### Design Time vs Real-Time Evaluations
-
-- **Design Time**: Test and validate prompts, agents, and chatbots **before deployment** to ensure robustness and safety
-- **Real-Time**: Monitor and evaluate AI responses **during production** to catch issues as they occur
-
-This dual approach ensures AI systems are both pre-validated and continuously monitored for optimal safety and performance.
-
-## Understanding the Differences: Design Time vs Real-Time
-
-While both approaches use the same IBM watsonx.governance API and metrics, they serve different purposes and have distinct characteristics:
-
-### Overlapping Capabilities
-Many guardrail metrics work effectively in both contexts:
-- **Content Safety**: HAP, PII, harm detection, bias, profanity
-- **Security**: Jailbreak detection, prompt injection prevention
-- **Basic Quality**: Topic relevance, prompt safety risk
-
-### Key Differences
-
-#### **Design Time Evaluations** (Focus of this Repository)
-- **One-shot Analysis**: Single evaluation per test case without temporal tracking
-- **Reference-based Metrics Available**: Can use ground truth for comprehensive evaluation
-  - **Faithfulness**: Compare responses against known correct information
-  - **Answer Relevance**: Evaluate against expected responses
-  - **Context Relevance**: Assess against curated knowledge bases
-- **Extended Metric Range**: Particularly valuable for agentic systems requiring accuracy validation
-- **Batch Processing**: Test multiple scenarios systematically
-- **Ground Truth Available**: Pre-defined expected outcomes enable deeper analysis
-
-
-#### **Real-Time Monitoring** (Production Use)
-- **Temporal Tracking**: Continuous data storage and evaluation over time
-- **Reference-free Metrics Only**: No ground truth available during live interactions
-  - **Content Safety**: HAP, PII, bias detection
-  - **Security**: Jailbreak, prompt injection detection
-  - **Quality Proxies**: Topic relevance, evasiveness detection
-- **Drift Detection**: Monitor changes in AI behavior patterns over time
-- **Performance Constraints**: Must operate within strict latency requirements
-- **Data Persistence**: Store evaluations for compliance and trend analysis
-
-
-### Repository Focus
-
-**This repository primarily demonstrates design time evaluations** where you can:
-- Test prompts and responses against known ground truth
-- Use the full range of watsonx.governance metrics including reference-based ones
-- Perform comprehensive pre-deployment validation
-- Experiment with different threshold configurations
-
-The same API and techniques can be adapted for real-time monitoring by:
-- Implementing data persistence for temporal tracking using watsonx.governance monitoring module
-- Using primarily reference-free metrics but can periodically upload ground truth which is called "feedback data"
-- The monitoring module includes comprehensive drift detection capabilities
-
-## Features
-
-### Content Safety Detection
-- **HAP (Hate, Abuse, Profanity)**: Detects harmful language and offensive content
-- **PII Detection**: Identifies and filters personally identifiable information
-- **Harm Detection**: Assesses content for potential harmful intent
-- **Social Bias Detection**: Identifies biased or discriminatory language
-- **Jailbreak Detection**: Prevents prompt injection and manipulation attempts
-- **Violence Detection**: Identifies violent or threatening content
-- **Profanity Detection**: Filters inappropriate language
-- **Unethical Behavior Detection**: Identifies content promoting unethical activities
-
-### Advanced Evaluation Metrics
-- **Topic Relevance**: Ensures content stays on-topic relative to system prompts
-- **Prompt Safety Risk**: Detects off-topic content and prompt injection attempts
-- **Answer Relevance**: Evaluates how well responses address input questions
-- **Context Relevance**: Assesses relevance of provided context to questions
-- **Faithfulness**: Measures consistency between generated content and source material
-
-### Powered by Granite Guardian
-Most metrics utilize IBM's Granite Guardian model (Beta) for comprehensive risk assessment including:
-- Harm and violence detection
-- Social bias assessment
-- Jailbreak attempt identification
-- Answer relevance evaluation
-- Groundedness verification
-
-## Technology Stack
-
-- **Python 3.10+**
-- **IBM watsonx.governance SDK**
-- **Jupyter Notebooks** for interactive development
-- **python-dotenv** for environment configuration
-- **IBM Cloud SDK** for authentication
+- **Faithfulness** - Whether generated answers are grounded in the provided context
+- **Answer relevance** - How relevant answers are to the input questions
+- **Answer similarity** - How closely answers match ground truth (LLM-as-judge only)
+- **Context relevance** - How relevant retrieved context is to the query
+- **Retrieval quality** - Comprehensive retrieval metrics (precision, hit rate, NDCG)
+- **ROUGE score** - N-gram overlap with ground truth
+- **Content safety** - Detection of PII, harmful content (HAP)
+- **Model health** - System performance monitoring
 
 ## Prerequisites
 
-1. **IBM watsonx.governance Service Instance**
-   - Create an instance at [IBM Cloud Catalog](https://cloud.ibm.com/catalog/services/watsonxgovernance)
+Before using this package, you'll need:
 
-2. **IBM Cloud API Key**
-   - Generate at [IBM Cloud API Keys](https://cloud.ibm.com/iam/apikeys)
-   - Requires access to watsonx.governance service
+- **Python 3.10-3.12** (Python 3.11 recommended)
+- **IBM watsonx account** with access to:
+  - IBM watsonx.ai (for LLM models)
+  - IBM watsonx.governance (for evaluation metrics)
+  - Watson OpenScale (for monitoring)
+  - Watson Machine Learning (for model deployment)
+- **API credentials**:
+  - `WOS_URL`, `WOS_USERNAME`, `WOS_PASSWORD` - Watson OpenScale credentials
+  - `WML_URL`, `WML_USERNAME`, `WML_PASSWORD` - Watson Machine Learning credentials
+  - `PROJECT_ID` - Your watsonx project ID
 
-## Installation & Setup
+Don't have access? [Sign up for IBM watsonx](https://www.ibm.com/watsonx)
 
-### 1. Clone and Navigate to Project
+## Quick Start
+
+### 1. Installation
+
 ```bash
-git clone <repository-url>
-cd guardrails_v2
-```
+# Clone the repository
+git clone <your-repo-url>
+cd gen-ai-evaluations
 
-### 2. Create Python Environment
-```bash
-# Using conda (recommended)
-conda create -n guardrails-app python=3.10
-conda activate guardrails-app
+# Create virtual environment
+python3.11 -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-# Or using venv
-python -m venv guardrails-app
-source guardrails-app/bin/activate  # On Windows: guardrails-app\Scripts\activate
-```
-
-### 3. Install Dependencies
-```bash
-# Install all required packages
+# Install dependencies
+pip install --upgrade pip
 pip install -r requirements.txt
-
-# Core IBM watsonx.governance SDK (if not in requirements.txt)
-pip install 'ibm-watsonx-gov[metrics]'
 ```
 
-### 4. Environment Configuration
+### 2. Configure Credentials
 
-Create a `.env` file in the project root:
-```bash
-cp .env.example .env  # If example exists, or create new file
-```
-
-Add your IBM watsonx credentials to `.env`:
-```env
-# IBM watsonx.governance API Configuration
-WATSONX_APIKEY=your_ibm_cloud_api_key_here
-WATSONX_URL=https://us-south.ml.cloud.ibm.com
-
-# Optional: Service Instance ID (required if you have multiple instances)
-WXG_SERVICE_INSTANCE_ID=your_service_instance_id_here
-
-# Optional: Region (default is us-south)
-# WATSONX_REGION=us-south
-```
-
-**Security Note**: Never commit the `.env` file to version control. It's already included in `.gitignore`.
-
-### 5. Verify Installation
-Option A - Run the Streamlit web app:
-```bash
-streamlit run app.py
-```
-
-Option B - Start Jupyter and run the main notebook:
-```bash
-jupyter notebook "Real Time Detections_v1.ipynb"
-```
-
-## Usage
-
-The guardrails system supports two primary use cases:
-
-### Design Time Evaluations
-Perfect for testing prompts, agents, and chatbots before deployment:
-- **Prompt Testing**: Validate system prompts for robustness
-- **Agent Validation**: Test AI agents against various scenarios
-- **Chatbot QA**: Ensure chatbots handle edge cases safely
-- **Pre-deployment Audits**: Comprehensive safety assessment before go-live
-
-### Real-Time Monitoring
-Continuous evaluation during production:
-- **Live Content Screening**: Real-time safety assessment
-- **Response Filtering**: Block or flag problematic outputs
-- **Compliance Monitoring**: Ongoing regulatory compliance
-- **Performance Tracking**: Monitor safety metrics over time
-
-### Option 1: Streamlit Web App (Recommended)
-The easiest way to use the guardrails for both design time and real-time evaluation:
+Set your IBM watsonx credentials as environment variables:
 
 ```bash
-streamlit run app.py
+export WOS_URL="https://your-cpd-instance.com"
+export WOS_USERNAME="your-username"
+export WOS_PASSWORD="your-password"
+export WML_URL="https://your-cpd-instance.com"
+export WML_USERNAME="your-username"
+export WML_PASSWORD="your-password"
+export PROJECT_ID="your-project-id"
 ```
 
-**Features:**
-- **Interactive UI**: User-friendly web interface
-- **Instant Evaluation**: Enter text and get immediate results for design time testing
-- **Customizable Guardrails**: Select which metrics to run using checkboxes
-- **Configurable Threshold**: Adjust risk threshold with a slider (default: 0.7)
-- **Color-coded Results**: Red highlighting for high-risk content
-- **Advanced Options**: Support for RAG metrics and system prompts
-- **Export Results**: Download results as CSV for design time analysis
-- **Reset Functionality**: Clear inputs and start fresh
+Or create a `.env` file in the project root:
 
-### Option 2: Jupyter Notebook
-Ideal for design time evaluations, development, and experimentation:
+```
+WOS_URL=https://your-cpd-instance.com
+WOS_USERNAME=your-username
+WOS_PASSWORD=your-password
+WML_URL=https://your-cpd-instance.com
+WML_USERNAME=your-username
+WML_PASSWORD=your-password
+PROJECT_ID=your-project-id
+```
 
-1. **Launch Jupyter**: `jupyter notebook` or `jupyter lab`
-2. **Open Main Notebook**: `Real Time Detections_v1.ipynb`
-3. **Run Setup Cells**: Execute the first few cells to load environment and initialize the evaluator
-4. **Design Time Testing**: Run example cells to test different safety metrics against your content
-5. **Batch Evaluation**: Test multiple prompts or responses simultaneously for comprehensive design time analysis
+### 3. Run Example
 
-### Basic Example
+```bash
+python example_usage.py
+```
+
+### 4. Verify Installation
+
+```bash
+# Quick verification
+python -c "from wx_gov_prompt_eval import PromptTemplateEvaluator; print('✅ Installation successful!')"
+```
+
+## Key Features
+
+### Two Evaluation Modes
+
+1. **SLM (Small Language Model)** - Uses OpenScale's built-in smaller models for efficient evaluation
+   - Faster evaluation
+   - Lower compute requirements
+   - Provides source attributions
+   - Cost-effective
+
+2. **LLM-as-Judge** - Uses external LLMs (e.g., Llama 3.1) for sophisticated evaluation
+   - More sophisticated analysis
+   - Includes answer similarity metric
+   - Higher quality judgments
+   - Requires more compute resources
+
+### Comprehensive Metrics
+
+- **Quality Metrics**: Faithfulness, answer relevance, answer similarity, ROUGE score
+- **Retrieval Metrics**: Context relevance, retrieval precision, hit rate, NDCG, average precision
+- **Safety Metrics**: PII detection, harmful content detection (HAP)
+- **Performance Metrics**: Model health monitoring
+
+### Flexible Evaluation
+
+- Single prompt template evaluation
+- Batch evaluation with multiple test sets
+- Real-time or post-processing metric computation
+- Integration with IBM watsonx.governance factsheet tracking
+- Automated visualization of results
+
+## Basic Usage
+
+### Example 1: SLM Evaluation
+
 ```python
-from ibm_watsonx_gov.evaluators import MetricsEvaluator
-from ibm_watsonx_gov.metrics import HAPMetric, PIIMetric
-
-# Initialize evaluator (credentials loaded from .env)
-evaluator = MetricsEvaluator()
-
-# Test content
-text = "This is a sample text to evaluate"
-
-# Run multiple guardrails
-result = evaluator.evaluate(
-    data={"input_text": text}, 
-    metrics=[HAPMetric(), PIIMetric()]
+from wx_gov_prompt_eval import (
+    PromptTemplateEvaluator,
+    WatsonxConfig,
+    EvaluatorConfig,
+    MonitorConfig
 )
+
+# Configure for SLM evaluation
+watsonx_config = WatsonxConfig()  # Reads from environment variables
+evaluator_config = EvaluatorConfig(evaluator_type="slm")
+
+# Create evaluator
+evaluator = PromptTemplateEvaluator(
+    watsonx_config=watsonx_config,
+    evaluator_config=evaluator_config,
+    project_id="your-project-id"
+)
+
+# Create prompt template
+prompt_id = evaluator.create_prompt_template(
+    name="RAG Q&A Prompt",
+    prompt_text="Answer: {context}\n\nQuestion: {question}",
+    prompt_variables={"context": "", "question": ""}
+)
+
+# Setup monitoring
+subscription_id = evaluator.setup_monitoring(
+    context_fields=["context"],
+    question_field="question",
+    label_column="ground_truth"
+)
+
+# Evaluate with test data
+evaluator.evaluate("test_data.csv")
 
 # View results
-print(result.to_df())
+evaluator.display_metrics()
+evaluator.plot_metrics()
 ```
 
-### Available Applications
-
-#### `app.py` - Streamlit Web Application
-Interactive web interface for both design time and real-time guardrails evaluation:
-- User-friendly dashboard with text input and metric selection
-- Instant guardrail evaluation with color-coded results for design time testing
-- Configurable risk thresholds and advanced options
-- Export functionality for design time analysis and compliance reporting
-- Can be integrated into production workflows for real-time monitoring
-
-#### `Real Time Detections_v1.ipynb` - Jupyter Notebook
-Comprehensive demonstration of all available guardrail metrics, ideal for design time evaluations:
-- Content safety detection examples for pre-deployment testing
-- RAG (Retrieval-Augmented Generation) evaluation metrics
-- Batch evaluation using metric groups for systematic design time analysis
-- Real-world content analysis examples for prompt and agent validation
-
-## Hands-On Lab Materials
-
-This repository includes comprehensive educational materials for learning AI guardrails:
-
-### 📚 Lab Exercises (`lab_exercises/`)
-
-#### **For Students/Practitioners:**
-- **`watsonx-guardrails-lab.md`** - Step-by-step lab exercise with practical scenarios
-- **`health_test.py`** - additional examples for healthcare use cases
-
-#### **For Instructors/Trainers:**
-- **`watsonx-instructor-guide.md`** - Complete teaching guide with timing, objectives, and solutions
-- **`watsonx-supplementary-materials.md`** - Additional resources, troubleshooting tips, and extended exercises
-
-### 🎯 Lab Features
-- **Hands-on Experience**: Practical exercises with real AI guardrail scenarios
-- **Progressive Learning**: Structured from basic concepts to advanced implementations
-- **Self-Paced**: Complete exercises at your own speed with detailed explanations
-- **Instructor Ready**: Full teaching materials for workshops and training sessions
-- **Industry Scenarios**: Real-world use cases including chatbot safety, content moderation, and compliance
-
-### 🚀 Getting Started with Labs
-1. **Prerequisites**: Complete the main setup (Environment Setup section above)
-2. **Health Check**: Run `python lab_exercises/health_test.py` to verify connectivity
-3. **Start Learning**: Open `lab_exercises/watsonx-guardrails-lab.md` for guided exercises
-4. **Interactive Practice**: Create and run your own notebooks during the lab exercises
-
-Perfect for individual learning, team training, or educational workshops on AI safety and governance.
-
-## Design Time Evaluation Workflows
-
-### Pre-Deployment Testing
-Use the guardrails system to validate your AI components before production:
-
-#### 1. Prompt Engineering Validation
-```python
-# Test system prompts for robustness
-system_prompts = [
-    "You are a helpful assistant...",
-    "Act as a professional advisor...",
-    "You are a customer service bot..."
-]
-
-for prompt in system_prompts:
-    result = evaluator.evaluate(
-        data={"input_text": prompt},
-        metrics=[HAPMetric(), BiasMetric(), JailbreakMetric()]
-    )
-    print(f"Prompt safety score: {result.to_df()}")
-```
-
-#### 2. Agent Stress Testing
-```python
-# Test AI agents against challenging scenarios
-test_scenarios = [
-    "Try to get the agent to reveal sensitive information",
-    "Attempt to make the agent ignore its instructions",
-    "Test bias in controversial topics"
-]
-
-for scenario in test_scenarios:
-    # Test your agent's response to each scenario
-    agent_response = your_agent.process(scenario)
-    
-    # Evaluate the response
-    result = evaluator.evaluate(
-        data={"input_text": agent_response},
-        metrics=[HarmMetric(), BiasMetric(), ProfanityMetric()]
-    )
-```
-
-#### 3. Batch Content Analysis
-```python
-# Evaluate multiple content samples simultaneously
-content_samples = ["sample1", "sample2", "sample3"]
-results = []
-
-for content in content_samples:
-    result = evaluator.evaluate(
-        data={"input_text": content},
-        metric_groups=[MetricGroup.CONTENT_SAFETY]
-    )
-    results.append(result.to_df())
-
-# Analyze patterns and thresholds across all samples
-```
-
-## Configuration
-
-### Regional Settings
-By default, the project uses the US South region. To use other regions:
+### Example 2: LLM-as-Judge Evaluation
 
 ```python
-import os
-os.environ["WATSONX_REGION"] = "eu-de"  # Frankfurt
-# Supported: us-south, eu-de, au-syd, ca-tor, jp-tok
-```
-
-### Metric Groups
-Use predefined metric groups for batch evaluation:
-```python
-from ibm_watsonx_gov.entities.enums import MetricGroup
-
-# Run all content safety metrics at once
-result = evaluator.evaluate(
-    data={"input_text": text}, 
-    metric_groups=[MetricGroup.CONTENT_SAFETY]
+from wx_gov_prompt_eval import (
+    PromptTemplateEvaluator,
+    WatsonxConfig,
+    EvaluatorConfig
 )
+
+# Configure for LLM-as-Judge
+evaluator_config = EvaluatorConfig(
+    evaluator_type="llm",
+    model_id="meta-llama/llama-3-1-8b-instruct"
+)
+
+# Create evaluator (automatically creates LLM evaluator)
+evaluator = PromptTemplateEvaluator(
+    watsonx_config=WatsonxConfig(),
+    evaluator_config=evaluator_config,
+    project_id="your-project-id"
+)
+
+# Rest is the same as SLM example
+# The evaluation will use LLM-as-judge instead of built-in models
 ```
 
-## Language Support
+See [example_usage.py](example_usage.py) for complete examples.
 
-**Important**: AI guardrails in IBM watsonx.governance currently support **English-language text only**.
+## Installation Options
 
-## Regional Availability
+### Simple Installation (Recommended)
 
-- **Topic Relevance**: Available in Dallas (us-south) and Frankfurt (eu-de) regions only
-- **Prompt Safety Risk**: Available in Dallas (us-south) and Frankfurt (eu-de) regions only
-- **Other Metrics**: Available in all supported regions
+```bash
+pip install -r requirements.txt
+```
+
+### Verify Dependencies
+
+```bash
+pip list | grep ibm
+```
+
+You should see:
+- `ibm-watson-openscale`
+- `ibm-watson-machine-learning`
+- `ibm-aigov-facts-client`
+
+## Documentation
+
+- **[Package Documentation](wx_gov_prompt_eval/README.md)** - Detailed API documentation
+- **[Example Code](example_usage.py)** - Complete working examples
+
+## Test Data Format
+
+Your test data CSV should include the following columns:
+
+```csv
+user_input,retrieved_contexts,generated_text,ground_truths
+"What is Python?","Python is a programming language...","Python is a high-level language.","Python is a programming language."
+"What is AI?","AI stands for Artificial Intelligence...","AI is machine intelligence.","AI is the simulation of human intelligence."
+```
+
+**Required columns:**
+- **Question field** (e.g., `user_input`) - The input question
+- **Context field(s)** (e.g., `retrieved_contexts`) - The retrieved context
+- **Generated text** (e.g., `generated_text`) - The model's generated answer
+- **Ground truth** (e.g., `ground_truths`) - The reference answer
 
 ## Troubleshooting
 
 ### Common Issues
 
-1. **Authentication Errors**
-   - Verify your API key is correct and has watsonx.governance access
-   - Check that WXG_SERVICE_INSTANCE_ID is set if you have multiple instances
+#### Missing Dependencies
 
-2. **Module Import Errors**
-   - Ensure you're using the correct Python environment
-   - Reinstall requirements: `pip install -r requirements.txt`
+**Symptom**: `ModuleNotFoundError: No module named 'ibm_watson_openscale'`
 
-3. **Regional Errors**
-   - Some metrics require specific regions (Dallas/Frankfurt)
-   - Set WATSONX_REGION environment variable appropriately
-
-### Getting Help
-
-1. Check [IBM watsonx.governance Documentation](https://ibm.github.io/ibm-watsonx-gov/index.html)
-
-## Development
-
-### Project Structure
-```
-guardrails_v2/
-├── .env                           # Environment variables (not in git)
-├── .gitignore                     # Git ignore rules
-├── CLAUDE.md                      # AI assistant instructions
-├── README.md                      # This file
-├── requirements.txt               # Python dependencies
-├── app.py                         # Streamlit web application
-├── api_config.ipynb               # API configuration and testing notebook
-├── assets/                        # Visual assets and branding
-│   ├── design_time_logo.png       # IBM Building Blocks AI Guardrails logo
-│   └── README.md                  # Assets documentation
-├── lab_exercises/                 # Educational materials and exercises
-│   ├── health_test.py             # Health check script for watsonx services
-│   ├── watsonx-guardrails-lab.md  # Lab exercise instructions
-│   ├── watsonx-instructor-guide.md # Teaching guide for instructors
-│   └── watsonx-supplementary-materials.md # Additional learning resources
-└── Real Time Detections_v1.ipynb # Main demonstration notebook
+**Solution**:
+```bash
+pip install ibm-watson-openscale ibm-watson-machine-learning ibm-aigov-facts-client
 ```
 
-## License
+#### Authentication Errors
 
-Apache
+**Symptom**: `ValueError: Watson OpenScale credentials are required`
+
+**Solution**: Verify your environment variables or `.env` file contains all required credentials
+
+#### Python Version Issues
+
+**Symptom**: Installation fails or packages incompatible
+
+**Solution**: Use Python 3.11 (recommended) or 3.10-3.12. Python 3.13+ is not yet fully supported.
+
+## Package Structure
+
+```
+wx_gov_prompt_eval/
+├── README.md                  # Package documentation
+├── __init__.py                # Package exports
+├── config.py                  # Configuration classes
+├── prompt_evaluator.py        # Main evaluator class
+└── utils/
+    ├── __init__.py            # Utils exports
+    ├── auth.py                # Authentication helpers
+    ├── watsonx_clients.py     # Client creation utilities
+    └── metrics.py             # Metrics extraction and visualization
+```
+
+## Requirements
+
+- **Python**: 3.10-3.12 (3.11 recommended)
+- **IBM Watson OpenScale**: >= 3.0.0
+- **IBM Watson Machine Learning**: >= 1.0.0
+- **IBM AI Governance Facts Client**: >= 0.1.0
+- **matplotlib**: >= 3.8.0 (for visualization)
+- **pandas**: >= 2.1.0, < 2.2.0
+
+See [requirements.txt](requirements.txt) for the complete list.
+
+## Key Differences from Agent Evaluation
+
+This package (`wx_gov_prompt_eval`) focuses on **prompt template evaluation**, while the companion package (`wx_gov_agent_eval`) focuses on **agent evaluation**:
+
+| Feature | Prompt Template Eval | Agent Eval |
+|---------|---------------------|------------|
+| **Use Case** | Evaluate prompt templates | Evaluate AI agents |
+| **Primary Metrics** | Faithfulness, answer relevance | Tool accuracy, answer quality |
+| **Evaluation Target** | Prompt effectiveness | Agent behavior |
+| **Setup** | Prompt template asset | Agent workflows |
+| **Data Source** | RAG pipelines | Agent interactions |
+
+Both packages can be used together for comprehensive evaluation of RAG-based agent systems.
+
+## SLM vs LLM-as-Judge: Choosing the Right Approach
+
+### When to Use SLM (Built-in Models)
+
+✅ **Choose SLM if:**
+- You need faster evaluation
+- You have limited compute resources
+- You want source attributions showing which context contributed to answers
+- Cost is a primary concern
+- You're doing frequent evaluations during development
+
+### When to Use LLM-as-Judge
+
+✅ **Choose LLM-as-Judge if:**
+- You need more sophisticated evaluation
+- You want answer similarity metrics
+- Evaluation quality is more important than speed
+- You have access to larger compute resources
+- You're doing final validation before production
+
+### Feature Comparison
+
+| Feature | SLM | LLM-as-Judge |
+|---------|-----|--------------|
+| **Speed** | ⚡ Fast | 🐢 Slower |
+| **Cost** | 💰 Lower | 💰💰 Higher |
+| **Source Attributions** | ✓ | ✗ |
+| **Answer Similarity** | ✗ | ✓ |
+| **Evaluation Quality** | Good | Excellent |
+| **N-gram Configuration** | ✓ | ✗ (automatic) |
+
+## Contributing
+
+Contributions are welcome! Please contact shima@ibm.com if you would like to discuss ideas and contribute.
 
 ## Support
 
-For technical support:
-- IBM watsonx.governance: [IBM Support](https://cloud.ibm.com/docs/watsonxgovernance)
+For issues, questions, or feedback:
+- Open an issue in this repository
+- Contact: shima@ibm.com
+
+## License
+
+Apache 2.0
+
+---
+
+**Built by IBM Build Engineering**
+
+For detailed API documentation, see [wx_gov_prompt_eval/README.md](wx_gov_prompt_eval/README.md)

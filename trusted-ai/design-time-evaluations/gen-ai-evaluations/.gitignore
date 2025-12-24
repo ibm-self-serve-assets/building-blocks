@@ -1,0 +1,57 @@
+# Environment variables and credentials
+.env
+.env.local
+.env.*.local
+credentials.json
+.credentials
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Jupyter
+.ipynb_checkpoints
+*.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# System files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Logs
+*.log
+logs/
+
+# Data files (if any)
+data/
+*.csv
+*.db
+*.sqlite
+
+# Temporary files
+*.tmp
+temp/
+tmp/
