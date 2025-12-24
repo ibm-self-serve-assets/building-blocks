@@ -258,8 +258,7 @@ Contributions are welcome! Please contact shima@ibm.com if you would like to dis
 
 ## Support
 
-For issues, questions, or feedback:
-- Open an issue in this repository
+For issues, questions, or feedback, open an issue in this repository.
 
 ## License
 
