@@ -254,13 +254,12 @@ See [requirements.txt](requirements.txt) for the complete list.
 
 ## Contributing
 
-Contributions are welcome! This package has been thoroughly tested and validated for production use.
+Contributions are welcome! Please contact shima@ibm.com if you would like to discuss ideas and contribute.
 
 ## Support
 
 For issues, questions, or feedback:
 - Open an issue in this repository
-- Contact the IBM watsonx support team
 
 ## License
 
@@ -268,6 +267,6 @@ For issues, questions, or feedback:
 
 ---
 
-**Built by IBM Trusted AI**
+**Built by IBM Build Engineering**
 
 For detailed API documentation, see [wx_gov_agent_eval/README.md](wx_gov_agent_eval/README.md)
