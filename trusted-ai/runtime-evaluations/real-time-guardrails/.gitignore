@@ -13,6 +13,9 @@ venv/
 env/
 ENV/
 dash-app-venv/
+final_test_env/
+*-venv/
+*.venv/
 
 # IDEs
 .vscode/
@@ -35,3 +38,9 @@ build/
 
 # Logs
 *.log
+app.log
+
+# Cache directories
+inference_engine_cache/
+__pycache__/
+.pytest_cache/
