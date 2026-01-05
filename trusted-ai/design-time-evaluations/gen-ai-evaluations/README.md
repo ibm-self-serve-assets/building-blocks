@@ -1,4 +1,4 @@
-# Prompt Template Evaluation for IBM watsonx.governance
+# Prompt Evaluation with IBM watsonx.governance
 
 A production-ready Python package for evaluating prompt template assets using IBM watsonx.governance metrics. Supports both SLM (built-in models) and LLM-as-Judge evaluation approaches.
 
