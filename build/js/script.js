@@ -38,8 +38,8 @@ document.addEventListener("DOMContentLoaded", () => {
     data_rag: "Retrieval-Augmented Generation",
     trusted: "Design Time Evaluations Guardrail",
     optimize: "Instana and Turbonomic in FinOps",
-    observe: "Application Observability"
-    
+    observe: "Application Observability",
+    build: "Infrastructure as Code"
   };
 
   const createLink = (key, label) =>
