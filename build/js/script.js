@@ -76,7 +76,10 @@ document.addEventListener("DOMContentLoaded", () => {
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/observe/application-observability/Application_Observability_Instana.mp4",
 
     optimize:
-      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/optimize/finops/FinOps.mp4"
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/optimize/finops/FinOps.mp4",
+
+    build:
+      "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/build-and-deploy/Iaas/demo/Build&Deploy.mp4"
   };
 
   /* ---------- NEW STATIC DEMO LINK GENERATOR ---------- */
@@ -168,7 +171,8 @@ document.addEventListener("DOMContentLoaded", () => {
       ],
       link: 
         createLink("build", "Build & Deploy") +
-        createOverviewLink("build", "Build & Deploy")
+        createOverviewLink("build", "Build & Deploy") +
+        createDemoLink("build")
     }
   };
 
