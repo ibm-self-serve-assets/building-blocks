@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Code Assistant", desc: "Accelerate development, improve code quality." }
       ],
       link: 
-        createLink("build", "Build & Deploy") +
+        createLink("builddeploy", "Build & Deploy") +
         createOverviewLink("build", "Build & Deploy") +
         createDemoLink("build")
     }
