@@ -3,7 +3,9 @@ title: Deploy and Manage a Retail Application on IBM Cloud Red Hat OpenShift Usi
 subtitle: Provision infrastructure with Terraform and deploy applications using Ansible
 authors:
   - name: Sunil Gajula
-    role: IBM Architect
+    role: Senior Solution Architect
+  - Yasser Sheriff
+    role: Senior Solution Architect
 skill_level: Intermediate
 technologies:
   - IBM Cloud
