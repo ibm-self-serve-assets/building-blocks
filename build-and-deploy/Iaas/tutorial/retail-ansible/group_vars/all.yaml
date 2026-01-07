@@ -1,0 +1,14 @@
+
+namespace: retail
+docker_registry: docker.io
+docker_username: "{{ lookup('env','DOCKER_USER') }}"
+docker_password: "{{ lookup('env','DOCKER_PASS') }}"
+
+postgres:
+  user: retail
+  password: retail123
+  db: retaildb
+
+images:
+  backend: sunilmanika/retail-backend:latest
+  frontend: sunilmanika/retail-frontend:latest

@@ -1,0 +1,15 @@
+
+- name: Apply Postgres Secret
+  kubernetes.core.k8s:
+    state: present
+    template: postgres-secret.yaml.j2
+
+- name: Deploy Postgres StatefulSet
+  kubernetes.core.k8s:
+    state: present
+    template: postgres-statefulset.yaml.j2
+
+- name: Deploy Postgres Service
+  kubernetes.core.k8s:
+    state: present
+    template: postgres-service.yaml.j2

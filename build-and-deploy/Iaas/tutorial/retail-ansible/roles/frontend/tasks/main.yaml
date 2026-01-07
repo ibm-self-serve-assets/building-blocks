@@ -1,0 +1,5 @@
+
+- name: Deploy frontend
+  kubernetes.core.k8s:
+    state: present
+    template: frontend-deployment.yaml.j2

@@ -1,0 +1,11 @@
+
+- name: Deploy Retail Application using Ansible only
+  hosts: localhost
+  gather_facts: false
+  roles:
+    - prereqs
+    - docker_secret
+    - postgres
+    - backend
+    - frontend
+    - db_init

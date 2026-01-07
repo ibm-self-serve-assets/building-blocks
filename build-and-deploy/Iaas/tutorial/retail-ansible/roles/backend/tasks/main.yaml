@@ -1,0 +1,5 @@
+
+- name: Deploy backend
+  kubernetes.core.k8s:
+    state: present
+    template: backend-deployment.yaml.j2
