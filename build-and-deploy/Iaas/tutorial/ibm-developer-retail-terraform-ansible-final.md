@@ -4,7 +4,7 @@ subtitle: Provision infrastructure with Terraform and deploy applications using 
 authors:
   - name: Sunil Gajula
     role: Senior Solution Architect
-  - Yasser Sheriff
+  - name: Yasser Sheriff
     role: Senior Solution Architect
 skill_level: Intermediate
 technologies:
