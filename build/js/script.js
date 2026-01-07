@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     trusted: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/AI/Trusted%20AI/BB_TrustedAI_EntryPoints.pptx?d=w67201531f05f40859f7648f41fd47a69&csf=1&web=1&e=ljt6Tu",
     optimize: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Optimize/BB_Optimize_EntryPoints.pptx?d=w3215882eb8b2488a844ca73422ea46af&csf=1&web=1&e=nZYgb5",
     observe: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Observe/BB_Observe_EntryPoints.pptx?d=w8792b7275f854b1bb261156bc8f47a6d&csf=1&web=1&e=3cazpo",
-    build: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Build%26Deploy/BB_Build%26Deploy_EntryPoints.pptx?d=wc9be1050d7d44f4683ff30dee22e2e1e&csf=1&web=1&e=aAlhJ6"
+    builddeploy: "https://ibm.sharepoint.com/:p:/r/sites/BuildEngineering_DEPT/Shared%20Documents/IBM%20Build/IBM%20Build_Building%20Blocks/Automation/Build%26Deploy/BB_Build%26Deploy_EntryPoints.pptx?d=wc9be1050d7d44f4683ff30dee22e2e1e&csf=1&web=1&e=aAlhJ6"
   };
 
   /* ---------- DEMO VIDEO FILE LINKS ---------- */
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     optimize:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/optimize/finops/FinOps.mp4",
 
-    build:
+    builddeploy:
       "https://github.com/ibm-self-serve-assets/building-blocks/raw/refs/heads/main/build-and-deploy/Iaas/demo/Build&Deploy.mp4"
   };
 
@@ -161,7 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
         createDemoLink("observe")
     },
 
-    build: {
+    builddeploy: {
       title: "Build & Deploy - Building Blocks",
       items: [
         { name: "iPaaS", desc: "Integrating and connecting diverse applications." },
@@ -170,9 +170,9 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Code Assistant", desc: "Accelerate development, improve code quality." }
       ],
       link: 
-        createLink("build", "Build & Deploy") +
-        createOverviewLink("build", "Build & Deploy") +
-        createDemoLink("build")
+        createLink("builddeploy", "Build & Deploy") +
+        createOverviewLink("builddeploy", "Build & Deploy") +
+        createDemoLink("builddeploy")
     }
   };
 
