@@ -1,4 +1,0 @@
-
-- name: Ensure kubernetes python client is installed
-  pip:
-    name: kubernetes

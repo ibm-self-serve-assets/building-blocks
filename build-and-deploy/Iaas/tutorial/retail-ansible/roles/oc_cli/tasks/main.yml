@@ -1,0 +1,10 @@
+- name: Download oc cli
+  get_url:
+    url: "https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/{{ openshift_version }}/openshift-client-linux-{{ openshift_version }}.tar.gz"
+    dest: /tmp/oc.tar.gz
+
+- name: Extract oc
+  unarchive:
+    src: /tmp/oc.tar.gz
+    dest: /usr/local/bin
+    remote_src: yes

@@ -1,0 +1,29 @@
+- name: Wait for PostgreSQL pod to be running
+  shell: |
+    oc get pod -n {{ namespace }} -l {{ postgres_label }} \
+    -o jsonpath='{.items[0].status.phase}'
+  register: pg_status
+  retries: 20
+  delay: 15
+  until: pg_status.stdout == "Running"
+
+- name: Get PostgreSQL pod name
+  shell: |
+    oc get pod -n {{ namespace }} -l {{ postgres_label }} \
+    -o jsonpath='{.items[0].metadata.name}'
+  register: pg_pod
+
+- name: Wait for PostgreSQL container readiness
+  shell: |
+    oc get pod -n {{ namespace }} {{ pg_pod.stdout }} \
+    -o jsonpath='{.status.containerStatuses[0].ready}'
+  register: pg_ready
+  retries: 20
+  delay: 10
+  until: pg_ready.stdout == "true"
+
+- name: Import SQL dump from container file into PostgreSQL
+  shell: |
+    oc exec -n {{ namespace }} {{ pg_pod.stdout }} -- \
+    bash -c "psql -U retail_user -d retaildb < /tmp/full_dump.sql"
+

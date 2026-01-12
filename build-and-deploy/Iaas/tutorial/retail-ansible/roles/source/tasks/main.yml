@@ -1,0 +1,25 @@
+- name: Create workspace
+  file:
+    path: "{{ workspace }}"
+    state: directory
+
+- name: Download Retail App
+  get_url:
+    url: "{{ github_zip_url }}"
+    dest: "{{ workspace }}/main.zip"
+
+- name: Unzip source
+  unarchive:
+    src: "{{ workspace }}/main.zip"
+    dest: "{{ workspace }}"
+    remote_src: yes
+
+- name: Update image references
+  replace:
+    path: "{{ workspace }}/retailapp-main/k8s/{{ item }}"
+    regexp: "technologybuildingblocks"
+    replace: "{{ docker_username }}"
+  loop:
+    - frontend-deployment.yaml
+    - backend-deployment.yaml
+    - postgres-deployment.yaml  

@@ -1,0 +1,17 @@
+- name: Fetch backend route
+  shell: oc get route -n {{ namespace }} | grep retail-backend | awk '{print $2}'
+  register: backend_route
+
+- name: Rebuild frontend with backend route
+  command: podman build -t {{ frontend_image }} --build-arg VITE_API_BASE_URL=https://{{ backend_route.stdout }}/api .
+  args:
+    chdir: "{{ workspace }}/retailapp-main/frontend"
+
+- name: Push rebuilt frontend
+  command: podman push {{ frontend_image }}
+
+- name: Restart deployments
+  command: oc rollout restart deployment/{{ item }} -n {{ namespace }}
+  loop:
+    - retail-backend
+    - retail-frontend

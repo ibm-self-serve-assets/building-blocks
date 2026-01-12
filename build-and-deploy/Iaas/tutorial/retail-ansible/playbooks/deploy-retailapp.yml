@@ -1,0 +1,13 @@
+- name: Deploy Retail Application on OpenShift
+  hosts: local
+  become: true
+  roles:
+  - ../roles/prereqs
+  - ../roles/oc_cli
+  - ../roles/jmeter
+  - ../roles/source
+  - ../roles/images
+  - ../roles/openshift
+  - ../roles/frontend_rebuild
+  - ../roles/database
+

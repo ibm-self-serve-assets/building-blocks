@@ -1,0 +1,33 @@
+- name: Replace namespace in namespace.yaml
+  replace:
+    path: "{{ workspace }}/retailapp-main/k8s/namespace.yaml"
+    regexp: "name: tbb"
+    replace: "name: {{ namespace }}"
+
+- name: Replace namespace in all manifest files
+  replace:
+    path: "{{ item }}"
+    regexp: "namespace: tbb"
+    replace: "namespace: {{ namespace }}"
+  with_fileglob:
+    - "{{ workspace }}/retailapp-main/k8s/*.yaml"
+
+- name: Login OpenShift
+  command: oc login --token={{ oc_token }} --server={{ oc_server }}
+
+- name: Apply namespace
+  command: oc apply -f {{ workspace }}/retailapp-main/k8s/namespace.yaml
+  ignore_errors: false
+
+- name: Create docker pull secret
+  command: >
+    oc create secret docker-registry dockerhub-secret
+    --docker-server=docker.io
+    --docker-username={{ docker_username }}
+    --docker-password={{ docker_password }}
+    -n {{ namespace }}
+  ignore_errors: false
+
+- name: Deploy manifests
+  command: oc apply -f {{ workspace }}/retailapp-main/k8s/
+

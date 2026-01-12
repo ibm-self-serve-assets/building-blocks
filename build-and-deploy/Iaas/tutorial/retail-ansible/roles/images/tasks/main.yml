@@ -1,0 +1,26 @@
+- name: Podman login
+  command: podman login -u {{ docker_username }} -p {{ docker_password }} docker.io
+
+- name: Build backend
+  command: podman build -t {{ backend_image }} .
+  args:
+    chdir: "{{ workspace }}/retailapp-main/backend"
+
+- name: Push backend
+  command: podman push {{ postgresql_image }}
+
+- name: Build postgresql
+  command: podman build -t {{ postgresql_image }} .
+  args:
+    chdir: "{{ workspace }}/retailapp-main/postgresql"
+
+- name: Push postgresql
+  command: podman push {{ backend_image }}
+
+- name: Build frontend initial
+  command: podman build -t {{ frontend_image }} --build-arg VITE_API_BASE_URL='' .
+  args:
+    chdir: "{{ workspace }}/retailapp-main/frontend"
+
+- name: Push frontend initial
+  command: podman push {{ frontend_image }}

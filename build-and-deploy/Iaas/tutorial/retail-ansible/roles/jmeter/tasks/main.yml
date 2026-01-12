@@ -1,0 +1,10 @@
+- name: Download JMeter
+  get_url:
+    url: "https://dlcdn.apache.org/jmeter/binaries/apache-jmeter-{{ jmeter_version }}.zip"
+    dest: /opt/jmeter.zip
+
+- name: Extract JMeter
+  unarchive:
+    src: /opt/jmeter.zip
+    dest: /opt
+    remote_src: yes
