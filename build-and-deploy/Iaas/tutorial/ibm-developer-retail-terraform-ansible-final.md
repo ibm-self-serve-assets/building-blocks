@@ -165,74 +165,65 @@ oc whoami
 ## Solution Structure
 
 ```text
-retail-ansible/
-├── inventories/
-│   └── prod/
-│       └── hosts
-├── group_vars/
-│   └── all.yaml
-├── roles/
-│   ├── prereqs/
-│   ├── docker_secret/
-│   ├── postgres/
-│   ├── backend/
-│   ├── frontend/
-│   └── db_init/
-├── site.yaml
-└── requirements.yml
-```
-
----
-
-## Configure Deployment Variables
-
-### site.yaml
-
-```yaml
-- name: Deploy Retail Application using Ansible
-  hosts: localhost
-  gather_facts: false
-
-  collections:
-    - kubernetes.core
-
-  vars:
-    namespace: retail-automation
-
-  roles:
-    - prereqs
-    - docker_secret
-    - postgres
-    - backend
-    - frontend
-    - db_init
-```
-
-Override the namespace if required:
-
-```bash
-ansible-playbook site.yaml -e namespace=retail-dev
+ansible-retailapp
+├── inventory
+│   ├── group_vars
+│   │   └── all.yml
+│   └── localhost.ini
+├── playbooks
+│   └── deploy-retailapp.yml
+└── roles
+    ├── database
+    │   └── tasks
+    │       └── main.yml
+    ├── frontend_rebuild
+    │   └── tasks
+    │       └── main.yml
+    ├── images
+    │   └── tasks
+    │       └── main.yml
+    ├── jmeter
+    │   └── tasks
+    │       └── main.yml
+    ├── oc_cli
+    │   └── tasks
+    │       └── main.yml
+    ├── openshift
+    │   └── tasks
+    │       └── main.yml
+    ├── prereqs
+    │   └── tasks
+    │       └── main.yml
+    └── source
+        └── tasks
+            └── main.yml
 ```
 
 ---
 
 ## Define Application Configuration
 
-### group_vars/all.yaml
+### inventory/group_vars/all.yml
 
 ```yaml
-docker_registry: docker.io
-docker_username: "{{ lookup('env','DOCKER_USER') }}"
-docker_password: "{{ lookup('env','DOCKER_PASS') }}"
+oc_token: ""
+oc_server: ""
 
-postgres:
-  user: retail
-  password: retail123
-  db: retaildb
+docker_username: ""
+docker_password: ""
 
-images:
-  backend: sunilmanika/retail-backend:latest
-  frontend: sunilmanika/retail-frontend:latest
+namespace: retail-automation
+postgres_label: "app=retail-postgres"
+
+backend_image: "docker.io/{{ docker_username }}/retail-backend:1.0.0"
+frontend_image: "docker.io/{{ docker_username }}/retail-frontend:1.0.0"
+postgresql_image: "docker.io/{{ docker_username }}/retail-postgresql:1.0.0"
+
+openshift_version: "4.18.28"
+jmeter_version: "5.6.3"
+
+github_zip_url: "https://github.com/SunilManika/retailapp/archive/refs/heads/main.zip"
+workspace: "/root/retailapp"
 ```
 
 ---
@@ -240,10 +231,9 @@ images:
 ## Deploy the Application
 
 ```bash
-export DOCKER_USER=<your_dockerhub_username>
-export DOCKER_PASS=<your_dockerhub_password>
 
-ansible-playbook -i inventories/prod/hosts site.yaml
+ansible-playbook -i inventory/localhost.ini playbooks/deploy-retailapp.yml
+
 ```
 
 ---
@@ -260,6 +250,13 @@ Verify PostgreSQL:
 ```bash
 oc rsh <postgres-pod-name>
 psql -U retail -d retaildb
+```
+
+Accessing Retail App:
+
+To access the Retail application, run the below command to get the route
+```bash
+oc get route | grep retail-frontend | awk {'print $2'}
 ```
 
 ---
