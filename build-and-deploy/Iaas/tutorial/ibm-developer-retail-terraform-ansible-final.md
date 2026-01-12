@@ -67,25 +67,30 @@ be managed.
 
 ## Real-World Usage Comparison
 
-  Scenario                      Terraform   Ansible
-  ----------------------------- ----------- ---------
-  Create VPC                    Yes         No
-  Create OpenShift cluster      Yes         No
-  Deploy Kubernetes workloads   No          Yes
-  Configure namespaces          No          Yes
-  Load database schema          No          Yes
-  Perform rolling updates       No          Yes
+| Scenario                     | Terraform | Ansible |
+| ---------------------------- | --------- | ------- |
+| Create IBM Cloud VPC         | Yes       | No      |
+| Create OpenShift cluster     | Yes       | No      |
+| Create subnets and gateways  | Yes       | No      |
+| Deploy Kubernetes workloads  | No        | Yes     |
+| Configure namespaces         | No        | Yes     |
+| Load database schema         | No        | Yes     |
+| Restart deployments          | No        | Yes     |
+| Perform upgrades             | No        | Yes     |
+| Handle operational workflows | No        | Yes     |
+
 
 ------------------------------------------------------------------------
 
 ## IBM Recommended Automation Strategy
 
-  Layer            Tool        Responsibility
-  ---------------- ----------- -------------------------
-  Infrastructure   Terraform   IBM Cloud and OpenShift
-  Platform         Ansible     Namespace, policies
-  Applications     Ansible     Workload deployment
-  Operations       Ansible     Day-2 automation
+| Layer          | Tool      | Purpose                                |
+| -------------- | --------- | -------------------------------------- |
+| Infrastructure | Terraform | Provision IBM Cloud and OpenShift      |
+| Platform       | Ansible   | Configure cluster namespaces, policies |
+| Applications   | Ansible   | Deploy and manage workloads            |
+| Operations     | Ansible   | Day-2 automation                       |
+
 
 ------------------------------------------------------------------------
 
