@@ -4,7 +4,7 @@
 infrastructure provisioning and application lifecycle management on IBM
 Cloud
 
-**Authors:**\
+**Authors:**
 - Sunil Gajula --- Senior Solution Architect\
 - Yasser Sheriff --- Senior Solution Architect
 
