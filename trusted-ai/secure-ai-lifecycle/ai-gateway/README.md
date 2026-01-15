@@ -278,11 +278,11 @@ Quick gateway creation helper.
 
 **Returns:** GuardiumAIGateway instance
 
-## Migration Guide
+## Sample Migration Guide
 
 If you're using a basic OpenAI integration:
 
-### Before (Direct OpenAI)
+#### Before (Direct OpenAI)
 ```python
 # Direct OpenAI approach
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -293,7 +293,7 @@ chat_completion = client.chat.completions.create(
 )
 ```
 
-### After (With Guardium Gateway)
+#### After (With Guardium Gateway)
 ```python
 # Guardium Gateway approach
 from guardium_ai_gateway import GuardiumAIGateway
