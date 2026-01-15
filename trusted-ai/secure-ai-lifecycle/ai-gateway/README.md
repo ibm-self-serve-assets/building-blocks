@@ -350,7 +350,3 @@ except Exception as e:
 For more information:
 - **Guardium AI Security**: https://demos.ibm-ai-security.com/_docs/docs/applications/ai_firewall
 - **Session Features**: https://demos.ibm-ai-security.com/_docs/docs/applications/ai_firewall#session-features
-
-## License
-
-Internal use only.
