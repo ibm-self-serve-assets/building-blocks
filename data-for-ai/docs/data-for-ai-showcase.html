@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #0f0f0f);
             color: #e0e0e0;
             overflow-x: hidden;
         }
@@ -32,12 +32,80 @@
 
         .header h1 {
             font-size: 3.5em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 20px;
-            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+        }
+
+        .header .subtitle {
+            font-size: 1.5em;
+            color: #00d4ff;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .capabilities-section {
+            background: rgba(0, 212, 255, 0.05);
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .capabilities-title {
+            font-size: 1.3em;
+            color: #00d4ff;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .capability-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .capability-item::before {
+            content: '✓';
+            color: #00d4ff;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 12px;
+        }
+
+        .bob-mode-section {
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 153, 204, 0.1));
+            border: 2px solid #00d4ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .bob-mode-title {
+            font-size: 2em;
+            color: #ffffff;
+            margin-bottom: 15px;
+        }
+
+        .bob-mode-description {
+            font-size: 1.2em;
+            color: #b0b0b0;
+            line-height: 1.6;
         }
 
         .header p {
@@ -74,15 +142,15 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, #00d4ff, #0099cc);
             transform: scaleX(0);
             transition: transform 0.4s ease;
         }
 
         .scenario-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.3);
-            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+            border-color: rgba(0, 212, 255, 0.5);
         }
 
         .scenario-card:hover::before {
@@ -106,12 +174,12 @@
         }
 
         .mode-badge.generic {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #666666 0%, #333333 100%);
             color: white;
         }
 
         .mode-badge.data-ai {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
             color: white;
         }
 
@@ -126,16 +194,16 @@
         }
 
         .question {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(0, 212, 255, 0.1);
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 20px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #00d4ff;
         }
 
         .question-label {
             font-size: 0.85em;
-            color: #667eea;
+            color: #00d4ff;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -236,7 +304,7 @@
             font-size: 2.5em;
             color: #ffffff;
             margin-bottom: 50px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -260,7 +328,7 @@
 
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
         }
 
         .feature-icon {
@@ -307,7 +375,7 @@
         }
 
         th {
-            background: rgba(102, 126, 234, 0.2);
+            background: rgba(0, 212, 255, 0.2);
             color: #ffffff;
             font-weight: 600;
             text-transform: uppercase;
@@ -372,6 +440,10 @@
             .features-grid {
                 grid-template-columns: 1fr;
             }
+
+            .capabilities-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -379,15 +451,38 @@
     <div class="presentation-container">
         <div class="header">
             <h1>🚀 Data for AI Bob Mode</h1>
-            <p>Specialized AI assistance for enterprise data engineering, architecture, and AI/ML data operations</p>
+            <p class="subtitle">Enterprise Data Engineering, Architecture & AI/ML Data Operations</p>
+            
+            <div class="capabilities-section">
+                <div class="capabilities-title">🎯 What This Mode Can Do</div>
+                <div class="capabilities-grid">
+                    <div class="capability-item">Build RAG Systems with Semantic Chunking</div>
+                    <div class="capability-item">Create NL2SQL Engines with Schema Context</div>
+                    <div class="capability-item">Design Data Warehouse Architectures</div>
+                    <div class="capability-item">Implement ETL/ELT Pipelines</div>
+                    <div class="capability-item">Integrate Vector Stores (Milvus, Elastic, OpenSearch, Astra)</div>
+                    <div class="capability-item">Support Multi-Database Operations (PostgreSQL, DB2, Presto)</div>
+                    <div class="capability-item">Optimize Data Quality & Validation</div>
+                    <div class="capability-item">Plan Disaster Recovery Strategies</div>
+                    <div class="capability-item">Implement Data Governance Frameworks</div>
+                    <div class="capability-item">Design Scalable Data Platforms</div>
+                </div>
+            </div>
+
+            <div class="bob-mode-section">
+                <div class="bob-mode-title">💡 Why Use This Bob Mode?</div>
+                <div class="bob-mode-description">
+                    Unlike generic Bob modes that provide basic coding assistance, the <strong>Data for AI mode</strong> is specifically trained and equipped with enterprise-grade tools for data engineering, architecture, and AI/ML data operations. It understands your data stack, provides production-ready solutions, and follows industry best practices.
+                </div>
+            </div>
         </div>
 
         <!-- Scenario 1: RAG System Implementation -->
         <div class="scenario-grid">
             <div class="scenario-card">
                 <div class="card-header">
-                    <span class="mode-badge generic">💻 Code Mode</span>
-                    <h2 class="card-title">Generic Approach</h2>
+                    <span class="mode-badge generic">💻 Generic Bob Mode</span>
+                    <h2 class="card-title">Basic Approach</h2>
                 </div>
                 <div class="scenario-content">
                     <div class="question">
@@ -417,8 +512,8 @@ embeddings = simple_embed(chunks)
 
             <div class="scenario-card">
                 <div class="card-header">
-                    <span class="mode-badge data-ai">🛠️ Data for AI Mode</span>
-                    <h2 class="card-title">Specialized Approach</h2>
+                    <span class="mode-badge data-ai">🛠️ Data for AI Bob Mode</span>
+                    <h2 class="card-title">Enterprise Approach</h2>
                 </div>
                 <div class="scenario-content">
                     <div class="question">
@@ -457,8 +552,8 @@ store.add_documents(chunks)
         <div class="scenario-grid">
             <div class="scenario-card">
                 <div class="card-header">
-                    <span class="mode-badge generic">💻 Code Mode</span>
-                    <h2 class="card-title">Generic Approach</h2>
+                    <span class="mode-badge generic">💻 Generic Bob Mode</span>
+                    <h2 class="card-title">Basic Approach</h2>
                 </div>
                 <div class="scenario-content">
                     <div class="question">
@@ -488,8 +583,8 @@ result = db.execute(query)
 
             <div class="scenario-card">
                 <div class="card-header">
-                    <span class="mode-badge data-ai">🛠️ Data for AI Mode</span>
-                    <h2 class="card-title">Specialized Approach</h2>
+                    <span class="mode-badge data-ai">🛠️ Data for AI Bob Mode</span>
+                    <h2 class="card-title">Enterprise Approach</h2>
                 </div>
                 <div class="scenario-content">
                     <div class="question">
@@ -529,8 +624,8 @@ result = engine.query(
         <div class="scenario-grid">
             <div class="scenario-card">
                 <div class="card-header">
-                    <span class="mode-badge generic">📝 Plan Mode</span>
-                    <h2 class="card-title">Generic Approach</h2>
+                    <span class="mode-badge generic">📝 Generic Bob Mode</span>
+                    <h2 class="card-title">Basic Approach</h2>
                 </div>
                 <div class="scenario-content">
                     <div class="question">
@@ -555,8 +650,8 @@ result = engine.query(
 
             <div class="scenario-card">
                 <div class="card-header">
-                    <span class="mode-badge data-ai">🛠️ Data for AI Mode</span>
-                    <h2 class="card-title">Specialized Approach</h2>
+                    <span class="mode-badge data-ai">🛠️ Data for AI Bob Mode</span>
+                    <h2 class="card-title">Enterprise Approach</h2>
                 </div>
                 <div class="scenario-content">
                     <div class="question">
@@ -584,7 +679,7 @@ result = engine.query(
 
         <!-- Features Section -->
         <div class="features-section">
-            <h2 class="features-title">Why Data for AI Mode?</h2>
+            <h2 class="features-title">Key Advantages of Data for AI Bob Mode</h2>
             <div class="features-grid">
                 <div class="feature-card">
                     <div class="feature-icon">🎯</div>
@@ -626,8 +721,8 @@ result = engine.query(
                 <thead>
                     <tr>
                         <th>Capability</th>
-                        <th>Generic Modes</th>
-                        <th>Data for AI Mode</th>
+                        <th>Generic Bob Modes</th>
+                        <th>Data for AI Bob Mode</th>
                     </tr>
                 </thead>
                 <tbody>
