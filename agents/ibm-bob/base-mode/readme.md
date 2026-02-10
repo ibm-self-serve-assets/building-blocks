@@ -3,7 +3,7 @@ This [custom mode for IBM Bob](https://internal.bob.ibm.com/docs/ide/features/cu
 
 
 ### Setting up the watsonx Orchestrate MCP Servers
-If you haven't added MCP servers into your IBM Bob instance year, read about [mcp servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).  There are two MCP servers provided in the [mcp_watsonx_orchestrate.json](mcp_watsonx_orchestrate.json).
+There are two MCP servers provided in the [mcp_watsonx_orchestrate.json](mcp_watsonx_orchestrate.json) and described below.  If you haven't added MCP servers into your IBM Bob instance year, read about [mcp servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).  
 
 
 1. **watsonx Orchestrate ADK Documentation**: Provides a tool that queries the [watsonX orchestrate Agent Developer's Kit (ADK)](https://developer.watson-orchestrate.ibm.com/) developer documentation. This gives Bob the context that is needed to understand how all watsonx Orchestrate ADK features work.
