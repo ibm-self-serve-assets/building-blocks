@@ -2,34 +2,22 @@
 
 This repository contains expert-level [custom modes for IBM Bob](https://internal.bob.ibm.com/docs/ide/features/custom-modes) designed for building production-grade AI agents and MCP servers. These modes transform IBM Bob into a specialized development assistant with comprehensive guidance and best practices.
 
-## Available Custom Modes
-
-### 1. 🤖 watsonx Orchestrate Agent Builder Mode
-Expert mode for building and managing watsonx Orchestrate agents, tools, and workflows.
-
-**Files:**
-- [`wxo_agent_builder_mode.yml`](../wxo_agent_builder_mode.yml) - Mode configuration
-- [`wxo_agent_builder_mode_guide.md`](../wxo_agent_builder_mode_guide.md) - Comprehensive user guide
-
-**Capabilities:**
-- Native agent development with optimal LLM selection
-- Python tool creation with `@tool` decorator patterns
-- MCP toolkit integration (local and remote)
-- Agentic workflow design
-- Multi-agent collaboration patterns
-- Security and performance optimization
-
 **Prerequisites:**
 - watsonx Orchestrate ADK installed: `pip install ibm-watsonx-orchestrate`
-- MCP servers configured (see below)
 - Active watsonx Orchestrate environment
+- Python 3.10+
+- For MCP server mode:
+  - MCP SDK: `pip install mcp` or `npm install @modelcontextprotocol/sdk`
+  - Node.js 18+ 
 
-### 2. 🔌 MCP Builder Mode
-Expert mode for building production-grade Model Context Protocol (MCP) servers in Python and TypeScript/Node.js.
+## Available Custom Modes
+Build and manage watsonx Orchestrate agents, tools, and workflows.
+- [`mcp_builder_mode.yml`](mcp_builder_mode.yml) - Mode configuration
+- [`mcp_builder_mode_guide.md`](mcp_builder_mode_guide.md) - Comprehensive user guide
 
-**Files:**
-- [`mcp_builder_mode.yml`](../mcp_builder_mode.yml) - Mode configuration
-- [`mcp_builder_mode_guide.md`](../mcp_builder_mode_guide.md) - Comprehensive user guide
+Building production-grade Model Context Protocol (MCP) servers in Python and TypeScript/Node.js.
+- [`wxo_agent_builder_mode.yml`](wxo_agent_builder_mode.yml) - Mode configuration
+- [`wxo_agent_builder_mode_guide.md`](wxo_agent_builder_mode_guide.md) - Comprehensive user guide
 
 **Capabilities:**
 - Python and TypeScript/Node.js MCP server development
@@ -39,16 +27,12 @@ Expert mode for building production-grade Model Context Protocol (MCP) servers i
 - Performance optimization and caching strategies
 - Integration with AI platforms (watsonx Orchestrate, Claude Desktop, etc.)
 
-**Prerequisites:**
-- Python 3.10+ or Node.js 18+
-- MCP SDK: `pip install mcp` or `npm install @modelcontextprotocol/sdk`
-
 ## Installation
 
 ### Quick Start
 
 1. **Copy the mode configuration:**
-   - For watsonx Orchestrate development: Copy contents of `wxo_agent_builder_mode.yml`
+   - For watsonx Orchestrate development: Copy contents of `wxo_agent_builder_mode.yml` or `wxo_agent_builder_mode.yml`
    - For MCP server development: Copy contents of `mcp_builder_mode.yml`
 
 2. **Add to your workspace:**
@@ -168,42 +152,3 @@ The watsonx Orchestrate Agent Builder mode requires two MCP servers configured i
 "Implement resource support for accessing documentation files"
 ```
 
-## Documentation
-
-Each mode includes comprehensive documentation:
-
-- **[watsonx Orchestrate Agent Builder Guide](../wxo_agent_builder_mode_guide.md)**: Installation, capabilities, use cases, best practices, troubleshooting, and examples
-- **[MCP Builder Guide](../mcp_builder_mode_guide.md)**: Installation, capabilities, use cases, patterns, security, testing, deployment, and integration examples
-
-## Key Features
-
-Both modes provide:
-- ✅ **Expert-level guidance** with production-ready patterns
-- ✅ **Comprehensive instructions** covering all aspects of development
-- ✅ **Security best practices** for credential management and input validation
-- ✅ **Performance optimization** strategies
-- ✅ **Testing and debugging** guidance
-- ✅ **Real-world examples** and common use cases
-- ✅ **Full development access** with all necessary tool groups
-
-## Support
-
-For questions or issues:
-- Review the comprehensive guides for each mode
-- Check the troubleshooting sections in the documentation
-- Ask Bob for specific guidance within the mode
-- Refer to official documentation:
-  - [watsonx Orchestrate ADK](https://developer.watson-orchestrate.ibm.com/)
-  - [MCP Specification](https://spec.modelcontextprotocol.io/)
-
-## Contributing
-
-These modes are designed to be extended and customized. Feel free to:
-- Add your own custom instructions
-- Modify tool groups based on your needs
-- Create variations for specific use cases
-- Share improvements with your team
-
-## License
-
-These custom modes are provided as examples for IBM Bob users. Modify and distribute as needed for your organization.
