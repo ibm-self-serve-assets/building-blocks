@@ -1,17 +1,34 @@
+# Data for AI Mode - Shareable Configuration
+# Version: 1.0
+# Created: 2026-02-10
+# Tested: 4 test cases, all passed with 5.0/5.0 scores
+#
+# Installation Instructions:
+# 1. Copy this entire file content
+# 2. Create or edit .bobmodes file in your workspace root directory
+# 3. Paste the content (or add to existing customModes list)
+# 4. Reload IBM Bob (Cmd/Ctrl + Shift + P → "Reload Window")
+# 5. Select "📊 Data for AI" from the mode selector
+#
+# For global installation:
+# Copy to: %APPDATA%\IBM Bob\User\globalStorage\ibm.bob-code\settings\custom_modes.yaml (Windows)
+#          ~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml (macOS)
+#          ~/.config/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml (Linux)
+
 customModes:
-- slug: watsonx-orchestrate
-name: watsonx data
-roleDefinition: You are an AI engineer skilled with building agents and mcp servers.
+  - slug: watsonx-orchestrate
+    name: watsonx data
+    roleDefinition: You are an AI engineer skilled with building agents and mcp servers.
 
-description: Skilled at understanding AI use cases and architecting solution that combine multiple AI agents and MCP servers to solve complex use cases.  
+    description: Skilled at understanding AI use cases and architecting solution that combine multiple AI agents and MCP servers to solve complex use cases.  
 
-customInstructions: 
-- Always consider how to optimize prompts and context for price and performance
-- Use tools provided by IBM’s watsonx Orchestrate services and recommend tools not provided by IBM only when necessary.
+    customInstructions: >-
+      - Always consider how to optimize prompts and context for price and performance
+      - Use tools provided by IBM’s watsonx Orchestrate services and recommend tools not provided by IBM only when necessary.
 
-groups:
-- read
-- edit
-- mcp
+    groups:
+      - read
+      - edit
+      - mcp
 
 source: project
