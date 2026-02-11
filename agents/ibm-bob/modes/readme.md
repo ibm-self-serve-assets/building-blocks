@@ -19,15 +19,7 @@ Building production-grade Model Context Protocol (MCP) servers in Python and Typ
 - [`wxo_agent_builder_mode.yml`](wxo_agent_builder_mode.yml) - Mode configuration
 - [`wxo_agent_builder_mode_guide.md`](wxo_agent_builder_mode_guide.md) - Comprehensive user guide
 
-**Capabilities:**
-- Python and TypeScript/Node.js MCP server development
-- Tool, Resource, and Prompt implementation
-- Transport protocol configuration (stdio, SSE, HTTP)
-- Security best practices and credential management
-- Performance optimization and caching strategies
-- Integration with AI platforms (watsonx Orchestrate, Claude Desktop, etc.)
-
-## Installation
+## I. Custom Mode Installation
 
 ### Quick Start
 
@@ -54,7 +46,7 @@ For system-wide access, copy the YAML file to:
 - **macOS**: `~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
 - **Linux**: `~/.config/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
 
-## Setting up the watsonx Orchestrate MCP Servers
+## II. Setting up the watsonx Orchestrate MCP Servers
 
 The watsonx Orchestrate Agent Builder mode requires two MCP servers configured in [`mcp_watsonx_orchestrate.json`](mcp_watsonx_orchestrate.json). If you haven't added MCP servers to IBM Bob yet, read about [MCP servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).
 
