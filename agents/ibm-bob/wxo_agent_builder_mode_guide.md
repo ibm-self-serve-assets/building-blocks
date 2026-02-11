@@ -1,431 +1,210 @@
-# watsonx Orchestrate Agent Builder Mode - User Guide
+# watsonx Orchestrate Agent Builder Mode - Guide
 
-## Overview
+## Why Use This Custom Mode?
 
-The **wxO Agent Builder** mode is an expert-level custom mode for IBM Bob designed specifically for building and managing watsonx Orchestrate agents, tools, and workflows. This mode provides comprehensive guidance, best practices, and patterns for production-grade agent development.
+The **wxO Agent Builder** mode transforms IBM Bob from a general-purpose coding assistant into an expert watsonx Orchestrate architect. Instead of asking Bob generic questions and getting generic answers, this mode gives Bob deep, contextual knowledge about watsonx Orchestrate best practices, patterns, and pitfalls.
 
-## Target Audience
+### The Problem with Default Code Mode
 
-This mode is designed for expert developers who:
-- Have experience with watsonx Orchestrate and the ADK
-- Understand LLM concepts and agent architectures
-- Are comfortable with Python development
-- Need to build production-ready agents and tools
+When using Bob's default Code mode for watsonx Orchestrate development:
+- ❌ Bob doesn't know watsonx Orchestrate-specific patterns and conventions
+- ❌ You have to repeatedly explain concepts like agent styles, tool decorators, and MCP integration
+- ❌ Bob might suggest approaches that work generally but aren't optimal for watsonx Orchestrate
+- ❌ You spend time correcting Bob's suggestions to align with ADK best practices
+- ❌ No built-in knowledge of when to use agents vs tools vs workflows
 
-## Prerequisites
+### What This Mode Provides
 
-Before using this mode, ensure you have:
+With the wxO Agent Builder mode:
+- ✅ **Expert Context**: Bob understands watsonx Orchestrate architecture, ADK patterns, and best practices
+- ✅ **Optimized Decisions**: Automatically selects appropriate LLMs, agent styles, and architectures
+- ✅ **Production-Ready Code**: Generates code following watsonx Orchestrate conventions and security practices
+- ✅ **Integrated Workflow**: Direct access to ADK CLI commands and documentation via MCP servers
+- ✅ **Time Savings**: No need to explain watsonx Orchestrate concepts repeatedly
 
-1. **watsonx Orchestrate ADK installed**
+
+## Key Advantages
+
+### 1. Built-in Best Practices
+
+The mode includes expert knowledge about:
+- When to use Granite vs Llama models
+- How to write effective agent instructions
+- Tool vs collaborator decision-making
+- Security patterns for credentials
+- Performance optimization strategies
+
+### 2. Integrated Development Workflow
+
+With MCP servers configured, Bob can:
+- Query watsonx Orchestrate documentation in real-time
+- Execute ADK CLI commands directly
+- List existing agents, tools, and connections
+- Export and import artifacts
+- Test and validate configurations
+
+### 3. Production-Ready Output
+
+Every suggestion follows:
+- watsonx Orchestrate naming conventions
+- Proper error handling patterns
+- Security best practices
+- Type safety and validation
+- Documentation standards
+
+### 4. Context Retention
+
+Bob remembers:
+- Your project's agent architecture
+- Previously created tools and agents
+- Credential management patterns
+- Your team's conventions
+
+## Installation
+
+### Prerequisites
+
+1. **Install watsonx Orchestrate ADK:**
    ```bash
    pip install ibm-watsonx-orchestrate
    ```
 
-2. **MCP Servers configured** (see `mcp_watsonx_orchestrate.json`)
-   - wxo-docs: Documentation query tool
-   - orchestrate-adk: Direct ADK CLI access
+2. **Configure MCP Servers:**
+   - Copy `base-mode/mcp_watsonx_orchestrate.json` configuration
+   - Update `WXO_MCP_WORKING_DIRECTORY` to your project path
+   - Add MCP servers to IBM Bob (Project level recommended)
 
-3. **Active watsonx Orchestrate environment**
+3. **Activate Environment:**
    ```bash
-   orchestrate env list
    orchestrate env activate --name your_env_name
    ```
 
-4. **Working directory configured** in MCP server settings
-   - Update `WXO_MCP_WORKING_DIRECTORY` in `mcp_watsonx_orchestrate.json`
+### Setup Steps
 
-## Installation
+1. Copy contents of `wxo_agent_builder_mode.yml`
+2. Create/edit `.bobmodes` in your workspace root
+3. Paste the mode configuration
+4. Reload IBM Bob (`Cmd/Ctrl + Shift + P` → "Reload Window")
+5. Select "🤖 wxO Agent Builder" from mode selector
 
-### Project-Level Installation (Recommended)
+## Usage Patterns
 
-1. Copy the contents of `wxo_agent_builder_mode.yml`
-2. Create or edit `.bobmodes` file in your workspace root directory
-3. Paste the content (or add to existing `customModes` list)
-4. Reload IBM Bob: `Cmd/Ctrl + Shift + P` → "Reload Window"
-5. Select "🤖 wxO Agent Builder" from the mode selector
-
-### Global Installation
-
-Copy `wxo_agent_builder_mode.yml` to:
-- **Windows**: `%APPDATA%\IBM Bob\User\globalStorage\ibm.bob-code\settings\custom_modes.yaml`
-- **macOS**: `~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
-- **Linux**: `~/.config/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
-
-## Mode Capabilities
-
-### What This Mode Excels At
-
-1. **Native Agent Development**
-   - Creating agent YAML specifications
-   - Optimizing agent instructions for specific use cases
-   - Selecting appropriate LLMs and agent styles
-   - Configuring tool and collaborator relationships
-
-2. **Python Tool Development**
-   - Writing tools with `@tool` decorator
-   - Implementing credential management
-   - Building multi-function tool packages
-   - Creating requirements.txt files
-
-3. **MCP Toolkit Integration**
-   - Importing local MCP toolkits
-   - Configuring remote MCP connections
-   - Managing toolkit credentials
-   - Debugging MCP server issues
-
-4. **Agentic Workflow Design**
-   - Designing workflow architectures
-   - Implementing control structures (if-then-else, loops, foreach)
-   - Creating human-in-the-loop patterns
-   - Optimizing long-running processes
-
-5. **Multi-Agent Orchestration**
-   - Designing supervisor-worker hierarchies
-   - Implementing agent collaboration patterns
-   - Optimizing agent routing strategies
-
-## Key Features
-
-### Expert-Level Guidance
-
-The mode provides:
-- Production-ready code patterns
-- Performance optimization strategies
-- Security best practices
-- Cost-efficiency recommendations
-- Scalability considerations
-
-### Full Development Access
-
-Tool groups enabled:
-- **read**: File reading and analysis
-- **edit**: Complete file editing capabilities
-- **execute**: ADK CLI command execution
-- **mcp**: Access to watsonx Orchestrate MCP tools
-- **browser**: Testing deployed agents
-
-### Comprehensive Instructions
-
-Built-in guidance for:
-- Agent description and instruction writing
-- LLM selection strategies
-- Agent style selection (default/react/planner)
-- Tool vs collaborator decision-making
-- Python tool development patterns
-- MCP toolkit integration
-- Agentic workflow design
-- Multi-agent collaboration
-- Error handling and validation
-- Security and credential management
-
-## Common Use Cases
-
-### 1. Creating a Simple Agent with Tools
-
-**Task**: "Create a customer support agent that can look up orders and process returns"
-
-The mode will:
-1. Design the agent architecture
-2. Select appropriate LLM (likely Granite 3-8B for speed)
-3. Write clear agent instructions
-4. Create or identify required tools
-5. Generate agent YAML specification
-6. Import using ADK CLI
-7. Export for version control
-
-### 2. Building a Python Tool
-
-**Task**: "Create a Python tool that fetches customer data from our CRM API"
-
-The mode will:
-1. Create Python file with `@tool` decorator
-2. Add proper type hints and docstrings
-3. Implement credential management via connections
-4. Add error handling and validation
-5. Create requirements.txt if needed
-6. Import tool using ADK CLI
-7. Test tool functionality
-
-### 3. Designing a Multi-Agent System
-
-**Task**: "Design a supervisor agent that routes to sales, support, and operations agents"
-
-The mode will:
-1. Design supervisor-worker architecture
-2. Create supervisor agent with collaborators
-3. Define clear routing logic in instructions
-4. Create specialized worker agents with tools
-5. Optimize agent descriptions for routing
-6. Test collaboration flows
-7. Export all agents for version control
-
-### 4. Integrating an MCP Toolkit
-
-**Task**: "Import the Slack MCP toolkit for our agents to use"
-
-The mode will:
-1. Determine toolkit source (npm, PyPI, local, remote)
-2. Configure connection for credentials
-3. Generate import command with appropriate flags
-4. Execute import via ADK CLI
-5. Verify toolkit tools are available
-6. Document toolkit usage
-
-### 5. Creating an Agentic Workflow
-
-**Task**: "Create a workflow for employee onboarding with approvals"
-
-The mode will:
-1. Design workflow architecture with nodes and edges
-2. Identify required agents, tools, and human interactions
-3. Implement control structures (conditionals, loops)
-4. Add human-in-the-loop approval steps
-5. Configure async execution
-6. Test workflow execution
-7. Export workflow definition
-
-## Best Practices When Using This Mode
-
-### 1. Start with Clear Requirements
-
-Provide specific details about:
-- What the agent/tool should do
-- What data sources it needs access to
-- What actions it should perform
-- Performance and cost constraints
-- Security requirements
-
-### 2. Iterate Incrementally
-
-- Build and test tools independently first
-- Create simple agents before complex ones
-- Test individual components before integration
-- Add collaborators one at a time
-- Validate each step before proceeding
-
-### 3. Leverage MCP Tools
-
-The mode has access to:
-- **SearchIbmWatsonxOrchestrateAdk**: Query documentation
-- **list_agents**, **export_agent**: Manage agents
-- **list_tools**, **import_tool**: Manage tools
-- **list_toolkits**: View available toolkits
-- **list_connections**: Manage credentials
-- **list_models**: View available LLMs
-
-### 4. Version Control Everything
-
-- Export agents, tools, and workflows to files
-- Store in Git repository
-- Use semantic versioning
-- Document changes in commits
-- Maintain separate branches for draft/live
-
-### 5. Optimize for Production
-
-- Choose smallest LLM that meets requirements
-- Write efficient agent instructions
-- Implement proper error handling
-- Use connections for credentials
-- Test with vulnerability testing
-- Monitor costs and performance
-
-## Example Workflows
-
-### Workflow 1: Creating a New Agent from Scratch
+### Pattern 1: Rapid Agent Development
 
 ```
-User: "Create a sales agent that can search products, check inventory, and create quotes"
-
-Mode Actions:
-1. Analyzes requirements
-2. Selects LLM (Granite 3-8B for speed)
-3. Chooses agent style (default for simple routing)
-4. Writes agent instructions with tool usage guidance
-5. Identifies/creates required tools:
-   - search_products
-   - check_inventory
-   - create_quote
-6. Generates agent YAML specification
-7. Uses execute_command to import agent
-8. Exports agent for version control
-9. Provides testing recommendations
+"Create a sales agent that can search products, check inventory, and create quotes"
 ```
 
-### Workflow 2: Building a Python Tool with Credentials
+Bob will:
+- Design the agent architecture
+- Select optimal LLM and style
+- Write comprehensive instructions
+- Create or identify required tools
+- Generate complete YAML specification
+- Provide import commands
+
+### Pattern 2: Tool Creation
 
 ```
-User: "Create a tool to send Slack messages using our workspace token"
-
-Mode Actions:
-1. Creates Python file with @tool decorator
-2. Implements function with proper type hints
-3. Adds credential retrieval from environment variables
-4. Implements error handling for API failures
-5. Creates comprehensive docstring
-6. Generates requirements.txt with slack-sdk
-7. Creates connection for Slack token
-8. Imports tool with --app-id flag
-9. Tests tool functionality
-10. Exports tool for version control
+"Build a Python tool that fetches customer data from our CRM API"
 ```
 
-### Workflow 3: Designing a Multi-Agent System
+Bob will:
+- Create tool with @tool decorator
+- Add proper type hints and schema
+- Implement credential management
+- Add error handling
+- Create requirements.txt
+- Provide import and testing commands
+
+### Pattern 3: Multi-Agent Systems
 
 ```
-User: "Design an enterprise assistant with specialized agents for different departments"
-
-Mode Actions:
-1. Designs supervisor-worker architecture
-2. Creates supervisor agent:
-   - LLM: Llama 3.3 70B (complex routing)
-   - Style: react (reasoning required)
-   - Collaborators: dept_agents
-3. Creates department agents:
-   - Sales agent with CRM tools
-   - Support agent with ticketing tools
-   - Operations agent with logistics tools
-4. Optimizes agent descriptions for routing
-5. Writes clear handoff protocols
-6. Imports all agents in correct order
-7. Tests routing logic
-8. Exports complete system
+"Design a supervisor agent that routes to sales, support, and operations agents"
 ```
+
+Bob will:
+- Design supervisor-worker architecture
+- Create supervisor with routing logic
+- Define specialized worker agents
+- Optimize descriptions for routing
+- Generate all agent specifications
+- Provide integration testing approach
+
+### Pattern 4: Workflow Design
+
+```
+"Create an agentic workflow for employee onboarding with approvals"
+```
+
+Bob will:
+- Design workflow architecture
+- Identify required nodes and edges
+- Implement control structures
+- Add human-in-the-loop steps
+- Configure async execution
+- Provide testing strategy
+
+## When to Use This Mode
+
+**Use wxO Agent Builder Mode when:**
+- Building or modifying watsonx Orchestrate agents
+- Creating Python tools with @tool decorator
+- Integrating MCP toolkits
+- Designing agentic workflows
+- Architecting multi-agent systems
+- Optimizing agent performance
+- Implementing security patterns
+
+**Use Default Code Mode when:**
+- Writing general Python/JavaScript code
+- Working on non-watsonx Orchestrate projects
+- Debugging unrelated issues
+- General programming tasks
+
+## Learning Resources
+
+This mode complements (not replaces) official documentation:
+
+- **[watsonx Orchestrate ADK Documentation](https://developer.watson-orchestrate.ibm.com/)**: Complete API reference and guides
+- **[Agent Development Guide](https://developer.watson-orchestrate.ibm.com/agents/overview)**: Agent concepts and patterns
+- **[Tool Development Guide](https://developer.watson-orchestrate.ibm.com/tools/overview)**: Tool creation and management
+- **[MCP Integration Guide](https://developer.watson-orchestrate.ibm.com/tools/toolkits/overview)**: MCP toolkit integration
+
+The mode uses this documentation via MCP servers to provide contextual, up-to-date guidance.
+
+## Tips for Maximum Effectiveness
+
+1. **Be Specific**: Provide clear requirements about what the agent/tool should do
+2. **Iterate**: Start simple, then ask Bob to enhance with additional features
+3. **Leverage MCP**: Ask Bob to check existing agents/tools before creating new ones
+4. **Test Incrementally**: Build and test tools before integrating into agents
+5. **Version Control**: Ask Bob to export artifacts for Git after creation
 
 ## Troubleshooting
 
-### Agent Not Using Tools Correctly
+### Mode Not Appearing
+- Verify `.bobmodes` file is in workspace root
+- Check YAML syntax is valid
+- Reload IBM Bob window
 
-**Solution**: The mode will:
-- Review agent instructions for clarity
-- Check tool descriptions are comprehensive
-- Verify tools are properly attached to agent
-- Test tool functionality independently
-- Adjust instructions to be more explicit about tool usage
+### MCP Servers Not Working
+- Verify ADK is installed: `pip show ibm-watsonx-orchestrate`
+- Check `WXO_MCP_WORKING_DIRECTORY` is set correctly
+- Ensure environment is activated: `orchestrate env list`
+- Review MCP server logs in Bob's output panel
 
-### MCP Toolkit Import Failing
-
-**Solution**: The mode will:
-- Verify toolkit package/path is correct
-- Check language flag matches toolkit type
-- Validate connection credentials if required
-- Review toolkit requirements are installed
-- Test toolkit command manually
-- Check MCP server logs for errors
-
-### Agent Routing to Wrong Collaborator
-
-**Solution**: The mode will:
-- Review collaborator descriptions for clarity
-- Make descriptions more specific and distinct
-- Adjust supervisor instructions for routing logic
-- Test with various input scenarios
-- Consider using different LLM for supervisor
-
-### Tool Credentials Not Working
-
-**Solution**: The mode will:
-- Verify connection is created and configured
-- Check credentials are set correctly
-- Confirm app-id is associated with tool
-- Test environment variables are accessible
-- Review connection type (key_value required)
-
-## Advanced Patterns
-
-### Pattern 1: Dynamic Tool Selection
-
-Create agents that intelligently select from many tools based on context.
-
-**Key Elements**:
-- Comprehensive tool descriptions
-- Clear tool usage guidelines in instructions
-- React agent style for reasoning
-- Tool categorization in instructions
-
-### Pattern 2: Human-in-the-Loop Workflows
-
-Design workflows that pause for human approval or input.
-
-**Key Elements**:
-- Agentic workflow with user interaction nodes
-- Clear approval criteria
-- Timeout handling
-- Notification mechanisms
-
-### Pattern 3: Multi-Stage Agent Pipelines
-
-Chain multiple agents for complex processing.
-
-**Key Elements**:
-- Clear data passing between agents
-- Error handling at each stage
-- Progress tracking
-- Rollback mechanisms
-
-### Pattern 4: Knowledge-Enhanced Agents
-
-Combine agents with knowledge bases for RAG.
-
-**Key Elements**:
-- Knowledge base creation and indexing
-- Agent configuration with knowledge sources
-- Query optimization
-- Relevance tuning
-
-## Performance Optimization Tips
-
-1. **LLM Selection**
-   - Start with Granite 3-8B, upgrade only if needed
-   - Use Llama 3.3 70B for complex reasoning only
-   - Consider latency vs accuracy tradeoffs
-
-2. **Instruction Optimization**
-   - Be specific to reduce unnecessary tool calls
-   - Provide examples of expected behavior
-   - Use structured formats for consistency
-
-3. **Tool Design**
-   - Keep tools focused and single-purpose
-   - Batch operations where possible
-   - Cache frequently accessed data
-   - Implement timeouts for external calls
-
-4. **Agent Architecture**
-   - Avoid deep agent hierarchies (3 levels max)
-   - Use tools instead of collaborators when possible
-   - Minimize agent-to-agent communication
-
-## Security Considerations
-
-1. **Credential Management**
-   - Always use connections for credentials
-   - Never hardcode API keys or tokens
-   - Use environment variables in tools
-   - Rotate credentials regularly
-
-2. **Input Validation**
-   - Validate all tool inputs
-   - Sanitize user-provided data
-   - Implement rate limiting
-   - Check for injection attacks
-
-3. **Agent Instructions**
-   - Test for prompt injection vulnerabilities
-   - Use vulnerability testing feature
-   - Implement guardrails for sensitive operations
-   - Review instructions for security issues
-
-4. **Tool Permissions**
-   - Use least privilege principle
-   - Limit tool access to required resources
-   - Audit tool usage regularly
-   - Implement approval workflows for sensitive actions
+### Bob Doesn't Seem to Know watsonx Orchestrate
+- Verify you've selected "🤖 wxO Agent Builder" mode
+- Check MCP servers are enabled and connected
+- Try asking Bob to query the documentation: "What are agent styles?"
 
 ## Getting Help
 
-### Within the Mode
+- **Within the mode**: Ask Bob specific questions about watsonx Orchestrate concepts
+- **Official docs**: Refer to [developer.watson-orchestrate.ibm.com](https://developer.watson-orchestrate.ibm.com/)
+- **MCP servers**: Use the documentation query tool for real-time answers
 
-Ask Bob to:
-- "Explain the difference between agent styles"
-- "Show me an example of a Python tool with credentials"
+## Summary
+
+The wxO Agent Builder mode is your expert pair programmer for watsonx Orchestrate development. It saves time, reduces errors, and ensures you're following best practices without having to constantly reference documentation or explain concepts. Think of it as having a watsonx Orchestrate expert sitting next to you, ready to help with every aspect of agent development.
