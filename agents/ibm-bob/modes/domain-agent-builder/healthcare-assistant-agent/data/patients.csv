@@ -1,0 +1,11 @@
+patient_id,name,email,phone,date_of_birth,care_level,status,primary_physician,insurance_provider,last_visit_date,next_appointment,chronic_conditions,current_medications,allergies,emergency_contact
+PAT001,Sarah Johnson,sarah.johnson@email.com,555-0101,1985-03-15,Outpatient,active,Dr. Emily Chen,Blue Cross Blue Shield,2026-01-15,2026-02-20,"Type 2 Diabetes; Hypertension","Metformin 500mg; Lisinopril 10mg",Penicillin,John Johnson (555-0102)
+PAT002,Michael Chen,michael.chen@email.com,555-0103,1972-07-22,Inpatient,active,Dr. Robert Martinez,Aetna,2026-01-28,,"Pneumonia","Azithromycin 500mg; Albuterol inhaler",None,Lisa Chen (555-0104)
+PAT003,Jennifer Williams,jennifer.w@email.com,555-0105,1990-11-08,ICU,critical,Dr. Sarah Thompson,United Healthcare,2026-02-01,,"Septic Shock","Norepinephrine; Vancomycin; Piperacillin",Sulfa drugs,David Williams (555-0106)
+PAT004,Robert Taylor,robert.taylor@email.com,555-0107,1965-05-30,Emergency,urgent,Dr. Emergency On-Call,Medicare,2026-02-04,,"Chest pain","Aspirin; Nitroglycerin",Latex,Mary Taylor (555-0108)
+PAT005,Emily Rodriguez,emily.rodriguez@email.com,555-0109,1995-09-12,Outpatient,active,Dr. James Wilson,Cigna,2026-01-10,2026-03-15,Asthma,"Albuterol inhaler; Fluticasone",None,Carlos Rodriguez (555-0110)
+PAT006,David Kim,david.kim@email.com,555-0111,1978-12-25,Inpatient,active,Dr. Lisa Anderson,Kaiser Permanente,2026-01-30,,"Post-surgical recovery (Appendectomy)","Morphine PRN; Cefazolin",Codeine,Susan Kim (555-0112)
+PAT007,Maria Garcia,maria.garcia@email.com,555-0113,1988-04-18,Outpatient,active,Dr. Michael Brown,Humana,2026-01-25,2026-02-25,Hypothyroidism,Levothyroxine 75mcg,Shellfish,Jose Garcia (555-0114)
+PAT008,James Anderson,james.anderson@email.com,555-0115,1955-08-07,ICU,critical,Dr. Patricia Lee,Medicare,2026-02-02,,"Acute Myocardial Infarction","Heparin; Aspirin; Atorvastatin; Metoprolol",None,Barbara Anderson (555-0116)
+PAT009,Linda Martinez,linda.martinez@email.com,555-0117,1992-06-14,Outpatient,active,Dr. Emily Chen,Blue Cross Blue Shield,2026-01-20,2026-03-10,None,None,Iodine,Roberto Martinez (555-0118)
+PAT010,Thomas Wilson,thomas.wilson@email.com,555-0119,1968-10-03,Inpatient,active,Dr. Robert Martinez,Aetna,2026-02-01,,"COPD exacerbation","Prednisone; Albuterol; Ipratropium",Penicillin,Nancy Wilson (555-0120)

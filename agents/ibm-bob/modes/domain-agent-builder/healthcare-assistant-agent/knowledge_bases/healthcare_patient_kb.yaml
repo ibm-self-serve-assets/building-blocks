@@ -1,0 +1,33 @@
+spec_version: v1
+name: healthcare_patient_kb
+description: |
+  Comprehensive patient data and healthcare information for Healthcare Assistant Agent.
+  
+  Contains:
+  - Patient profiles with demographics and contact information
+  - Medical history and chronic conditions
+  - Current medications and allergies
+  - Care level assignments (Outpatient, Inpatient, ICU, Emergency)
+  - Insurance and billing information
+  - Appointment schedules and visit history
+  
+  This knowledge base enables semantic search across patient data to support
+  personalized care coordination, appointment management, and healthcare communications.
+
+documents:
+  - ../data/patients.csv
+
+vector_index:
+  embeddings_model_name: ibm/slate-125m-english-rtrvr-v2
+
+metadata:
+  domain: "Healthcare"
+  version: "1.0"
+  last_updated: "2026-02-04"
+  data_sources:
+    - patients
+  care_levels:
+    - Outpatient
+    - Inpatient
+    - ICU
+    - Emergency

@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain_examples>
+  <overview>
+    Comprehensive examples of how to adapt the agent template for different domains.
+    Use these as reference when building domain-specific agents. Each example demonstrates
+    how to customize entity models, capabilities, and communications for specific industries.
+  </overview>
+
+  <domain name="healthcare">
+    <description>Healthcare and medical services domain</description>
+    
+    <entity_model>
+      <entity_type>patients</entity_type>
+      <tiers>
+        <tier>Standard Care</tier>
+        <tier>Premium Care</tier>
+        <tier>VIP Care</tier>
+        <tier>Concierge Care</tier>
+      </tiers>
+      <key_fields>
+        <field>patient_id</field>
+        <field>name</field>
+        <field>date_of_birth</field>
+        <field>insurance_provider</field>
+        <field>primary_physician</field>
+        <field>care_tier</field>
+        <field>last_visit_date</field>
+        <field>chronic_conditions</field>
+        <field>medications</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Appointment scheduling and management</capability>
+      <capability>Medical record access and retrieval</capability>
+      <capability>Prescription refill requests</capability>
+      <capability>Health information and education</capability>
+      <capability>Insurance and billing inquiries</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Appointment reminders</type>
+      <type>Test result notifications</type>
+      <type>Prescription refill alerts</type>
+      <type>Wellness tips and health education</type>
+      <type>Billing and insurance updates</type>
+    </communication_types>
+
+    <sample_tools>
+      <tool name="get_patient_data">
+        <description>Retrieve patient profiles and medical history</description>
+      </tool>
+      <tool name="schedule_appointment">
+        <description>Book or modify patient appointments</description>
+      </tool>
+      <tool name="request_prescription_refill">
+        <description>Submit prescription refill requests</description>
+      </tool>
+      <tool name="generate_health_communication">
+        <description>Create personalized health messages</description>
+      </tool>
+    </sample_tools>
+
+    <sample_data_structure>
+      <csv_example><![CDATA[
+patient_id,name,email,phone,care_tier,insurance_provider,primary_physician,last_visit_date,chronic_conditions
+PAT001,Jane Smith,jane.smith@email.com,555-0101,Premium Care,Blue Cross,Dr. Johnson,2026-01-15,Diabetes Type 2
+PAT002,John Doe,john.doe@email.com,555-0102,Standard Care,Aetna,Dr. Williams,2026-01-20,Hypertension
+PAT003,Mary Johnson,mary.j@email.com,555-0103,VIP Care,United Healthcare,Dr. Brown,2026-01-25,None
+      ]]></csv_example>
+    </sample_data_structure>
+  </domain>
+
+  <domain name="retail">
+    <description>Retail and e-commerce domain</description>
+    
+    <entity_model>
+      <entity_type>customers</entity_type>
+      <tiers>
+        <tier>Basic</tier>
+        <tier>Silver</tier>
+        <tier>Gold</tier>
+        <tier>Platinum</tier>
+      </tiers>
+      <key_fields>
+        <field>customer_id</field>
+        <field>name</field>
+        <field>email</field>
+        <field>loyalty_tier</field>
+        <field>total_purchases</field>
+        <field>lifetime_value</field>
+        <field>preferred_categories</field>
+        <field>last_purchase_date</field>
+        <field>rewards_points</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Order tracking and management</capability>
+      <capability>Product recommendations</capability>
+      <capability>Loyalty program management</capability>
+      <capability>Personalized promotions</capability>
+      <capability>Customer support and returns</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Personalized product recommendations</type>
+      <type>Exclusive offers and promotions</type>
+      <type>Order status updates</type>
+      <type>Loyalty rewards notifications</type>
+      <type>New arrival announcements</type>
+    </communication_types>
+
+    <sample_tools>
+      <tool name="get_customer_data">
+        <description>Retrieve customer profiles and purchase history</description>
+      </tool>
+      <tool name="recommend_products">
+        <description>Generate personalized product recommendations</description>
+      </tool>
+      <tool name="calculate_loyalty_points">
+        <description>Calculate and manage loyalty rewards</description>
+      </tool>
+      <tool name="generate_marketing_email">
+        <description>Create personalized marketing communications</description>
+      </tool>
+    </sample_tools>
+  </domain>
+
+  <domain name="education">
+    <description>Educational institutions and e-learning platforms</description>
+    
+    <entity_model>
+      <entity_type>students</entity_type>
+      <tiers>
+        <tier>Free</tier>
+        <tier>Basic</tier>
+        <tier>Premium</tier>
+        <tier>Enterprise</tier>
+      </tiers>
+      <key_fields>
+        <field>student_id</field>
+        <field>name</field>
+        <field>email</field>
+        <field>enrollment_tier</field>
+        <field>enrolled_courses</field>
+        <field>completion_rate</field>
+        <field>gpa</field>
+        <field>enrollment_date</field>
+        <field>learning_preferences</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Course enrollment and management</capability>
+      <capability>Progress tracking and analytics</capability>
+      <capability>Personalized learning recommendations</capability>
+      <capability>Assignment and deadline reminders</capability>
+      <capability>Academic support and resources</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Course recommendations</type>
+      <type>Assignment reminders</type>
+      <type>Progress reports</type>
+      <type>Achievement celebrations</type>
+      <type>Learning resource suggestions</type>
+    </communication_types>
+  </domain>
+
+  <domain name="finance">
+    <description>Financial services and banking domain</description>
+    
+    <entity_model>
+      <entity_type>customers</entity_type>
+      <tiers>
+        <tier>Basic Banking</tier>
+        <tier>Preferred</tier>
+        <tier>Private Banking</tier>
+        <tier>Wealth Management</tier>
+      </tiers>
+      <key_fields>
+        <field>customer_id</field>
+        <field>name</field>
+        <field>account_type</field>
+        <field>banking_tier</field>
+        <field>total_assets</field>
+        <field>account_balance</field>
+        <field>credit_score</field>
+        <field>relationship_start_date</field>
+        <field>preferred_services</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Account management and inquiries</capability>
+      <capability>Transaction monitoring and alerts</capability>
+      <capability>Financial planning and advice</capability>
+      <capability>Loan and credit applications</capability>
+      <capability>Investment recommendations</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Account alerts and notifications</type>
+      <type>Financial planning tips</type>
+      <type>Investment opportunities</type>
+      <type>Fraud alerts</type>
+      <type>Statement summaries</type>
+    </communication_types>
+  </domain>
+
+  <domain name="hospitality">
+    <description>Hotels, resorts, and hospitality services</description>
+    
+    <entity_model>
+      <entity_type>guests</entity_type>
+      <tiers>
+        <tier>Standard</tier>
+        <tier>Preferred</tier>
+        <tier>Elite</tier>
+        <tier>Ambassador</tier>
+      </tiers>
+      <key_fields>
+        <field>guest_id</field>
+        <field>name</field>
+        <field>email</field>
+        <field>loyalty_tier</field>
+        <field>total_stays</field>
+        <field>lifetime_spend</field>
+        <field>preferences</field>
+        <field>last_stay_date</field>
+        <field>loyalty_points</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Reservation management</capability>
+      <capability>Personalized service recommendations</capability>
+      <capability>Loyalty program management</capability>
+      <capability>Special requests and amenities</capability>
+      <capability>Concierge services</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Booking confirmations</type>
+      <type>Pre-arrival messages</type>
+      <type>Personalized offers</type>
+      <type>Post-stay follow-ups</type>
+      <type>Loyalty rewards updates</type>
+    </communication_types>
+  </domain>
+
+  <domain name="manufacturing">
+    <description>Manufacturing and supply chain management</description>
+    
+    <entity_model>
+      <entity_type>suppliers</entity_type>
+      <tiers>
+        <tier>Standard</tier>
+        <tier>Preferred</tier>
+        <tier>Strategic</tier>
+        <tier>Exclusive</tier>
+      </tiers>
+      <key_fields>
+        <field>supplier_id</field>
+        <field>company_name</field>
+        <field>contact_email</field>
+        <field>supplier_tier</field>
+        <field>total_orders</field>
+        <field>on_time_delivery_rate</field>
+        <field>quality_score</field>
+        <field>contract_start_date</field>
+        <field>product_categories</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Order management and tracking</capability>
+      <capability>Supplier performance analytics</capability>
+      <capability>Inventory forecasting</capability>
+      <capability>Quality control monitoring</capability>
+      <capability>Contract and compliance management</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Purchase order notifications</type>
+      <type>Delivery schedule updates</type>
+      <type>Quality issue alerts</type>
+      <type>Performance reports</type>
+      <type>Contract renewal reminders</type>
+    </communication_types>
+  </domain>
+
+  <domain name="real_estate">
+    <description>Real estate and property management</description>
+    
+    <entity_model>
+      <entity_type>clients</entity_type>
+      <tiers>
+        <tier>Basic</tier>
+        <tier>Premium</tier>
+        <tier>VIP</tier>
+        <tier>Platinum</tier>
+      </tiers>
+      <key_fields>
+        <field>client_id</field>
+        <field>name</field>
+        <field>email</field>
+        <field>client_tier</field>
+        <field>property_interests</field>
+        <field>budget_range</field>
+        <field>preferred_locations</field>
+        <field>last_interaction_date</field>
+        <field>transaction_history</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Property search and recommendations</capability>
+      <capability>Viewing scheduling</capability>
+      <capability>Market analysis and insights</capability>
+      <capability>Document management</capability>
+      <capability>Transaction coordination</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>New listing alerts</type>
+      <type>Viewing reminders</type>
+      <type>Market updates</type>
+      <type>Price change notifications</type>
+      <type>Transaction status updates</type>
+    </communication_types>
+  </domain>
+
+  <domain name="insurance">
+    <description>Insurance services and policy management</description>
+    
+    <entity_model>
+      <entity_type>policyholders</entity_type>
+      <tiers>
+        <tier>Basic Coverage</tier>
+        <tier>Enhanced</tier>
+        <tier>Premium</tier>
+        <tier>Comprehensive</tier>
+      </tiers>
+      <key_fields>
+        <field>policyholder_id</field>
+        <field>name</field>
+        <field>email</field>
+        <field>coverage_tier</field>
+        <field>policy_types</field>
+        <field>total_premium</field>
+        <field>claim_history</field>
+        <field>policy_start_date</field>
+        <field>renewal_date</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Policy information and management</capability>
+      <capability>Claims processing and tracking</capability>
+      <capability>Coverage recommendations</capability>
+      <capability>Premium calculations</capability>
+      <capability>Renewal reminders</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Policy renewal reminders</type>
+      <type>Claims status updates</type>
+      <type>Coverage recommendations</type>
+      <type>Premium payment reminders</type>
+      <type>Policy change confirmations</type>
+    </communication_types>
+  </domain>
+
+  <domain name="logistics">
+    <description>Logistics and transportation services</description>
+    
+    <entity_model>
+      <entity_type>shippers</entity_type>
+      <tiers>
+        <tier>Standard</tier>
+        <tier>Priority</tier>
+        <tier>Express</tier>
+        <tier>Enterprise</tier>
+      </tiers>
+      <key_fields>
+        <field>shipper_id</field>
+        <field>company_name</field>
+        <field>email</field>
+        <field>service_tier</field>
+        <field>total_shipments</field>
+        <field>average_volume</field>
+        <field>preferred_routes</field>
+        <field>last_shipment_date</field>
+        <field>payment_terms</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Shipment tracking and management</capability>
+      <capability>Route optimization</capability>
+      <capability>Delivery scheduling</capability>
+      <capability>Cost estimation</capability>
+      <capability>Performance analytics</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Shipment status updates</type>
+      <type>Delivery notifications</type>
+      <type>Delay alerts</type>
+      <type>Route recommendations</type>
+      <type>Invoice summaries</type>
+    </communication_types>
+  </domain>
+
+  <domain name="legal_services">
+    <description>Legal services and case management</description>
+    
+    <entity_model>
+      <entity_type>clients</entity_type>
+      <tiers>
+        <tier>Standard</tier>
+        <tier>Business</tier>
+        <tier>Corporate</tier>
+        <tier>Enterprise</tier>
+      </tiers>
+      <key_fields>
+        <field>client_id</field>
+        <field>name</field>
+        <field>email</field>
+        <field>service_tier</field>
+        <field>case_types</field>
+        <field>active_cases</field>
+        <field>retainer_status</field>
+        <field>client_since</field>
+        <field>practice_areas</field>
+      </key_fields>
+    </entity_model>
+
+    <capabilities>
+      <capability>Case management and tracking</capability>
+      <capability>Document management</capability>
+      <capability>Appointment scheduling</capability>
+      <capability>Billing and invoicing</capability>
+      <capability>Deadline tracking</capability>
+    </capabilities>
+
+    <communication_types>
+      <type>Case status updates</type>
+      <type>Deadline reminders</type>
+      <type>Document requests</type>
+      <type>Billing statements</type>
+      <type>Consultation confirmations</type>
+    </communication_types>
+  </domain>
+
+  <customization_patterns>
+    <pattern name="tier_naming">
+      <guideline>Choose tier names that resonate with your domain and reflect value progression</guideline>
+      <examples>
+        <example domain="healthcare">Standard Care, Premium Care, VIP Care, Concierge Care</example>
+        <example domain="retail">Basic, Silver, Gold, Platinum</example>
+        <example domain="education">Free, Basic, Premium, Enterprise</example>
+        <example domain="finance">Basic Banking, Preferred, Private Banking, Wealth Management</example>
+        <example domain="hospitality">Standard, Preferred, Elite, Ambassador</example>
+        <example domain="manufacturing">Standard, Preferred, Strategic, Exclusive</example>
+        <example domain="saas">Free, Starter, Professional, Enterprise</example>
+        <example domain="membership">Bronze, Silver, Gold, Diamond</example>
+      </examples>
+    </pattern>
+
+    <pattern name="entity_naming">
+      <guideline>Use domain-appropriate terms for entities that match industry conventions</guideline>
+      <examples>
+        <example domain="healthcare">patients</example>
+        <example domain="retail">customers</example>
+        <example domain="education">students or learners</example>
+        <example domain="finance">clients or customers</example>
+        <example domain="hospitality">guests</example>
+        <example domain="manufacturing">suppliers or partners</example>
+        <example domain="real_estate">clients or buyers</example>
+        <example domain="insurance">policyholders</example>
+        <example domain="logistics">shippers or clients</example>
+        <example domain="legal">clients</example>
+        <example domain="saas">users or subscribers</example>
+        <example domain="nonprofit">members or donors</example>
+      </examples>
+    </pattern>
+
+    <pattern name="communication_tone">
+      <guideline>Adapt communication style to domain expectations and user relationships</guideline>
+      <examples>
+        <example domain="healthcare">Professional, caring, informative, empathetic</example>
+        <example domain="retail">Friendly, promotional, engaging, enthusiastic</example>
+        <example domain="education">Supportive, motivational, educational, encouraging</example>
+        <example domain="finance">Professional, trustworthy, advisory, conservative</example>
+        <example domain="hospitality">Warm, personalized, service-oriented, welcoming</example>
+        <example domain="legal">Formal, precise, professional, confidential</example>
+        <example domain="technology">Innovative, helpful, technical, clear</example>
+      </examples>
+    </pattern>
+
+    <pattern name="capability_focus">
+      <guideline>Prioritize capabilities that address core domain workflows and pain points</guideline>
+      <examples>
+        <example domain="healthcare">Scheduling, records access, prescription management</example>
+        <example domain="retail">Order tracking, recommendations, loyalty management</example>
+        <example domain="education">Enrollment, progress tracking, resource access</example>
+        <example domain="finance">Account management, transactions, financial planning</example>
+        <example domain="logistics">Shipment tracking, route optimization, delivery scheduling</example>
+      </examples>
+    </pattern>
+  </customization_patterns>
+
+  <cross_domain_patterns>
+    <pattern name="tiered_service">
+      <description>Most domains benefit from tiered service levels that differentiate value</description>
+      <implementation>
+        <step>Define 3-4 clear tiers with meaningful names</step>
+        <step>Assign specific benefits to each tier</step>
+        <step>Create tier-specific communications and experiences</step>
+        <step>Track tier-based metrics and performance</step>
+        <step>Implement upgrade paths and incentives</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="personalization">
+      <description>All domains benefit from personalized interactions based on entity data</description>
+      <implementation>
+        <step>Collect entity preferences and characteristics</step>
+        <step>Track interaction history and behavior</step>
+        <step>Use data for personalized recommendations</step>
+        <step>Customize communications with relevant details</step>
+        <step>Adapt tone and content to entity profile</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="proactive_engagement">
+      <description>Agents should proactively engage entities with timely, relevant information</description>
+      <implementation>
+        <step>Send timely reminders and notifications</step>
+        <step>Provide relevant updates and alerts</step>
+        <step>Offer personalized recommendations</step>
+        <step>Celebrate milestones and achievements</step>
+        <step>Anticipate needs based on patterns</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="data_driven_insights">
+      <description>Leverage data to provide valuable insights and analytics</description>
+      <implementation>
+        <step>Calculate relevant metrics and KPIs</step>
+        <step>Identify trends and patterns</step>
+        <step>Generate actionable insights</step>
+        <step>Provide comparative analysis</step>
+        <step>Support decision-making with data</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="multi_channel_support">
+      <description>Support interactions across multiple communication channels</description>
+      <implementation>
+        <step>Design for chat, email, and other channels</step>
+        <step>Maintain consistent experience across channels</step>
+        <step>Adapt content format to channel</step>
+        <step>Track interactions across channels</step>
+        <step>Provide seamless channel transitions</step>
+      </implementation>
+    </pattern>
+  </cross_domain_patterns>
+
+  <domain_selection_guide>
+    <guideline>When building an agent for a new domain, consider these factors:</guideline>
+    <factors>
+      <factor>Industry-specific terminology and conventions</factor>
+      <factor>Regulatory and compliance requirements</factor>
+      <factor>Typical user workflows and pain points</factor>
+      <factor>Data structures and relationships</factor>
+      <factor>Communication preferences and expectations</factor>
+      <factor>Integration requirements with existing systems</factor>
+      <factor>Security and privacy considerations</factor>
+    </factors>
+  </domain_selection_guide>
+</domain_examples>
+
+<!-- Made with Bob -->
