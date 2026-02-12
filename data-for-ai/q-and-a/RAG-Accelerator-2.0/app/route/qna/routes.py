@@ -39,7 +39,7 @@ client = service.init_api_client()
 @qna_ai_service_route.post("/ai/qna/query", response_model=QueryResponse)
 async def query_api(req: QueryRequest):
     """Query the watsonx.ai LLM using the same helper functions as the notebook.
-    Returns answer, documents, expert_answer and log_id.
+    Returns answer, documents, expert_answer, log_id, and governance metrics.
     """
     if client is None:
         logger.error("IBM API client is not initialized")
@@ -47,10 +47,58 @@ async def query_api(req: QueryRequest):
 
     try:
         q = req.question
-        answer, documents, expert_answer, log_id = rag_helper_functions.query_llm(client, parameters['watsonx_deployment_id'], q, req.query_filter)        
+        answer, documents, expert_answer, log_id = rag_helper_functions.query_llm(client, parameters['watsonx_deployment_id'], q, req.query_filter)
         html = rag_helper_functions.display_results(q, documents, True, answer, False)
         logger.info("html content: %s", html)
-        return QueryResponse(answer=answer, documents=documents, expert_answer=expert_answer, log_id=log_id)
+        
+        # Evaluate with governance if available
+        governance_metrics = None
+        try:
+            logger.info("Attempting governance evaluation...")
+            answer_text = answer.get('response', '') if isinstance(answer, dict) else str(answer)
+            logger.info(f"Answer text extracted: {len(answer_text)} characters")
+            
+            # Get contexts from query endpoint if documents are empty
+            contexts_for_governance = documents
+            if not documents or (isinstance(documents, dict) and len(documents) == 0):
+                logger.info("Documents empty from QnA, fetching from query endpoint...")
+                try:
+                    import app.src.services.QueryService as query_service
+                    query_payload = {
+                        'query': q,
+                        'connection_name': parameters.get('connection_name', 'milvus_connect'),
+                        'index_name': parameters.get('vector_store_index_name', 'sample')
+                    }
+                    search_results, top_result = query_service.generate_answer(query_payload)
+                    contexts_for_governance = search_results
+                    logger.info(f"Retrieved {len(search_results) if search_results else 0} contexts from query endpoint")
+                except Exception as query_error:
+                    logger.warning(f"Could not fetch contexts from query endpoint: {query_error}")
+            
+            logger.info(f"Contexts type: {type(contexts_for_governance)}, length: {len(contexts_for_governance) if contexts_for_governance else 0}")
+            
+            governance_metrics = service.evaluate_with_governance(q, answer_text, contexts_for_governance)
+            
+            if governance_metrics:
+                logger.info(f"Governance metrics received: {governance_metrics}")
+            else:
+                logger.warning("Governance evaluation returned None")
+        except Exception as gov_error:
+            logger.error(f"Governance evaluation failed (non-critical): {gov_error}", exc_info=True)
+        
+        # Create response with governance metrics
+        response_data = {
+            "answer": answer,
+            "documents": documents,
+            "expert_answer": expert_answer,
+            "log_id": log_id
+        }
+        
+        # Add governance metrics if available
+        if governance_metrics:
+            response_data["governance_metrics"] = governance_metrics
+        
+        return QueryResponse(**response_data)
     except Exception as e:
         logger.exception("Error while querying LLM: %s", e)
         raise HTTPException(status_code=500, detail=str(e))

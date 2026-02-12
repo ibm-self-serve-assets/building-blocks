@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional, Dict, Any
 
 
 class QueryRequest(BaseModel):
@@ -10,3 +11,4 @@ class QueryResponse(BaseModel):
     documents: dict | None
     expert_answer: str | None
     log_id: str | None
+    governance_metrics: Optional[Dict[str, Any]] = None
