@@ -105,7 +105,7 @@ lazy_imports==1.1.0
 litellm==1.77.0
 lomond==0.3.3
 MarkupSafe==3.0.3
-marshmallow==3.26.1
+marshmallow==3.26.2
 matplotlib-inline==0.2.1
 mistune==3.1.4
 multidict==6.7.0
