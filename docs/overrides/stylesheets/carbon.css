@@ -1,0 +1,14 @@
+:root {
+  --md-primary-fg-color: #0f62fe;
+  --md-accent-fg-color: #4589ff;
+  --md-default-bg-color: #f4f4f4;
+  --md-text-font: 'IBM Plex Sans', sans-serif;
+}
+
+.md-header, .md-tabs {
+  background-color: #0f62fe;
+}
+
+.md-nav__title {
+  font-weight: 600;
+}
