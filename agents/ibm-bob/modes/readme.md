@@ -20,7 +20,7 @@ This repository contains expert-level [custom modes for IBM Bob](https://interna
   - Node.js 18+ 
 
 ## II. Install the wxo MCP Servers
-Follow these [MCP server install instructions](wxo-mcp-server-installation.md) to configure both of watsonx Orchestrate's MCP servers in IBM Bob.
+Follow these [MCP server install instructions](wxo-mcp-server-installation.md) to configure both of watsonx Orchestrate's MCP servers. If you haven't added MCP servers to IBM Bob before, read about [MCP servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).
 
 ## III. Custom Mode Installation
 
@@ -46,10 +46,6 @@ For system-wide access, copy the YAML file to:
 - **Windows**: `%APPDATA%\IBM Bob\User\globalStorage\ibm.bob-code\settings\custom_modes.yaml`
 - **macOS**: `~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
 - **Linux**: `~/.config/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
-
-## IV. Setting up the watsonx Orchestrate MCP Servers
-
-The watsonx Orchestrate Agent Builder mode requires two MCP servers configured in [`mcp_watsonx_orchestrate.json`](mcp_watsonx_orchestrate.json). If you haven't added MCP servers to IBM Bob yet, read about [MCP servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).
 
 ### 1. watsonx Orchestrate ADK Documentation Server
 
