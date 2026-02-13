@@ -1,0 +1,17 @@
+
+site_name: IBM Building Blocks Documentation
+site_description: Modular IBM Building Blocks aligned with IBM Garage and Carbon Design
+theme:
+  name: material
+  custom_dir: docs/overrides
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.instant
+    - navigation.top
+    - content.code.copy
+  palette:
+    primary: custom
+    accent: custom
+extra_css:
+  - stylesheets/carbon.css
