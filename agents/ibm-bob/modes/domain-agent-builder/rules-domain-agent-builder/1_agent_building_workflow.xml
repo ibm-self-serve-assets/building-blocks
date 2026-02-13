@@ -1,0 +1,804 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<agent_building_workflow>
+  <overview>
+    This workflow guides you through building a complete watsonx Orchestrate agent from requirements
+    gathering to deployment. You will interview the user, design the agent architecture, generate all
+    necessary files, and deploy the agent end-to-end. This workflow is domain-agnostic and can be
+    applied to any industry or use case.
+  </overview>
+
+  <core_principles>
+    <principle>Interview first, build second - gather complete requirements before generating code</principle>
+    <principle>Use the healthcare-assistant-agent as the foundation for all new agents</principle>
+    <principle>Follow established patterns from successful agent implementations</principle>
+    <principle>Generate production-ready code with proper error handling</principle>
+    <principle>Deploy automatically after file generation</principle>
+    <principle>Provide clear documentation and next steps</principle>
+    <principle>⚠️ CRITICAL: Always use llm: groq/openai/gpt-oss-120b - DO NOT use other LLMs</principle>
+    <principle>⚠️ CRITICAL: Limit agents to maximum 5 tools for optimal performance</principle>
+    <principle>⚠️ CRITICAL: During deployment, ask user for API key and activate env via piping: echo "KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env — do NOT put env activate inside scripts</principle>
+    <principle>⚠️ CRITICAL: Use EXACT CLI commands — `tools` not `tool`, `agents` not `agent`, `knowledge-bases` not `kb`, `-f` not `--path`</principle>
+  </core_principles>
+
+  <workflow_phases>
+    <phase number="1" name="requirements_gathering">
+      <title>Requirements Gathering Interview</title>
+      <description>
+        Conduct a structured interview to understand the domain and gather all necessary information
+        for building the agent. This is the most critical phase - get complete information upfront.
+      </description>
+      
+      <interview_questions>
+        <question_group category="domain_basics">
+          <question priority="critical">
+            What is the domain or industry for this agent?
+            (Examples: Healthcare, Retail, Finance, Education, Manufacturing, Hospitality, 
+            Real Estate, Insurance, Logistics, Legal Services, etc.)
+          </question>
+          <question priority="critical">
+            What is the primary purpose of this agent? What problems will it solve?
+          </question>
+          <question priority="critical">
+            Who are the primary users or entities this agent will serve?
+            (Examples: customers, patients, students, employees, members, clients, partners, etc.)
+          </question>
+          <question priority="high">
+            What is the business context or use case for this agent?
+          </question>
+        </question_group>
+
+        <question_group category="entity_model">
+          <question priority="critical">
+            What do you call the main entities in your domain?
+            (Examples: "customers", "patients", "students", "members", "clients", "users", 
+            "subscribers", "partners", "vendors", "employees")
+          </question>
+          <question priority="critical">
+            Do you have tiers, segments, levels, or categories for these entities?
+            If yes, what are they called and what do they represent?
+            (Examples: Basic/Premium/VIP, Bronze/Silver/Gold, Standard/Plus/Pro, 
+            Free/Paid/Enterprise, Tier 1/2/3/4)
+          </question>
+          <question priority="high">
+            What key information do you track about each entity?
+            (Examples: contact info, preferences, history, metrics, status, relationships)
+          </question>
+          <question priority="medium">
+            Are there any unique identifiers or reference numbers used in your domain?
+          </question>
+        </question_group>
+
+        <question_group category="capabilities">
+          <question priority="critical">
+            What are the 3-5 main capabilities this agent should have?
+            ⚠️ IMPORTANT: Agents are limited to a MAXIMUM of 5 tools for optimal performance.
+            (Examples: "Retrieve entity data", "Generate personalized messages",
+            "Calculate metrics", "Process requests", "Provide recommendations")
+          </question>
+          <question priority="high">
+            What types of communications or messages should the agent generate?
+            (Examples: notifications, alerts, reports, recommendations, confirmations, 
+            reminders, updates, summaries)
+          </question>
+          <question priority="high">
+            What actions or operations should the agent be able to perform?
+            (Examples: search, filter, calculate, schedule, update, create, delete)
+          </question>
+          <question priority="medium">
+            Are there any specific calculations, analytics, or business rules the agent should implement?
+          </question>
+          <question priority="medium">
+            Should the agent integrate with any external systems or APIs?
+          </question>
+        </question_group>
+
+        <question_group category="data_sources">
+          <question priority="high">
+            What data sources will the agent use?
+            (Examples: CSV files, databases, APIs, CRM systems, spreadsheets, documents)
+          </question>
+          <question priority="high">
+            Do you have sample data available, or should I generate realistic sample data?
+          </question>
+          <question priority="medium">
+            Are there multiple data files or tables to integrate?
+            (Examples: entity data, location data, transaction data, product data, reference data)
+          </question>
+          <question priority="medium">
+            What is the typical structure of your data? What fields are most important?
+          </question>
+        </question_group>
+
+        <question_group category="deployment">
+          <question priority="critical">
+            What should we name this agent?
+            (Provide a short, descriptive name like "customer_service_agent" or "inventory_manager")
+          </question>
+          <question priority="high">
+            Do you have your WXO API key ready?
+            Note: You will be asked for this key during deployment.
+            Bob will use it to activate the WXO environment non-interactively.
+          </question>
+          <question priority="medium">
+            Where should the agent project be created?
+            (Default: /Users/shima/src/bob/[agent-name]-agent)
+          </question>
+          <question priority="low">
+            Are there any specific branding or styling preferences for communications?
+          </question>
+        </question_group>
+      </interview_questions>
+
+      <interview_strategy>
+        <step>Start with domain basics to understand the context</step>
+        <step>Ask follow-up questions based on user's answers</step>
+        <step>Clarify ambiguous responses before proceeding</step>
+        <step>Probe for domain-specific terminology and concepts</step>
+        <step>Confirm understanding by summarizing requirements</step>
+        <step>Ask if there are any special requirements or constraints</step>
+        <step>Identify any compliance or regulatory considerations</step>
+      </interview_strategy>
+
+      <completion_criteria>
+        <criterion>Domain and purpose clearly defined</criterion>
+        <criterion>Entity type and tier/segment structure identified</criterion>
+        <criterion>At least 3 main capabilities specified</criterion>
+        <criterion>Data sources and structure understood</criterion>
+        <criterion>Agent name decided</criterion>
+        <criterion>Key terminology and concepts documented</criterion>
+      </completion_criteria>
+    </phase>
+
+    <phase number="2" name="architecture_design">
+      <title>Agent Architecture Design</title>
+      <description>
+        Based on gathered requirements, design the agent architecture including entity model,
+        tool structure, and data schema. This phase translates business requirements into
+        technical specifications.
+      </description>
+
+      <design_tasks>
+        <task>Map domain requirements to agent configuration structure</task>
+        <task>Design entity data model with appropriate fields</task>
+        <task>Plan tool functions based on required capabilities</task>
+        <task>Define tier/segment structure and characteristics</task>
+        <task>Design communication templates for each message type</task>
+        <task>Plan knowledge base structure and data files</task>
+        <task>Identify any domain-specific business logic</task>
+      </design_tasks>
+
+      <design_patterns>
+        <pattern name="entity_management">
+          <description>Core tools for retrieving and managing entities (3-4 tools recommended)</description>
+          <functions>
+            <function>get_entity_data() - Flexible filtering and retrieval</function>
+            <function>get_entity_by_id() - Single entity lookup</function>
+            <function>get_entities_by_tier() - Tier-based filtering</function>
+            <function>calculate_entity_metrics() - Aggregations and analytics</function>
+          </functions>
+          <customization>Adapt function names and parameters to domain terminology</customization>
+          <note>⚠️ Choose 3-4 most essential functions to stay within 5-tool limit</note>
+        </pattern>
+
+        <pattern name="communication_generation">
+          <description>Tools for generating personalized communications (1 tool recommended)</description>
+          <functions>
+            <function>generate_communication() - Main generation function</function>
+            <function>_get_template() - Template selection helper (internal, not a tool)</function>
+            <function>_personalize_content() - Personalization logic (internal, not a tool)</function>
+          </functions>
+          <customization>Define message types relevant to the domain</customization>
+          <note>⚠️ Use only 1 communication tool to stay within 5-tool limit</note>
+        </pattern>
+
+        <pattern name="domain_specific_operations">
+          <description>Tools for domain-specific business operations (0-1 tool recommended)</description>
+          <examples>
+            <example>Process transactions, orders, or requests</example>
+            <example>Calculate domain-specific metrics or scores</example>
+            <example>Validate business rules or constraints</example>
+            <example>Generate domain-specific reports or summaries</example>
+          </examples>
+          <customization>Create tools that match domain workflows</customization>
+          <note>⚠️ CRITICAL: Total tools must not exceed 5. If using 4 entity tools + 1 communication tool, skip domain-specific tools</note>
+          <note>⚠️ Recommended distribution: 3 entity tools + 1 communication tool + 1 domain-specific tool = 5 tools maximum</note>
+        </pattern>
+
+        <pattern name="knowledge_base">
+          <description>Vector-indexed data for semantic search</description>
+          <components>
+            <component>Primary entity data (CSV or structured format)</component>
+            <component>Reference data (locations, categories, etc.)</component>
+            <component>Domain-specific documentation or guides</component>
+            <component>Additional contextual data files</component>
+          </components>
+          <customization>Include data sources relevant to domain queries</customization>
+        </pattern>
+      </design_patterns>
+
+      <design_considerations>
+        <consideration>Use domain-appropriate terminology throughout</consideration>
+        <consideration>Ensure tier/segment structure matches business model</consideration>
+        <consideration>Design for scalability and extensibility</consideration>
+        <consideration>Consider data privacy and security requirements</consideration>
+        <consideration>Plan for realistic sample data that represents domain diversity</consideration>
+      </design_considerations>
+    </phase>
+
+    <phase number="3" name="project_setup">
+      <title>Project Directory Setup</title>
+      <description>
+        Create the project directory structure by copying and customizing the healthcare-assistant-agent.
+        This proven, deployed template ensures consistency and includes all necessary files and structure.
+      </description>
+
+      <setup_steps>
+        <step number="1">
+          <action>Copy healthcare-assistant-agent to new project directory</action>
+          <command>cp -r ~/src/bob/healthcare-assistant-agent ~/src/bob/[agent-name]-agent</command>
+          <note>Replace [agent-name] with the actual agent name</note>
+        </step>
+        <step number="2">
+          <action>Verify directory structure created successfully</action>
+          <command>list_files on new directory</command>
+          <expected>Should see tools/, data/, knowledge_bases/, scripts/, etc.</expected>
+        </step>
+        <step number="3">
+          <action>Prepare to customize all template files</action>
+          <note>Read template files to understand placeholder structure</note>
+        </step>
+      </setup_steps>
+    </phase>
+
+    <phase number="4" name="file_generation">
+      <title>Generate All Agent Files</title>
+      <description>
+        Generate or customize all required files based on requirements and design.
+        Work through files systematically, replacing placeholders with domain-specific values.
+      </description>
+
+      <file_generation_order>
+        <file_group priority="1" name="configuration">
+          <file path="agent_config.yaml">
+            <description>Main agent configuration</description>
+            <placeholders>
+              <placeholder>name - Agent identifier (snake_case)</placeholder>
+              <placeholder>display_name - User-friendly name</placeholder>
+              <placeholder>description - What the agent does</placeholder>
+              <placeholder>DOMAIN_NAME - Domain/industry name</placeholder>
+              <placeholder>ENTITY_TYPE - What entities are called</placeholder>
+              <placeholder>TIER_1, TIER_2, TIER_3, TIER_4 - Tier/segment names</placeholder>
+              <placeholder>PRIMARY_CAPABILITY_1-5 - Main capabilities</placeholder>
+              <placeholder>COMMUNICATION_TYPE_1-5 - Message types</placeholder>
+            </placeholders>
+            <action>Replace all placeholders with domain-specific values</action>
+          </file>
+
+          <file path="scripts/*.sh">
+            <description>Deployment scripts — env activation handled by Bob before running scripts</description>
+            <note>Scripts must NOT call env activate — Bob handles env activation by piping API key during Phase 5</note>
+            <note>Use EXACT commands: tools import (not tool), agents import (not agent), knowledge-bases import (not kb)</note>
+            <note>Use -f for file, -k for kind, -n for name</note>
+          </file>
+        </file_group>
+
+        <file_group priority="2" name="tools">
+          <file path="tools/{entity_type}_tools.py">
+            <description>Entity management tools (copy from patient_tools.py and rename)</description>
+            <customizations>
+              <item>Copy patient_tools.py and rename to {entity_type}_tools.py</item>
+              <item>Update module docstring with domain name</item>
+              <item>Replace PATIENT_DATA with domain-specific EMBEDDED sample data (Python dicts)</item>
+              <item>Customize entity fields based on requirements</item>
+              <item>Update function names to match domain terminology</item>
+              <item>Adjust filtering logic for domain-specific needs</item>
+              <item>NEVER load data from CSV files — embed data directly</item>
+            </customizations>
+          </file>
+
+          <file path="tools/communication_tools.py">
+            <description>Communication generation tools</description>
+            <customizations>
+              <item>Update module docstring</item>
+              <item>Customize message types based on requirements</item>
+              <item>Modify HTML templates for domain branding</item>
+              <item>Adjust personalization logic</item>
+              <item>Update tier-specific styling</item>
+              <item>Add domain-appropriate call-to-action elements</item>
+            </customizations>
+          </file>
+
+          <file path="tools/[domain]_tools.py" optional="true">
+            <description>Additional domain-specific tools</description>
+            <customizations>
+              <item>Create if domain requires specialized operations</item>
+              <item>Implement domain-specific business logic</item>
+              <item>Add calculations, validations, or transformations</item>
+            </customizations>
+          </file>
+        </file_group>
+
+        <file_group priority="3" name="data">
+          <file path="data/entities.csv">
+            <description>Main entity data</description>
+            <customizations>
+              <item>Define appropriate column headers for domain</item>
+              <item>Generate 5-10 realistic sample records</item>
+              <item>Include diverse tier/segment representation</item>
+              <item>Add domain-specific fields and values</item>
+              <item>Ensure data reflects real-world scenarios</item>
+            </customizations>
+          </file>
+
+          <file path="data/[reference_data].csv" optional="true">
+            <description>Additional reference data (locations, categories, etc.)</description>
+            <customizations>
+              <item>Create if domain has supporting data needs</item>
+              <item>Include 3-5 sample records</item>
+              <item>Add relevant fields and metrics</item>
+            </customizations>
+          </file>
+
+          <file path="data/[domain_guide].txt" optional="true">
+            <description>Domain-specific documentation or guides</description>
+            <customizations>
+              <item>Create if domain requires reference documentation</item>
+              <item>Include policies, procedures, or guidelines</item>
+              <item>Add FAQs or common scenarios</item>
+            </customizations>
+          </file>
+        </file_group>
+
+        <file_group priority="4" name="knowledge_base">
+          <file path="knowledge_bases/[domain]_kb.yaml">
+            <description>Knowledge base configuration</description>
+            <customizations>
+              <item>Update name to domain-specific name</item>
+              <item>Update description with domain context</item>
+              <item>Verify document paths point to data files</item>
+              <item>Update metadata with domain information</item>
+            </customizations>
+          </file>
+        </file_group>
+
+        <file_group priority="5" name="scripts">
+          <file path="scripts/*.sh">
+            <description>Deployment scripts</description>
+            <customizations>
+              <item>Update agent name references</item>
+              <item>Update display name in messages</item>
+              <item>Customize test queries in deploy_agent.sh</item>
+              <item>Ensure all paths are correct</item>
+            </customizations>
+          </file>
+        </file_group>
+
+        <file_group priority="6" name="documentation">
+          <file path="README.md">
+            <description>Project documentation</description>
+            <action>Create domain-specific README with:
+              - Agent overview and purpose
+              - Domain context and use cases
+              - Quick start instructions
+              - Domain-specific examples and queries
+              - Deployment steps
+              - Customization guidance
+              - Troubleshooting tips
+            </action>
+          </file>
+
+          <file path="TROUBLESHOOTING.md" optional="true">
+            <description>Detailed troubleshooting guide</description>
+            <action>Copy from template and customize with domain-specific issues</action>
+          </file>
+        </file_group>
+      </file_generation_order>
+
+      <generation_best_practices>
+        <practice>Generate complete files, not partial updates</practice>
+        <practice>Include all necessary imports and dependencies</practice>
+        <practice>Add comprehensive docstrings and comments</practice>
+        <practice>Use proper type hints throughout</practice>
+        <practice>Follow Python and YAML best practices</practice>
+        <practice>Ensure all placeholders are replaced</practice>
+        <practice>Validate YAML syntax</practice>
+        <practice>Use domain-appropriate terminology consistently</practice>
+        <practice>Include realistic, diverse sample data</practice>
+      </generation_best_practices>
+    </phase>
+
+    <phase number="5" name="deployment">
+      <title>Deploy Agent to WXO</title>
+      <description>
+        Deploy the complete agent to watsonx Orchestrate using the deployment scripts.
+      </description>
+
+      <deployment_steps>
+        <step number="1">
+          <action>Ask user for their WXO API key and activate environment</action>
+          <command>echo "API_KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</command>
+          <note>Ask the user for their API key, then pipe it to env activate. This avoids the interactive prompt that hangs in non-interactive contexts.</note>
+        </step>
+
+        <step number="2">
+          <action>Make deployment scripts executable</action>
+          <command>chmod +x ~/src/bob/[agent-name]-agent/scripts/*.sh</command>
+        </step>
+
+        <step number="3">
+          <action>Run complete deployment</action>
+          <command>cd ~/src/bob/[agent-name]-agent && ./scripts/deploy_all.sh</command>
+          <note>This will import tools, knowledge base, and deploy agent</note>
+        </step>
+
+        <step number="4">
+          <action>Monitor deployment output</action>
+          <check>Verify each step completes successfully</check>
+        </step>
+
+        <step number="5">
+          <action>Confirm agent is live</action>
+          <verification>Agent should appear in WXO interface</verification>
+        </step>
+      </deployment_steps>
+
+      <troubleshooting>
+        <issue name="api_key_missing">
+          <symptom>Error about missing API key or authentication</symptom>
+          <solution>Ask user for API key and run: echo "KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</solution>
+        </issue>
+
+        <issue name="tool_import_fails">
+          <symptom>Tool import errors</symptom>
+          <solution>Check Python syntax and @tool decorators</solution>
+        </issue>
+
+        <issue name="kb_import_fails">
+          <symptom>Knowledge base import errors</symptom>
+          <solution>Verify YAML syntax and data file paths</solution>
+        </issue>
+
+        <issue name="agent_deploy_fails">
+          <symptom>Agent deployment errors</symptom>
+          <solution>Check agent_config.yaml syntax and tool references</solution>
+        </issue>
+      </troubleshooting>
+    </phase>
+
+    <phase number="6" name="testing_and_validation">
+      <title>Test Agent in WXO</title>
+      <description>
+        After deployment, test the agent with sample queries to verify all tools work correctly
+        and identify any issues before final documentation. This is a CRITICAL phase to catch
+        data access issues, tool errors, or configuration problems.
+      </description>
+
+      <testing_approach>
+        <principle>Test each tool category systematically</principle>
+        <principle>Start with simple queries, progress to complex ones</principle>
+        <principle>Verify data access works (especially for embedded data)</principle>
+        <principle>Check error handling and edge cases</principle>
+        <principle>Confirm HTML/formatted output renders correctly</principle>
+        <principle>Test with sample IDs from embedded data</principle>
+      </testing_approach>
+
+      <test_categories>
+        <category name="entity_retrieval">
+          <description>Test basic entity lookup and filtering</description>
+          <sample_queries>
+            <query priority="critical">Get {entity_type} by ID (e.g., "Get customer CUS001")</query>
+            <query priority="critical">List all {entity_type} (e.g., "Show me all customers")</query>
+            <query priority="high">Filter by tier (e.g., "Show me Premium customers")</query>
+            <query priority="high">Filter by status (e.g., "List active customers")</query>
+          </sample_queries>
+          <expected_results>
+            <result>Should return entity data from embedded data</result>
+            <result>Should handle "not found" cases gracefully</result>
+            <result>Should respect filters correctly</result>
+          </expected_results>
+          <common_issues>
+            <issue>Data not found - indicates embedded data not loaded</issue>
+            <issue>File access errors - indicates CSV loading instead of embedded data</issue>
+            <issue>Empty results - indicates filter logic issues</issue>
+          </common_issues>
+        </category>
+
+        <category name="metrics_and_calculations">
+          <description>Test calculation and analytics tools</description>
+          <sample_queries>
+            <query priority="high">Calculate metrics (e.g., "Calculate customer metrics")</query>
+            <query priority="high">Get statistics by tier (e.g., "Get stats for Premium tier")</query>
+            <query priority="medium">Aggregate data (e.g., "Show distribution by status")</query>
+          </sample_queries>
+          <expected_results>
+            <result>Should return calculated values</result>
+            <result>Should handle empty datasets gracefully</result>
+            <result>Should show correct aggregations</result>
+          </expected_results>
+        </category>
+
+        <category name="communication_generation">
+          <description>Test message/report generation tools</description>
+          <sample_queries>
+            <query priority="critical">Generate report for specific entity (e.g., "Generate progress report for STU001")</query>
+            <query priority="critical">Create notification (e.g., "Send notification to CUS001")</query>
+            <query priority="high">Test different message types (e.g., "Create achievement notification")</query>
+          </sample_queries>
+          <expected_results>
+            <result>Should return HTML-formatted output</result>
+            <result>Should include entity-specific data</result>
+            <result>Should handle missing entities gracefully</result>
+            <result>Should personalize content correctly</result>
+          </expected_results>
+          <common_issues>
+            <issue>"Entity not found" - indicates data access problem (CRITICAL)</issue>
+            <issue>Generic output - indicates personalization not working</issue>
+            <issue>Missing data fields - indicates incomplete embedded data</issue>
+          </common_issues>
+        </category>
+
+        <category name="domain_specific">
+          <description>Test domain-specific tools if present</description>
+          <sample_queries>
+            <query priority="high">Test domain-specific operations</query>
+            <query priority="medium">Test business rule validations</query>
+          </sample_queries>
+        </category>
+      </test_categories>
+
+      <testing_steps>
+        <step number="1">
+          <action>Access agent in WXO interface</action>
+          <verification>Agent appears in agent list and is accessible</verification>
+        </step>
+
+        <step number="2">
+          <action>Test entity retrieval with known IDs from embedded data</action>
+          <test_query>Use first entity ID from embedded data (e.g., "Get customer CUS001")</test_query>
+          <expected>Should return entity details successfully</expected>
+          <if_fails>
+            <issue>Data access problem - tool cannot read embedded data</issue>
+            <action>Check if tool uses embedded data vs file loading</action>
+            <action>Verify embedded data structure matches tool expectations</action>
+            <action>Re-import tools after fixing and redeploy agent</action>
+          </if_fails>
+        </step>
+
+        <step number="3">
+          <action>Test communication generation with known entity ID</action>
+          <test_query>Generate report/notification for first entity</test_query>
+          <expected>Should return formatted HTML with entity data</expected>
+          <if_fails>
+            <issue>Most common: "Entity not found" error</issue>
+            <root_cause>Tool trying to load from CSV instead of using embedded data</root_cause>
+            <solution>Update tool to embed data directly, re-import, redeploy</solution>
+          </if_fails>
+        </step>
+
+        <step number="4">
+          <action>Test filtering and search capabilities</action>
+          <test_query>Filter by tier, status, or other criteria</test_query>
+          <expected>Should return filtered results</expected>
+        </step>
+
+        <step number="5">
+          <action>Test metrics and calculations</action>
+          <test_query>Calculate aggregated metrics</test_query>
+          <expected>Should return calculated values</expected>
+        </step>
+
+        <step number="6">
+          <action>Test error handling</action>
+          <test_query>Request non-existent entity ID</test_query>
+          <expected>Should return graceful error message, not crash</expected>
+        </step>
+
+        <step number="7">
+          <action>Document test results</action>
+          <record>Which queries worked</record>
+          <record>Which queries failed and why</record>
+          <record>Any issues discovered</record>
+        </step>
+      </testing_steps>
+
+      <issue_resolution>
+        <common_issue name="entity_not_found">
+          <symptom>"Entity with ID XXX not found" error</symptom>
+          <root_cause>Tool trying to load data from CSV files instead of embedded data</root_cause>
+          <solution>
+            <step>Update tool to embed data directly as Python dictionaries</step>
+            <step>Remove CSV file loading code (os.path, open(), csv.DictReader)</step>
+            <step>Re-import tools: uvx --from ibm-watsonx-orchestrate orchestrate tools import</step>
+            <step>Redeploy agent: uvx --from ibm-watsonx-orchestrate orchestrate agents deploy</step>
+            <step>Re-test with same query</step>
+          </solution>
+        </common_issue>
+
+        <common_issue name="tool_not_responding">
+          <symptom>Tool doesn't execute or times out</symptom>
+          <root_cause>Tool has errors or infinite loops</root_cause>
+          <solution>
+            <step>Check tool logs in WXO</step>
+            <step>Review tool code for errors</step>
+            <step>Test tool locally if possible</step>
+            <step>Fix issues and re-import</step>
+          </solution>
+        </common_issue>
+
+        <common_issue name="incorrect_output">
+          <symptom>Tool returns data but it's wrong or incomplete</symptom>
+          <root_cause>Logic errors or data structure mismatches</root_cause>
+          <solution>
+            <step>Verify embedded data structure</step>
+            <step>Check field names match between data and tool code</step>
+            <step>Review filtering and calculation logic</step>
+            <step>Fix and re-import</step>
+          </solution>
+        </common_issue>
+      </issue_resolution>
+
+      <success_criteria>
+        <criterion>All entity retrieval queries return correct data</criterion>
+        <criterion>Communication generation works with embedded data</criterion>
+        <criterion>Metrics and calculations produce accurate results</criterion>
+        <criterion>Error handling works gracefully</criterion>
+        <criterion>No "file not found" or "entity not found" errors</criterion>
+        <criterion>HTML output renders correctly</criterion>
+        <criterion>Agent responds within reasonable time (< 10 seconds)</criterion>
+      </success_criteria>
+
+      <when_to_proceed>
+        <condition>All critical test queries pass successfully</condition>
+        <condition>No data access errors (file not found, entity not found)</condition>
+        <condition>Communication tools generate proper output</condition>
+        <condition>Any issues discovered have been fixed and re-tested</condition>
+        <note>Do NOT proceed to documentation if critical tests fail</note>
+        <note>Fix issues, redeploy, and re-test before moving forward</note>
+      </when_to_proceed>
+    </phase>
+
+    <phase number="7" name="documentation_and_handoff">
+      <title>Documentation and Handoff</title>
+      <description>
+        Provide comprehensive documentation and next steps for the user.
+        Only proceed to this phase after successful testing in Phase 6.
+      </description>
+
+      <deliverables>
+        <deliverable>Complete agent project in ~/src/bob/[agent-name]-agent/</deliverable>
+        <deliverable>README.md with domain-specific documentation</deliverable>
+        <deliverable>BUSINESS_USE_CASE.md — business use case summary with sample queries</deliverable>
+        <deliverable>Deployment confirmation and agent URL</deliverable>
+        <deliverable>Next steps and customization guidance</deliverable>
+      </deliverables>
+
+      <steps>
+        <step number="1">
+          <action>Generate BUSINESS_USE_CASE.md</action>
+          <description>
+            After successful deployment and testing, create a markdown file in the agent project root
+            that explains the business use case and provides ready-to-use sample queries.
+            This file serves as a quick-start guide for anyone interacting with the deployed agent.
+          </description>
+          <file_path>~/src/bob/[agent-name]-agent/BUSINESS_USE_CASE.md</file_path>
+          <required_sections>
+            <section name="Business Use Case">
+              <content>1-2 paragraph description of the business problem this agent solves, the target users, and the value it provides</content>
+            </section>
+            <section name="Agent Capabilities">
+              <content>Bulleted list of what the agent can do, grouped by capability (entity lookup, filtering, communication, analytics)</content>
+            </section>
+            <section name="Sample Queries">
+              <content>
+                8-12 ready-to-use queries organized by category. Each query should be copy-pasteable
+                into the WXO chat interface. Include a mix of:
+                - Entity retrieval (by ID, by name)
+                - Filtered queries (by tier, by status)
+                - Metrics and analytics
+                - Communication generation (emails, reports, notifications)
+                - Open-ended questions (answered via knowledge base)
+              </content>
+            </section>
+            <section name="Example Interaction">
+              <content>Pick one representative query, show the query and the expected response so users know what to expect</content>
+            </section>
+            <section name="Entity Model">
+              <content>Brief description of the entity tiers/segments and what each tier represents</content>
+            </section>
+          </required_sections>
+          <note>Use domain-specific terminology throughout. All sample queries should reference real entity IDs from the embedded data so they work immediately when pasted into the agent chat.</note>
+        </step>
+
+        <step number="2">
+          <action>Provide handoff information to user</action>
+          <description>Summarize what was built and point user to BUSINESS_USE_CASE.md for sample queries</description>
+        </step>
+      </steps>
+
+      <handoff_information>
+        <section name="what_was_built">
+          <item>Agent name and purpose</item>
+          <item>Domain and use case</item>
+          <item>Key capabilities implemented</item>
+          <item>Data sources configured</item>
+          <item>Tools created</item>
+          <item>Entity model and tier structure</item>
+        </section>
+
+        <section name="how_to_test">
+          <item>Refer to BUSINESS_USE_CASE.md for ready-to-use sample queries</item>
+          <item>How to access agent in WXO</item>
+          <item>Testing different capabilities</item>
+        </section>
+
+        <section name="how_to_customize">
+          <item>Adding new tools</item>
+          <item>Modifying data</item>
+          <item>Updating agent configuration</item>
+          <item>Extending capabilities</item>
+          <item>Redeploying after changes</item>
+        </section>
+
+        <section name="next_steps">
+          <item>Replace sample data with real data</item>
+          <item>Add additional tools as needed</item>
+          <item>Integrate with external APIs or systems</item>
+          <item>Set up monitoring and logging</item>
+          <item>Gather user feedback and iterate</item>
+        </section>
+      </handoff_information>
+    </phase>
+  </workflow_phases>
+
+  <critical_reminders>
+    <reminder>Always interview BEFORE building - gather complete requirements first</reminder>
+    <reminder>Use healthcare-assistant-agent as the foundation - it's proven and deployed</reminder>
+    <reminder>Generate COMPLETE files with real values - no placeholders or TODOs in final code</reminder>
+    <reminder>Use domain-appropriate terminology consistently throughout</reminder>
+    <reminder>Test deployment scripts before considering task complete</reminder>
+    <reminder>Provide clear, actionable next steps to the user</reminder>
+    <reminder>Ensure all sample data is realistic and represents domain diversity</reminder>
+    <reminder>⚠️ CRITICAL: Limit agents to MAXIMUM 5 tools for optimal performance</reminder>
+    <reminder>⚠️ CRITICAL: During deployment, ask user for API key and pipe to env activate — do NOT put env activate in scripts or use .env files</reminder>
+    <reminder>⚠️ CRITICAL: CLI commands must be EXACT — `tools` (plural), `agents` (plural), `knowledge-bases` (not kb), `-f` (not --path)</reminder>
+  </critical_reminders>
+
+  <critical_formatting_rules>
+    <rule priority="CRITICAL" issue="Agent naming">
+      <problem>Agent names with hyphens cause deployment failures</problem>
+      <correct>Use underscores: customer_service_agent, healthcare_assistant_agent</correct>
+      <incorrect>NEVER use hyphens: customer-service-agent, healthcare-assistant-agent</incorrect>
+      <validation>Always check agent names use underscores (_) not hyphens (-)</validation>
+    </rule>
+
+    <rule priority="CRITICAL" issue="Knowledge base naming">
+      <problem>Knowledge base names with hyphens cause deployment failures</problem>
+      <correct>Use underscores: healthcare_kb, retail_customer_kb</correct>
+      <incorrect>NEVER use hyphens: healthcare-kb, retail-customer-kb</incorrect>
+      <validation>Always check KB names use underscores (_) not hyphens (-)</validation>
+    </rule>
+
+    <rule priority="CRITICAL" issue="Knowledge base format">
+      <problem>Incorrect vector_index format causes knowledge base import failures</problem>
+      <correct>
+        vector_index:
+          embeddings_model_name: ibm/slate-125m-english-rtrvr-v2
+      </correct>
+      <incorrect>
+        vector_index:
+          kind: internal
+          embedding_model: ibm/slate-125m-english-rtrvr
+      </incorrect>
+      <validation>Always use 'embeddings_model_name:' format (NOT 'kind' or 'embedding_model')</validation>
+    </rule>
+
+    <rule priority="CRITICAL" issue="Spec version">
+      <problem>Incorrect spec_version format</problem>
+      <correct>spec_version: v1</correct>
+      <note>Use lowercase 'v' followed by version number</note>
+      <validation>Always verify spec_version is exactly 'v1'</validation>
+    </rule>
+  </critical_formatting_rules>
+</agent_building_workflow>
+
+<!-- Made with Bob -->

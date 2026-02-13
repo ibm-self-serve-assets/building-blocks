@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wxo_best_practices>
+  <overview>
+    Best practices for building production-ready watsonx Orchestrate agents.
+    These practices are domain-agnostic and apply to agents across all industries.
+  </overview>
+
+  <agent_configuration>
+    <best_practice category="naming">
+      <rule>Use snake_case for agent name (e.g., customer_service_agent, inventory_manager)</rule>
+      <rule>CRITICAL: Agent names MUST use underscores (_), NOT hyphens (-)</rule>
+      <rule>Use descriptive display names with proper capitalization</rule>
+      <rule>Keep names concise but meaningful</rule>
+      <rule>Reflect the domain and purpose in the name</rule>
+      <example>
+        <good>name: healthcare_assistant_agent</good>
+        <good>name: retail_customer_agent</good>
+        <good>name: financial_advisor_agent</good>
+        <bad>name: MyAgent123</bad>
+        <bad>name: agent-1 (NEVER use hyphens!)</bad>
+        <bad>name: healthcare-assistant-agent (NEVER use hyphens!)</bad>
+      </example>
+    </best_practice>
+
+    <best_practice category="instructions">
+      <rule>Start with clear role definition: "You are the [Agent Name]..."</rule>
+      <rule>List specific capabilities with bullet points</rule>
+      <rule>Define entity segments/tiers clearly with descriptions</rule>
+      <rule>Include communication guidelines</rule>
+      <rule>Specify key behaviors and constraints</rule>
+      <rule>Use domain-appropriate terminology throughout</rule>
+      <example><![CDATA[
+instructions: |
+  You are the [Domain] [Entity Type] Agent - "[Catchy Tagline]"
+  
+  ## Your Role
+  Help [entity_type] with:
+  - [Primary capability 1]
+  - [Primary capability 2]
+  - [Primary capability 3]
+  - [Primary capability 4]
+  - [Primary capability 5]
+  
+  ## [Entity Type] Segments/Tiers
+  - **[Tier 1]**: [Description and benefits]
+  - **[Tier 2]**: [Description and benefits]
+  - **[Tier 3]**: [Description and benefits]
+  - **[Tier 4]**: [Description and benefits]
+  
+  ## Communication Guidelines
+  1. Be professional yet friendly
+  2. Personalize responses with [entity_type]'s name and tier
+  3. Suggest relevant services and tier upgrades when appropriate
+  4. Never share sensitive information inappropriately
+  5. Provide context about tier benefits
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="llm_selection">
+      <rule>Use groq/openai/gpt-oss-120b for most agents</rule>
+      <rule>Consider model capabilities vs. cost tradeoffs</rule>
+      <rule>Choose models appropriate for domain complexity</rule>
+      <note>This model provides good balance of capability and performance</note>
+    </best_practice>
+
+    <best_practice category="tool_references">
+      <rule>List all tools with clear descriptions</rule>
+      <rule>Group related tools together</rule>
+      <rule>Explain when each tool should be used</rule>
+      <rule>Use domain-appropriate tool names</rule>
+      <example><![CDATA[
+tools:
+  - name: get_entity_data
+    description: Retrieve [entity_type] profiles and information
+  - name: process_request
+    description: Handle [entity_type] requests and operations
+  - name: generate_communication
+    description: Create personalized messages for [entity_type]
+      ]]></example>
+    </best_practice>
+  </agent_configuration>
+
+  <tool_development>
+    <best_practice category="decorators">
+      <rule>Always use @tool decorator from ibm_watsonx_orchestrate.agent_builder.tools</rule>
+      <rule>Place decorator immediately before function definition</rule>
+      <rule>No additional decorators needed</rule>
+      <example><![CDATA[
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
+
+@tool
+def get_entity_data(entity_id: str) -> Dict[str, Any]:
+    """Retrieve entity information."""
+    pass
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="tool_isolation">
+      <rule>⚠️ CRITICAL: Tools CANNOT call other tools directly</rule>
+      <rule>Each tool must be completely self-contained and independent</rule>
+      <rule>Tools cannot import or invoke other tool functions</rule>
+      <rule>The agent orchestrates tool calls, not the tools themselves</rule>
+      <rule>If a tool needs data from multiple sources, it must load data directly</rule>
+      <explanation>
+        WXO tools run in isolated execution contexts. Cross-tool function calls will fail.
+        The agent is responsible for orchestrating multiple tool calls in sequence.
+      </explanation>
+      <example_wrong><![CDATA[
+# ❌ WRONG: Tool trying to call another tool
+from tools.student_tools import get_student_by_id
+
+@tool
+def generate_report(student_id: str) -> str:
+    student = get_student_by_id(student_id)  # This will FAIL!
+    return f"Report for {student['name']}"
+      ]]></example_wrong>
+      <example_correct><![CDATA[
+# ✅ CORRECT: Tool embeds data directly (WXO cannot access local files)
+STUDENTS_DATA = [
+    {"student_id": "STU001", "name": "Emma Johnson", "tier": "Premium", "status": "active"},
+    {"student_id": "STU002", "name": "Liam Chen", "tier": "Basic", "status": "active"},
+    {"student_id": "STU003", "name": "Sofia Martinez", "tier": "Premium", "status": "active"},
+]
+
+@tool
+def generate_report(student_id: str) -> str:
+    student = next((s for s in STUDENTS_DATA if s['student_id'] == student_id), None)
+    if not student:
+        return f"Student {student_id} not found"
+    return f"Report for {student['name']}"
+      ]]></example_correct>
+      <alternative>
+        If multiple tools need the same data, either:
+        1. Duplicate the embedded data in each tool file (preferred for simplicity)
+        2. Create shared helper functions (not @tool decorated) with embedded data
+        3. Let the agent call multiple tools and combine results
+        NOTE: NEVER load from CSV files — WXO tools cannot access local files.
+      </alternative>
+    </best_practice>
+
+    <best_practice category="type_hints">
+      <rule>Use complete type hints for all parameters and return values</rule>
+      <rule>Import types from typing module</rule>
+      <rule>Use Optional for nullable parameters</rule>
+      <rule>Use specific types (Dict, List) over generic (Any) when possible</rule>
+      <example><![CDATA[
+from typing import Dict, List, Optional, Any
+
+@tool
+def get_entities(
+    entity_id: Optional[str] = None,
+    tier: Optional[str] = None,
+    limit: Optional[int] = None
+) -> List[Dict[str, Any]]:
+    """Retrieve entities with optional filtering."""
+    pass
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="docstrings">
+      <rule>Provide clear, concise docstrings for all tools</rule>
+      <rule>Describe what the tool does, not how it works</rule>
+      <rule>Document parameters and return values</rule>
+      <rule>Include usage examples if complex</rule>
+      <rule>Use domain-appropriate terminology in descriptions</rule>
+      <example><![CDATA[
+@tool
+def calculate_metrics(entity_id: str, metric_type: str) -> Dict[str, float]:
+    """
+    Calculate performance metrics for an entity.
+    
+    Args:
+        entity_id: Unique identifier for the entity
+        metric_type: Type of metric to calculate (e.g., 'engagement', 'performance')
+    
+    Returns:
+        Dictionary containing calculated metrics with metric names as keys
+    
+    Example:
+        >>> calculate_metrics("ENT001", "engagement")
+        {"score": 45.2, "rate": 0.23}
+    """
+    pass
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="error_handling">
+      <rule>Handle common error cases gracefully</rule>
+      <rule>Return meaningful error messages</rule>
+      <rule>Don't let exceptions crash the agent</rule>
+      <rule>Log errors appropriately</rule>
+      <example><![CDATA[
+@tool
+def get_entity_by_id(entity_id: str) -> Optional[Dict[str, Any]]:
+    """Retrieve a single entity by ID."""
+    try:
+        entity = find_entity(entity_id)
+        if not entity:
+            return {"error": f"Entity {entity_id} not found"}
+        return entity
+    except Exception as e:
+        return {"error": f"Failed to retrieve entity: {str(e)}"}
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="data_handling">
+      <rule>Embed sample data for testing and demonstration</rule>
+      <rule>Structure data consistently across tools</rule>
+      <rule>Use realistic, domain-appropriate sample data</rule>
+      <rule>Include diverse examples (different tiers, statuses, etc.)</rule>
+      <rule>Use domain-specific field names and values</rule>
+      <example><![CDATA[
+ENTITY_DATA = [
+    {
+        "entity_id": "ENT001",
+        "name": "Sample Entity 1",
+        "tier": "Premium",
+        "status": "active",
+        # Add domain-specific fields
+    },
+    {
+        "entity_id": "ENT002",
+        "name": "Sample Entity 2",
+        "tier": "Basic",
+        "status": "active",
+        # Add domain-specific fields
+    }
+]
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="data_access">
+      <critical_warning>
+        ⚠️ WXO tools run in an isolated cloud environment and CANNOT access local files.
+        Tools that try to load CSV files using relative paths will fail when deployed.
+      </critical_warning>
+      
+      <rule>NEVER use file system access in tools (os.path, open(), csv.DictReader with files)</rule>
+      <rule>Embed data directly in tools for small datasets</rule>
+      <rule>Use external APIs for large or dynamic datasets</rule>
+      <rule>Use knowledge bases for semantic search, not structured lookups</rule>
+      <rule>CSV files in project are for development/testing only</rule>
+      <rule>Always test tools after deployment to verify data access works</rule>
+      
+      <wrong_approach><![CDATA[
+# ❌ THIS WILL NOT WORK in deployed WXO tools
+def _load_data_from_csv():
+    csv_path = os.path.join(os.path.dirname(__file__), '..', 'data', 'entities.csv')
+    with open(csv_path, 'r') as f:
+        reader = csv.DictReader(f)
+        return list(reader)
+
+@tool
+def get_entity(entity_id: str) -> dict:
+    entities = _load_data_from_csv()  # FAILS in WXO!
+    for entity in entities:
+        if entity['entity_id'] == entity_id:
+            return entity
+    return None
+      ]]></wrong_approach>
+      
+      <correct_approach_embedded><![CDATA[
+# ✅ SOLUTION 1: Embed data directly in the tool (best for small datasets)
+ENTITIES_DATA = [
+    {"entity_id": "ENT001", "name": "Entity 1", "tier": "Premium", "status": "active"},
+    {"entity_id": "ENT002", "name": "Entity 2", "tier": "Basic", "status": "active"},
+    {"entity_id": "ENT003", "name": "Entity 3", "tier": "Gold", "status": "inactive"},
+]
+
+@tool
+def get_entity(entity_id: str) -> dict:
+    """Retrieve entity by ID from embedded data."""
+    for entity in ENTITIES_DATA:
+        if entity['entity_id'] == entity_id:
+            return entity
+    return {"error": f"Entity {entity_id} not found"}
+      ]]></correct_approach_embedded>
+      
+      <correct_approach_api><![CDATA[
+# ✅ SOLUTION 2: Use external API (best for large/dynamic datasets)
+import requests
+
+@tool
+def get_entity(entity_id: str) -> dict:
+    """Retrieve entity from external API."""
+    try:
+        response = requests.get(
+            f"https://api.example.com/entities/{entity_id}",
+            headers={"Authorization": f"Bearer {API_KEY}"}
+        )
+        response.raise_for_status()
+        return response.json()
+    except Exception as e:
+        return {"error": f"Failed to retrieve entity: {str(e)}"}
+      ]]></correct_approach_api>
+      
+      <when_to_use>
+        <embedded_data>
+          <use_when>Small datasets (less than 100 records)</use_when>
+          <use_when>Static demo/sample data</use_when>
+          <use_when>Data that rarely changes</use_when>
+          <use_when>Prototyping and testing</use_when>
+          <pros>Simple, no external dependencies, fast</pros>
+          <cons>Limited scalability, requires redeployment for updates</cons>
+        </embedded_data>
+        
+        <external_api>
+          <use_when>Large datasets (hundreds or thousands of records)</use_when>
+          <use_when>Frequently updated data</use_when>
+          <use_when>Production systems with live data</use_when>
+          <use_when>Data shared across multiple systems</use_when>
+          <pros>Scalable, real-time updates, centralized data</pros>
+          <cons>Requires API setup, network dependency, authentication</cons>
+        </external_api>
+        
+        <knowledge_base>
+          <use_when>Unstructured documents and text</use_when>
+          <use_when>Semantic search requirements</use_when>
+          <use_when>Large text corpora</use_when>
+          <use_when>Natural language queries</use_when>
+          <pros>Semantic search, handles unstructured data</pros>
+          <cons>Not ideal for structured lookups by ID, requires vectorization</cons>
+        </knowledge_base>
+      </when_to_use>
+      
+      <migration_guide>
+        <step>1. Identify tools that load data from CSV files</step>
+        <step>2. Determine dataset size and update frequency</step>
+        <step>3. Choose appropriate solution (embedded vs API vs KB)</step>
+        <step>4. Refactor tools to use chosen approach</step>
+        <step>5. Test locally to verify functionality</step>
+        <step>6. Re-import tools to WXO</step>
+        <step>7. Redeploy agent</step>
+        <step>8. Test in WXO to confirm data access works</step>
+      </migration_guide>
+    </best_practice>
+
+    <best_practice category="function_naming">
+      <rule>Use clear, descriptive function names</rule>
+      <rule>Follow domain terminology when appropriate</rule>
+      <rule>Use verb-noun pattern (e.g., get_customer, process_order)</rule>
+      <rule>Be consistent across related tools</rule>
+      <examples>
+        <example>get_entity_data, get_entity_by_id, get_entities_by_tier</example>
+        <example>process_request, validate_request, submit_request</example>
+        <example>calculate_metrics, generate_report, analyze_performance</example>
+      </examples>
+    </best_practice>
+  </tool_development>
+
+  <knowledge_base_configuration>
+    <best_practice category="structure">
+      <rule>Use descriptive knowledge base names (e.g., [domain]_[entity_type]_kb)</rule>
+      <rule>Provide clear descriptions of what data is included</rule>
+      <rule>List all document sources with relative paths</rule>
+      <rule>Use appropriate embeddings model for domain</rule>
+      <example><![CDATA[
+spec_version: v1
+name: [domain]_[entity_type]_kb
+description: |
+  Comprehensive knowledge base for [Agent Name].
+  
+  Contains:
+  - [Entity type] profiles and information
+  - [Data type 2] (e.g., location data, reference data)
+  - [Data type 3] (e.g., documentation, guides)
+
+documents:
+  - ../data/entities.csv
+  - ../data/reference_data.csv
+  - ../data/documentation.txt
+
+vector_index:
+  embeddings_model_name: ibm/slate-125m-english-rtrvr-v2
+
+# ⚠️ CRITICAL: Use 'embeddings_model_name' format (NOT 'kind' or 'embedding_model')
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="data_files">
+      <rule>Use CSV format for structured data</rule>
+      <rule>Include clear, descriptive column headers</rule>
+      <rule>Provide 5-10 diverse sample records</rule>
+      <rule>Ensure data is realistic and domain-appropriate</rule>
+      <rule>Include all tiers/segments in sample data</rule>
+      <rule>Use domain-specific field names</rule>
+    </best_practice>
+
+    <best_practice category="embeddings">
+      <rule>Use ibm/slate-125m-english-rtrvr-v2 for English content</rule>
+      <rule>Use ibm/slate-30m-english-rtrvr for smaller, faster indexing</rule>
+      <rule>Consider domain-specific models if available</rule>
+      <rule>Choose model based on data size and query complexity</rule>
+    </best_practice>
+  </knowledge_base_configuration>
+
+  <deployment_practices>
+    <best_practice category="environment">
+      <rule>Bob activates the WXO environment during deployment by asking the user for their API key</rule>
+      <rule>Activation command: echo "API_KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</rule>
+      <rule>Scripts must NOT call `orchestrate env activate` — it hangs with interactive prompts in scripts</rule>
+      <rule>Do NOT use .env files for authentication — use the piped env activate approach</rule>
+    </best_practice>
+
+    <best_practice category="cli_commands">
+      <rule>⚠️ CRITICAL: Use these EXACT commands — wrong syntax will fail silently or error</rule>
+      <rule>All commands prefixed with: uvx --from ibm-watsonx-orchestrate</rule>
+      <example><![CDATA[
+# Activate environment (Bob runs this BEFORE deploy_all.sh, NOT inside scripts)
+# echo "<API_KEY>" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env
+
+# Import tools: use "tools" (plural), -k for kind, -f for file
+uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/my_tool.py
+
+# Import knowledge base: use "knowledge-bases" (NOT "kb"), -f for file
+uvx --from ibm-watsonx-orchestrate orchestrate knowledge-bases import -f knowledge_bases/my_kb.yaml
+
+# Import agent config: use "agents" (plural), -f for file
+uvx --from ibm-watsonx-orchestrate orchestrate agents import -f agent_config.yaml
+
+# Deploy agent: use "agents" (plural), -n for name
+uvx --from ibm-watsonx-orchestrate orchestrate agents deploy -n my_agent_name
+      ]]></example>
+      <wrong_commands>
+        NEVER use these wrong forms:
+        - "tool import" → MUST be "tools import" (plural)
+        - "agent import" → MUST be "agents import" (plural)
+        - "kb import" → MUST be "knowledge-bases import"
+        - "--path" flag → MUST be "-f"
+        - "--file-path" flag → MUST be "-f"
+      </wrong_commands>
+    </best_practice>
+
+    <best_practice category="scripts">
+      <rule>Make all scripts executable (chmod +x)</rule>
+      <rule>Include error handling (set -e)</rule>
+      <rule>⚠️ CRITICAL: EVERY script MUST resolve SCRIPT_DIR and PROJECT_ROOT, then cd "$PROJECT_ROOT"</rule>
+      <rule>⚠️ CRITICAL: Scripts must NOT call `orchestrate env activate` — Bob handles env activation by piping API key before running scripts</rule>
+      <rule>deploy_all.sh must call sub-scripts using "$SCRIPT_DIR/import_tools.sh" (NOT "./scripts/import_tools.sh")</rule>
+      <rule>Provide clear progress messages</rule>
+      <mandatory_boilerplate><![CDATA[
+⚠️ EVERY script MUST start with this boilerplate (after #!/bin/bash and set -e):
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+
+cd "$PROJECT_ROOT"
+      ]]></mandatory_boilerplate>
+      <example><![CDATA[
+#!/bin/bash
+set -e
+
+# Get script directory and project root
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+
+cd "$PROJECT_ROOT"
+uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/my_tool.py
+echo "✓ Tools imported"
+      ]]></example>
+    </best_practice>
+
+    <best_practice category="deployment_order">
+      <rule>Always deploy in this order:</rule>
+      <step>0. Bob asks user for API key and activates env: echo "KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</step>
+      <step>1. Import tools: orchestrate tools import -k python -f ...</step>
+      <step>2. Import knowledge bases: orchestrate knowledge-bases import -f ...</step>
+      <step>3. Import agent config: orchestrate agents import -f agent_config.yaml</step>
+      <step>4. Deploy agent: orchestrate agents deploy -n agent_name</step>
+      <rationale>Agent depends on tools and knowledge bases being available</rationale>
+    </best_practice>
+  </deployment_practices>
+
+  <code_quality>
+    <best_practice category="python_style">
+      <rule>Follow PEP 8 style guidelines</rule>
+      <rule>Use meaningful variable and function names</rule>
+      <rule>Keep functions focused and single-purpose</rule>
+      <rule>Add comments for complex logic</rule>
+      <rule>Use consistent naming conventions</rule>
+    </best_practice>
+
+    <best_practice category="yaml_style">
+      <rule>Use 2-space indentation</rule>
+      <rule>Use | for multi-line strings</rule>
+      <rule>Quote strings with special characters</rule>
+      <rule>Validate YAML syntax before deployment</rule>
+      <rule>Use consistent formatting throughout</rule>
+    </best_practice>
+
+    <best_practice category="documentation">
+      <rule>Include comprehensive README.md</rule>
+      <rule>Document all customization points</rule>
+      <rule>Provide example queries and expected responses</rule>
+      <rule>Include troubleshooting section</rule>
+      <rule>Explain domain-specific concepts</rule>
+      <rule>Document data structure and fields</rule>
+    </best_practice>
+  </code_quality>
+
+  <testing_and_validation>
+    <best_practice category="pre_deployment">
+      <rule>Validate all YAML files</rule>
+      <rule>Check Python syntax</rule>
+      <rule>Verify all file paths are correct</rule>
+      <rule>Ensure sample data is realistic</rule>
+      <rule>Test scripts locally if possible</rule>
+      <rule>Verify all placeholders are replaced</rule>
+    </best_practice>
+
+    <best_practice category="post_deployment">
+      <rule>Verify agent appears in WXO interface</rule>
+      <rule>Test with sample queries</rule>
+      <rule>Verify tool execution</rule>
+      <rule>Check knowledge base search</rule>
+      <rule>Monitor for errors in logs</rule>
+      <rule>Test all major capabilities</rule>
+    </best_practice>
+
+    <best_practice category="test_queries">
+      <rule>Create domain-specific test queries</rule>
+      <rule>Test each major capability</rule>
+      <rule>Test tier-specific functionality</rule>
+      <rule>Test error handling</rule>
+      <rule>Document expected responses</rule>
+    </best_practice>
+  </testing_and_validation>
+
+  <common_pitfalls>
+    <pitfall name="missing_decorator">
+      <problem>Tool functions without @tool decorator</problem>
+      <symptom>Tools not recognized by agent</symptom>
+      <solution>Add @tool decorator to all tool functions</solution>
+    </pitfall>
+
+    <pitfall name="incorrect_imports">
+      <problem>Wrong import statement for @tool decorator</problem>
+      <symptom>ImportError or decorator not working</symptom>
+      <solution>Use: from ibm_watsonx_orchestrate.agent_builder.tools import tool</solution>
+    </pitfall>
+
+    <pitfall name="yaml_syntax_errors">
+      <problem>Invalid YAML syntax in configuration files</problem>
+      <symptom>Deployment fails with parsing errors</symptom>
+      <solution>Validate YAML syntax, check indentation and quotes</solution>
+    </pitfall>
+
+    <pitfall name="missing_api_key">
+      <problem>WXO environment not activated</problem>
+      <symptom>Authentication errors during deployment</symptom>
+      <solution>Ask user for API key and activate: echo "KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</solution>
+    </pitfall>
+
+    <pitfall name="incorrect_file_paths">
+      <problem>Wrong paths in knowledge base configuration</problem>
+      <symptom>Knowledge base import fails</symptom>
+      <solution>Use relative paths from knowledge_bases directory</solution>
+    </pitfall>
+
+    <pitfall name="incomplete_placeholders">
+      <problem>Template placeholders not replaced</problem>
+      <symptom>Agent has generic names or broken functionality</symptom>
+      <solution>Search for and replace all {PLACEHOLDER} values</solution>
+    </pitfall>
+
+    <pitfall name="inconsistent_terminology">
+      <problem>Mixed terminology across files</problem>
+      <symptom>Confusing documentation and code</symptom>
+      <solution>Use consistent domain terminology throughout</solution>
+    </pitfall>
+
+    <pitfall name="unrealistic_sample_data">
+      <problem>Sample data doesn't reflect real-world scenarios</problem>
+      <symptom>Poor testing and demonstration</symptom>
+      <solution>Create diverse, realistic sample data for the domain</solution>
+    </pitfall>
+  </common_pitfalls>
+
+  <performance_optimization>
+    <best_practice category="tool_efficiency">
+      <rule>Cache frequently accessed data</rule>
+      <rule>Use efficient data structures</rule>
+      <rule>Avoid unnecessary computations</rule>
+      <rule>Return only necessary data</rule>
+      <rule>Implement pagination for large result sets</rule>
+    </best_practice>
+
+    <best_practice category="knowledge_base">
+      <rule>Keep data files reasonably sized</rule>
+      <rule>Use appropriate embeddings model for data size</rule>
+      <rule>Structure data for efficient search</rule>
+      <rule>Remove duplicate or redundant data</rule>
+    </best_practice>
+
+    <best_practice category="response_time">
+      <rule>Optimize tool execution time</rule>
+      <rule>Minimize external API calls</rule>
+      <rule>Use async operations when appropriate</rule>
+      <rule>Cache expensive computations</rule>
+    </best_practice>
+  </performance_optimization>
+
+  <security_considerations>
+    <best_practice category="credentials">
+      <rule>Never hardcode API keys or passwords</rule>
+      <rule>Use environment variables for sensitive data</rule>
+      <rule>Add .env to .gitignore</rule>
+      <rule>Rotate API keys regularly</rule>
+      <rule>Use secure credential management</rule>
+    </best_practice>
+
+    <best_practice category="data_handling">
+      <rule>Don't expose sensitive data in logs</rule>
+      <rule>Validate and sanitize user inputs</rule>
+      <rule>Follow data privacy regulations</rule>
+      <rule>Implement appropriate access controls</rule>
+      <rule>Mask or redact sensitive information</rule>
+    </best_practice>
+
+    <best_practice category="compliance">
+      <rule>Consider domain-specific regulations (HIPAA, GDPR, etc.)</rule>
+      <rule>Implement audit logging where required</rule>
+      <rule>Document data handling practices</rule>
+      <rule>Ensure secure data transmission</rule>
+    </best_practice>
+  </security_considerations>
+
+  <domain_adaptation>
+    <best_practice category="terminology">
+      <rule>Use domain-specific terms consistently</rule>
+      <rule>Avoid generic terms when domain-specific ones exist</rule>
+      <rule>Document domain terminology in README</rule>
+      <rule>Align with industry standards and conventions</rule>
+    </best_practice>
+
+    <best_practice category="business_logic">
+      <rule>Implement domain-specific validation rules</rule>
+      <rule>Follow industry best practices</rule>
+      <rule>Consider regulatory requirements</rule>
+      <rule>Align with business processes</rule>
+    </best_practice>
+
+    <best_practice category="user_experience">
+      <rule>Use appropriate tone for the domain</rule>
+      <rule>Provide domain-relevant examples</rule>
+      <rule>Anticipate domain-specific user needs</rule>
+      <rule>Design for domain-specific workflows</rule>
+    </best_practice>
+  </domain_adaptation>
+</wxo_best_practices>
+
+<!-- Made with Bob -->

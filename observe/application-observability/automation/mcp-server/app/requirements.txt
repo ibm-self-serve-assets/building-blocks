@@ -1,0 +1,8 @@
+Flask==3.0.0  
+flask-cors==4.0.0  
+gunicorn==21.2.0  
+python-dotenv==1.1.0
+fastapi>=0.110
+uvicorn[standard]>=0.27
+mcp>=1.9.1
+mcp-instana
