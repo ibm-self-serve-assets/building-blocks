@@ -2,26 +2,27 @@
 
 This repository contains expert-level [custom modes for IBM Bob](https://internal.bob.ibm.com/docs/ide/features/custom-modes) designed for building production-grade AI agents and MCP servers. These modes transform IBM Bob into a specialized development assistant with comprehensive guidance and best practices.
 
-**Prerequisites:**
-- watsonx Orchestrate ADK installed: `pip install ibm-watsonx-orchestrate`
-- Active watsonx Orchestrate environment
+## Available Custom Modes
+**Agent Builder: **Build and manage watsonx Orchestrate agents, tools, and workflows.
+- [`mcp_builder_mode.yml`](mcp_builder_mode.yml) - Mode configuration
+- [`mcp_builder_mode_guide.md`](mcp_builder_mode_guide.md) - Comprehensive user guide
+
+**MCP Builder: **Build production-grade Model Context Protocol (MCP) servers in Python and TypeScript/Node.js.
+- [`wxo_agent_builder_mode.yml`](wxo_agent_builder_mode.yml) - Mode configuration
+- [`wxo_agent_builder_mode_guide.md`](wxo_agent_builder_mode_guide.md) - Comprehensive user guide
+
+## I. Prerequisites
+- Install watsonx Orchestrate ADK: `pip install ibm-watsonx-orchestrate`
+- watsonx Orchestrate environment
 - Python 3.10+
 - For MCP server mode:
   - MCP SDK: `pip install mcp` or `npm install @modelcontextprotocol/sdk`
   - Node.js 18+ 
 
-## Available Custom Modes
-Build and manage watsonx Orchestrate agents, tools, and workflows.
-- [`mcp_builder_mode.yml`](mcp_builder_mode.yml) - Mode configuration
-- [`mcp_builder_mode_guide.md`](mcp_builder_mode_guide.md) - Comprehensive user guide
+## II. Install the wxo MCP Servers
+Follow these [MCP server install instructions](wxo-mcp-server-installation.md) to configure both of watsonx Orchestrate's MCP servers. If you haven't added MCP servers to IBM Bob before, read about [MCP servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).
 
-Building production-grade Model Context Protocol (MCP) servers in Python and TypeScript/Node.js.
-- [`wxo_agent_builder_mode.yml`](wxo_agent_builder_mode.yml) - Mode configuration
-- [`wxo_agent_builder_mode_guide.md`](wxo_agent_builder_mode_guide.md) - Comprehensive user guide
-
-## I. Custom Mode Installation
-
-### Quick Start
+## III. Custom Mode Installation
 
 1. **Copy the mode configuration:**
    - For watsonx Orchestrate development: Copy contents of `wxo_agent_builder_mode.yml` or `wxo_agent_builder_mode.yml`
@@ -45,10 +46,6 @@ For system-wide access, copy the YAML file to:
 - **Windows**: `%APPDATA%\IBM Bob\User\globalStorage\ibm.bob-code\settings\custom_modes.yaml`
 - **macOS**: `~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
 - **Linux**: `~/.config/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml`
-
-## II. Setting up the watsonx Orchestrate MCP Servers
-
-The watsonx Orchestrate Agent Builder mode requires two MCP servers configured in [`mcp_watsonx_orchestrate.json`](mcp_watsonx_orchestrate.json). If you haven't added MCP servers to IBM Bob yet, read about [MCP servers in IBM Bob](https://internal.bob.ibm.com/docs/ide/features/mcp/using-mcp-in-bob).
 
 ### 1. watsonx Orchestrate ADK Documentation Server
 
