@@ -11,7 +11,7 @@ Building trust in AI requires a holistic approach across the full AI lifecycle, 
 
 The content is organized into four main categories:  
 
-<img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs-2.png" alt="Trusted AI Building Blocks" width="500"/>
+<img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs-2.png" alt="Trusted AI Building Blocks" width="200"/>
 
 ### 1. **Design-time Evaluations**  
 - Tools for evaluating AI models and agents in your development environment.
@@ -36,6 +36,7 @@ The content is organized into four main categories:
 
 ## 🤝 Contributing  
 We welcome contributions! Please submit issues, suggest improvements, or open pull requests to expand the resources and keep this repository valuable for all partners.  
+
 
 
 
