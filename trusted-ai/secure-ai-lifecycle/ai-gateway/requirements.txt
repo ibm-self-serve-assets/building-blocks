@@ -1,2 +1,0 @@
-# Requirements for IBM Guardium AI Security Gateway Client
-openai>=1.0.0
