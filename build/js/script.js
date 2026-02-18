@@ -1,4 +1,121 @@
 document.addEventListener("DOMContentLoaded", () => {
+  
+  // ==================== SCROLL REVEAL ANIMATIONS ====================
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+      }
+    });
+  }, observerOptions);
+
+  // Add scroll-reveal class to elements
+  document.querySelectorAll('.card, .tile, .section, .benefits-list li').forEach(el => {
+    el.classList.add('scroll-reveal');
+    observer.observe(el);
+  });
+
+  // Stagger animation for grid items
+  document.querySelectorAll('.grid .tile').forEach((tile, index) => {
+    tile.style.transitionDelay = `${index * 0.1}s`;
+  });
+
+  document.querySelectorAll('.cards .card').forEach((card, index) => {
+    card.style.transitionDelay = `${index * 0.1}s`;
+  });
+
+  // ==================== SMOOTH SCROLL FOR NAVIGATION ====================
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+        
+        // Add active state to navigation
+        document.querySelectorAll('.header nav a').forEach(link => {
+          link.style.color = '#ffffff';
+        });
+        this.style.color = '#00b4ff';
+      }
+    });
+  });
+
+  // ==================== PARALLAX EFFECT FOR HERO ====================
+  let lastScrollY = window.scrollY;
+  let ticking = false;
+
+  function updateParallax() {
+    const scrolled = window.scrollY;
+    const hero = document.querySelector('h1');
+    const tiles = document.querySelectorAll('.tile');
+    
+    if (hero) {
+      hero.style.transform = `translateY(${scrolled * 0.3}px)`;
+      hero.style.opacity = Math.max(1 - scrolled / 500, 0);
+    }
+    
+    tiles.forEach((tile, index) => {
+      const speed = 0.05 + (index * 0.01);
+      tile.style.transform = `translateY(${scrolled * speed}px)`;
+    });
+    
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    lastScrollY = window.scrollY;
+    if (!ticking) {
+      window.requestAnimationFrame(updateParallax);
+      ticking = true;
+    }
+  });
+
+  // ==================== ACTIVE NAVIGATION INDICATOR ====================
+  const sections = document.querySelectorAll('section[id]');
+  
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(section => {
+      const sectionTop = section.offsetTop;
+      const sectionHeight = section.clientHeight;
+      if (window.scrollY >= sectionTop - 200) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    document.querySelectorAll('.header nav a').forEach(link => {
+      link.style.color = '#ffffff';
+      if (link.getAttribute('href') === `#${current}`) {
+        link.style.color = '#00b4ff';
+      }
+    });
+  });
+
+  // ==================== LOADING ANIMATION FOR MODALS ====================
+  function showLoadingSpinner(container) {
+    container.innerHTML = `
+      <div class="loading-spinner" style="
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255,255,255,0.1);
+        border-top-color: #00b4ff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin: 60px auto;
+      "></div>
+    `;
+  }
+
+  // ==================== EXISTING CODE CONTINUES ====================
   function stopVideoPlayback() {
     const video = document.getElementById("demoVideo");
     if (video) {
@@ -249,6 +366,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const key = tile.dataset.category;
       const data = tileData[key];
 
+      // Add ripple effect
+      const ripple = document.createElement('span');
+      ripple.style.cssText = `
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: rgba(0, 180, 255, 0.6);
+        border-radius: 50%;
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
+      `;
+      tile.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+
       tileTitle.textContent = data.title;
       tileBody.innerHTML =
         data.items.map((i) => `<p><strong>${i.name}</strong>: ${i.desc}</p>`).join("") +
@@ -274,10 +406,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------------------- CARD MODAL ---------------------- */
   document.querySelectorAll(".card").forEach((card) => {
-    card.addEventListener("click", () => {
+    card.addEventListener("click", (e) => {
       stopVideoPlayback();
       const key = card.dataset.modal;
       const data = cardData[key];
+
+      // Add click animation
+      card.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        card.style.transform = '';
+      }, 150);
 
       cardBody.innerHTML = `<h2>${data.title}</h2>${data.content}`;
       showModal(cardOverlay);
@@ -388,5 +526,95 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 300);
     }
   });
+  // ==================== SCROLL PROGRESS BAR ====================
+  const progressBar = document.getElementById('progressBar');
+  
+  window.addEventListener('scroll', () => {
+    const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (window.scrollY / windowHeight) * 100;
+    if (progressBar) {
+      progressBar.style.width = scrolled + '%';
+    }
+  });
+
+  // ==================== SCROLL TO TOP BUTTON ====================
+  const scrollToTopBtn = document.getElementById('scrollToTop');
+  
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      scrollToTopBtn.classList.add('visible');
+    } else {
+      scrollToTopBtn.classList.remove('visible');
+    }
+  });
+
+  scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+
+  // ==================== KEYBOARD NAVIGATION ENHANCEMENT ====================
+  document.addEventListener('keydown', (e) => {
+    // ESC key closes modals
+    if (e.key === 'Escape') {
+      hideModal(tileModal);
+      hideModal(cardOverlay);
+      stopVideoPlayback();
+    }
+    
+    // Arrow keys for navigation
+    if (e.key === 'ArrowUp' && window.scrollY > 0) {
+      e.preventDefault();
+      window.scrollBy({ top: -100, behavior: 'smooth' });
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      window.scrollBy({ top: 100, behavior: 'smooth' });
+    }
+  });
+
+  // ==================== PERFORMANCE OPTIMIZATION ====================
+  // Debounce scroll events
+  let scrollTimeout;
+  window.addEventListener('scroll', () => {
+    if (scrollTimeout) {
+      window.cancelAnimationFrame(scrollTimeout);
+    }
+    scrollTimeout = window.requestAnimationFrame(() => {
+      // Scroll-based optimizations
+      const scrolled = window.scrollY;
+      document.body.style.setProperty('--scroll', scrolled);
+    });
+  });
+
+  // ==================== INITIAL ANIMATIONS ====================
+  // Trigger initial animations after page load
+  setTimeout(() => {
+    document.querySelectorAll('.tile, .card').forEach((el, index) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+      }, index * 50);
+    });
+  }, 100);
+
+  // ==================== ENHANCED BUTTON INTERACTIONS ====================
+  document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+    btn.addEventListener('mouseenter', function(e) {
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      this.style.setProperty('--x', x + 'px');
+      this.style.setProperty('--y', y + 'px');
+    });
+  });
+
+  // ==================== CONSOLE WELCOME MESSAGE ====================
+  console.log('%c🚀 IBM Technology Building Blocks', 'color: #00b4ff; font-size: 20px; font-weight: bold;');
+  console.log('%cEnhanced UI with interactive animations loaded successfully!', 'color: #61dafb; font-size: 14px;');
+
 
 });

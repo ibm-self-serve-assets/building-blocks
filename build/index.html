@@ -103,46 +103,75 @@
     </div>
   </section>
 
-  <!-- DOMAINS -->
+  <!-- MODES SECTION -->
   <section id="domains" class="section bg-gradient">
-    <div class="container">
-      <h2>Explore the Building Blocks</h2>
-      <div class="cards">
+    <div class="container-one">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1.5rem;">
+        <img src="images/IBM_Bob.png" alt="IBM Bob" style="height: 50px;" />
+        <h2 style="margin: 0; display: inline-block;">IBM Bob Custom Modes available for Building Blocks</h2>
+      </div>
+      <p>
+        IBM Bob custom modes allow developers to tailor Bob's behavior by combining reusable Building Blocks.
+        These modular capabilities — spanning <strong>Agent Builder & MCP Integration</strong>,
+        <strong>Vector Search & Document Processing</strong>, <strong>Data Engineering & Knowledge Pipelines</strong>,
+        <strong>Application Observability & Monitoring</strong>, and <strong>Security, Risk & Trust Intelligence</strong>
+        — can be orchestrated to address specific operational needs and development workflows.
+      </p>
+      <p>
+        This composable approach enables teams to design highly contextual assistants optimized for specialized tasks
+        and domain-specific scenarios.
+      </p>
 
-        <div class="card" data-modal="agents">
-          <img src="icons/agent.png" alt="Agents Icon" class="card-icon" />
-          <h3>Agents</h3>
-          <p>Watsonx Orchestrate and watsonx.ai for task automation and orchestration.</p>
+      <div class="modes-grid">
+        <div class="mode-category">
+          <h3 class="mode-category-title">
+            Agents
+          </h3>
+          <ul class="mode-list">
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ibm-bob/modes" target="_blank" class="mode-link" style="color: #00b4ff !important;">Agent Builder</a>: Bob uses wxo's ADK and documentation MCP servers to build custom agents.
+            </li>
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ibm-bob/modes" target="_blank" class="mode-link" style="color: #00b4ff !important;">MCP Builder</a>: Expands on the Agent Builder mode to build and deploy MCP servers on wxo.
+            </li>
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/ibm-bob/modes/domain-agent-builder" target="_blank" class="mode-link" style="color: #00b4ff !important;">Domain Agent Builder</a>: Bob builds a tool-augmented RAG agent for partner's custom specific domain.
+            </li>
+          </ul>
         </div>
 
-        <div class="card" data-modal="data">
-          <img src="icons/data.png" alt="Data for AI Icon" class="card-icon" />
-          <h3>Data-for-AI</h3>
-          <p>Data pipelines and retrieval systems built on watsonx.data and open tooling.</p>
+        <div class="mode-category">
+          <h3 class="mode-category-title">
+            Data for AI
+          </h3>
+          <ul class="mode-list">
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/ibm-bob/base-mode" target="_blank" class="mode-link" style="color: #00b4ff !important;">Data for AI</a>: Specialized for data engineering, architecture, and data operations.
+            </li>
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/ibm-bob/rag-ingestion-sse-mcp-server" target="_blank" class="mode-link" style="color: #00b4ff !important;">RAG Ingestion</a>: Ingest IBM Cloud Object Storage (COS) into vector databases.
+            </li>
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/ibm-bob/rag-retrieval-sse-mcp-server" target="_blank" class="mode-link" style="color: #00b4ff !important;">RAG Retrieval</a>: Retrieve from OpenSearch or Milvus.
+            </li>
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/ibm-bob/advance-mode/rag-builder-mode" target="_blank" class="mode-link" style="color: #00b4ff !important;">RAG Builder</a>: IBM Bob: Intelligence for Vector Search and Document Processing.
+            </li>
+          </ul>
         </div>
 
-        <div class="card" data-modal="trusted">
-          <img src="icons/trusted.png" alt="Trusted AI Icon" class="card-icon" />
-          <h3>Trusted-AI</h3>
-          <p>Governance, fairness, and explainability for responsible AI operations.</p>
-        </div>
-
-        <div class="card" data-modal="optimize">
-          <img src="icons/optimize.png" alt="Optimize Icon" class="card-icon" />
-          <h3>Optimize</h3>
-          <p>AI-driven cost optimization and resource management.</p>
-        </div>
-
-        <div class="card" data-modal="observe">
-          <img src="icons/observe.png" alt="Observe Icon" class="card-icon" />
-          <h3>Observe</h3>
-          <p>End-to-end observability and performance analytics with Instana.</p>
-        </div>
-
-        <div class="card" data-modal="builddeploy">
-          <img src="icons/build.png" alt="Build & Deploy Icon" class="card-icon" />
-          <h3>Build & Deploy</h3>
-          <p>Deployable configurations that generate new code snippets using NLP.</p>
+        <div class="mode-category">
+          <h3 class="mode-category-title">
+            Automation
+          </h3>
+          <ul class="mode-list">
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/observe/application-observability/ibm-bob/base-mode" target="_blank" class="mode-link" style="color: #00b4ff !important;">Application monitoring and observability expert</a>: Connect Bob with the Instana MCP server.
+            </li>
+            <li class="mode-item">
+              🔗 <a href="https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/automated-resilience-and-compliance/ibm-bob/base-mode/application-resilience.yaml" target="_blank" class="mode-link" style="color: #00b4ff !important;">Automated Resilience & Compliance</a>: Unified Vulnerability and Certificate Intelligence via IBM Concert.
+            </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -213,6 +242,12 @@
       <div id="card-modal-body"></div>
     </div>
   </div>
+
+  <!-- SCROLL PROGRESS BAR -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- SCROLL TO TOP BUTTON -->
+  <div class="scroll-to-top" id="scrollToTop"></div>
 
 </body>
 </html>
