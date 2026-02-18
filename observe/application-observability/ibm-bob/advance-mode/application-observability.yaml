@@ -123,6 +123,10 @@ customModes:
 
       3. Data Visualization:
          - Create multiple chart types for comprehensive insights (bar, line, pie, scatter, etc.)
+         - IMPORTANT: For custom CSS styling in Dash apps, create a CSS file in the assets/ directory
+           * Dash automatically loads CSS files from src/assets/ folder
+           * Do NOT use html.Style() component (doesn't exist in Dash)
+           * Example: Create src/assets/custom.css with your styles
          - Use color coding to indicate health status (green=good, yellow=warning, red=critical)
          - Include hover tooltips with detailed information
          - Normalize data when comparing metrics with different scales

@@ -9,9 +9,9 @@ Building trust in AI requires a holistic approach across the full AI lifecycle, 
 
 ## 📂 Repository Structure  
 
-The content is organized into four main categories:  
+The content is organized into 3 main categories:  
 
-<img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs.png" alt="Trusted AI Building Blocks" width="700"/>
+<img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs-2.png" alt="Trusted AI Building Blocks" width="400"/>
 
 ### 1. **Design-time Evaluations**  
 - Tools for evaluating AI models and agents in your development environment.
@@ -25,15 +25,10 @@ The content is organized into four main categories:
 - Streamline alignment with regulatory and industry standards.  
 - Reduces risk while speeding up deployment.  
 
-### 4. **Secure AI Lifecycle**  
-- Best practices for securing AI across its end-to-end lifecycle.  
-- Covers data protection, model security, access control, and threat resilience.  
-- Ensures solutions are not only trusted, but also **secure by design**.  
-
 ---
 
 ## 🚀 Getting Started  
-1. Browse the category that best fits your current stage (design, deployment, compliance, or security).  
+1. Browse the category that best fits your current stage (design, deployment, compliance).  
 2. Explore the included resources, frameworks, and examples.  
 3. Apply these practices to build AI solutions that your customers and stakeholders can trust.  
 
@@ -41,6 +36,9 @@ The content is organized into four main categories:
 
 ## 🤝 Contributing  
 We welcome contributions! Please submit issues, suggest improvements, or open pull requests to expand the resources and keep this repository valuable for all partners.  
+
+
+
 
 
 
