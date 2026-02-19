@@ -244,8 +244,7 @@ document.addEventListener("DOMContentLoaded", () => {
       title: "Trusted AI - Building Blocks",
       items: [
         { name: "Design-Time Evaluations", desc: "Safety & bias checks." },
-        { name: "Runtime Evaluation", desc: "Live guardrails for AI." },
-        { name: "Secure AI Lifecycle", desc: "End-to-end governance." }
+        { name: "Runtime Evaluation", desc: "Live guardrails for AI." }
       ],
       link:
         createLink("trusted", "Trusted AI") +
@@ -324,8 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations/gen-ai-evaluations" target="_blank">🔗 Design time Evaluations</a></li>
           <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-evaluations" target="_blank">🔗 Agent & AI Observability</a></li>
           <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/compliance-accelerators" target="_blank">🔗 Compliance Accelerators</a></li>
-          <li><a href="https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/secure-ai-lifecycle" target="_blank">🔗 Secure AI Lifecycle</a></li>
-        </ul>`
+       </ul>`
     },
 
     observe: {
