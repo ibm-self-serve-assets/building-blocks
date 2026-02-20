@@ -6,13 +6,6 @@ Thes Agents Building Blocks provide ready-to-use accelerators that make it easie
 
 ## Getting Started
 
-Clone this repository:
-
-```bash
-git clone https://github.com/your-org/building-block-agents.git
-cd building-block-agents
-```
-
 Review the accelerators inside the repo:
 
 - [agent-builder](./agent-builder)
@@ -32,6 +25,7 @@ We welcome contributions! Please fork this repo, create a feature branch, and op
 ## License
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
+
 
 
 
