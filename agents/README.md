@@ -1,6 +1,6 @@
-# Agents Building Block
+# Agents Building Blocks
 
-These Building Blocks provides ready-to-use accelerators that make it easier to operationalize AI use cases. You can learn more in the [Agent Building Blocks documentation site](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/).
+Thes Agents Building Blocks provide ready-to-use accelerators that make it easier to operationalize AI use cases. You can learn more in the [Agent Building Blocks documentation site](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/).
 
 ---
 
@@ -15,9 +15,9 @@ cd building-block-agents
 
 Review the accelerators inside the repo:
 
-- `agent-builder/`  
-- `ai-gateway/`  
-- `multi-agent-orchestration/`  
+- [agent-builder](./agent-builder)
+- [ai-gateway](./ai-gateway)
+- [multi-agent-orchestration](./multi-agent-orchestration)
 
 Follow the documentation in each folder to integrate the accelerator into your application.
 
@@ -32,5 +32,6 @@ We welcome contributions! Please fork this repo, create a feature branch, and op
 ## License
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
+
 
 
