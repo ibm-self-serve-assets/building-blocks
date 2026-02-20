@@ -8,7 +8,7 @@
 # 2. Create or edit .bobmodes file in your workspace root directory
 # 3. Paste the content (or add to existing customModes list)
 # 4. Reload IBM Bob (Cmd/Ctrl + Shift + P → "Reload Window")
-# 5. Select "🤖 wxO Agent Builder" from the mode selector
+# 5. Select "wxO Agent Builder" from the mode selector
 #
 # Prerequisites:
 # - watsonx Orchestrate ADK installed (pip install ibm-watsonx-orchestrate)
@@ -22,7 +22,7 @@
 
 customModes:
   - slug: wxo-agent-builder
-    name: 🤖 wxO Agent Builder    
+    name: wxO Agent Builder    
     roleDefinition: |-
       You are an expert AI architect specializing in watsonx Orchestrate agent development.
       You excel at designing production-grade native agents, creating sophisticated Python tools,
