@@ -1,39 +1,27 @@
-name: Deploy IBM Building Blocks Landing Page
+# To run this workflow for local testing, use the following command:
+# pip install mkdocs-material
+# mkdocs serve
+#
+name: Publish Docs
 
 on:
   push:
-    branches:
-      - main
-  workflow_dispatch:
+    branches: [ main ]
 
 permissions:
   contents: write
 
 jobs:
   deploy:
-    name: Build & Deploy MkDocs Site
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: '3.x'
 
-      - name: Install MkDocs
-        run: |
-          pip install mkdocs mkdocs-material
+      - run: pip install mkdocs-material
 
-      - name: Build MkDocs Site
-        run: mkdocs build
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./site
-          publish_branch: gh-pages
-          force_orphan: true
+      - run: mkdocs gh-deploy --force
