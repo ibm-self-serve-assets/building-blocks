@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Smart Choice Supplier Agent - Real-time supplier data from AI agent">
-  <title>Smart Choice Supplier Agent</title>
+  <meta name="description" content="Optimal Supplier Selector - Real-time supplier data from AI agent">
+  <title>Optimal Supplier Selector</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -16,7 +16,7 @@
   <nav class="bg-white shadow sticky top-0 z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
-        <div class="flex items-center"><h1 class="text-xl font-bold text-gray-800">Smart Choice Supplier Agent</h1></div>
+        <div class="flex items-center"><h1 class="text-xl font-bold text-gray-800">Optimal Supplier Selector</h1></div>
         <div class="flex items-center space-x-4"><span class="text-gray-600">Embeddable Watsonx Orchestrate</span></div>
       </div>
     </div>
@@ -24,7 +24,7 @@
 
   <section class="hero text-white py-12 text-center">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-bold mb-4">Smart Choice Supplier Agent</h2>
+      <h2 class="text-3xl font-bold mb-4">Optimal Supplier Selector</h2>
       <p class="text-lg mb-6">Real-time supplier data powered by AI agent. Ask questions and see live updates.</p>
     </div>
   </section>
@@ -35,14 +35,14 @@
         <form id="prompt-form" class="mb-4 flex flex-col md:flex-row md:items-center md:space-x-4 space-y-3 md:space-y-0">
           <div class="flex-1 relative">
             <label for="prompt-input" class="block text-sm font-medium text-gray-700 mb-1">
-              Ask the Smart Choice Supplier Agent
+              Ask the Optimal Supplier Selector
             </label>
             <div class="relative">
               <input
                 id="prompt-input"
                 name="prompt-input"
                 class="w-full rounded-md border border-gray-300 px-4 py-2 pr-10 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder="e.g., coffee suppliers in India"
+                placeholder="Give me list of products available"
                 autocomplete="off"
               />
               <button
@@ -117,7 +117,7 @@
 
   <footer class="bg-gray-800 text-white py-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <p>&copy; 2025 Smart Choice Supplier Agent. Powered by IBM WatsonX Orchestrate.</p>
+      <p>&copy; 2025 Optimal Supplier Selector. Powered by IBM WatsonX Orchestrate.</p>
     </div>
   </footer>
 
@@ -126,12 +126,13 @@
     let chartInstance = null;
 
     const PROMPT_SUGGESTIONS = [
-      "Give me all Coffee suppliers from India",
-      "filter suppliers below 20 delivery days",
-      "give me all suppliers with reliability above 90",
-      "show item codes with descriptions",
-      "list countries with high risk",
-      "supplier trade stats"
+      "Give me list of products available",
+      "Could you filter on the tea and get the list of tea suppliers",
+      "I want supplier who can do delivery within 20 days.",
+      "Could you please add supplier performance stats",
+      "Lets have the reliability score 90 and above",
+      "Can you pull in, if there is any additional risk associated with these suppliers or country ?",
+      "Could you help me pick the best suitable supplier who can handle decent volumes and is reliable ?"
     ];
 
     const promptInput = document.getElementById('prompt-input');
@@ -240,12 +241,12 @@
     }
 
     window.wxOConfiguration = {
-      orchestrationID: "<insert orchestration id here>",
+      orchestrationID: "<insert Orchestration id>",
       hostURL: "https://dl.watson-orchestrate.ibm.com",
       rootElementID: "root",
       showLauncher: true,
       chatOptions: {
-        agentId: "<insert agent id here>",
+        agentId: "<Insert Agent ID>",
         onLoad: function(instance) {
           console.log('WatsonX chat loaded, setting up event handlers...');
           window.wxChatInstance = instance;
@@ -262,8 +263,6 @@
             console.warn('Chat instance is undefined in onLoad callback');
           }
 
-          startMessageReplacer();
-
           instance.on('receive', function(event) {
             console.log('Response received from bot:', event);
             try {
@@ -271,6 +270,11 @@
               console.log('Extracted JSON:', extracted);
 
               updateDynamicTable({ data: extracted.data || [] });
+              
+              // Clean up chat message display after a short delay to avoid React conflicts
+              setTimeout(function() {
+                cleanupChatMessages();
+              }, 100);
             } catch (error) {
               console.error('Error processing response:', error);
               showError('Error processing response: ' + error.message);
@@ -348,12 +352,68 @@
       }, 500);
     }
 
+    function cleanupChatMessages() {
+      const rootElement = document.getElementById('root');
+      if (!rootElement) return;
+
+      // Find all text nodes that contain JSON-like content
+      const walker = document.createTreeWalker(
+        rootElement,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+
+      const nodesToUpdate = [];
+      let node;
+      
+      while (node = walker.nextNode()) {
+        const text = node.textContent || '';
+        // Check if this text node contains JSON with message field
+        if (text.includes('"message"') && text.includes('"data"') && text.trim().startsWith('{')) {
+          nodesToUpdate.push(node);
+        }
+      }
+
+      // Update nodes after collecting them to avoid iterator issues
+      nodesToUpdate.forEach(function(node) {
+        try {
+          const text = node.textContent.trim();
+          const parsed = JSON.parse(text);
+          let messageText = null;
+
+          // Extract message from various possible structures
+          if (parsed.message && typeof parsed.message === 'string') {
+            messageText = parsed.message;
+          } else if (parsed.properties && parsed.properties.message) {
+            const msg = parsed.properties.message;
+            if (typeof msg === 'string') {
+              messageText = msg;
+            } else if (msg.items && Array.isArray(msg.items) && msg.items.length > 0) {
+              messageText = typeof msg.items[0] === 'string' ? msg.items[0] : '';
+            }
+          }
+
+          // Only replace if we found a clean message and the original is verbose
+          if (messageText && text.length > messageText.length * 2) {
+            node.textContent = messageText;
+          }
+        } catch (e) {
+          // If parsing fails, try to extract message with regex
+          const jsonMatch = text.match(/\{[\s\S]*"message"\s*:\s*"([^"]+)"[\s\S]*\}/);
+          if (jsonMatch && jsonMatch[1]) {
+            node.textContent = jsonMatch[1];
+          }
+        }
+      });
+    }
+
     function extractJSONFromResponse(event) {
       let responseContent = '';
       if (event.message && event.message.content) {
         if (Array.isArray(event.message.content)) {
           responseContent = event.message.content
-            .filter(item => item.type === 'text')
+            .filter(item => item.response_type === 'text')
             .map(item => item.text || item.content)
             .join(' ');
         } else if (typeof event.message.content === 'string') {

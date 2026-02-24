@@ -2,7 +2,7 @@ spec_version: v1
 style: planner
 structured_output: {type: "object", additionalProperties: false, properties: {data: {type: "array", items: {type: "object", additionalProperties: false, properties: {supplier_name: {type: "string"}, country: {type: "string"}, delivery_days: {type: "number"}}}}}}
 name: Product_Supplier_Info_Agent_planner
-llm: watsonx/meta-llama/llama-3-2-90b-vision-instruct
+llm: groq/openai/gpt-oss-120b
 description: |
   Planner agent that returns supplier directory details as a flat JSON array.
 
