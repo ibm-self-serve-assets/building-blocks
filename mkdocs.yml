@@ -1,12 +1,12 @@
 site_name: IBM Building Blocks Documentation
 site_description: Modular IBM Building Blocks Documentation
-site_url: https://ibm-self-serve-assets.github.io/building-blocks-docs/
+site_url: https://ibm-self-serve-assets.github.io/building-blocks/
 
-docs_dir: docs-src
+docs_dir: docs
 
 theme:
   name: material
-  custom_dir: docs-src/overrides
+  custom_dir: docs/overrides
 
   features:
     - navigation.sections
