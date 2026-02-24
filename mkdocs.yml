@@ -1,0 +1,92 @@
+site_name: IBM Building Blocks Documentation
+site_description: Modular IBM Building Blocks Documentation
+site_url: https://ibm-self-serve-assets.github.io/building-blocks-docs/
+
+docs_dir: docs-src
+
+theme:
+  name: material
+  custom_dir: docs-src/overrides
+
+  features:
+    - navigation.sections
+    - navigation.instant
+    - navigation.top
+    - navigation.footer 
+    - content.code.copy
+    - search.highlight
+    - search.share
+    - header.autohide
+
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+
+extra_css:
+  - stylesheets/carbon.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.tabbed
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+
+  - AI Core:
+      - Overview: ai-core/index.md
+
+      - Agents:
+          - Overview: ai-core/agents/index.md
+          - Agent Builder: ai-core/agents/agent-builder.md
+          - AI Gateway: ai-core/agents/ai-gateway.md
+          - Multi-Agent Orchestration: ai-core/agents/multi-agent-orchestration.md
+          
+      - Trusted AI:
+          - Overview: ai-core/trust/index.md
+          - Design-Time Evaluations: ai-core/trust/design-time-evaluations.md
+          - Runtime Evaluations: ai-core/trust/runtime-evaluations.md
+          - Compliance Accelerators: ai-core/trust/compliance-accelerators.md
+          - Secure AI Lifecycle: ai-core/trust/secure-ai-lifecycle.md
+
+      - Data for AI:
+          - Overview: ai-core/data/index.md
+          - RAG Building Block: ai-core/data/rag-building-block.md
+          - NL to SQL: ai-core/data/nl-to-sql.md
+          - Enterprise Intelligent Data Ingestion: ai-core/data/intelligent-etl.md
+          - Vector Search:
+              - Overview: ai-core/data/vector_search/index.md
+              - DataStax Astra DB: ai-core/data/vector_search/datastax-astra-db.md
+              - OpenSearch: ai-core/data/vector_search/opensearch.md
+
+  - Automation Core:
+      - Overview: automation-core/index.md
+
+      - Build and Deploy:
+          - Overview: automation-core/build/index.md
+          - iPaaS: automation-core/build/ipaas.md
+          - Authentication Management: automation-core/build/authentication-management.md
+          - Infrastructure as Code: automation-core/build/infrastructure-as-code.md
+          - Code Assistant: automation-core/build/code-assistant.md
+
+      - Observe:
+          - Overview: automation-core/observe/index.md
+          - Application Observability: automation-core/observe/application-observability.md
+          - Network Performance: automation-core/observe/network-performance.md
+
+      - Optimize:
+          - Overview: automation-core/optimize/index.md
+          - Automated Resilience & Compliance: automation-core/optimize/automated-resilience.md
+          - FinOps: automation-core/optimize/finops.md
+          - Automated Resource Management: automation-core/optimize/automated-resource-management.md
+
+  - IBM Bob and Building Blocks:
+      - Overview: ibm-bob/index.md
+
