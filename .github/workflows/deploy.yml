@@ -11,23 +11,29 @@ permissions:
 
 jobs:
   deploy:
-    name: Deploy static site from build directory
+    name: Build & Deploy MkDocs Site
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Verify build directory contents
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - name: Install MkDocs
         run: |
-          echo "Listing current files for verification:"
-          ls -R build || echo "Build directory not found!"
+          pip install mkdocs mkdocs-material
+
+      - name: Build MkDocs Site
+        run: mkdocs build
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: ./site
           publish_branch: gh-pages
           force_orphan: true
-
