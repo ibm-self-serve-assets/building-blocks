@@ -68,7 +68,7 @@ jupyter_client==8.6.3
 jupyter_core==5.8.1
 langchain-core==0.3.76
 langchain-text-splitters==0.3.11
-langsmith==0.4.30
+langsmith==0.6.3
 latex2mathml==3.78.1
 lazy_loader==0.4
 lomond==0.3.3
