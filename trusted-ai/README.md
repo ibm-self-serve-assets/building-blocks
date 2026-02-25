@@ -11,13 +11,13 @@ Building trust in AI requires a holistic approach across the full AI lifecycle, 
 
 The content is organized into 3 main categories:  
 
-<img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs-2.png" alt="Trusted AI Building Blocks" width="400"/>
+<img src="design-time-evaluations/gen-ai-evaluations/images/Trusted AI BBs-3.png" alt="Trusted AI Building Blocks" width="400"/>
 
 ### 1. **Design-time Evaluations**  
 - Tools for evaluating AI models and agents in your development environment.
 - Ensures AI solutions are trustworthy **before deployment**.  
 
-### 2. **Runtime Evaluations**  
+### 2. **Runtime Monitoring**  
 - Approaches for monitoring and validating AI behavior **in production**.  
 - Guarantees AI remains reliable and accountable over time.  
 
