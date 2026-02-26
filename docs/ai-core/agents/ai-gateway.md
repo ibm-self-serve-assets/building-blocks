@@ -1,4 +1,4 @@
-# AI Gateway
+# Agent Gateway
 
 A unified gateway for selecting the right LLM model and securely accessing the right tools and agents across your enterprise.
 
@@ -8,6 +8,7 @@ A unified gateway for selecting the right LLM model and securely accessing the r
 - **Fine-tuned model support** - Customers have a need to use their fine-tuned models for agents
 - **Centralized control** - Manage all model access, policies, and telemetry from one place
 - **Seamless integration** - Connect to multiple providers without rewriting applications
+- **ContextForge** Federates MCP servers, A2A agents, and REST APIs into one governed endpoint
 
 ## Supported LLM Providers
 
@@ -53,6 +54,13 @@ The AI Gateway provides unified access to multiple foundation model providers:
 - **No need to rewrite agents** - Integrate legacy systems seamlessly
 - **Gradual migration path** from traditional APIs to modern AI workflows
 
+### ContextForge
+- **Federation** Single catalog/entry point across multiple MCP and REST services
+- **REST-to-MCP** Adapter: Virtualize REST APIs as MCP-compliant tools
+- **gRPC Translation**: Reflection-based discovery and translation to MCP
+- **Multi-Transport** HTTP, JSON-RPC, WebSocket, SSE, stdio, streamable-HTTP
+- **Built-in Security** Auth, rate limiting, retries, OAuth token support
+
 ## How It Works
 
 1. **Select the model** - Choose the most suitable model for your agent or use case
@@ -81,3 +89,6 @@ The AI Gateway provides unified access to multiple foundation model providers:
 - **API modernization** - Expose legacy systems as AI-accessible tools
 - **Hybrid workflows** - Combine traditional APIs with modern AI agents
 - **Incremental transformation** - Modernize systems without full rewrites
+
+## Github Repository
+Get started with [Agents gateway building blocks](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-gateway)

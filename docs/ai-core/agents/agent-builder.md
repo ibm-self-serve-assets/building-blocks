@@ -50,3 +50,6 @@ The IBM Agent Builder, powered by the watsonx Orchestrate Agentic Development Ki
 - **Research agents** that gather information from multiple sources and synthesize findings
 - **Content generation agents** for documentation, summaries, and communications
 - **Decision support agents** that analyze options and provide recommendations
+
+## Github Repository
+Get started with [Agents building blocks](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder)

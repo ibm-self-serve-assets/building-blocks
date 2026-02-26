@@ -5,8 +5,9 @@ This framework provides ready-to-use accelerators that make it easier to operati
 The Building Block of Agents includes:
 
 - **Agent Builder** – Create and deploy agents  
-- **AI Gateway** – Connect third-party and IBM models  
 - **Multi-Agent Orchestration** – Coordinate agents, tools, and humans  
+- **Agent Gateway** – Connect third-party models and Agents
+
 
 ## Github Repository
 Code for these accelerators can be found in the [Agents building blocks repo](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents)
@@ -14,5 +15,5 @@ Code for these accelerators can be found in the [Agents building blocks repo](ht
 ## Use Cases
 
 - **Agent Builder** → Build an HR assistant that automates leave approvals using Workday APIs.  
-- **AI Gateway** → Register both **watsonx.ai Granite models** and **OpenAI GPT** in one place, letting agents dynamically select the best LLM.  
 - **Multi-Agent Orchestration** → Automate a **sales pipeline workflow** where Salesforce data, Outlook meetings, and Slack updates are coordinated across teams.  
+- **Agent Gateway** → Centralized gateway that connects AI agents to multiple LLM providers and external systems with enterprise-grade security and governance.
