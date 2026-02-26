@@ -41,7 +41,7 @@ graph TD
 
     subgraph watsonx["IBM watsonx Services"]
         WAI["watsonx.ai\nLLM inference\nModel hosting"]
-        WOS["Watson OpenScale\nMetric monitors\nSubscriptions"]
+        WOS["watsonx.governance\nMetric monitors\nSubscriptions"]
         WXG["watsonx.governance\nFactsheets\nExperiment tracking"]
     end
 
@@ -53,7 +53,7 @@ graph TD
 
 **Prompt evaluation** supports two evaluation strategies:
 
-- **SLM (Small Language Model)** — Leverages OpenScale's built-in smaller models for fast, cost-effective evaluation. Provides source attributions and works well for high-volume evaluation runs.
+- **SLM (Small Language Model)** — Leverages watsonx.governance's built-in smaller models for fast, cost-effective evaluation. Provides source attributions and works well for high-volume evaluation runs.
 - **LLM-as-Judge** — Uses an external LLM for more nuanced analysis. Enables answer similarity scoring and more sophisticated quality judgments.
 
 **Agent evaluation** provides three specialized evaluators depending on the agent architecture:
@@ -65,6 +65,8 @@ graph TD
 Both packages produce structured metric results, support batch evaluation, and integrate with watsonx.governance for factsheet generation and experiment tracking.
 
 ## Supported Metrics Reference
+
+The metrics listed below are those demonstrated in the sample applications and notebooks included in the [Trusted AI GitHub repository](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/design-time-evaluations). The full set of metrics available through IBM watsonx.governance is more comprehensive — refer to the [watsonx.governance documentation](https://dataplatform.cloud.ibm.com/docs/content/wsj/model/wos-monitors-overview.html) for the complete list.
 
 ### Prompt Evaluation Metrics
 
@@ -108,7 +110,7 @@ graph TD
     A["Prepare test data"] --> B["Choose approach\nSLM or LLM-as-Judge"]
     B --> C["Create evaluator"]
     C --> D["Create prompt template\nasset in watsonx"]
-    D --> E["Set up OpenScale monitoring"]
+    D --> E["Set up watsonx.governance monitoring"]
     E --> F["Run evaluation\nagainst test data"]
     F --> G["Review metrics +\nvisualizations"]
     G --> H["Inspect record-level results"]
@@ -120,7 +122,7 @@ graph TD
 2. **Choose an evaluation approach.** Select SLM for fast, cost-effective evaluation or LLM-as-Judge for more nuanced analysis.
 3. **Create the evaluator.** Instantiate the evaluator with your chosen configuration.
 4. **Create the prompt template asset.** Register your prompt template in watsonx so it can be tracked and governed.
-5. **Set up monitoring.** Configure an OpenScale subscription to collect evaluation feedback.
+5. **Set up monitoring.** Configure a watsonx.governance subscription to collect evaluation feedback.
 6. **Run evaluation.** Execute the evaluation against your test dataset and collect metric results.
 7. **Review results.** Examine aggregate metrics, visualizations, and record-level detail to identify areas for improvement.
 8. **Generate a factsheet.** Publish evaluation results to watsonx.governance as a governed artifact for compliance and audit readiness.

@@ -15,7 +15,11 @@ Runtime monitoring integrates with IBM watsonx.governance to provide production-
 
 ## Architecture Overview
 
-The runtime monitoring capability has two layers — real-time guardrails for immediate protection and continuous monitoring for long-term observability — covering both generative AI and traditional ML workloads.
+The runtime monitoring capability provides two independent layers — real-time guardrails for immediate protection and continuous monitoring for long-term observability. Each addresses a distinct use case and can be adopted independently.
+
+### Real-Time Guardrails
+
+Real-time guardrails evaluate every AI input and output against configurable safety and quality thresholds before responses reach users.
 
 ```mermaid
 graph TD
@@ -32,6 +36,20 @@ graph TD
         DEC{"PASS / BLOCK\ndecision"}
     end
 
+    REQ --> guardrails
+    CS --> DEC
+    RQ --> DEC
+    RSQ --> DEC
+    DEC -->|"pass"| RESP["Response delivered\nto user"]
+    DEC -->|"block"| BLOCK["Response blocked\nrisk flagged"]
+```
+
+### Continuous Monitoring
+
+Continuous monitoring tracks quality, drift, and fairness metrics over time across both generative AI and traditional ML workloads.
+
+```mermaid
+graph TD
     subgraph continuous["CONTINUOUS MONITORING"]
         direction TB
         subgraph mon_row[" "]
@@ -39,25 +57,22 @@ graph TD
             GEN["Generative AI Monitoring\n\nManual evaluation\nScheduled evaluation\nCustom metrics\nInteractive dashboard"]
             TRAD["Traditional AI Monitoring\n\nModel risk management\nFairness & bias detection\nCustom metrics & monitors"]
         end
-        WOS["Watson OpenScale\nSubscriptions · Monitors · Feedback datasets · Drift tracking"]
+        WOS["watsonx.governance\nSubscriptions · Monitors · Feedback datasets · Drift tracking"]
         WXG["watsonx.governance\nFactsheets · Audit records · Governance artifacts"]
     end
 
-    REQ --> guardrails
-    CS --> DEC
-    RQ --> DEC
-    RSQ --> DEC
-    DEC -->|"response delivered\nor blocked"| continuous
     GEN --> WOS
     TRAD --> WOS
     WOS --> WXG
 ```
 
-**Real-time guardrails** operate synchronously in the request path. Every input and output is scored against configurable thresholds. Content safety metrics use upper-limit thresholds (block when exceeded), RAG metrics use lower-limit thresholds (block when quality falls below), and response quality metrics use LLM-as-Judge or custom rule-based evaluation.
+**Real-time guardrails** operate synchronously in the request path. Every input and output is scored against configurable thresholds. Content safety metrics use upper-limit thresholds (block when exceeded), RAG metrics use lower-limit thresholds (block when quality falls below), and response quality metrics use LLM-as-Judge or custom rule-based evaluation. Responses that violate thresholds are blocked before reaching the user.
 
-**Continuous monitoring** operates asynchronously. Evaluation data is collected over time — either manually, on a schedule, or via streaming payloads — and fed into Watson OpenScale for trend analysis, drift detection, and alerting. An interactive dashboard provides visualization of metrics, drift, and governance artifacts.
+**Continuous monitoring** operates asynchronously, independent of the request path. Evaluation data is collected over time — either manually, on a schedule, or via streaming payloads — and fed into watsonx.governance for trend analysis, drift detection, and alerting. An interactive dashboard provides visualization of metrics, drift, and governance artifacts.
 
 ## Supported Metrics Reference
+
+The metrics listed below are those demonstrated in the sample applications and notebooks included in the [Trusted AI GitHub repository](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/trusted-ai/runtime-monitoring). The full set of metrics available through IBM watsonx.governance is more comprehensive — refer to the [watsonx.governance documentation](https://dataplatform.cloud.ibm.com/docs/content/wsj/model/wos-monitors-overview.html) for the complete list.
 
 ### Real-Time Guardrails Metrics
 
@@ -93,7 +108,7 @@ graph TD
 | **Model Health** | Performance | Gen AI + Traditional | Operational health of the model deployment |
 | **Fairness** | Fairness | Traditional AI | Bias detection across protected attributes |
 | **Indirect Bias** | Fairness | Traditional AI | Bias detected through proxy features |
-| **Custom Metrics** | Custom | Gen AI + Traditional | User-defined metrics attached via OpenScale |
+| **Custom Metrics** | Custom | Gen AI + Traditional | User-defined metrics attached via watsonx.governance |
 
 ### Metrics by Use Case
 
@@ -130,7 +145,7 @@ graph TD
 ```mermaid
 graph TD
     A["Manual evaluation\nEstablish baselines"] --> B["Create Prompt Template\nAsset in watsonx"]
-    B --> C["Deploy runtime subscription\nin OpenScale"]
+    B --> C["Deploy runtime subscription\nin watsonx.governance"]
     C --> D["Score prompt inputs +\nstore feedback"]
     D --> E["Create monitors +\nplot baseline metrics"]
     E --> F["Automated scheduled\nevaluation"]
@@ -143,7 +158,7 @@ graph TD
     H -->|"drift detected"| M["Feed back into\ndesign-time evaluation"]
 ```
 
-1. **Start with manual evaluation.** Create a Prompt Template Asset, deploy a runtime subscription, score inputs from sample data, and establish baseline metrics.
+1. **Start with manual evaluation.** Create a Prompt Template Asset, deploy a runtime subscription in watsonx.governance, score inputs from sample data, and establish baseline metrics.
 2. **Automate evaluation.** Configure batch processing and scheduled evaluation runs. Track ROUGE, readability, and risk metrics over time to detect drift.
 3. **Add custom metrics.** Define domain-specific monitors (e.g., user feedback scores, business-specific quality checks) and attach them to your deployment.
 4. **Use the dashboard.** Launch the interactive dashboard for visualization — manage prompts, run evaluations, monitor drift, and generate factsheets from a single interface.
