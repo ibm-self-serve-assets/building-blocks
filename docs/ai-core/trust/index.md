@@ -6,7 +6,7 @@ Building trust in AI requires a holistic approach across the full AI lifecycle, 
 The Building Block of Trust includes:
 
 - **Design-Time Evaluations** – Tools for evaluating AI models and agents in your development environment.
-- **Run-Time Monitoring** – Approaches for monitoring and validating AI behavior in production.  
+- **Runtime Monitoring** – Approaches for monitoring and validating AI behavior in production.  
 - **Compliance Accelerator** – Streamline alignment with regulatory and industry standards.
 
 ## Github Repository

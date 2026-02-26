@@ -56,7 +56,7 @@ nav:
       - Trusted AI:
           - Overview: ai-core/trust/index.md
           - Design-Time Evaluations: ai-core/trust/design-time-evaluations.md
-          - Run-Time Monitoring: ai-core/trust/run-time-monitoring.md
+          - Runtime Monitoring: ai-core/trust/run-time-monitoring.md
           - Compliance Accelerators: ai-core/trust/compliance-accelerators.md
 
       - Data for AI:
