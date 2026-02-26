@@ -29,19 +29,19 @@ graph TD
         direction TB
         subgraph metrics_row[" "]
             direction LR
-            CS["Content Safety\nHAP, PII, Harm,\nJailbreak, Bias,\nViolence, etc."]
-            RQ["RAG Quality\nAnswer relevance,\nContext relevance,\nFaithfulness"]
-            RSQ["Response Quality\nCompleteness,\nConciseness,\nHelpfulness,\nCustom validators"]
+            CS["Content Safety<br>HAP, PII, Harm,<br>Jailbreak, Bias,<br>Violence, etc."]
+            RQ["RAG Quality<br>Answer relevance,<br>Context relevance,<br>Faithfulness"]
+            RSQ["Response Quality<br>Completeness,<br>Conciseness,<br>Helpfulness,<br>Custom validators"]
         end
-        DEC{"PASS / BLOCK\ndecision"}
+        DEC{"PASS / BLOCK<br>decision"}
     end
 
     REQ --> guardrails
     CS --> DEC
     RQ --> DEC
     RSQ --> DEC
-    DEC -->|"pass"| RESP["Response delivered\nto user"]
-    DEC -->|"block"| BLOCK["Response blocked\nrisk flagged"]
+    DEC -->|"pass"| RESP["Response delivered<br>to user"]
+    DEC -->|"block"| BLOCK["Response blocked<br>risk flagged"]
 ```
 
 ### Continuous Monitoring
@@ -54,11 +54,11 @@ graph TD
         direction TB
         subgraph mon_row[" "]
             direction LR
-            GEN["Generative AI Monitoring\n\nManual evaluation\nScheduled evaluation\nCustom metrics\nInteractive dashboard"]
-            TRAD["Traditional AI Monitoring\n\nModel risk management\nFairness & bias detection\nCustom metrics & monitors"]
+            GEN["Generative AI Monitoring<br><br>Manual evaluation<br>Scheduled evaluation<br>Custom metrics<br>Interactive dashboard"]
+            TRAD["Traditional AI Monitoring<br><br>Model risk management<br>Fairness & bias detection<br>Custom metrics & monitors"]
         end
-        WOS["watsonx.governance\nSubscriptions · Monitors · Feedback datasets · Drift tracking"]
-        WXG["watsonx.governance\nFactsheets · Audit records · Governance artifacts"]
+        WOS["watsonx.governance<br>Subscriptions · Monitors · Feedback datasets · Drift tracking"]
+        WXG["watsonx.governance<br>Factsheets · Audit records · Governance artifacts"]
     end
 
     GEN --> WOS
@@ -127,10 +127,10 @@ The metrics listed below are those demonstrated in the sample applications and n
 
 ```mermaid
 graph TD
-    A["Define safety thresholds\nfor each metric"] --> B["Start the guardrails\napplication"]
-    B --> C["Submit AI inputs/outputs\nfor evaluation"]
-    C --> D["Review pass/block\ndecisions + risk scores"]
-    D --> E["Tune thresholds based\non observed patterns"]
+    A["Define safety thresholds<br>for each metric"] --> B["Start the guardrails<br>application"]
+    B --> C["Submit AI inputs/outputs<br>for evaluation"]
+    C --> D["Review pass/block<br>decisions + risk scores"]
+    D --> E["Tune thresholds based<br>on observed patterns"]
     E -->|"iterate"| C
 ```
 
@@ -144,18 +144,18 @@ graph TD
 
 ```mermaid
 graph TD
-    A["Manual evaluation\nEstablish baselines"] --> B["Create Prompt Template\nAsset in watsonx"]
-    B --> C["Deploy runtime subscription\nin watsonx.governance"]
-    C --> D["Score prompt inputs +\nstore feedback"]
-    D --> E["Create monitors +\nplot baseline metrics"]
-    E --> F["Automated scheduled\nevaluation"]
-    F --> G["Configure batch processing\n+ scheduled runs"]
-    G --> H["Track drift, readability,\nrisk over time"]
+    A["Manual evaluation<br>Establish baselines"] --> B["Create Prompt Template<br>Asset in watsonx"]
+    B --> C["Deploy runtime subscription<br>in watsonx.governance"]
+    C --> D["Score prompt inputs +<br>store feedback"]
+    D --> E["Create monitors +<br>plot baseline metrics"]
+    E --> F["Automated scheduled<br>evaluation"]
+    F --> G["Configure batch processing<br>+ scheduled runs"]
+    G --> H["Track drift, readability,<br>risk over time"]
     H --> I["Custom metrics"]
-    I --> J["Define domain-specific\nmonitors"]
+    I --> J["Define domain-specific<br>monitors"]
     J --> K["Generate factsheets"]
     K --> L[("watsonx.governance")]
-    H -->|"drift detected"| M["Feed back into\ndesign-time evaluation"]
+    H -->|"drift detected"| M["Feed back into<br>design-time evaluation"]
 ```
 
 1. **Start with manual evaluation.** Create a Prompt Template Asset, deploy a runtime subscription in watsonx.governance, score inputs from sample data, and establish baseline metrics.

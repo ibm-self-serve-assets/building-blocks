@@ -40,9 +40,9 @@ graph TD
     end
 
     subgraph watsonx["IBM watsonx Services"]
-        WAI["watsonx.ai\nLLM inference\nModel hosting"]
-        WOS["watsonx.governance\nMetric monitors\nSubscriptions"]
-        WXG["watsonx.governance\nFactsheets\nExperiment tracking"]
+        WAI["watsonx.ai<br>LLM inference<br>Model hosting"]
+        WOS["watsonx.governance<br>Metric monitors<br>Subscriptions"]
+        WXG["watsonx.governance<br>Factsheets<br>Experiment tracking"]
     end
 
     PT --> prompt_eval
@@ -107,12 +107,12 @@ The metrics listed below are those demonstrated in the sample applications and n
 
 ```mermaid
 graph TD
-    A["Prepare test data"] --> B["Choose approach\nSLM or LLM-as-Judge"]
+    A["Prepare test data"] --> B["Choose approach<br>SLM or LLM-as-Judge"]
     B --> C["Create evaluator"]
-    C --> D["Create prompt template\nasset in watsonx"]
+    C --> D["Create prompt template<br>asset in watsonx"]
     D --> E["Set up watsonx.governance monitoring"]
-    E --> F["Run evaluation\nagainst test data"]
-    F --> G["Review metrics +\nvisualizations"]
+    E --> F["Run evaluation<br>against test data"]
+    F --> G["Review metrics +<br>visualizations"]
     G --> H["Inspect record-level results"]
     H --> I["Generate factsheet"]
     I --> J[("watsonx.governance")]
@@ -131,13 +131,13 @@ graph TD
 
 ```mermaid
 graph TD
-    A["Choose evaluator type\nBasic RAG · Tool Calling · Advanced RAG"] --> B["Initialize evaluator\nwith config"]
-    B --> C["Build agent\nLoad documents or register tools"]
-    C --> D["Run single-query or\nbatch evaluation"]
-    D --> E["Retrieve metrics\nas DataFrame"]
+    A["Choose evaluator type<br>Basic RAG · Tool Calling · Advanced RAG"] --> B["Initialize evaluator<br>with config"]
+    B --> C["Build agent<br>Load documents or register tools"]
+    C --> D["Run single-query or<br>batch evaluation"]
+    D --> E["Retrieve metrics<br>as DataFrame"]
     E --> F["Track experiment"]
     F --> G[("watsonx.governance")]
-    E --> H["Compare results\nacross runs"]
+    E --> H["Compare results<br>across runs"]
 ```
 
 1. **Choose the evaluator type.** Select Basic RAG, Tool Calling, or Advanced RAG based on your agent's architecture.
