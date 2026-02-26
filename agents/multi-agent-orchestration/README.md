@@ -66,4 +66,4 @@ Follow best practices for designing and implementing multi-agent orchestration:
 ## Related Building Blocks
 
 - [Agent Builder](../agent-builder/)
-- [AI Gateway](../ai-gateway/)
+- [Agnet Gateway](../agent-gateway/)

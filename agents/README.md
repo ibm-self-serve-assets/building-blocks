@@ -9,8 +9,9 @@ Thes Agents Building Blocks provide ready-to-use accelerators that make it easie
 Review the accelerators inside the repo:
 
 - [agent-builder](./agent-builder)
-- [ai-gateway](./ai-gateway)
 - [multi-agent-orchestration](./multi-agent-orchestration)
+- [agent-gateway](./agent-gateway)
+
 
 Follow the documentation in each folder to integrate the accelerator into your application.
 

@@ -46,4 +46,4 @@ Explore Bob modes for guided agent development:
 ## Related Building Blocks
 
 - [Multi-Agent Orchestration](../multi-agent-orchestration/)
-- [AI Gateway](../ai-gateway/)
+- [Agent Gateway](../agent-gateway/)
