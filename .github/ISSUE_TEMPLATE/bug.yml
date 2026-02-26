@@ -1,0 +1,79 @@
+name: Issue / Bug Report
+description: Report a defect in a Building Block component.
+title: "[Bug] <Component> - <Short Description>"
+labels: ["bug"]
+body:
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - Agents
+        - Trusted AI
+        - Data for AI
+        - Build & Deploy
+        - Observe
+        - Optimize
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: |
+        - Platform (OpenShift / Kubernetes / AWS / Local)
+        - Runtime version
+        - Integration services
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Deploy component
+        2. Configure XYZ
+        3. Trigger ABC
+        4. Observe error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: Include logs, stack traces, or screenshots if applicable.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Blocker
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Checklist
+      options:
+        - label: I have searched existing issues.
+          required: true
+        - label: I have provided reproducible steps.
+          required: true

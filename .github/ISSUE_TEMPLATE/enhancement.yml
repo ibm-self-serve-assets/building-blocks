@@ -1,0 +1,69 @@
+name: Enhancement Request
+description: Propose a new capability or improvement.
+title: "[Enhancement] <Component> - <Short Description>"
+labels: ["enhancement"]
+body:
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Target Component
+      options:
+        - Agents
+        - Trusted AI
+        - Data for AI
+        - Build & Deploy
+        - Observe
+        - Optimize
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: Problem Statement
+      description: What limitation or gap does this enhancement address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Enhancement
+      description: Describe the proposed functionality or improvement.
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use Case / Scenario
+      description: Provide a real-world use case where this enhancement adds value.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority Level
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Are there workarounds or alternative solutions?
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Checklist
+      options:
+        - label: This is not a duplicate enhancement request.
+          required: true
