@@ -54,7 +54,7 @@ Set up model gateway and ContextForge for your use case:
 
 ## Bob Modes for AI Gateway
 
-> 🚧 **Coming Soon**: Documentation for AI Gateway Bob Modes will be available here.
+> 🚧 **Coming Soon**: Documentation for Agent Gateway Bob Modes will be available here.
 
 ## Guides & Documentation
 
