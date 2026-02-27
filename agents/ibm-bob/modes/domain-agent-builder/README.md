@@ -22,38 +22,25 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 ### Step-by-step
 
-1. **Clone this repo**
-   ```bash
-   git clone https://github.ibm.com/shima/domain-agent-builder
-   ```
+1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
 
-2. **Open Bob** and open the cloned repo folder in Bob.
+2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
 
-3. Click the three dots (top right corner) → click **Modes**.
+3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
 
-   ![Open Modes menu](images/bob_modes_menu.png)
+4. **Ask Bob to build an agent.** For example: *"Build a financial advisor agent"*
 
-4. Click **Open** next to **Global Modes**, then paste the contents of `custom_mode_entry.yaml` into the file. Save and close. You just created a custom Bob mode called "WXO Domain Agent Builder".
+5. **Answer Bob's questions.** Bob will ask multiple-choice questions to understand your requirements. Select an option, or click the pencil icon to edit and customize your answer.
 
-   ![Open Global Modes](images/bob_global_modes.png)
+6. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
 
-5. **Select the mode.** At the bottom of the Bob panel, switch to **WXO Domain Agent Builder**.
+7. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
 
-6. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
+8. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
 
-7. **Ask Bob to build an agent.** For example: *"Build a financial advisor agent"*
+9. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
 
-8. **Answer Bob's questions.** Bob will ask multiple-choice questions to understand your requirements. Select an option, or click the pencil icon to edit and customize your answer.
-
-9. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
-
-10. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
-
-11. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
-
-12. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
-
-13. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
+10. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
 
 ## How It Works: uvx and the WXO ADK
 
@@ -73,32 +60,33 @@ Think of `uvx` like `npx` in the Node.js world — it downloads and runs a packa
 
 ```
 domain-agent-builder/
-├── README.md                          # This file
-├── custom_mode_entry.yaml             # Bob mode config (add to custom_modes.yaml)
-├── images/                            # Tutorial screenshots
-│   ├── bob_modes_menu.png
-│   └── bob_global_modes.png
-├── rules-domain-agent-builder/        # Rule files Bob reads during the workflow
-│   ├── 0_TEMPLATE_USAGE_GUIDE.md
-│   ├── 1_agent_building_workflow.xml  # 7-phase workflow
-│   ├── 2_wxo_best_practices.xml      # Best practices and CLI commands
-│   ├── 3_domain_examples.xml         # Domain examples
-│   ├── 4_file_generation_templates.xml# File templates and validation
-│   └── CRITICAL_DEPLOYMENT_CHECKLIST.md
-└── healthcare-assistant-agent/        # Reference template (proven, deployed)
-    ├── agent_config.yaml
-    ├── tools/
-    │   ├── patient_tools.py
-    │   └── communication_tools.py
-    ├── data/
-    │   └── patients.csv
-    ├── knowledge_bases/
-    │   └── healthcare_patient_kb.yaml
-    └── scripts/
-        ├── deploy_all.sh
-        ├── import_tools.sh
-        ├── import_kb.sh
-        └── deploy_agent.sh
+├── README.md                              # This file
+└── .bob/                                  # Bob mode config, rules, and templates
+    ├── custom_modes.yaml                  # Bob mode configuration
+    ├── rules-domain-agent-builder/        # Rule files Bob reads during the workflow
+    │   ├── 0_TEMPLATE_USAGE_GUIDE.md
+    │   ├── 1_agent_building_workflow.xml  # 7-phase workflow
+    │   ├── 2_wxo_best_practices.xml      # Best practices and CLI commands
+    │   ├── 3_domain_examples.xml         # Domain examples
+    │   ├── 4_file_generation_templates.xml# File templates and validation
+    │   └── CRITICAL_DEPLOYMENT_CHECKLIST.md
+    └── healthcare-assistant-agent/        # Reference template (proven, deployed)
+        ├── agent_config.yaml
+        ├── README.md
+        ├── TROUBLESHOOTING.md
+        ├── tools/
+        │   ├── patient_tools.py
+        │   └── communication_tools.py
+        ├── data/
+        │   └── patients.csv
+        ├── knowledge_bases/
+        │   └── healthcare_patient_kb.yaml
+        ├── scripts/
+        │   ├── deploy_all.sh
+        │   ├── import_tools.sh
+        │   ├── import_kb.sh
+        │   └── deploy_agent.sh
+        └── tests/
 ```
 
 ## Agent Architecture
@@ -150,7 +138,7 @@ The LLM (`groq/openai/gpt-oss-120b`) sits on top and routes:
 
 ## Rule Files
 
-The mode's behavior is defined in `rules-domain-agent-builder/`:
+The mode's behavior is defined in `.bob/rules-domain-agent-builder/`:
 
 | File | Purpose |
 |------|---------|
@@ -161,4 +149,4 @@ The mode's behavior is defined in `rules-domain-agent-builder/`:
 
 ## Reference Template
 
-The proven, deployed healthcare agent at `healthcare-assistant-agent/` serves as the foundation. Bob copies it and adapts it for each new domain.
+The proven, deployed healthcare agent at `.bob/healthcare-assistant-agent/` serves as the foundation. Bob copies it and adapts it for each new domain. New agents are created parallel to `.bob/` in the project root.

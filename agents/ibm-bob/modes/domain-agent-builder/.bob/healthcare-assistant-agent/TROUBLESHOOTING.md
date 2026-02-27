@@ -41,9 +41,7 @@ WXO_API_KEY=your-api-key-here
 
 **Solution:**
 ```bash
-cd ~/src/wxo-adk
-source .venv/bin/activate
-orchestrate env activate wxo-uv-env
+echo "YOUR_API_KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env
 ```
 
 ### Problem: Wrong Python version
@@ -407,17 +405,15 @@ If you continue to experience issues:
 
 ```bash
 # Environment
-export WXO_API_KEY="your-key"
-source ~/src/wxo-adk/.venv/bin/activate
-orchestrate env activate wxo-uv-env
+echo "YOUR_API_KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env
 
 # Import workflow
-orchestrate tools import -k python -f tools/tool_name.py
-orchestrate knowledge-bases import -f knowledge_bases/kb_name.yaml
-orchestrate agents import -f agent_config.yaml
+uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/tool_name.py
+uvx --from ibm-watsonx-orchestrate orchestrate knowledge-bases import -f knowledge_bases/kb_name.yaml
+uvx --from ibm-watsonx-orchestrate orchestrate agents import -f agent_config.yaml
 
 # Deploy
-orchestrate agents deploy -n agent_name
+uvx --from ibm-watsonx-orchestrate orchestrate agents deploy -n agent_name
 
 # Troubleshooting
 orchestrate tools list

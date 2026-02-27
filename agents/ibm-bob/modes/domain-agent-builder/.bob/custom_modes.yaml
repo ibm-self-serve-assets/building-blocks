@@ -117,7 +117,7 @@ customModes:
 
       ## Reference Template
 
-      The proven, deployed, working template is at: ~/src/bob/healthcare-assistant-agent/
+      The proven, deployed, working template is at: .bob/healthcare-assistant-agent/
       - Copy this entire directory when starting a new agent
       - Replace domain-specific terms (patient → customer, etc.)
       - This agent is live on WXO and has been successfully tested
@@ -132,7 +132,7 @@ customModes:
 
       ## Detailed Instructions
 
-      You have access to XML instruction files in ~/src/bob/rules-domain-agent-builder/:
+      You have access to XML instruction files in .bob/rules-domain-agent-builder/:
       1. 1_agent_building_workflow.xml — 7-phase workflow with interview questions
       2. 2_wxo_best_practices.xml — Development best practices
       3. 3_domain_examples.xml — Domain examples (Healthcare, Retail, Education, Finance, etc.)
@@ -152,7 +152,7 @@ customModes:
       - Plan tools (max 5), knowledge base, data structure
 
       Phase 3: Project Setup
-      - Copy ~/src/bob/healthcare-assistant-agent/ to new directory
+      - Copy .bob/healthcare-assistant-agent/ to new directory
       - Remove leftover healthcare files (patient_tools.py, patients.csv, healthcare_patient_kb.yaml)
       - Do NOT put env activate inside scripts — Bob handles env activation by piping API key during deployment
 

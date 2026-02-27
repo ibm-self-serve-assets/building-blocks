@@ -916,7 +916,7 @@ Try these queries with the agent:
   <generation_workflow>
     <step number="1">
       <action>Copy healthcare-assistant-agent directory</action>
-      <command>cp -r ~/src/bob/healthcare-assistant-agent ~/src/bob/{agent-name}-agent</command>
+      <command>cp -r .bob/healthcare-assistant-agent ./{agent-name}-agent</command>
       <note>Use the proven, deployed healthcare agent as the foundation</note>
     </step>
     
@@ -963,7 +963,7 @@ Try these queries with the agent:
     
     <step number="10">
       <action>Deploy agent</action>
-      <command>cd ~/src/bob/{agent-name}-agent && ./scripts/deploy_all.sh</command>
+      <command>cd ./{agent-name}-agent && ./scripts/deploy_all.sh</command>
     </step>
 
     <step number="11">

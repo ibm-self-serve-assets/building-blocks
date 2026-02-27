@@ -39,8 +39,8 @@ Before customizing, memorize these non-negotiable rules:
 
 ### Step 1: Copy the Healthcare Agent
 ```bash
-cp -r ~/src/bob/healthcare-assistant-agent ~/src/bob/[your-agent-name]-agent
-cd ~/src/bob/[your-agent-name]-agent
+cp -r .bob/healthcare-assistant-agent ./[your-agent-name]-agent
+cd ./[your-agent-name]-agent
 ```
 
 ### Step 2: Find and Replace Domain Terms

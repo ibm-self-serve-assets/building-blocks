@@ -121,7 +121,7 @@
           </question>
           <question priority="medium">
             Where should the agent project be created?
-            (Default: /Users/shima/src/bob/[agent-name]-agent)
+            (Default: ./[agent-name]-agent, parallel to .bob/)
           </question>
           <question priority="low">
             Are there any specific branding or styling preferences for communications?
@@ -235,7 +235,7 @@
       <setup_steps>
         <step number="1">
           <action>Copy healthcare-assistant-agent to new project directory</action>
-          <command>cp -r ~/src/bob/healthcare-assistant-agent ~/src/bob/[agent-name]-agent</command>
+          <command>cp -r .bob/healthcare-assistant-agent ./[agent-name]-agent</command>
           <note>Replace [agent-name] with the actual agent name</note>
         </step>
         <step number="2">
@@ -422,12 +422,12 @@
 
         <step number="2">
           <action>Make deployment scripts executable</action>
-          <command>chmod +x ~/src/bob/[agent-name]-agent/scripts/*.sh</command>
+          <command>chmod +x ./[agent-name]-agent/scripts/*.sh</command>
         </step>
 
         <step number="3">
           <action>Run complete deployment</action>
-          <command>cd ~/src/bob/[agent-name]-agent && ./scripts/deploy_all.sh</command>
+          <command>cd ./[agent-name]-agent && ./scripts/deploy_all.sh</command>
           <note>This will import tools, knowledge base, and deploy agent</note>
         </step>
 
@@ -665,7 +665,7 @@
       </description>
 
       <deliverables>
-        <deliverable>Complete agent project in ~/src/bob/[agent-name]-agent/</deliverable>
+        <deliverable>Complete agent project in ./[agent-name]-agent/</deliverable>
         <deliverable>README.md with domain-specific documentation</deliverable>
         <deliverable>BUSINESS_USE_CASE.md — business use case summary with sample queries</deliverable>
         <deliverable>Deployment confirmation and agent URL</deliverable>
@@ -680,7 +680,7 @@
             that explains the business use case and provides ready-to-use sample queries.
             This file serves as a quick-start guide for anyone interacting with the deployed agent.
           </description>
-          <file_path>~/src/bob/[agent-name]-agent/BUSINESS_USE_CASE.md</file_path>
+          <file_path>./[agent-name]-agent/BUSINESS_USE_CASE.md</file_path>
           <required_sections>
             <section name="Business Use Case">
               <content>1-2 paragraph description of the business problem this agent solves, the target users, and the value it provides</content>
