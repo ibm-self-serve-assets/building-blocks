@@ -111,6 +111,10 @@ my_agent/
 
 ---
 
+**Note:**
+- Get the project — clone this repo or download the .bob folder into your project directory.
+- Open Bob and open the project folder (the one containing .bob/) in Bob. Important: When starting to use this Bob mode, your project folder should contain only the .bob folder downloaded from this custom mode. No additional files or folders should be present in the project folder to ensure Bob does not receive unwanted context while using this mode.
+
 ## Prerequisites
 
 - Bob AI with MCP support enabled
