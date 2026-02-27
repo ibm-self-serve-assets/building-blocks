@@ -1,6 +1,6 @@
 # WXO Domain Agent Builder using Bob
 
-A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents end-to-end through an interactive workflow.
+A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents in your custom domain end-to-end through an interactive workflow.
 
 ## What It Does
 
@@ -130,7 +130,6 @@ The LLM (`groq/openai/gpt-oss-120b`) sits on top and routes:
 
 ## Key Design Decisions
 
-- **Embedded data in tools**: WXO tools run in isolated cloud environments and cannot access local files. Data is embedded as Python dicts directly in tool code.
 - **Tool isolation**: Each tool is self-contained. Tools cannot call other tools. The agent LLM orchestrates multi-tool workflows.
 - **5 tools recommended**: 5 or fewer tools is recommended for optimal performance (typically 3 entity + 1 communication + 1 domain-specific), though agents can use more if needed.
 - **uvx for CLI**: All orchestrate commands use `uvx --from ibm-watsonx-orchestrate` for isolated execution without manual venv activation.
