@@ -59,7 +59,7 @@ Follow best practices for designing and implementing multi-agent orchestration:
 ## Assets & Sample Projects
 
 - [AI Travel Planner](./AI-Travel-Planner/) - Demonstrates multi-agent collaboration for travel planning
-- [Smart Choice Supplier](./Smart-Choice-Supplier/) - Intelligent supplier selection workflow
+- [Optimal Supplier Selector](./Optimal-Supplier-Selector/) - Intelligent supplier selection workflow
 
 ---
 
