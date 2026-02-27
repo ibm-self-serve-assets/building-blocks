@@ -1,0 +1,61 @@
+name: Building Block Feedback
+description: Provide structured feedback on a Building Block component.
+title: "[Feedback] <Component> - <Short Description>"
+labels: ["feedback"]
+body:
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Agents
+        - Trusted AI
+        - Data for AI
+        - Build & Deploy
+        - Observe
+        - Optimize
+    validations:
+      required: true
+
+  - type: textarea
+    id: usage_context
+    attributes:
+      label: Usage Context
+      description: Describe how you are using this component.
+      placeholder: |
+        - Deployment platform (OpenShift / Kubernetes / Local)
+        - Integration points
+        - Demo / PoC / Production
+    validations:
+      required: true
+
+  - type: textarea
+    id: strengths
+    attributes:
+      label: What Works Well?
+      description: Highlight strengths or value delivered.
+    validations:
+      required: true
+
+  - type: textarea
+    id: improvements
+    attributes:
+      label: Areas for Improvement
+      description: What could be improved?
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Business / Technical Impact
+      description: How does this feedback impact usability, scalability, governance, or adoption?
+
+  - type: checkboxes
+    id: validation
+    attributes:
+      label: Checklist
+      options:
+        - label: I have reviewed existing issues.
+          required: true

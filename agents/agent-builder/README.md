@@ -35,6 +35,7 @@ Use Bob modes to start building custom agents:
 
 Explore Bob modes for guided agent development:
 - [IBM Bob Modes](../ibm-bob/modes/) - Access agent builder modes and configurations
+- [Build Domain Agents](../ibm-bob/modes/domain-agent-builder/) - Build custom domain-specific agents
 
 ## Assets & Sample Projects
 
@@ -45,4 +46,4 @@ Explore Bob modes for guided agent development:
 ## Related Building Blocks
 
 - [Multi-Agent Orchestration](../multi-agent-orchestration/)
-- [AI Gateway](../ai-gateway/)
+- [Agent Gateway](../agent-gateway/)
