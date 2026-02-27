@@ -1,0 +1,351 @@
+<deployment_best_practices>
+  <overview>
+    Critical rules for deployment automation and script generation.
+    These rules ensure safe, correct, and user-controlled deployment processes.
+  </overview>
+
+  <critical_deployment_rules>
+    <rule priority="highest" number="1">
+      <title>Never Execute Deployment Commands Without Permission</title>
+      <description>
+        NEVER execute deployment commands (import, deploy, configure, delete) directly
+        without explicit user permission. Always create deployment scripts instead.
+      </description>
+      <rationale>
+        Users need to review and control when assets are deployed to their environments.
+        Direct execution can cause unexpected changes or conflicts.
+      </rationale>
+      <correct_approach>Create deployment scripts and inform user how to run them</correct_approach>
+      <wrong_approach>Running orchestrate commands directly during implementation</wrong_approach>
+    </rule>
+
+    <rule priority="highest" number="2">
+      <title>Always Query MCP Docs for CLI Commands</title>
+      <description>
+        Before creating deployment scripts, ALWAYS search the watsonx-orchestrate-adk-docs
+        MCP server for the correct CLI command syntax, flags, and parameters.
+      </description>
+      <rationale>
+        CLI commands and syntax can change between ADK versions. MCP docs provide
+        the most up-to-date and accurate command reference.
+      </rationale>
+      <mcp_queries>
+        <query>orchestrate tools import syntax</query>
+        <query>orchestrate agents import command</query>
+        <query>orchestrate knowledge import parameters</query>
+        <query>orchestrate connections configure flags</query>
+      </mcp_queries>
+      <verification>Use execute_command with --help flag to verify syntax if needed</verification>
+    </rule>
+
+    <rule priority="highest" number="3">
+      <title>Validate Folder Structure and Paths</title>
+      <description>
+        Always validate the project folder structure and provide correct relative
+        paths in deployment scripts. Ensure scripts can find all asset files.
+      </description>
+      <validation_steps>
+        <step>Use list_files to verify project structure</step>
+        <step>Confirm agents/ folder contains agent YAML files</step>
+        <step>Confirm tools/ folder contains Python tool files</step>
+        <step>Confirm knowledge/ folder exists if knowledge bases are used</step>
+        <step>Confirm connections/ folder exists if connections are used</step>
+      </validation_steps>
+      <path_considerations>
+        <item>Script location (typically scripts/ folder)</item>
+        <item>Project root location</item>
+        <item>Asset file locations (agents/, tools/, etc.)</item>
+        <item>Working directory when script executes</item>
+      </path_considerations>
+      <solution>
+        Add directory change command at start of script:
+        cd "$(dirname "$0")/.." # Change to project root
+      </solution>
+    </rule>
+
+    <rule priority="high" number="4">
+      <title>Test CLI Commands with --help</title>
+      <description>
+        When uncertain about CLI command syntax, use execute_command with --help
+        flag to verify the correct usage before adding to deployment scripts.
+      </description>
+      <examples>
+        <example>orchestrate tools import --help</example>
+        <example>orchestrate agents import --help</example>
+        <example>orchestrate connections configure --help</example>
+      </examples>
+    </rule>
+  </critical_deployment_rules>
+
+  <deployment_script_workflow>
+    <step number="1">
+      <title>Search MCP Docs for CLI Commands</title>
+      <action>Query watsonx-orchestrate-adk-docs MCP server</action>
+      <queries>
+        <query>orchestrate tools import command syntax</query>
+        <query>orchestrate agents import parameters</query>
+        <query>orchestrate knowledge import flags</query>
+        <query>CLI deployment automation</query>
+      </queries>
+      <purpose>Get exact, up-to-date command syntax and parameters</purpose>
+    </step>
+
+    <step number="2">
+      <title>Validate Project Structure</title>
+      <action>Use list_files to verify folder structure</action>
+      <checks>
+        <check>agents/ folder exists with YAML files</check>
+        <check>tools/ folder exists with Python files</check>
+        <check>knowledge/ folder exists if needed</check>
+        <check>connections/ folder exists if needed</check>
+        <check>scripts/ folder exists for deployment scripts</check>
+      </checks>
+    </step>
+
+    <step number="3">
+      <title>Determine Correct Paths</title>
+      <considerations>
+        <item>Script will be in scripts/ folder</item>
+        <item>Assets are in sibling folders (agents/, tools/, etc.)</item>
+        <item>Need to change to project root before running commands</item>
+      </considerations>
+      <solution>
+        <bash>cd "$(dirname "$0")/.."</bash>
+        <python>os.chdir(os.path.dirname(os.path.dirname(__file__)))</python>
+      </solution>
+    </step>
+
+    <step number="4">
+      <title>Create Deployment Script</title>
+      <requirements>
+        <requirement>Change to project root directory first</requirement>
+        <requirement>Use exact CLI syntax from MCP docs</requirement>
+        <requirement>Use correct relative paths to assets</requirement>
+        <requirement>Include all required flags and parameters</requirement>
+        <requirement>Add error handling (set -e for bash)</requirement>
+        <requirement>Include clear progress messages</requirement>
+        <requirement>Make script executable (chmod +x)</requirement>
+      </requirements>
+      <template_bash><![CDATA[
+#!/bin/bash
+set -e  # Exit on error
+
+# Change to project root
+cd "$(dirname "$0")/.."
+
+echo "Deploying assets..."
+
+# Import tools
+orchestrate tools import -k python -f tools/tool_name.py -p .
+
+# Import agents  
+orchestrate agents import -f agents/agent_name.yaml
+
+# Verify
+orchestrate tools list
+orchestrate agents list
+
+echo "Deployment complete!"
+      ]]></template_bash>
+    </step>
+
+    <step number="5">
+      <title>Create Rollback Script</title>
+      <purpose>Enable safe removal of deployed assets</purpose>
+      <template_bash><![CDATA[
+#!/bin/bash
+set -e
+
+cd "$(dirname "$0")/.."
+
+echo "Rolling back deployment..."
+
+orchestrate agents delete --name agent_name --force
+orchestrate tools delete --name tool_name --force
+
+echo "Rollback complete!"
+      ]]></template_bash>
+    </step>
+
+    <step number="6">
+      <title>Inform User</title>
+      <message_template>
+        I've created deployment scripts in the scripts/ folder:
+        - deploy.sh: Deploys all assets to your active environment
+        - rollback.sh: Removes deployed assets if needed
+
+        To deploy:
+        1. Review the scripts to ensure they match your environment
+        2. Run: cd project_name && ./scripts/deploy.sh
+        
+        The script will import all assets to your currently active environment.
+      </message_template>
+      <never_do>Never execute deployment commands directly</never_do>
+    </step>
+  </deployment_script_workflow>
+
+  <common_cli_command_patterns>
+    <pattern name="import_python_tool">
+      <command>orchestrate tools import -k python -f tools/tool_name.py -p .</command>
+      <flags>
+        <flag name="-k">Kind of tool (python, openapi, langflow)</flag>
+        <flag name="-f">File path to tool (relative to current directory)</flag>
+        <flag name="-p">Package root directory (. for current directory)</flag>
+        <flag name="-r">Requirements file (optional)</flag>
+        <flag name="-a">App ID for connection (optional)</flag>
+      </flags>
+      <mcp_search>orchestrate tools import Python</mcp_search>
+    </pattern>
+
+    <pattern name="import_agent">
+      <command>orchestrate agents import -f agents/agent_name.yaml</command>
+      <flags>
+        <flag name="-f">File path to agent specification YAML</flag>
+      </flags>
+      <mcp_search>orchestrate agents import</mcp_search>
+    </pattern>
+
+    <pattern name="import_knowledge_base">
+      <command>orchestrate knowledge import -f knowledge/kb_spec.yaml</command>
+      <flags>
+        <flag name="-f">File path to knowledge base specification</flag>
+      </flags>
+      <mcp_search>orchestrate knowledge import</mcp_search>
+    </pattern>
+
+    <pattern name="configure_connection">
+      <command>orchestrate connections configure -a app_id --env draft -t team -k basic</command>
+      <flags>
+        <flag name="-a">Application ID</flag>
+        <flag name="--env">Environment (draft or live)</flag>
+        <flag name="-t">Type (team or personal)</flag>
+        <flag name="-k">Kind (basic, oauth, key_value, etc.)</flag>
+      </flags>
+      <mcp_search>orchestrate connections configure</mcp_search>
+    </pattern>
+
+    <pattern name="set_connection_credentials">
+      <command>orchestrate connections set-credentials -a app_id --env draft -e "KEY=value"</command>
+      <flags>
+        <flag name="-a">Application ID</flag>
+        <flag name="--env">Environment (draft or live)</flag>
+        <flag name="-e">Environment variable (KEY=value format)</flag>
+      </flags>
+      <mcp_search>orchestrate connections set-credentials</mcp_search>
+    </pattern>
+
+    <pattern name="deploy_agent_to_live">
+      <command>orchestrate agents deploy --name agent_name</command>
+      <flags>
+        <flag name="--name">Agent name to deploy from draft to live</flag>
+      </flags>
+      <mcp_search>orchestrate agents deploy</mcp_search>
+    </pattern>
+
+    <pattern name="generate_webchat_embed">
+      <command>orchestrate channels webchat embed --agent-name agent_name</command>
+      <flags>
+        <flag name="--agent-name">Agent name for webchat integration</flag>
+      </flags>
+      <mcp_search>orchestrate channels webchat</mcp_search>
+    </pattern>
+
+    <pattern name="delete_agent">
+      <command>orchestrate agents delete --name agent_name --force</command>
+      <flags>
+        <flag name="--name">Agent name to delete</flag>
+        <flag name="--force">Skip confirmation prompt</flag>
+      </flags>
+      <mcp_search>orchestrate agents delete</mcp_search>
+    </pattern>
+
+    <pattern name="delete_tool">
+      <command>orchestrate tools delete --name tool_name --force</command>
+      <flags>
+        <flag name="--name">Tool name to delete</flag>
+        <flag name="--force">Skip confirmation prompt</flag>
+      </flags>
+      <mcp_search>orchestrate tools delete</mcp_search>
+    </pattern>
+  </common_cli_command_patterns>
+
+  <path_resolution_guide>
+    <scenario name="script_in_scripts_folder">
+      <description>Deployment script located in scripts/ folder</description>
+      <project_structure><![CDATA[
+project_root/
+├── agents/
+│   └── agent.yaml
+├── tools/
+│   └── tool.py
+└── scripts/
+    └── deploy.sh  # Script location
+      ]]></project_structure>
+      <solution>
+        <step>Add: cd "$(dirname "$0")/.."</step>
+        <step>Now in project_root/</step>
+        <step>Use: agents/agent.yaml, tools/tool.py</step>
+      </solution>
+    </scenario>
+
+    <scenario name="script_in_project_root">
+      <description>Deployment script located in project root</description>
+      <project_structure><![CDATA[
+project_root/
+├── agents/
+│   └── agent.yaml
+├── tools/
+│   └── tool.py
+└── deploy.sh  # Script location
+      ]]></project_structure>
+      <solution>
+        <step>Already in project_root/</step>
+        <step>Use: agents/agent.yaml, tools/tool.py</step>
+      </solution>
+    </scenario>
+  </path_resolution_guide>
+
+  <error_prevention>
+    <common_mistake name="wrong_command_syntax">
+      <symptom>Command not found or invalid option errors</symptom>
+      <cause>Using outdated or incorrect CLI syntax</cause>
+      <prevention>Always search MCP docs for current syntax</prevention>
+      <fix>Query MCP docs and update script with correct syntax</fix>
+    </common_mistake>
+
+    <common_mistake name="incorrect_paths">
+      <symptom>File not found errors during deployment</symptom>
+      <cause>Wrong relative paths or missing directory change</cause>
+      <prevention>Validate structure and add cd command to script</prevention>
+      <fix>Add cd "$(dirname "$0")/.." and verify paths</fix>
+    </common_mistake>
+
+    <common_mistake name="missing_package_root">
+      <symptom>Python module import errors for tools</symptom>
+      <cause>Missing -p flag when importing Python tools</cause>
+      <prevention>Always include -p . flag for Python tools</prevention>
+      <fix>Add -p . to orchestrate tools import command</fix>
+    </common_mistake>
+
+    <common_mistake name="executing_without_permission">
+      <symptom>User surprised by deployed assets</symptom>
+      <cause>Running deployment commands directly</cause>
+      <prevention>Always create scripts, never execute directly</prevention>
+      <fix>Create deployment script and inform user</fix>
+    </common_mistake>
+  </error_prevention>
+
+  <best_practices>
+    <practice>Search MCP docs before every deployment script creation</practice>
+    <practice>Validate folder structure with list_files</practice>
+    <practice>Test CLI commands with --help when uncertain</practice>
+    <practice>Add clear progress messages to scripts</practice>
+    <practice>Include error handling (set -e for bash)</practice>
+    <practice>Create both deploy and rollback scripts</practice>
+    <practice>Document deployment process in README.md</practice>
+    <practice>Never execute deployment commands directly</practice>
+    <practice>Always inform user how to run deployment scripts</practice>
+  </best_practices>
+</deployment_best_practices>
+
+<!-- Made with Bob -->

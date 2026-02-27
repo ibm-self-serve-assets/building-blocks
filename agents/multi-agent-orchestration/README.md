@@ -50,7 +50,7 @@ Follow best practices for designing and implementing multi-agent orchestration:
 
 ## Bob Modes for Multi-Agent Development
 
-- [MCP Builder Mode](../ibm-bob/modes/mcp_builder_mode_guide.md) - Build and integrate MCP servers for external system connectivity
+- [MCP Builder Mode](../ibm-bob/multiagent-orchestration-bob-modes/base-modes/multi-agent-orchestration-base-mode/mcp_builder_mode_guide.md) - Build and integrate MCP servers for external system connectivity
 - 🚧 More Bob modes are under development and coming soon
 
 ## Best Practices & Guidelines
