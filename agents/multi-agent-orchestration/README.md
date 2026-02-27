@@ -40,7 +40,7 @@ Enables AI agents to discover, communicate, and collaborate regardless of underl
 ### 1. Explore Pre-existing Assets
 Browse sample projects to understand multi-agent patterns and implementations:
 - [AI Travel Planner](./AI-Travel-Planner/) - Multi-agent travel planning system
-- [Smart Choice Supplier](./Smart-Choice-Supplier/) - Intelligent supplier selection
+- [Optimal Supplier Selector](./Optimal-Supplier-Selector/) - Intelligent supplier selection
 
 ### 2. Build Your Own Multi-Agent System
 Follow best practices for designing and implementing multi-agent orchestration:
@@ -51,6 +51,7 @@ Follow best practices for designing and implementing multi-agent orchestration:
 ## Bob Modes for Multi-Agent Development
 
 - [MCP Builder Mode](../ibm-bob/modes/mcp_builder_mode_guide.md) - Build and integrate MCP servers for external system connectivity
+- 🚧 More Bob modes are under development and coming soon
 
 ## Best Practices & Guidelines
 
