@@ -24,7 +24,7 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
 
-2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
+2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob. **Important**: When starting to use this Bob mode, your project folder should contain *only* the .bob folder downloaded from this custom mode. No additional files or folders should be present in the project folder to ensure Bob does not receive unwanted context while using this mode.
 
 3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
 
