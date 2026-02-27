@@ -1,0 +1,483 @@
+<workflow_patterns>
+  <overview>
+    Essential workflow patterns for watsonx Orchestrate native agent development.
+    For detailed technical information, ALWAYS search the watsonx-orchestrate-adk-docs MCP server.
+  </overview>
+
+  <mcp_search_reminder>
+    <critical>
+      Before implementing ANY component, search the MCP documentation server for:
+      - Latest syntax and parameters
+      - Code examples and templates
+      - Best practices and patterns
+      - API changes or deprecations
+    </critical>
+    <tool>SearchIbmWatsonxOrchestrateAdk via watsonx-orchestrate-adk-docs server</tool>
+  </mcp_search_reminder>
+
+  <native_agent_workflow>
+    <overview>
+      Workflow for creating native agents within watsonx Orchestrate.
+      Search MCP docs for "create native agent" before starting.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for agent creation</action>
+      <query>"create native agent", "agent configuration", "agent styles"</query>
+      <purpose>Get latest syntax and options</purpose>
+    </step>
+
+    <step number="2">
+      <action>Define agent specification</action>
+      <components>
+        <component>name (snake_case)</component>
+        <component>description (for routing)</component>
+        <component>instructions (behavior guidance)</component>
+        <component>llm (default: groq/openai/gpt-oss-120b)</component>
+        <component>style (default/react/planner)</component>
+      </components>
+      <mcp_search>"agent instructions", "agent styles", "model selection"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Create agent using ADK</action>
+      <approach>Use create_or_update_agent from watsonx-orchestrate-adk MCP server</approach>
+      <mcp_search>"create_or_update_agent parameters", "agent options"</mcp_search>
+    </step>
+
+    <step number="4">
+      <action>Attach tools and collaborators</action>
+      <mcp_search>"agent tools", "agent collaborators", "tool attachment"</mcp_search>
+    </step>
+
+    <step number="5">
+      <action>Test agent behavior</action>
+      <mcp_search>"testing agents", "agent debugging"</mcp_search>
+    </step>
+  </native_agent_workflow>
+
+  <python_tool_workflow>
+    <overview>
+      Workflow for creating Python tools with @tool decorator.
+      Search MCP docs for "Python tool" before starting.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for tool creation</action>
+      <query>"Python tool decorator", "tool template", "@tool decorator"</query>
+      <purpose>Get latest template and syntax</purpose>
+    </step>
+
+    <step number="2">
+      <action>Design tool interface</action>
+      <components>
+        <component>Function name (snake_case)</component>
+        <component>Parameters with type hints</component>
+        <component>Return type</component>
+        <component>Docstring (becomes tool description)</component>
+      </components>
+      <mcp_search>"tool parameters", "type hints", "tool documentation"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Implement tool logic</action>
+      <considerations>
+        <item>Error handling</item>
+        <item>Input validation</item>
+        <item>Clear return values</item>
+      </considerations>
+    </step>
+
+    <step number="4">
+      <action>Add authentication if needed</action>
+      <decorator>@expect_credentials</decorator>
+      <mcp_search>"expect_credentials", "tool authentication", "connection credentials"</mcp_search>
+    </step>
+
+    <step number="5">
+      <action>Import tool to platform</action>
+      <approach>Use import_tool from watsonx-orchestrate-adk MCP server</approach>
+      <mcp_search>"import_tool", "tool deployment"</mcp_search>
+    </step>
+  </python_tool_workflow>
+
+  <knowledge_base_workflow>
+    <overview>
+      Workflow for setting up knowledge bases for RAG capabilities.
+      Search MCP docs for "knowledge base" before starting.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for knowledge base setup</action>
+      <query>"knowledge base", "RAG", "document indexing"</query>
+    </step>
+
+    <step number="2">
+      <action>Prepare documents</action>
+      <mcp_search>"supported document formats", "document preparation"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Create knowledge base specification</action>
+      <mcp_search>"knowledge base configuration", "embedding models"</mcp_search>
+    </step>
+
+    <step number="4">
+      <action>Import knowledge base</action>
+      <approach>Use import_knowledge_bases from watsonx-orchestrate-adk MCP server</approach>
+      <mcp_search>"import_knowledge_bases", "knowledge base deployment"</mcp_search>
+    </step>
+
+    <step number="5">
+      <action>Verify indexing status</action>
+      <approach>Use check_knowledge_base_status</approach>
+      <mcp_search>"knowledge base status", "indexing verification"</mcp_search>
+    </step>
+
+    <step number="6">
+      <action>Attach to agent</action>
+      <mcp_search>"attach knowledge base to agent"</mcp_search>
+    </step>
+  </knowledge_base_workflow>
+
+  <connection_workflow>
+    <overview>
+      Workflow for setting up connections for API authentication.
+      Search MCP docs for "connections" before starting.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for connection types</action>
+      <query>"connections", "authentication types", "API key connection"</query>
+    </step>
+
+    <step number="2">
+      <action>Create connection</action>
+      <approach>Use create_connection from watsonx-orchestrate-adk MCP server</approach>
+      <mcp_search>"create_connection", "connection types"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Configure connection for environment</action>
+      <approach>Use configure_connection</approach>
+      <mcp_search>"configure_connection", "connection environments"</mcp_search>
+    </step>
+
+    <step number="4">
+      <action>Set credentials</action>
+      <approach>Use set_credentials_connection</approach>
+      <mcp_search>"set_credentials_connection", "credential types"</mcp_search>
+    </step>
+
+    <step number="5">
+      <action>Link to tools or agents</action>
+      <mcp_search>"connection app_id", "linking connections"</mcp_search>
+    </step>
+  </connection_workflow>
+
+  <channel_workflow>
+    <overview>
+      Workflow for setting up communication channels.
+      Search MCP docs for "channels" before starting.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for channel types</action>
+      <query>"channels", "webchat", "Slack integration", "WhatsApp"</query>
+    </step>
+
+    <step number="2">
+      <action>Determine channel type</action>
+      <options>webchat, Slack, WhatsApp, SMS, phone</options>
+      <mcp_search>"channel types", "channel configuration"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Create or configure channel</action>
+      <approach>Use create_or_update_channel or generate_webchat_embed</approach>
+      <mcp_search>"create_or_update_channel", "webchat embed", "Slack setup"</mcp_search>
+    </step>
+
+    <step number="4">
+      <action>Test channel integration</action>
+      <mcp_search>"testing channels", "channel debugging"</mcp_search>
+    </step>
+  </channel_workflow>
+
+  <multi_agent_workflow>
+    <overview>
+      Workflow for creating multi-agent systems with collaborators.
+      Search MCP docs for "agent collaboration" before starting.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for multi-agent patterns</action>
+      <query>"agent collaboration", "collaborators", "multi-agent systems"</query>
+    </step>
+
+    <step number="2">
+      <action>Design agent hierarchy</action>
+      <considerations>
+        <item>Parent agent (orchestrator)</item>
+        <item>Specialist agents (collaborators)</item>
+        <item>Routing logic</item>
+      </considerations>
+      <mcp_search>"agent routing", "orchestrator patterns"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Create specialist agents first</action>
+      <reason>Collaborators must exist before parent agent</reason>
+    </step>
+
+    <step number="4">
+      <action>Create parent agent with collaborators</action>
+      <mcp_search>"agent collaborators parameter", "routing instructions"</mcp_search>
+    </step>
+
+    <step number="5">
+      <action>Test collaboration flow</action>
+      <mcp_search>"testing multi-agent systems"</mcp_search>
+    </step>
+  </multi_agent_workflow>
+
+  <error_handling_patterns>
+    <overview>
+      Common error scenarios and how to handle them.
+      Search MCP docs for specific error messages.
+    </overview>
+
+    <pattern name="tool_import_failure">
+      <symptom>Tool fails to import</symptom>
+      <mcp_search>"tool import errors", "tool validation"</mcp_search>
+      <common_causes>
+        <cause>Invalid Python syntax</cause>
+        <cause>Missing @tool decorator</cause>
+        <cause>Invalid type hints</cause>
+        <cause>Missing docstring</cause>
+      </common_causes>
+    </pattern>
+
+    <pattern name="agent_creation_failure">
+      <symptom>Agent creation fails</symptom>
+      <mcp_search>"agent creation errors", "agent validation"</mcp_search>
+      <common_causes>
+        <cause>Invalid agent name (not snake_case)</cause>
+        <cause>Missing required fields</cause>
+        <cause>Invalid model name</cause>
+        <cause>Non-existent collaborators</cause>
+      </common_causes>
+    </pattern>
+
+    <pattern name="knowledge_base_not_ready">
+      <symptom>Knowledge base not indexed</symptom>
+      <mcp_search>"knowledge base indexing", "indexing status"</mcp_search>
+      <solution>Use check_knowledge_base_status and wait for completion</solution>
+    </pattern>
+
+    <pattern name="connection_authentication_failure">
+      <symptom>Connection fails to authenticate</symptom>
+      <mcp_search>"connection troubleshooting", "authentication errors"</mcp_search>
+      <common_causes>
+        <cause>Incorrect credentials</cause>
+        <cause>Wrong connection type</cause>
+        <cause>Missing environment configuration</cause>
+      </common_causes>
+    </pattern>
+  </error_handling_patterns>
+
+  <testing_patterns>
+    <overview>
+      Patterns for testing agents and tools.
+      Search MCP docs for testing approaches.
+    </overview>
+
+    <test_tool_independently>
+      <description>Test Python tools before attaching to agents</description>
+      <mcp_search>"testing tools", "tool debugging"</mcp_search>
+    </test_tool_independently>
+
+    <test_agent_instructions>
+      <description>Verify agent follows instructions correctly</description>
+      <mcp_search>"testing agent behavior", "instruction validation"</mcp_search>
+    </test_agent_instructions>
+
+    <test_collaboration>
+      <description>Test multi-agent routing and handoffs</description>
+      <mcp_search>"testing multi-agent systems", "collaboration testing"</mcp_search>
+    </test_collaboration>
+
+    <test_channels>
+      <description>Test each communication channel</description>
+      <mcp_search>"channel testing", "integration testing"</mcp_search>
+    </test_channels>
+  </testing_patterns>
+
+  <deployment_script_workflow>
+    <overview>
+      After building all assets, generate a deployment script to automate deployment.
+      Search MCP docs for deployment best practices.
+    </overview>
+
+    <step number="1">
+      <action>Search MCP docs for deployment patterns</action>
+      <query>"deployment script", "automation", "export import"</query>
+      <purpose>Get latest deployment approaches</purpose>
+    </step>
+
+    <step number="2">
+      <action>Create deploy.sh or deploy.py script</action>
+      <script_contents>
+        <item>Environment setup (activate virtual env, set credentials)</item>
+        <item>Import tools (orchestrate tool import)</item>
+        <item>Import knowledge bases (orchestrate kb import)</item>
+        <item>Configure connections (orchestrate connection configure)</item>
+        <item>Import agents (orchestrate agent import)</item>
+        <item>Set up channels (orchestrate channel create)</item>
+        <item>Verification steps (check status of each component)</item>
+      </script_contents>
+      <mcp_search>"deployment automation", "CLI commands"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Add rollback script</action>
+      <purpose>Enable quick rollback if deployment fails</purpose>
+      <mcp_search>"rollback strategy", "deployment recovery"</mcp_search>
+    </step>
+
+    <step number="4">
+      <action>Document deployment process</action>
+      <include_in>README.md and DEPLOYMENT.md</include_in>
+    </step>
+
+    <script_location>
+      <path>scripts/deploy.sh or scripts/deploy.py</path>
+      <note>Place in scripts/ folder within project structure</note>
+    </script_location>
+  </deployment_script_workflow>
+
+  <readme_generation_workflow>
+    <overview>
+      Generate comprehensive README.md for the project after all assets are built.
+      This documents the entire project for future maintenance and collaboration.
+    </overview>
+
+    <step number="1">
+      <action>Gather project information</action>
+      <information>
+        <item>Project name and purpose</item>
+        <item>List of agents created</item>
+        <item>List of tools created</item>
+        <item>Knowledge bases configured</item>
+        <item>Connections required</item>
+        <item>Channels set up</item>
+      </information>
+    </step>
+
+    <step number="2">
+      <action>Create README.md with standard sections</action>
+      <sections>
+        <section name="title">Project name and brief description</section>
+        <section name="overview">What the project does and why</section>
+        <section name="architecture">High-level architecture diagram or description</section>
+        <section name="components">
+          - Agents (name, purpose, capabilities)
+          - Tools (name, description, parameters)
+          - Knowledge Bases (name, content type)
+          - Connections (name, type, purpose)
+          - Channels (type, configuration)
+        </section>
+        <section name="prerequisites">
+          - Python version
+          - Required packages (requirements.txt)
+          - watsonx Orchestrate access
+          - API keys or credentials needed
+        </section>
+        <section name="installation">
+          - Clone repository
+          - Install dependencies
+          - Configure environment
+        </section>
+        <section name="deployment">
+          - How to deploy using deploy.sh
+          - Environment-specific instructions
+          - Verification steps
+        </section>
+        <section name="usage">
+          - How to interact with agents
+          - Example queries or workflows
+          - Channel-specific instructions
+        </section>
+        <section name="testing">
+          - How to test components
+          - Test scenarios
+        </section>
+        <section name="troubleshooting">
+          - Common issues and solutions
+          - Where to find logs
+          - Support contacts
+        </section>
+        <section name="maintenance">
+          - How to update agents
+          - How to add new tools
+          - Version management
+        </section>
+        <section name="contributing">Guidelines for contributors (if applicable)</section>
+        <section name="license">License information (if applicable)</section>
+      </sections>
+      <mcp_search>"documentation best practices", "README structure"</mcp_search>
+    </step>
+
+    <step number="3">
+      <action>Add code examples</action>
+      <examples>
+        <example>Sample tool usage</example>
+        <example>Sample agent interaction</example>
+        <example>Deployment command examples</example>
+      </examples>
+    </step>
+
+    <step number="4">
+      <action>Include project structure diagram</action>
+      <format>ASCII tree or markdown table showing folder structure</format>
+    </step>
+
+    <readme_location>
+      <path>README.md in project root</path>
+      <note>This is the first file users see when opening the project</note>
+    </readme_location>
+  </readme_generation_workflow>
+
+  <deployment_patterns>
+    <overview>
+      Patterns for deploying agents to different environments.
+      Search MCP docs for deployment strategies.
+    </overview>
+
+    <draft_to_live>
+      <description>Moving from draft to live environment</description>
+      <mcp_search>"environment deployment", "draft to live"</mcp_search>
+    </draft_to_live>
+
+    <version_management>
+      <description>Managing agent versions</description>
+      <mcp_search>"agent versioning", "version management"</mcp_search>
+    </version_management>
+
+    <rollback_strategy>
+      <description>Rolling back problematic deployments</description>
+      <mcp_search>"rollback", "deployment recovery"</mcp_search>
+    </rollback_strategy>
+  </deployment_patterns>
+
+  <critical_workflow_rules>
+    <rule>ALWAYS search MCP docs before implementing any component</rule>
+    <rule>Follow workflows in order - don't skip steps</rule>
+    <rule>Validate each step before proceeding to next</rule>
+    <rule>Use snake_case for all names (agents, tools, files)</rule>
+    <rule>Test components independently before integration</rule>
+    <rule>Keep user informed of progress with update_todo_list</rule>
+  </critical_workflow_rules>
+</workflow_patterns>
+
+<!-- Made with Bob -->

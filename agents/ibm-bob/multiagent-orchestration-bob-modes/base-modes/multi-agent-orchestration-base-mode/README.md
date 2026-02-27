@@ -3,12 +3,7 @@
 This repository contains expert-level [custom modes for IBM Bob](https://internal.bob.ibm.com/docs/ide/features/custom-modes) designed for building production-grade AI agents and MCP servers. These modes transform IBM Bob into a specialized development assistant with comprehensive guidance and best practices.
 
 ## Available Custom Modes
-**Agent Builder:** Build and manage watsonx Orchestrate agents, tools, and workflows.
-- [`mcp_builder_mode.yml`](mcp_builder_mode.yml) - Mode configuration
-- [`mcp_builder_mode_guide.md`](mcp_builder_mode_guide.md) - Comprehensive user guide
-
 **MCP Builder:** Build production-grade Model Context Protocol (MCP) servers in Python and TypeScript/Node.js.
-- [`wxo_agent_builder_mode.yml`](wxo_agent_builder_mode.yml) - Mode configuration
 - [`wxo_agent_builder_mode_guide.md`](wxo_agent_builder_mode_guide.md) - Comprehensive user guide
 
 ## I. Prerequisites
@@ -117,17 +112,6 @@ For system-wide access, copy the YAML file to:
 
 ## Usage Examples
 
-### Using watsonx Orchestrate Agent Builder Mode
-
-```
-# Example tasks you can ask Bob to do:
-
-"Create a customer support agent with CRM and order management tools"
-"Build a Python tool that queries our PostgreSQL database"
-"Design a supervisor agent that routes to sales, support, and operations agents"
-"Import the Slack MCP toolkit for our agents"
-"Create an agentic workflow for employee onboarding with approvals"
-```
 
 ### Using MCP Builder Mode
 

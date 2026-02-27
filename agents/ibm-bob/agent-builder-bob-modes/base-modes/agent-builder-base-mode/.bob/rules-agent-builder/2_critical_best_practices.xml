@@ -1,0 +1,364 @@
+<critical_best_practices>
+  <overview>
+    Essential best practices that MUST be followed for watsonx Orchestrate native agent development.
+    For detailed guidelines and examples, search the watsonx-orchestrate-adk-docs MCP server.
+  </overview>
+
+  <mcp_first_principle>
+    <rule priority="critical">
+      When you need detailed information about ANY aspect of watsonx Orchestrate ADK,
+      ALWAYS search the MCP documentation server FIRST before answering or implementing.
+    </rule>
+    <examples>
+      <example>User asks about agent styles → Search "agent styles" in MCP docs</example>
+      <example>Need tool template → Search "Python tool decorator template" in MCP docs</example>
+      <example>Connection setup unclear → Search "connection configuration" in MCP docs</example>
+    </examples>
+  </mcp_first_principle>
+
+  <naming_conventions>
+    <critical_rule>
+      ALL names in watsonx Orchestrate MUST use snake_case (lowercase with underscores).
+      This is IBM's official standard and non-negotiable.
+    </critical_rule>
+
+    <agent_names>
+      <rule>snake_case only</rule>
+      <good>customer_support_agent, data_analyst_agent, order_processor</good>
+      <bad>CustomerSupportAgent, customerSupportAgent, customer-support-agent</bad>
+      <mcp_search>"agent naming conventions"</mcp_search>
+    </agent_names>
+
+    <tool_names>
+      <rule>snake_case, alphanumeric and underscores only</rule>
+      <good>get_order_status, calculate_shipping_cost, send_email</good>
+      <bad>getOrderStatus, get-order-status, GetOrderStatus</bad>
+      <mcp_search>"tool naming conventions"</mcp_search>
+    </tool_names>
+
+    <file_names>
+      <rule>snake_case for all Python files and YAML specs</rule>
+      <good>customer_support_agent.yaml, order_tools.py</good>
+      <bad>CustomerSupportAgent.yaml, orderTools.py</bad>
+    </file_names>
+  </naming_conventions>
+
+  <model_selection>
+    <default_model>
+      <name>groq/openai/gpt-oss-120b</name>
+      <alias>GPT-OSS-120b</alias>
+      <when_to_use>Default choice for most native agents</when_to_use>
+      <mcp_search>"model selection", "available models", "GPT-OSS-120b"</mcp_search>
+    </default_model>
+
+    <model_format>
+      <rule>Use full model path: provider/model-name</rule>
+      <examples>
+        <example>groq/openai/gpt-oss-120b</example>
+        <example>watsonx/meta-llama/llama-3-2-90b-vision-instruct</example>
+      </examples>
+      <mcp_search>"model configuration", "model paths"</mcp_search>
+    </model_format>
+
+    <when_to_change_model>
+      <scenario>User explicitly requests different model</scenario>
+      <scenario>Task requires specific capabilities (e.g., vision)</scenario>
+      <scenario>Performance or cost optimization needed</scenario>
+      <mcp_search>"model comparison", "model capabilities"</mcp_search>
+    </when_to_change_model>
+  </model_selection>
+
+  <agent_instructions>
+    <critical_rule>
+      Agent instructions are the PRIMARY way to control agent behavior.
+      Write clear, specific, actionable instructions.
+    </critical_rule>
+
+    <instruction_structure>
+      <section>Role and expertise definition</section>
+      <section>Primary responsibilities</section>
+      <section>Tool usage guidelines</section>
+      <section>Collaborator routing logic (if multi-agent)</section>
+      <section>Output format requirements</section>
+      <section>Error handling approach</section>
+      <mcp_search>"agent instructions", "instruction best practices"</mcp_search>
+    </instruction_structure>
+
+    <instruction_quality>
+      <good>Specific, actionable, clear constraints</good>
+      <bad>Vague, generic, no guidance</bad>
+      <example_good>
+        "When a user asks about order status, use the get_order_status tool with the order_id.
+        If the order is delayed, proactively offer to check shipping updates using check_shipping tool."
+      </example_good>
+      <example_bad>
+        "Help users with their orders."
+      </example_bad>
+      <mcp_search>"writing effective instructions"</mcp_search>
+    </instruction_quality>
+  </agent_instructions>
+
+  <agent_styles>
+    <overview>
+      Native agents support different execution styles. Choose based on task complexity.
+      Search MCP docs for detailed style documentation.
+    </overview>
+
+    <style name="default">
+      <when_to_use>Simple, straightforward tasks</when_to_use>
+      <behavior>Direct tool calling, minimal reasoning</behavior>
+      <mcp_search>"default agent style"</mcp_search>
+    </style>
+
+    <style name="react">
+      <when_to_use>Tasks requiring reasoning and iteration</when_to_use>
+      <behavior>ReAct pattern (Reason + Act)</behavior>
+      <mcp_search>"react agent style", "ReAct pattern"</mcp_search>
+    </style>
+
+    <style name="planner">
+      <when_to_use>Complex, multi-step workflows</when_to_use>
+      <behavior>Plans steps before execution</behavior>
+      <mcp_search>"planner agent style", "planning agents"</mcp_search>
+    </style>
+
+    <selection_guidance>
+      <rule>Start with default, upgrade if needed</rule>
+      <rule>Use react for reasoning-heavy tasks</rule>
+      <rule>Use planner for complex workflows</rule>
+      <mcp_search>"choosing agent style"</mcp_search>
+    </selection_guidance>
+  </agent_styles>
+
+  <python_tool_essentials>
+    <critical_rule>
+      Python tools MUST use @tool decorator and follow specific structure.
+      Search MCP docs for latest tool template.
+    </critical_rule>
+
+    <required_elements>
+      <element>@tool decorator</element>
+      <element>Function with snake_case name</element>
+      <element>Type hints for all parameters</element>
+      <element>Comprehensive docstring (becomes tool description)</element>
+      <element>Clear return type</element>
+      <mcp_search>"Python tool template", "@tool decorator"</mcp_search>
+    </required_elements>
+
+    <authentication>
+      <decorator>@expect_credentials</decorator>
+      <when_to_use>Tool needs API keys or credentials</when_to_use>
+      <connection_link>Links to connection via app_id</connection_link>
+      <mcp_search>"expect_credentials", "tool authentication"</mcp_search>
+    </authentication>
+
+    <error_handling>
+      <rule>Always handle errors gracefully</rule>
+      <rule>Return clear error messages</rule>
+      <rule>Don't expose sensitive information in errors</rule>
+      <mcp_search>"tool error handling"</mcp_search>
+    </error_handling>
+  </python_tool_essentials>
+
+  <knowledge_base_essentials>
+    <critical_rule>
+      Knowledge bases enable RAG (Retrieval Augmented Generation).
+      Always verify indexing status before using.
+    </critical_rule>
+
+    <document_preparation>
+      <rule>Use supported formats (PDF, DOCX, TXT, MD)</rule>
+      <rule>Ensure documents are well-structured</rule>
+      <rule>Remove sensitive information</rule>
+      <mcp_search>"knowledge base document formats", "document preparation"</mcp_search>
+    </document_preparation>
+
+    <indexing_workflow>
+      <step>Import knowledge base specification</step>
+      <step>Wait for indexing to complete</step>
+      <step>Verify with check_knowledge_base_status</step>
+      <step>Attach to agent</step>
+      <mcp_search>"knowledge base indexing", "indexing status"</mcp_search>
+    </indexing_workflow>
+
+    <usage_in_agents>
+      <rule>Reference knowledge base by name in agent config</rule>
+      <rule>Provide clear instructions on when to use knowledge base</rule>
+      <mcp_search>"attaching knowledge base to agent"</mcp_search>
+    </usage_in_agents>
+  </knowledge_base_essentials>
+
+  <connection_essentials>
+    <critical_rule>
+      Connections provide secure credential management for tools and agents.
+      Never hardcode credentials in code.
+    </critical_rule>
+
+    <connection_types>
+      <type name="key_value">Most common for tool credentials</type>
+      <type name="api_key">For API key authentication</type>
+      <type name="bearer">For bearer token authentication</type>
+      <type name="basic">For username/password authentication</type>
+      <mcp_search>"connection types", "authentication methods"</mcp_search>
+    </connection_types>
+
+    <environment_configuration>
+      <rule>Configure for each environment (draft/live)</rule>
+      <rule>Use team credentials for shared access</rule>
+      <rule>Use member credentials for user-specific access</rule>
+      <mcp_search>"connection environments", "team vs member credentials"</mcp_search>
+    </environment_configuration>
+
+    <linking_to_tools>
+      <rule>Use app_id to link connection to tool</rule>
+      <rule>Match app_id in @expect_credentials decorator</rule>
+      <mcp_search>"linking connections to tools", "app_id"</mcp_search>
+    </linking_to_tools>
+  </connection_essentials>
+
+  <channel_essentials>
+    <critical_rule>
+      Channels enable user interaction with agents.
+      Each channel type has specific configuration requirements.
+    </critical_rule>
+
+    <webchat>
+      <note>Automatically available for all agents</note>
+      <setup>Use generate_webchat_embed to get embed code</setup>
+      <mcp_search>"webchat setup", "webchat embed"</mcp_search>
+    </webchat>
+
+    <slack>
+      <requirements>Bot token, signing secret</requirements>
+      <setup>Create channel with Slack credentials</setup>
+      <mcp_search>"Slack integration", "Slack channel setup"</mcp_search>
+    </slack>
+
+    <whatsapp_sms>
+      <requirements>Twilio account SID, auth token, phone number</requirements>
+      <setup>Create channel with Twilio credentials</setup>
+      <mcp_search>"WhatsApp integration", "SMS integration", "Twilio setup"</mcp_search>
+    </whatsapp_sms>
+
+    <phone>
+      <requirements>Phone config with audio connector</requirements>
+      <setup>Create phone config, attach agent</setup>
+      <mcp_search>"phone integration", "audio connector"</mcp_search>
+    </phone>
+  </channel_essentials>
+
+  <multi_agent_essentials>
+    <critical_rule>
+      Multi-agent systems require careful design of routing logic.
+      Parent agent must have clear instructions for delegating to collaborators.
+    </critical_rule>
+
+    <design_principles>
+      <principle>Create specialist agents first</principle>
+      <principle>Parent agent orchestrates, doesn't do work</principle>
+      <principle>Clear routing criteria in parent instructions</principle>
+      <principle>Each specialist has focused responsibility</principle>
+      <mcp_search>"multi-agent design", "agent collaboration patterns"</mcp_search>
+    </design_principles>
+
+    <routing_instructions>
+      <rule>Specify WHEN to route to each collaborator</rule>
+      <rule>Provide examples of routing scenarios</rule>
+      <rule>Handle cases where no collaborator fits</rule>
+      <mcp_search>"routing instructions", "collaborator selection"</mcp_search>
+    </routing_instructions>
+  </multi_agent_essentials>
+
+  <testing_essentials>
+    <critical_rule>
+      Test each component independently before integration.
+      Use draft environment for testing before deploying to live.
+    </critical_rule>
+
+    <test_sequence>
+      <step>Test Python tools independently</step>
+      <step>Test agent with tools</step>
+      <step>Test knowledge base retrieval</step>
+      <step>Test multi-agent routing</step>
+      <step>Test channel integration</step>
+      <mcp_search>"testing strategy", "testing best practices"</mcp_search>
+    </test_sequence>
+
+    <common_test_scenarios>
+      <scenario>Happy path - everything works</scenario>
+      <scenario>Error handling - tool failures</scenario>
+      <scenario>Edge cases - unexpected inputs</scenario>
+      <scenario>Performance - response times</scenario>
+      <mcp_search>"test scenarios", "testing checklist"</mcp_search>
+    </common_test_scenarios>
+  </testing_essentials>
+
+  <security_essentials>
+    <critical_rule>
+      Never expose credentials or sensitive data.
+      Always use connections for credential management.
+    </critical_rule>
+
+    <security_checklist>
+      <item>Use @expect_credentials for authenticated tools</item>
+      <item>Store credentials in connections, not code</item>
+      <item>Validate all user inputs</item>
+      <item>Sanitize outputs to prevent data leakage</item>
+      <item>Use appropriate connection types (team vs member)</item>
+      <mcp_search>"security best practices", "credential management"</mcp_search>
+    </security_checklist>
+  </security_essentials>
+
+  <performance_essentials>
+    <critical_rule>
+      Optimize for response time and resource usage.
+      Monitor agent performance in production.
+    </critical_rule>
+
+    <optimization_tips>
+      <tip>Keep tool implementations efficient</tip>
+      <tip>Use appropriate agent style for task complexity</tip>
+      <tip>Limit knowledge base document size</tip>
+      <tip>Cache frequently accessed data</tip>
+      <mcp_search>"performance optimization", "agent performance"</mcp_search>
+    </optimization_tips>
+  </performance_essentials>
+
+  <documentation_essentials>
+    <critical_rule>
+      Document all agents, tools, and workflows.
+      Good documentation enables maintenance and collaboration.
+    </critical_rule>
+
+    <what_to_document>
+      <item>Agent purpose and capabilities</item>
+      <item>Tool functionality and parameters</item>
+      <item>Connection requirements</item>
+      <item>Channel configurations</item>
+      <item>Testing procedures</item>
+      <item>Deployment steps</item>
+      <mcp_search>"documentation best practices"</mcp_search>
+    </what_to_document>
+  </documentation_essentials>
+
+  <critical_rules_summary>
+    <rule priority="1">ALWAYS search MCP docs first for technical details</rule>
+    <rule priority="1">ALWAYS use snake_case for all names</rule>
+    <rule priority="1">ALWAYS use connections for credentials, never hardcode</rule>
+    <rule priority="2">Default to groq/openai/gpt-oss-120b model unless specified</rule>
+    <rule priority="2">Write clear, specific agent instructions</rule>
+    <rule priority="2">Test components independently before integration</rule>
+    <rule priority="3">Document all components and workflows</rule>
+    <rule priority="3">Use appropriate agent style for task complexity</rule>
+    <rule priority="3">Verify knowledge base indexing before use</rule>
+  </critical_rules_summary>
+
+  <when_in_doubt>
+    <action>Search the watsonx-orchestrate-adk-docs MCP server</action>
+    <action>Ask user for clarification</action>
+    <action>Start with simplest approach, iterate if needed</action>
+    <action>Follow IBM's official patterns and conventions</action>
+  </when_in_doubt>
+</critical_best_practices>
+
+<!-- Made with Bob -->

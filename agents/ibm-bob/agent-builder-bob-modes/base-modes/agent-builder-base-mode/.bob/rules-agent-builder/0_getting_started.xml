@@ -1,0 +1,322 @@
+<getting_started_guide>
+  <overview>
+    This is the FIRST phase of agent development. Before any implementation, conduct a thorough
+    discovery session with the user to understand their needs, create the proper project structure
+    following IBM's best practices, then create a comprehensive plan.
+    
+    IMPORTANT: This mode leverages the watsonx-orchestrate-adk-docs MCP server for up-to-date
+    documentation. Always search the MCP docs first before answering technical questions.
+  </overview>
+
+  <mcp_documentation_strategy>
+    <principle>
+      The watsonx-orchestrate-adk-docs MCP server contains the latest IBM watsonx Orchestrate
+      documentation. ALWAYS search it first for technical details, API references, and examples.
+    </principle>
+
+    <when_to_search_mcp>
+      <scenario>User asks about specific ADK features or capabilities</scenario>
+      <scenario>Need to verify tool parameters or syntax</scenario>
+      <scenario>Looking for code examples or best practices</scenario>
+      <scenario>Checking latest API changes or updates</scenario>
+      <scenario>Understanding agent configuration options</scenario>
+      <scenario>Learning about new features or deprecations</scenario>
+    </when_to_search_mcp>
+
+    <how_to_search_effectively>
+      <tip>Use specific technical terms (e.g., "create native agent", "Python tool decorator", "knowledge base RAG")</tip>
+      <tip>Search for concepts, not just keywords (e.g., "agent collaboration" vs "collaborators")</tip>
+      <tip>Include version context when relevant (e.g., "v0.7 agent styles")</tip>
+      <tip>Search multiple times with different queries if first search doesn't yield results</tip>
+      <tip>Combine MCP search results with workflow guidance from these rules</tip>
+    </how_to_search_effectively>
+
+    <search_tool_usage>
+      <tool_name>SearchIbmWatsonxOrchestrateAdk</tool_name>
+      <server_name>watsonx-orchestrate-adk-docs</server_name>
+      <example><![CDATA[
+<use_mcp_tool>
+<server_name>watsonx-orchestrate-adk-docs</server_name>
+<tool_name>SearchIbmWatsonxOrchestrateAdk</tool_name>
+<arguments>
+{
+  "query": "create native agent with Python tools"
+}
+</arguments>
+</use_mcp_tool>
+      ]]></example>
+    </search_tool_usage>
+
+    <workflow_integration>
+      <step>User asks a question or requests help</step>
+      <step>Search MCP docs for relevant information</step>
+      <step>Combine MCP results with workflow guidance from rules</step>
+      <step>Provide comprehensive answer with citations to docs</step>
+      <step>Proceed with implementation using latest information</step>
+    </workflow_integration>
+  </mcp_documentation_strategy>
+
+  <mandatory_workflow>
+    <phase number="1" name="discovery">
+      <description>Conduct interactive questionnaire to gather all requirements</description>
+      <must_complete_before>Creating project structure</must_complete_before>
+    </phase>
+    <phase number="2" name="project_structure">
+      <description>Create IBM-recommended folder structure based on project complexity</description>
+      <must_complete_before>Moving to planning phase</must_complete_before>
+    </phase>
+    <phase number="3" name="planning">
+      <description>Switch to Plan mode and create detailed plan.md in project directory</description>
+      <must_complete_before>Any implementation work</must_complete_before>
+    </phase>
+    <phase number="4" name="implementation">
+      <description>Execute the plan step by step, using MCP docs for technical details</description>
+      <must_complete_before>Testing and deployment</must_complete_before>
+    </phase>
+  </mandatory_workflow>
+
+  <communication_principles>
+    <principle name="be_proactive">
+      <description>Anticipate user needs and guide them through the process</description>
+      <good>"I'll help you create this agent. Let me first check the latest ADK documentation for the best approach, then we'll create the necessary Python tools."</good>
+    </principle>
+
+    <principle name="cite_sources">
+      <description>When using MCP documentation, cite the source</description>
+      <good>"According to the IBM watsonx Orchestrate ADK documentation, native agents support three styles: default, react, and planner..."</good>
+    </principle>
+
+    <principle name="verify_with_mcp">
+      <description>When uncertain, search MCP docs to verify</description>
+      <approach>Search first, then answer with confidence</approach>
+    </principle>
+
+    <principle name="show_progress">
+      <description>Keep users informed about progress</description>
+      <technique>Use update_todo_list to track progress</technique>
+      <technique>Mention completed steps and what's next</technique>
+    </principle>
+  </communication_principles>
+
+  <discovery_questionnaire>
+    <introduction>
+      <message>
+        I'll help you build a watsonx Orchestrate native agent! Let me start by understanding your 
+        requirements through a series of questions. This will ensure we build exactly what you need.
+      </message>
+    </introduction>
+
+    <core_questions>
+      <question priority="1">What is the primary business problem or use case this agent should solve?</question>
+      <question priority="1">Who are the primary users of this agent?</question>
+      <question priority="1">What are the key tasks or workflows the agent needs to handle?</question>
+      <question priority="2">What data sources or systems does the agent need to access?</question>
+      <question priority="2">Do you need the agent to work with documents or knowledge bases?</question>
+      <question priority="3">What level of complexity are you targeting? (simple/moderate/complex/multi-agent)</question>
+      <question priority="3">Which LLM model should this agent use? (default: groq/openai/gpt-oss-120b)</question>
+      <question priority="4">How will users interact with this agent? (webchat/Slack/WhatsApp/SMS/phone)</question>
+      <question priority="4">What environments do you need? (dev/staging/prod)</question>
+    </core_questions>
+
+    <questionnaire_flow>
+      <rule>Ask 2-3 questions at a time to avoid overwhelming user</rule>
+      <rule>Use ask_followup_question tool for each set of questions</rule>
+      <rule>Adapt follow-up questions based on previous answers</rule>
+      <rule>Summarize answers periodically to confirm understanding</rule>
+    </questionnaire_flow>
+
+    <after_questionnaire>
+      <step>Summarize all gathered information</step>
+      <step>Confirm understanding with user</step>
+      <step>Search MCP docs for relevant patterns or examples</step>
+      <step>Get user approval to proceed to project structure creation</step>
+    </after_questionnaire>
+  </discovery_questionnaire>
+
+  <project_structure_phase>
+    <overview>
+      After completing the discovery questionnaire, create the appropriate project folder
+      structure based on IBM's official watsonx Orchestrate ADK best practices.
+    </overview>
+
+    <ibm_official_structure>
+      <description>IBM's recommended base structure for watsonx Orchestrate projects</description>
+      <folder_tree><![CDATA[
+adk-project/
+├── agents/          # Agent specification files (YAML/JSON)
+├── tools/           # Python tools and tool packages
+├── knowledge/       # Knowledge base specifications and documents
+├── flows/           # Agentic workflow definitions
+├── connections/     # Connection specifications
+├── scripts/         # Deployment and utility scripts
+├── docs/            # Additional documentation (optional)
+└── tests/           # Test files (optional)
+      ]]></folder_tree>
+      <creation_command>mkdir -p adk-project/{agents,tools,knowledge,flows,connections,scripts}</creation_command>
+      <note>Search MCP docs for "project structure" or "getting started" for latest recommendations</note>
+    </ibm_official_structure>
+
+    <structure_selection>
+      <simple>Basic structure (agents/, tools/, knowledge/, connections/, scripts/)</simple>
+      <moderate>Enhanced with docs/ folder</moderate>
+      <complex>Advanced with docs/, tests/, scripts/</complex>
+      <enterprise>Full enterprise with CI/CD, monitoring, environments/</enterprise>
+    </structure_selection>
+
+    <creation_workflow>
+      <step>Determine appropriate structure based on questionnaire</step>
+      <step>Ask for project name (use snake_case)</step>
+      <step>Create folder structure using mkdir -p</step>
+      <step>Create README.md, .gitignore, requirements.txt</step>
+      <step>Initialize git repository (optional)</step>
+      <step>Confirm structure with user</step>
+    </creation_workflow>
+
+    <ibm_naming_conventions>
+      <rule>snake_case for all file and directory names</rule>
+      <rule>Lowercase for folder names</rule>
+      <rule>Tool names: alphanumeric and underscores only</rule>
+      <good>customer_support_agent.yaml, get_order_status.py</good>
+      <bad>CustomerSupportAgent.yaml, getOrderStatus.py</bad>
+    </ibm_naming_conventions>
+  </project_structure_phase>
+
+  <planning_phase>
+    <overview>
+      After creating the project structure, switch to Plan mode to create a comprehensive
+      plan.md file. Search MCP docs for architecture patterns and examples before planning.
+    </overview>
+
+    <switch_to_plan_mode>
+      <when>After completing discovery and project structure</when>
+      <tool>switch_mode</tool>
+      <mode_slug>plan</mode_slug>
+      <reason>Creating comprehensive implementation plan based on discovery session</reason>
+      <message>I've gathered requirements and created the project structure. Now switching to Plan mode to create a detailed implementation plan.</message>
+    </switch_to_plan_mode>
+
+    <plan_document_sections>
+      <section>Executive Summary - Project overview and objectives</section>
+      <section>Requirements Summary - Use case, users, workflows</section>
+      <section>Architecture Design - Agent configuration, components</section>
+      <section>Implementation Plan - Phased approach with tasks</section>
+      <section>Technical Specifications - Tools, APIs, authentication</section>
+      <section>Testing Strategy - Test scenarios, acceptance criteria</section>
+      <section>Deployment Strategy - Environments, channels, rollout</section>
+      <section>Timeline and Milestones - Phases, dependencies</section>
+    </plan_document_sections>
+
+    <plan_approval>
+      <step>Present plan.md to user</step>
+      <step>Gather feedback and questions</step>
+      <step>Revise based on feedback</step>
+      <step>Get explicit approval to proceed</step>
+      <step>Switch back to Agent Builder mode for implementation</step>
+    </plan_approval>
+  </planning_phase>
+
+  <implementation_phase>
+    <overview>
+      After plan approval, return to Agent Builder mode and execute the plan step by step.
+      Use MCP docs extensively during implementation for latest syntax and examples.
+    </overview>
+
+    <return_to_agent_builder>
+      <tool>switch_mode</tool>
+      <mode_slug>agent-builder</mode_slug>
+      <reason>Implementing approved plan for agent development</reason>
+      <message>Plan approved! Switching back to Agent Builder mode to implement the solution.</message>
+    </return_to_agent_builder>
+
+    <execution_principles>
+      <principle>Follow plan.md as source of truth</principle>
+      <principle>Search MCP docs before implementing each component</principle>
+      <principle>Update todo list to track progress</principle>
+      <principle>Validate each phase before moving to next</principle>
+      <principle>Keep user informed of progress</principle>
+    </execution_principles>
+
+    <mcp_usage_during_implementation>
+      <when_creating_tools>Search: "Python tool decorator", "expect_credentials", "tool template"</when_creating_tools>
+      <when_creating_agents>Search: "create native agent", "agent instructions", "agent styles"</when_creating_agents>
+      <when_setting_up_knowledge>Search: "knowledge base", "RAG", "document indexing"</when_setting_up_knowledge>
+      <when_configuring_connections>Search: "connections", "authentication", "API key"</when_configuring_connections>
+      <when_setting_up_channels>Search: "channels", "webchat", "Slack integration"</when_setting_up_channels>
+    </mcp_usage_during_implementation>
+  </implementation_phase>
+
+  <workflow_summary>
+    <step>1. Discovery questionnaire</step>
+    <step>2. Search MCP docs for relevant patterns</step>
+    <step>3. Create IBM-recommended project structure</step>
+    <step>4. Switch to Plan mode</step>
+    <step>5. Create comprehensive plan.md</step>
+    <step>6. Get plan approval</step>
+    <step>7. Switch back to Agent Builder mode</step>
+    <step>8. Execute plan (search MCP docs for each component)</step>
+    <step>9. Generate deployment script (deploy.sh or deploy.py)</step>
+    <step>10. Generate comprehensive README.md</step>
+    <step>11. Test and deploy</step>
+  </workflow_summary>
+
+  <post_implementation_phase>
+    <overview>
+      After building all assets (agents, tools, knowledge bases, connections, channels),
+      generate deployment automation and documentation.
+    </overview>
+
+    <deployment_script_generation>
+      <when>After all assets are created and tested</when>
+      <what>Create deploy.sh or deploy.py in scripts/ folder</what>
+      <contents>
+        <item>Environment setup commands</item>
+        <item>Tool import commands</item>
+        <item>Knowledge base import commands</item>
+        <item>Connection configuration commands</item>
+        <item>Agent import commands</item>
+        <item>Channel setup commands</item>
+        <item>Verification steps</item>
+      </contents>
+      <mcp_search>"deployment automation", "deployment script"</mcp_search>
+      <note>See deployment_script_workflow in 1_workflow_patterns.xml for details</note>
+    </deployment_script_generation>
+
+    <readme_generation>
+      <when>After deployment script is created</when>
+      <what>Create comprehensive README.md in project root</what>
+      <sections>
+        <section>Project overview and purpose</section>
+        <section>Architecture and components</section>
+        <section>Prerequisites and installation</section>
+        <section>Deployment instructions</section>
+        <section>Usage examples</section>
+        <section>Testing and troubleshooting</section>
+        <section>Maintenance and contributing</section>
+      </sections>
+      <mcp_search>"README best practices", "project documentation"</mcp_search>
+      <note>See readme_generation_workflow in 1_workflow_patterns.xml for details</note>
+    </readme_generation>
+
+    <final_deliverables>
+      <deliverable>Fully functional agents</deliverable>
+      <deliverable>Python tools with proper authentication</deliverable>
+      <deliverable>Configured knowledge bases</deliverable>
+      <deliverable>Set up connections</deliverable>
+      <deliverable>Configured channels</deliverable>
+      <deliverable>Automated deployment script</deliverable>
+      <deliverable>Comprehensive README.md</deliverable>
+      <deliverable>plan.md (implementation plan)</deliverable>
+    </final_deliverables>
+  </post_implementation_phase>
+
+  <critical_rules>
+    <rule priority="highest">ALWAYS search MCP docs first for technical questions</rule>
+    <rule priority="highest">NEVER skip the discovery questionnaire</rule>
+    <rule priority="highest">NEVER start implementation without approved plan.md</rule>
+    <rule priority="high">Always create project structure before planning</rule>
+    <rule priority="high">Use switch_mode for Plan mode transitions</rule>
+    <rule priority="medium">Cite MCP documentation sources in responses</rule>
+  </critical_rules>
+</getting_started_guide>
+
+<!-- Made with Bob -->
