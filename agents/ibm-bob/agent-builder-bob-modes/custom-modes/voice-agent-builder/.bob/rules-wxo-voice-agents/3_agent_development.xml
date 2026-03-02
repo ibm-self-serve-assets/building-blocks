@@ -1,0 +1,690 @@
+<agent_development_guide>
+  <overview>
+    Guide for developing and optimizing voice-enabled agents using watsonx Orchestrate ADK,
+    including agent architecture, conversation design, and voice-specific optimizations.
+  </overview>
+
+  <agent_architecture>
+    <core_components>
+      <component name="agent_definition">
+        <description>Main agent configuration and metadata</description>
+        <includes>
+          <item>Agent name and description</item>
+          <item>Instructions and behavior guidelines</item>
+          <item>Tool and collaborator assignments</item>
+          <item>Model configuration</item>
+        </includes>
+      </component>
+
+      <component name="conversation_flow">
+        <description>Logic for managing multi-turn conversations</description>
+        <includes>
+          <item>Intent recognition</item>
+          <item>Context management</item>
+          <item>State tracking</item>
+          <item>Error handling</item>
+        </includes>
+      </component>
+
+      <component name="voice_optimization">
+        <description>Voice-specific adaptations and enhancements</description>
+        <includes>
+          <item>Response length optimization</item>
+          <item>Audio-friendly formatting</item>
+          <item>Pronunciation guidance</item>
+          <item>Pause and pacing control</item>
+        </includes>
+      </component>
+
+      <component name="integration_layer">
+        <description>Connections to external systems and data sources</description>
+        <includes>
+          <item>API integrations</item>
+          <item>Database connections</item>
+          <item>Knowledge base access</item>
+          <item>Tool invocations</item>
+        </includes>
+      </component>
+    </core_components>
+
+    <agent_types>
+      <type name="native">
+        <description>Built-in watsonx Orchestrate agents with full platform features</description>
+        <capabilities>
+          <capability>Tool calling</capability>
+          <capability>Collaborator routing</capability>
+          <capability>Knowledge base access</capability>
+          <capability>Custom instructions</capability>
+          <capability>Structured output</capability>
+        </capabilities>
+        <best_for>
+          <use_case>Complex workflows requiring multiple tools</use_case>
+          <use_case>Multi-agent collaboration scenarios</use_case>
+          <use_case>Knowledge-intensive applications</use_case>
+        </best_for>
+      </type>
+
+      <type name="external">
+        <description>External agents integrated via API</description>
+        <capabilities>
+          <capability>Custom implementation flexibility</capability>
+          <capability>External service integration</capability>
+          <capability>Specialized processing</capability>
+        </capabilities>
+        <best_for>
+          <use_case>Existing agent systems</use_case>
+          <use_case>Specialized AI models</use_case>
+          <use_case>Custom business logic</use_case>
+        </best_for>
+      </type>
+
+      <type name="assistant">
+        <description>Watson Assistant integration</description>
+        <capabilities>
+          <capability>Dialog management</capability>
+          <capability>Intent classification</capability>
+          <capability>Entity extraction</capability>
+          <capability>Pre-built content</capability>
+        </capabilities>
+        <best_for>
+          <use_case>Migrating from Watson Assistant</use_case>
+          <use_case>Leveraging existing Assistant content</use_case>
+          <use_case>Dialog-driven interactions</use_case>
+        </best_for>
+      </type>
+    </agent_types>
+  </agent_architecture>
+
+  <creating_agents_with_adk>
+    <using_adk_mcp>
+      <description>
+        Always use watsonx-orchestrate-adk MCP server for agent development
+      </description>
+      <search_queries>
+        <query>create native agent</query>
+        <query>agent instructions best practices</query>
+        <query>tool assignment</query>
+        <query>collaborator configuration</query>
+        <query>agent examples</query>
+      </search_queries>
+    </using_adk_mcp>
+
+    <adk_tools_for_agents>
+      <tool name="list_agents">
+        <description>List all agents in the platform</description>
+        <parameters>
+          <parameter name="kind">Filter by agent type (native, external, assistant)</parameter>
+          <parameter name="verbose">Get detailed specifications</parameter>
+        </parameters>
+      </tool>
+
+      <tool name="create_or_update_agent">
+        <description>Create new agent or update existing one</description>
+        <key_parameters>
+          <parameter name="name">Agent name (unique identifier)</parameter>
+          <parameter name="description">Clear description for routing</parameter>
+          <parameter name="instructions">Detailed behavior guidelines</parameter>
+          <parameter name="tools">List of tool names to assign</parameter>
+          <parameter name="collaborators">List of collaborator agent names</parameter>
+          <parameter name="llm">Model to use (e.g., watsonx/meta-llama/llama-3-2-90b-vision-instruct)</parameter>
+        </key_parameters>
+      </tool>
+
+      <tool name="import_agent">
+        <description>Import agent from specification file</description>
+        <parameters>
+          <parameter name="path">Path to agent spec file (YAML)</parameter>
+          <parameter name="app_id">Optional connection for credentials</parameter>
+        </parameters>
+      </tool>
+
+      <tool name="export_agent">
+        <description>Export agent to file</description>
+        <parameters>
+          <parameter name="name">Agent name</parameter>
+          <parameter name="kind">Agent type</parameter>
+          <parameter name="output_file_path">Export destination</parameter>
+          <parameter name="agent_only_flag">Export agent only or with dependencies</parameter>
+        </parameters>
+      </tool>
+
+      <tool name="remove_agent">
+        <description>Delete an agent</description>
+        <parameters>
+          <parameter name="name">Agent name</parameter>
+          <parameter name="kind">Agent type</parameter>
+        </parameters>
+      </tool>
+    </adk_tools_for_agents>
+
+    <agent_creation_workflow>
+      <step number="1">
+        <title>Define Agent Purpose</title>
+        <questions>
+          <question>What is the primary function of this agent?</question>
+          <question>What problems will it solve?</question>
+          <question>Who are the target users?</question>
+          <question>What are the key capabilities needed?</question>
+        </questions>
+      </step>
+
+      <step number="2">
+        <title>Design Agent Instructions</title>
+        <instruction_components>
+          <component name="role_definition">
+            <description>Define the agent's role and expertise</description>
+            <example>
+              "You are a customer service agent specializing in order management.
+              You help customers track orders, process returns, and answer product questions."
+            </example>
+          </component>
+
+          <component name="behavior_guidelines">
+            <description>Specify how the agent should behave</description>
+            <guidelines>
+              <guideline>Tone and personality</guideline>
+              <guideline>Response style and length</guideline>
+              <guideline>Handling of sensitive information</guideline>
+              <guideline>Escalation criteria</guideline>
+            </guidelines>
+          </component>
+
+          <component name="tool_usage_guidance">
+            <description>Explain when and how to use assigned tools</description>
+            <example>
+              "Use the order_lookup tool when customers ask about order status.
+              Always verify the order number before looking it up."
+            </example>
+          </component>
+
+          <component name="voice_specific_instructions">
+            <description>Guidelines for voice interactions</description>
+            <voice_guidelines>
+              <guideline>Keep responses concise (under 30 seconds when spoken)</guideline>
+              <guideline>Use natural, conversational language</guideline>
+              <guideline>Avoid complex formatting or lists</guideline>
+              <guideline>Provide clear next steps</guideline>
+              <guideline>Confirm understanding before proceeding</guideline>
+            </voice_guidelines>
+          </component>
+        </instruction_components>
+      </step>
+
+      <step number="3">
+        <title>Select and Configure Tools</title>
+        <tool_selection_criteria>
+          <criterion>Relevance to agent's purpose</criterion>
+          <criterion>Reliability and performance</criterion>
+          <criterion>Authentication requirements</criterion>
+          <criterion>Rate limits and quotas</criterion>
+        </tool_selection_criteria>
+        <adk_tool>list_tools</adk_tool>
+      </step>
+
+      <step number="4">
+        <title>Configure Collaborators (if needed)</title>
+        <when_to_use_collaborators>
+          <scenario>Complex workflows requiring specialized expertise</scenario>
+          <scenario>Handoff to human agents</scenario>
+          <scenario>Multi-domain conversations</scenario>
+        </when_to_use_collaborators>
+        <collaboration_patterns>
+          <pattern name="orchestrator">
+            <description>Main agent routes to specialized sub-agents</description>
+          </pattern>
+          <pattern name="sequential">
+            <description>Agents work in sequence on a task</description>
+          </pattern>
+          <pattern name="parallel">
+            <description>Multiple agents work simultaneously</description>
+          </pattern>
+        </collaboration_patterns>
+      </step>
+
+      <step number="5">
+        <title>Create Agent Using ADK</title>
+        <example_code><![CDATA[
+# Using ADK MCP tool
+create_or_update_agent:
+  options:
+    name: "voice-customer-service"
+    description: "Voice-enabled customer service agent for order management"
+    kind: "native"
+    instructions: |
+      You are a friendly customer service agent helping with orders.
+      
+      Voice Interaction Guidelines:
+      - Keep responses under 30 seconds
+      - Use natural, conversational language
+      - Confirm information before taking action
+      - Provide clear next steps
+      
+      Tool Usage:
+      - Use order_lookup for order status inquiries
+      - Use process_return for return requests
+      - Use product_info for product questions
+      
+      Always be helpful, patient, and professional.
+    tools:
+      - "order_lookup"
+      - "process_return"
+      - "product_info"
+    llm: "watsonx/meta-llama/llama-3-2-90b-vision-instruct"
+    config:
+      hidden: false
+      enable_cot: false
+        ]]></example_code>
+      </step>
+    </agent_creation_workflow>
+  </creating_agents_with_adk>
+
+  <voice_optimization_techniques>
+    <response_length_optimization>
+      <principle>
+        Voice responses should be concise and easily digestible when spoken aloud
+      </principle>
+      <guidelines>
+        <guideline>Target 15-30 seconds per response (roughly 40-80 words)</guideline>
+        <guideline>Break long information into multiple turns</guideline>
+        <guideline>Use progressive disclosure for complex topics</guideline>
+        <guideline>Offer to provide more details if needed</guideline>
+      </guidelines>
+      <example>
+        <bad>
+          "Your order #12345 was placed on January 15th and includes 3 items: 
+          a blue widget ($29.99), a red gadget ($49.99), and a green doohickey ($19.99). 
+          The total was $99.97 plus $8.50 shipping. It shipped on January 17th via 
+          UPS Ground with tracking number 1Z999AA10123456784 and is expected to 
+          arrive on January 22nd between 9 AM and 5 PM."
+        </bad>
+        <good>
+          "Your order 12345 shipped on January 17th and should arrive by January 22nd. 
+          Would you like the tracking number or details about the items?"
+        </good>
+      </example>
+    </response_length_optimization>
+
+    <conversational_language>
+      <principle>
+        Use natural, spoken language rather than written text conventions
+      </principle>
+      <techniques>
+        <technique name="contractions">
+          <use>Use contractions (don't, can't, we'll) for natural flow</use>
+          <avoid>Formal, written style (do not, cannot, we will)</avoid>
+        </technique>
+        <technique name="simple_sentences">
+          <use>Short, clear sentences</use>
+          <avoid>Complex, nested clauses</avoid>
+        </technique>
+        <technique name="active_voice">
+          <use>Active voice for clarity</use>
+          <avoid>Passive constructions</avoid>
+        </technique>
+        <technique name="conversational_markers">
+          <use>Natural transitions (So, Well, Actually)</use>
+          <avoid>Formal transitions (Furthermore, Moreover, Subsequently)</avoid>
+        </technique>
+      </techniques>
+    </conversational_language>
+
+    <formatting_for_voice>
+      <principle>
+        Avoid visual formatting that doesn't translate to speech
+      </principle>
+      <avoid>
+        <item>Bullet points and numbered lists</item>
+        <item>Tables and charts</item>
+        <item>URLs and email addresses (spell them out if needed)</item>
+        <item>Special characters and symbols</item>
+        <item>Markdown or HTML formatting</item>
+      </avoid>
+      <instead>
+        <item>Use "first", "second", "third" instead of numbers</item>
+        <item>Describe data verbally</item>
+        <item>Say "at example dot com" for URLs</item>
+        <item>Spell out or describe symbols</item>
+        <item>Use natural emphasis through word choice</item>
+      </instead>
+    </formatting_for_voice>
+
+    <pronunciation_guidance>
+      <using_ssml>
+        <description>
+          Speech Synthesis Markup Language (SSML) for pronunciation control
+        </description>
+        <common_tags>
+          <tag name="phoneme">
+            <usage>Specify exact pronunciation</usage>
+            <example><phoneme alphabet="ipa" ph="təˈmeɪtoʊ">tomato</phoneme></example>
+          </tag>
+          <tag name="say-as">
+            <usage>Interpret text as specific type</usage>
+            <example><say-as interpret-as="telephone">555-1234</say-as></example>
+          </tag>
+          <tag name="break">
+            <usage>Insert pauses</usage>
+            <example><break time="500ms"/></example>
+          </tag>
+          <tag name="emphasis">
+            <usage>Add emphasis to words</usage>
+            <example><emphasis level="strong">important</emphasis></example>
+          </tag>
+        </common_tags>
+      </using_ssml>
+
+      <common_pronunciation_issues>
+        <issue type="acronyms">
+          <problem>TTS may spell out or mispronounce acronyms</problem>
+          <solution>Spell out on first use, use phonetic spelling if needed</solution>
+          <example>
+            Instead of "API", say "A P I" or "application programming interface"
+          </example>
+        </issue>
+        <issue type="numbers">
+          <problem>Large numbers can be unclear</problem>
+          <solution>Break into manageable chunks, use words for context</solution>
+          <example>
+            Instead of "1,234,567", say "one point two million" or "about one and a quarter million"
+          </example>
+        </issue>
+        <issue type="technical_terms">
+          <problem>Technical jargon may be mispronounced</problem>
+          <solution>Use common terms or provide pronunciation guidance</solution>
+        </issue>
+      </common_pronunciation_issues>
+    </pronunciation_guidance>
+
+    <pacing_and_pauses>
+      <natural_pauses>
+        <guideline>Add pauses between major topics</guideline>
+        <guideline>Pause before important information</guideline>
+        <guideline>Use pauses to indicate turn-taking</guideline>
+      </natural_pauses>
+      <pacing_control>
+        <slow_down>
+          <when>Providing important information (phone numbers, addresses)</when>
+          <when>Explaining complex concepts</when>
+          <when>User seems confused</when>
+        </slow_down>
+        <speed_up>
+          <when>Providing familiar information</when>
+          <when>User is in a hurry</when>
+        </speed_up>
+      </pacing_control>
+    </pacing_and_pauses>
+
+    <confirmation_and_verification>
+      <principle>
+        Voice interactions are more error-prone, so confirm critical information
+      </principle>
+      <when_to_confirm>
+        <scenario>Before taking irreversible actions</scenario>
+        <scenario>When dealing with sensitive data</scenario>
+        <scenario>After collecting multiple pieces of information</scenario>
+        <scenario>When user seems uncertain</scenario>
+      </when_to_confirm>
+      <confirmation_techniques>
+        <technique name="explicit_confirmation">
+          <description>Directly ask for confirmation</description>
+          <example>"I heard you say your order number is 12345. Is that correct?"</example>
+        </technique>
+        <technique name="implicit_confirmation">
+          <description>Repeat information while proceeding</description>
+          <example>"Okay, looking up order 12345 for you now."</example>
+        </technique>
+        <technique name="summary_confirmation">
+          <description>Summarize multiple items</description>
+          <example>"So you want to return the blue widget and keep the other items. Should I proceed?"</example>
+        </technique>
+      </confirmation_techniques>
+    </confirmation_and_verification>
+  </voice_optimization_techniques>
+
+  <conversation_design>
+    <conversation_flow_patterns>
+      <pattern name="linear">
+        <description>Sequential steps toward a goal</description>
+        <example>Order tracking: greeting → get order number → look up order → provide status</example>
+        <best_for>Simple, goal-oriented tasks</best_for>
+      </pattern>
+
+      <pattern name="branching">
+        <description>Different paths based on user input</description>
+        <example>Support menu: issue type → specific troubleshooting path</example>
+        <best_for>Multiple service options</best_for>
+      </pattern>
+
+      <pattern name="mixed_initiative">
+        <description>User and agent can both drive conversation</description>
+        <example>Open-ended customer service</example>
+        <best_for>Complex, exploratory conversations</best_for>
+      </pattern>
+    </conversation_flow_patterns>
+
+    <state_management>
+      <context_tracking>
+        <what_to_track>
+          <item>User identity and preferences</item>
+          <item>Current conversation topic</item>
+          <item>Information collected so far</item>
+          <item>Previous interactions</item>
+          <item>Pending actions</item>
+        </what_to_track>
+      </context_tracking>
+
+      <context_usage>
+        <use_case name="personalization">
+          <description>Tailor responses based on user history</description>
+        </use_case>
+        <use_case name="disambiguation">
+          <description>Resolve ambiguous references</description>
+          <example>"It" refers to the order mentioned earlier</example>
+        </use_case>
+        <use_case name="efficiency">
+          <description>Avoid asking for information already provided</description>
+        </use_case>
+      </context_usage>
+    </state_management>
+
+    <error_handling>
+      <error_types>
+        <type name="recognition_errors">
+          <description>STT misunderstands user speech</description>
+          <handling>
+            <step>Acknowledge uncertainty</step>
+            <step>Ask for clarification</step>
+            <step>Offer alternatives (DTMF, spelling)</step>
+          </handling>
+        </type>
+
+        <type name="understanding_errors">
+          <description>Agent doesn't understand intent</description>
+          <handling>
+            <step>Apologize politely</step>
+            <step>Ask user to rephrase</step>
+            <step>Offer menu of options</step>
+          </handling>
+        </type>
+
+        <type name="system_errors">
+          <description>Technical failures (API down, timeout)</description>
+          <handling>
+            <step>Inform user of issue</step>
+            <step>Provide alternative if available</step>
+            <step>Offer callback or escalation</step>
+          </handling>
+        </type>
+      </error_types>
+
+      <error_recovery_strategies>
+        <strategy name="progressive_assistance">
+          <description>Gradually increase help level</description>
+          <progression>
+            <level>Simple reprompt</level>
+            <level>Provide examples</level>
+            <level>Offer menu of options</level>
+            <level>Transfer to human</level>
+          </progression>
+        </strategy>
+
+        <strategy name="fallback_options">
+          <description>Alternative input methods</description>
+          <options>
+            <option>DTMF keypad input</option>
+            <option>Spelling out information</option>
+            <option>Yes/no questions</option>
+            <option>Transfer to text channel</option>
+          </options>
+        </strategy>
+      </error_recovery_strategies>
+    </error_handling>
+
+    <escalation_handling>
+      <when_to_escalate>
+        <trigger>User explicitly requests human agent</trigger>
+        <trigger>Multiple failed attempts to understand</trigger>
+        <trigger>Complex issue beyond agent capabilities</trigger>
+        <trigger>User is frustrated or angry</trigger>
+        <trigger>Sensitive or high-value situation</trigger>
+      </when_to_escalate>
+
+      <escalation_process>
+        <step number="1">Acknowledge escalation need</step>
+        <step number="2">Collect necessary context</step>
+        <step number="3">Inform user of transfer</step>
+        <step number="4">Pass context to human agent</step>
+        <step number="5">Confirm successful transfer</step>
+      </escalation_process>
+    </escalation_handling>
+  </conversation_design>
+
+  <testing_voice_agents>
+    <test_categories>
+      <category name="functional_testing">
+        <description>Verify agent performs intended functions</description>
+        <tests>
+          <test>Happy path scenarios</test>
+          <test>Edge cases</test>
+          <test>Error conditions</test>
+          <test>Tool invocations</test>
+          <test>Collaborator routing</test>
+        </tests>
+      </category>
+
+      <category name="voice_quality_testing">
+        <description>Assess voice interaction quality</description>
+        <tests>
+          <test>STT accuracy across accents and environments</test>
+          <test>TTS naturalness and clarity</test>
+          <test>Response length appropriateness</test>
+          <test>Conversation flow smoothness</test>
+          <test>Confirmation effectiveness</test>
+        </tests>
+      </category>
+
+      <category name="performance_testing">
+        <description>Evaluate speed and reliability</description>
+        <tests>
+          <test>Response latency</test>
+          <test>Concurrent user handling</test>
+          <test>Error rates</test>
+          <test>System resource usage</test>
+        </tests>
+      </category>
+
+      <category name="user_experience_testing">
+        <description>Assess overall user satisfaction</description>
+        <tests>
+          <test>Task completion rate</test>
+          <test>User satisfaction scores</test>
+          <test>Conversation length</test>
+          <test>Escalation rate</test>
+        </tests>
+      </category>
+    </test_categories>
+
+    <test_scenarios>
+      <scenario name="basic_interaction">
+        <description>Simple, successful interaction</description>
+        <steps>
+          <step>User initiates conversation</step>
+          <step>Agent greets and offers help</step>
+          <step>User states need</step>
+          <step>Agent fulfills request</step>
+          <step>Agent confirms completion</step>
+        </steps>
+      </scenario>
+
+      <scenario name="multi_turn_conversation">
+        <description>Complex interaction requiring multiple exchanges</description>
+        <steps>
+          <step>User starts with general request</step>
+          <step>Agent asks clarifying questions</step>
+          <step>User provides additional information</step>
+          <step>Agent uses tools to gather data</step>
+          <step>Agent provides comprehensive response</step>
+        </steps>
+      </scenario>
+
+      <scenario name="error_recovery">
+        <description>Handling misunderstandings</description>
+        <steps>
+          <step>User speaks unclearly</step>
+          <step>Agent misunderstands</step>
+          <step>User corrects</step>
+          <step>Agent acknowledges and proceeds correctly</step>
+        </steps>
+      </scenario>
+
+      <scenario name="escalation">
+        <description>Transferring to human agent</description>
+        <steps>
+          <step>User has complex issue</step>
+          <step>Agent attempts to help</step>
+          <step>Agent recognizes need for escalation</step>
+          <step>Agent transfers with context</step>
+        </steps>
+      </scenario>
+    </test_scenarios>
+  </testing_voice_agents>
+
+  <best_practices>
+    <practice category="instructions">
+      <guideline>Be specific and detailed in agent instructions</guideline>
+      <guideline>Include voice-specific guidelines</guideline>
+      <guideline>Provide examples of desired behavior</guideline>
+      <guideline>Update instructions based on testing feedback</guideline>
+    </practice>
+
+    <practice category="tools">
+      <guideline>Assign only necessary tools</guideline>
+      <guideline>Provide clear tool usage guidance</guideline>
+      <guideline>Test tool integrations thoroughly</guideline>
+      <guideline>Handle tool failures gracefully</guideline>
+    </practice>
+
+    <practice category="voice_optimization">
+      <guideline>Keep responses concise and conversational</guideline>
+      <guideline>Confirm critical information</guideline>
+      <guideline>Use natural language and pacing</guideline>
+      <guideline>Test with diverse voices and accents</guideline>
+    </practice>
+
+    <practice category="error_handling">
+      <guideline>Anticipate common errors</guideline>
+      <guideline>Provide helpful error messages</guideline>
+      <guideline>Offer alternative input methods</guideline>
+      <guideline>Know when to escalate</guideline>
+    </practice>
+
+    <practice category="testing">
+      <guideline>Test early and often</guideline>
+      <guideline>Include diverse test scenarios</guideline>
+      <guideline>Test with real users when possible</guideline>
+      <guideline>Monitor and analyze production interactions</guideline>
+    </practice>
+  </best_practices>
+</agent_development_guide>
+
+<!-- Made with Bob -->

@@ -1,0 +1,837 @@
+<voice_agent_configuration>
+  <overview>
+    Complete guide for configuring voice settings, channel integrations, and developer
+    edition setup for watsonx Orchestrate voice agents. Includes YAML specifications,
+    provider configurations, and channel-specific setup instructions.
+  </overview>
+
+  <!-- VOICE CONFIGURATION SECTION -->
+  <voice_configuration>
+    <overview>
+      Voice configuration controls Speech-to-Text (STT), Text-to-Speech (TTS), and
+      audio parameters for voice-enabled agents. Always search ADK documentation
+      before creating voice configurations.
+    </overview>
+
+    <yaml_specification>
+      <description>
+        Voice configurations are defined in YAML files with spec_version: v1
+      </description>
+      <required_fields>
+        <field name="spec_version">Must be "v1"</field>
+        <field name="kind">Must be "VoiceConfiguration"</field>
+        <field name="name">Unique identifier for the configuration</field>
+        <field name="description">Human-readable description</field>
+        <field name="stt_provider">Speech-to-Text provider configuration</field>
+        <field name="tts_provider">Text-to-Speech provider configuration</field>
+      </required_fields>
+      <optional_fields>
+        <field name="audio_config">Audio quality and format settings</field>
+        <field name="language_config">Language-specific settings</field>
+      </optional_fields>
+      <template><![CDATA[
+spec_version: v1
+kind: VoiceConfiguration
+name: my-voice-config
+description: Voice configuration for customer service agent
+
+stt_provider:
+  provider: watson_stt
+  model: en-US_Telephony
+  settings:
+    smart_formatting: true
+    profanity_filter: false
+    end_of_phrase_silence_time: 0.8
+    split_transcript_at_phrase_end: true
+
+tts_provider:
+  provider: watson_tts
+  voice: en-US_MichaelV3Voice
+  settings:
+    rate: "0%"
+    pitch: "0%"
+
+audio_config:
+  sample_rate: 8000
+  encoding: mulaw
+  channels: 1
+      ]]></template>
+    </yaml_specification>
+
+    <stt_providers>
+      <provider name="watson_stt">
+        <description>IBM Watson Speech to Text</description>
+        <models>
+          <model>en-US_Telephony - Optimized for phone audio</model>
+          <model>en-US_BroadbandModel - For high-quality audio</model>
+          <model>en-US_Multimedia - For varied audio sources</model>
+        </models>
+        <settings>
+          <setting name="smart_formatting">
+            <type>boolean</type>
+            <description>Convert numbers, dates, times to readable format</description>
+            <default>true</default>
+          </setting>
+          <setting name="profanity_filter">
+            <type>boolean</type>
+            <description>Mask profanity in transcripts</description>
+            <default>false</default>
+          </setting>
+          <setting name="end_of_phrase_silence_time">
+            <type>number</type>
+            <description>Seconds of silence to detect end of phrase</description>
+            <default>0.8</default>
+            <range>0.0 to 2.0</range>
+          </setting>
+          <setting name="split_transcript_at_phrase_end">
+            <type>boolean</type>
+            <description>Split transcript at phrase boundaries</description>
+            <default>true</default>
+          </setting>
+        </settings>
+        <authentication>
+          <method>API Key</method>
+          <required_credentials>
+            <credential>api_key</credential>
+            <credential>service_url</credential>
+          </required_credentials>
+        </authentication>
+      </provider>
+
+      <provider name="google_stt">
+        <description>Google Cloud Speech-to-Text</description>
+        <models>
+          <model>phone_call - Optimized for telephony</model>
+          <model>default - General purpose</model>
+        </models>
+        <authentication>
+          <method>Service Account JSON</method>
+          <required_credentials>
+            <credential>service_account_json</credential>
+          </required_credentials>
+        </authentication>
+      </provider>
+
+      <provider name="azure_stt">
+        <description>Azure Cognitive Services Speech</description>
+        <authentication>
+          <method>Subscription Key</method>
+          <required_credentials>
+            <credential>subscription_key</credential>
+            <credential>region</credential>
+          </required_credentials>
+        </authentication>
+      </provider>
+    </stt_providers>
+
+    <tts_providers>
+      <provider name="watson_tts">
+        <description>IBM Watson Text to Speech</description>
+        <voices>
+          <voice>en-US_MichaelV3Voice - Male, US English</voice>
+          <voice>en-US_AllisonV3Voice - Female, US English</voice>
+          <voice>en-US_EmilyV3Voice - Female, US English</voice>
+          <voice>en-GB_CharlotteV3Voice - Female, UK English</voice>
+        </voices>
+        <settings>
+          <setting name="rate">
+            <type>string</type>
+            <description>Speech rate adjustment</description>
+            <format>Percentage: "-20%" to "+20%"</format>
+            <default>"0%"</default>
+          </setting>
+          <setting name="pitch">
+            <type>string</type>
+            <description>Voice pitch adjustment</description>
+            <format>Percentage: "-20%" to "+20%"</format>
+            <default>"0%"</default>
+          </setting>
+        </settings>
+        <authentication>
+          <method>API Key</method>
+          <required_credentials>
+            <credential>api_key</credential>
+            <credential>service_url</credential>
+          </required_credentials>
+        </authentication>
+      </provider>
+
+      <provider name="google_tts">
+        <description>Google Cloud Text-to-Speech</description>
+        <voices>
+          <voice>en-US-Neural2-A through J - Various neural voices</voice>
+        </voices>
+        <authentication>
+          <method>Service Account JSON</method>
+          <required_credentials>
+            <credential>service_account_json</credential>
+          </required_credentials>
+        </authentication>
+      </provider>
+
+      <provider name="azure_tts">
+        <description>Azure Cognitive Services Speech</description>
+        <voices>
+          <voice>en-US-JennyNeural - Female</voice>
+          <voice>en-US-GuyNeural - Male</voice>
+        </voices>
+        <authentication>
+          <method>Subscription Key</method>
+          <required_credentials>
+            <credential>subscription_key</credential>
+            <credential>region</credential>
+          </required_credentials>
+        </authentication>
+      </provider>
+    </tts_providers>
+
+    <audio_configuration>
+      <parameter name="sample_rate">
+        <description>Audio sampling rate in Hz</description>
+        <common_values>
+          <value>8000 - Telephony quality (phone calls)</value>
+          <value>16000 - Wideband (better quality)</value>
+          <value>48000 - High quality</value>
+        </common_values>
+        <recommendation>Use 8000 for phone channels, 16000+ for others</recommendation>
+      </parameter>
+
+      <parameter name="encoding">
+        <description>Audio encoding format</description>
+        <common_values>
+          <value>mulaw - Standard for telephony</value>
+          <value>linear16 - Uncompressed PCM</value>
+          <value>opus - Efficient compression</value>
+        </common_values>
+        <recommendation>Use mulaw for phone, opus for messaging</recommendation>
+      </parameter>
+
+      <parameter name="channels">
+        <description>Number of audio channels</description>
+        <values>
+          <value>1 - Mono (standard for voice)</value>
+          <value>2 - Stereo</value>
+        </values>
+        <recommendation>Always use 1 (mono) for voice agents</recommendation>
+      </parameter>
+    </audio_configuration>
+
+    <language_support>
+      <language code="en-US">
+        <name>English (United States)</name>
+        <stt_models>
+          <model provider="watson">en-US_Telephony</model>
+          <model provider="google">en-US</model>
+          <model provider="azure">en-US</model>
+        </stt_models>
+        <tts_voices>
+          <voice provider="watson">en-US_MichaelV3Voice</voice>
+          <voice provider="google">en-US-Neural2-A</voice>
+          <voice provider="azure">en-US-JennyNeural</voice>
+        </tts_voices>
+      </language>
+
+      <language code="es-ES">
+        <name>Spanish (Spain)</name>
+        <stt_models>
+          <model provider="watson">es-ES_BroadbandModel</model>
+          <model provider="google">es-ES</model>
+          <model provider="azure">es-ES</model>
+        </stt_models>
+        <tts_voices>
+          <voice provider="watson">es-ES_EnriqueV3Voice</voice>
+          <voice provider="google">es-ES-Neural2-A</voice>
+          <voice provider="azure">es-ES-ElviraNeural</voice>
+        </tts_voices>
+      </language>
+    </language_support>
+
+    <best_practices>
+      <practice>Search ADK docs for latest voice config specification before creating</practice>
+      <practice>Use telephony-optimized models for phone channels</practice>
+      <practice>Match sample rate to channel requirements (8000 for phone)</practice>
+      <practice>Test different voices to find best fit for use case</practice>
+      <practice>Enable smart_formatting for better transcript readability</practice>
+      <practice>Adjust end_of_phrase_silence_time based on user testing</practice>
+      <practice>Keep rate and pitch at 0% initially, adjust based on feedback</practice>
+      <practice>Use consistent voice configuration across related agents</practice>
+    </best_practices>
+  </voice_configuration>
+
+  <!-- CHANNEL INTEGRATION SECTION -->
+  <channel_integration>
+    <overview>
+      Channel integrations connect voice agents to communication platforms like
+      phone systems, messaging apps, and collaboration tools. Each channel type
+      has specific configuration requirements and setup procedures.
+    </overview>
+
+    <channel_types>
+      <channel name="phone">
+        <provider>Genesys Audio Connector</provider>
+        <use_cases>
+          <use_case>Customer service hotlines</use_case>
+          <use_case>Support call centers</use_case>
+          <use_case>Automated phone systems (IVR)</use_case>
+        </use_cases>
+        <requirements>
+          <requirement>Genesys Cloud organization</requirement>
+          <requirement>Audio Connector license</requirement>
+          <requirement>API credentials (client_id, client_secret)</requirement>
+        </requirements>
+      </channel>
+
+      <channel name="whatsapp">
+        <provider>Twilio</provider>
+        <use_cases>
+          <use_case>Customer support via WhatsApp</use_case>
+          <use_case>Appointment scheduling</use_case>
+          <use_case>Order status updates</use_case>
+        </use_cases>
+        <requirements>
+          <requirement>Twilio account</requirement>
+          <requirement>WhatsApp Business API access</requirement>
+          <requirement>Twilio credentials (account_sid, auth_token)</requirement>
+          <requirement>WhatsApp-enabled phone number</requirement>
+        </requirements>
+      </channel>
+
+      <channel name="sms">
+        <provider>Twilio</provider>
+        <use_cases>
+          <use_case>SMS-based customer service</use_case>
+          <use_case>Appointment reminders</use_case>
+          <use_case>Two-way SMS conversations</use_case>
+        </use_cases>
+        <requirements>
+          <requirement>Twilio account</requirement>
+          <requirement>Twilio credentials (account_sid, auth_token)</requirement>
+          <requirement>SMS-enabled phone number</requirement>
+        </requirements>
+      </channel>
+
+      <channel name="slack">
+        <provider>Slack (BYO - Bring Your Own)</provider>
+        <use_cases>
+          <use_case>Internal IT support bot</use_case>
+          <use_case>HR assistance bot</use_case>
+          <use_case>Team collaboration assistant</use_case>
+        </use_cases>
+        <requirements>
+          <requirement>Slack workspace</requirement>
+          <requirement>Slack app created</requirement>
+          <requirement>Bot token and signing secret</requirement>
+        </requirements>
+      </channel>
+
+      <channel name="webchat">
+        <provider>Built-in</provider>
+        <use_cases>
+          <use_case>Website customer support</use_case>
+          <use_case>Product assistance</use_case>
+          <use_case>Lead generation</use_case>
+        </use_cases>
+        <requirements>
+          <requirement>No external setup required</requirement>
+          <requirement>Automatically available for all agents</requirement>
+        </requirements>
+      </channel>
+    </channel_types>
+
+    <phone_channel_configuration>
+      <yaml_specification>
+        <description>Phone configurations use separate phone config resources</description>
+        <template><![CDATA[
+spec_version: v1
+kind: PhoneConfiguration
+name: my-phone-config
+description: Genesys phone integration for customer service
+
+channel_type: genesys_audio_connector
+channel_config:
+  security:
+    api_key: ${GENESYS_API_KEY}
+    client_secret: ${GENESYS_CLIENT_SECRET}
+        ]]></template>
+      </yaml_specification>
+
+      <setup_workflow>
+        <step number="1">
+          <title>Create Phone Configuration</title>
+          <adk_search>
+            <query>phone configuration YAML specification</query>
+            <query>Genesys Audio Connector setup</query>
+          </adk_search>
+          <action>Create phone config YAML file</action>
+          <action>Import using: wxo phone-config import phone-config.yaml</action>
+        </step>
+
+        <step number="2">
+          <title>Attach Agent to Phone Config</title>
+          <command>wxo phone-config attach --config-name my-phone-config --agent-name my-agent --environment draft</command>
+          <result>Webhook URL provided for Genesys configuration</result>
+        </step>
+
+        <step number="3">
+          <title>Configure Genesys</title>
+          <action>Log into Genesys Cloud</action>
+          <action>Navigate to Admin > Integrations</action>
+          <action>Create new Audio Connector integration</action>
+          <action>Enter webhook URL from step 2</action>
+          <action>Configure routing and phone numbers</action>
+        </step>
+
+        <step number="4">
+          <title>Test Phone Integration</title>
+          <action>Call the configured phone number</action>
+          <action>Verify agent responds correctly</action>
+          <action>Test conversation flow</action>
+          <action>Validate audio quality</action>
+        </step>
+      </setup_workflow>
+
+      <best_practices>
+        <practice>Use separate phone configs for different environments</practice>
+        <practice>Test with various phone types (mobile, landline, VoIP)</practice>
+        <practice>Monitor call quality metrics</practice>
+        <practice>Configure appropriate timeout values</practice>
+        <practice>Set up call recording if required for compliance</practice>
+      </best_practices>
+    </phone_channel_configuration>
+
+    <messaging_channel_configuration>
+      <whatsapp_setup>
+        <yaml_specification>
+          <template><![CDATA[
+spec_version: v1
+kind: Channel
+agent_name: my-agent
+environment: draft
+channel_type: twilio_whatsapp
+name: my-whatsapp-channel
+description: WhatsApp channel for customer support
+
+channel_config:
+  account_sid: ${TWILIO_ACCOUNT_SID}
+  auth_token: ${TWILIO_AUTH_TOKEN}
+  from_number: "whatsapp:+14155238886"
+          ]]></template>
+        </yaml_specification>
+
+        <setup_workflow>
+          <step number="1">
+            <title>Set Up Twilio WhatsApp</title>
+            <action>Create Twilio account</action>
+            <action>Request WhatsApp Business API access</action>
+            <action>Configure WhatsApp-enabled phone number</action>
+          </step>
+
+          <step number="2">
+            <title>Create Channel Configuration</title>
+            <adk_search>
+              <query>WhatsApp channel configuration</query>
+              <query>Twilio WhatsApp setup</query>
+            </adk_search>
+            <action>Create channel YAML file</action>
+            <action>Import using: wxo channel import whatsapp-channel.yaml</action>
+          </step>
+
+          <step number="3">
+            <title>Configure Twilio Webhook</title>
+            <action>Get webhook URL from channel creation</action>
+            <action>In Twilio console, configure WhatsApp webhook</action>
+            <action>Set webhook URL for incoming messages</action>
+          </step>
+
+          <step number="4">
+            <title>Test WhatsApp Integration</title>
+            <action>Send test message to WhatsApp number</action>
+            <action>Verify agent responds</action>
+            <action>Test conversation flow</action>
+          </step>
+        </setup_workflow>
+      </whatsapp_setup>
+
+      <sms_setup>
+        <yaml_specification>
+          <template><![CDATA[
+spec_version: v1
+kind: Channel
+agent_name: my-agent
+environment: draft
+channel_type: twilio_sms
+name: my-sms-channel
+description: SMS channel for customer support
+
+channel_config:
+  account_sid: ${TWILIO_ACCOUNT_SID}
+  auth_token: ${TWILIO_AUTH_TOKEN}
+  from_number: "+15551234567"
+          ]]></template>
+        </yaml_specification>
+
+        <setup_workflow>
+          <step number="1">
+            <title>Set Up Twilio SMS</title>
+            <action>Create Twilio account</action>
+            <action>Purchase SMS-enabled phone number</action>
+          </step>
+
+          <step number="2">
+            <title>Create Channel Configuration</title>
+            <adk_search>
+              <query>SMS channel configuration</query>
+              <query>Twilio SMS setup</query>
+            </adk_search>
+            <action>Create channel YAML file</action>
+            <action>Import using: wxo channel import sms-channel.yaml</action>
+          </step>
+
+          <step number="3">
+            <title>Configure Twilio Webhook</title>
+            <action>Get webhook URL from channel creation</action>
+            <action>In Twilio console, configure SMS webhook</action>
+            <action>Set webhook URL for incoming messages</action>
+          </step>
+
+          <step number="4">
+            <title>Test SMS Integration</title>
+            <action>Send test SMS to phone number</action>
+            <action>Verify agent responds</action>
+            <action>Test conversation flow</action>
+          </step>
+        </setup_workflow>
+      </sms_setup>
+
+      <best_practices>
+        <practice>Keep messages concise for SMS (160 character limit)</practice>
+        <practice>Use WhatsApp for richer media and longer messages</practice>
+        <practice>Implement rate limiting to avoid spam flags</practice>
+        <practice>Handle opt-out requests properly</practice>
+        <practice>Test with various phone carriers</practice>
+      </best_practices>
+    </messaging_channel_configuration>
+
+    <slack_channel_configuration>
+      <yaml_specification>
+        <template><![CDATA[
+spec_version: v1
+kind: Channel
+agent_name: my-agent
+environment: draft
+channel_type: byo_slack
+name: my-slack-channel
+description: Slack channel for internal support
+
+channel_config:
+  bot_token: ${SLACK_BOT_TOKEN}
+  signing_secret: ${SLACK_SIGNING_SECRET}
+        ]]></template>
+      </yaml_specification>
+
+      <setup_workflow>
+        <step number="1">
+          <title>Create Slack App</title>
+          <action>Go to api.slack.com/apps</action>
+          <action>Create new app from scratch</action>
+          <action>Select workspace</action>
+        </step>
+
+        <step number="2">
+          <title>Configure Slack App</title>
+          <action>Enable Socket Mode</action>
+          <action>Add Bot Token Scopes: chat:write, im:history, im:read</action>
+          <action>Install app to workspace</action>
+          <action>Copy Bot User OAuth Token</action>
+          <action>Copy Signing Secret from Basic Information</action>
+        </step>
+
+        <step number="3">
+          <title>Create Channel Configuration</title>
+          <adk_search>
+            <query>Slack channel configuration</query>
+            <query>Slack bot setup</query>
+          </adk_search>
+          <action>Create channel YAML file</action>
+          <action>Import using: wxo channel import slack-channel.yaml</action>
+        </step>
+
+        <step number="4">
+          <title>Configure Slack Event Subscriptions</title>
+          <action>Get webhook URL from channel creation</action>
+          <action>In Slack app settings, enable Event Subscriptions</action>
+          <action>Set Request URL to webhook URL</action>
+          <action>Subscribe to bot events: message.im</action>
+        </step>
+
+        <step number="5">
+          <title>Test Slack Integration</title>
+          <action>Send direct message to bot in Slack</action>
+          <action>Verify agent responds</action>
+          <action>Test conversation flow</action>
+        </step>
+      </setup_workflow>
+
+      <best_practices>
+        <practice>Use Socket Mode for easier development</practice>
+        <practice>Request minimal required scopes</practice>
+        <practice>Test in development workspace first</practice>
+        <practice>Handle Slack-specific formatting (markdown)</practice>
+        <practice>Implement proper error handling for Slack API</practice>
+      </best_practices>
+    </slack_channel_configuration>
+
+    <webchat_configuration>
+      <description>
+        Webchat is automatically available for all agents. No separate configuration
+        needed. Generate embed code to add to websites.
+      </description>
+
+      <setup_workflow>
+        <step number="1">
+          <title>Generate Embed Code</title>
+          <command>wxo channel generate-webchat-embed --agent-name my-agent --environment draft</command>
+          <result>HTML/JavaScript embed code</result>
+        </step>
+
+        <step number="2">
+          <title>Add to Website</title>
+          <action>Copy generated embed code</action>
+          <action>Paste before closing </body> tag in HTML</action>
+          <action>Customize appearance if needed</action>
+        </step>
+
+        <step number="3">
+          <title>Test Webchat</title>
+          <action>Load website with embed code</action>
+          <action>Click chat widget</action>
+          <action>Test conversation flow</action>
+          <action>Verify voice features work (if enabled)</action>
+        </step>
+      </setup_workflow>
+
+      <customization_options>
+        <option>Widget position (bottom-right, bottom-left)</option>
+        <option>Color scheme</option>
+        <option>Welcome message</option>
+        <option>Avatar image</option>
+        <option>Voice input/output toggle</option>
+      </customization_options>
+    </webchat_configuration>
+  </channel_integration>
+
+  <!-- DEVELOPER EDITION SECTION -->
+  <developer_edition>
+    <overview>
+      Developer Edition provides a local development environment for building and
+      testing watsonx Orchestrate agents. Voice capabilities require the --with-voice
+      flag during installation.
+    </overview>
+
+    <installation>
+      <prerequisites>
+        <prerequisite>Python 3.9 or higher</prerequisite>
+        <prerequisite>pip package manager</prerequisite>
+        <prerequisite>Internet connection for package downloads</prerequisite>
+      </prerequisites>
+
+      <standard_installation>
+        <command>pip install ibm-watsonx-orchestrate</command>
+        <description>Installs base ADK without voice capabilities</description>
+      </standard_installation>
+
+      <voice_enabled_installation>
+        <command>pip install ibm-watsonx-orchestrate --with-voice</command>
+        <description>Installs ADK with voice agent support</description>
+        <important>REQUIRED for voice agent development</important>
+      </voice_enabled_installation>
+
+      <verification>
+        <command>wxo --version</command>
+        <expected_output>Shows installed version number</expected_output>
+      </verification>
+    </installation>
+
+    <local_development_workflow>
+      <step number="1">
+        <title>Initialize Project</title>
+        <command>wxo init my-voice-agent</command>
+        <result>Creates project directory with basic structure</result>
+      </step>
+
+      <step number="2">
+        <title>Create Agent Locally</title>
+        <adk_search>
+          <query>agent YAML specification voice_configuration</query>
+          <query>local agent development</query>
+        </adk_search>
+        <action>Create agent YAML file</action>
+        <action>Define agent instructions and capabilities</action>
+        <action>Reference voice configuration</action>
+      </step>
+
+      <step number="3">
+        <title>Create Voice Configuration</title>
+        <adk_search>
+          <query>voice configuration YAML specification</query>
+        </adk_search>
+        <action>Create voice config YAML file</action>
+        <action>Configure STT/TTS providers</action>
+        <action>Set audio parameters</action>
+      </step>
+
+      <step number="4">
+        <title>Test Locally</title>
+        <command>wxo agent test --agent-file agent.yaml --voice-config voice-config.yaml</command>
+        <description>Runs agent in local test mode</description>
+      </step>
+
+      <step number="5">
+        <title>Deploy to Cloud</title>
+        <command>wxo agent import agent.yaml</command>
+        <command>wxo voice-config import voice-config.yaml</command>
+        <description>Deploys to watsonx Orchestrate cloud environment</description>
+      </step>
+    </local_development_workflow>
+
+    <yaml_specifications>
+      <overview>
+        All watsonx Orchestrate resources are defined using YAML files with a
+        consistent structure. Always search ADK documentation for latest specs.
+      </overview>
+
+      <common_structure>
+        <required_fields>
+          <field name="spec_version">
+            <description>Specification version</description>
+            <value>Always "v1" currently</value>
+          </field>
+          <field name="kind">
+            <description>Resource type</description>
+            <values>
+              <value>Agent</value>
+              <value>VoiceConfiguration</value>
+              <value>PhoneConfiguration</value>
+              <value>Channel</value>
+              <value>Tool</value>
+              <value>Connection</value>
+            </values>
+          </field>
+        </required_fields>
+      </common_structure>
+
+      <agent_specification>
+        <template><![CDATA[
+spec_version: v1
+kind: Agent
+name: my-voice-agent
+description: Customer service voice agent
+title: Customer Service Assistant
+
+instructions: |
+  You are a helpful customer service agent.
+  Keep responses concise for voice interactions.
+  Always confirm understanding before taking actions.
+
+voice_configuration: my-voice-config  # Reference to voice config
+
+tools:
+  - tool-name-1
+  - tool-name-2
+
+collaborators:
+  - agent-name-1
+
+knowledge_base:
+  - kb-name-1
+        ]]></template>
+        <key_fields>
+          <field name="voice_configuration">
+            <description>References a VoiceConfiguration resource</description>
+            <required>true for voice agents</required>
+          </field>
+          <field name="instructions">
+            <description>Agent behavior and personality</description>
+            <voice_optimization>Keep concise, use natural language</voice_optimization>
+          </field>
+        </key_fields>
+      </agent_specification>
+
+      <connection_specification>
+        <description>
+          Connections store credentials for external services. Never include
+          actual credentials in YAML files - use environment variables.
+        </description>
+        <template><![CDATA[
+spec_version: v1
+kind: Connection
+app_id: my-stt-credentials
+environment: draft
+type: team
+kind: key_value
+
+entries:
+  api_key: ${WATSON_STT_API_KEY}
+  service_url: ${WATSON_STT_URL}
+        ]]></template>
+      </connection_specification>
+    </yaml_specifications>
+
+    <best_practices>
+      <practice>Always use --with-voice flag when installing for voice development</practice>
+      <practice>Test locally before deploying to cloud</practice>
+      <practice>Use version control (git) for all YAML files</practice>
+      <practice>Never commit actual credentials to version control</practice>
+      <practice>Use environment variables for sensitive data</practice>
+      <practice>Keep YAML files organized in logical directory structure</practice>
+      <practice>Document custom configurations in README files</practice>
+      <practice>Search ADK docs before creating any YAML specification</practice>
+    </best_practices>
+  </developer_edition>
+
+  <credential_management>
+    <security_principles>
+      <principle>NEVER ask users for actual credentials</principle>
+      <principle>NEVER store credentials in code or configuration files</principle>
+      <principle>ALWAYS use environment variables for sensitive data</principle>
+      <principle>ALWAYS create sample/template files only</principle>
+    </security_principles>
+
+    <sample_file_creation>
+      <description>
+        Create .env.example files with placeholder values to show required credentials
+      </description>
+      <template><![CDATA[
+# Watson Speech to Text
+WATSON_STT_API_KEY=your_api_key_here
+WATSON_STT_URL=https://api.us-south.speech-to-text.watson.cloud.ibm.com
+
+# Watson Text to Speech
+WATSON_TTS_API_KEY=your_api_key_here
+WATSON_TTS_URL=https://api.us-south.text-to-speech.watson.cloud.ibm.com
+
+# Twilio (for WhatsApp/SMS)
+TWILIO_ACCOUNT_SID=your_account_sid_here
+TWILIO_AUTH_TOKEN=your_auth_token_here
+
+# Genesys (for phone)
+GENESYS_API_KEY=your_api_key_here
+GENESYS_CLIENT_SECRET=your_client_secret_here
+
+# Slack
+SLACK_BOT_TOKEN=xoxb-your-token-here
+SLACK_SIGNING_SECRET=your_signing_secret_here
+      ]]></template>
+    </sample_file_creation>
+
+    <user_instructions>
+      <instruction>Copy .env.example to .env</instruction>
+      <instruction>Fill in actual credential values in .env</instruction>
+      <instruction>Add .env to .gitignore</instruction>
+      <instruction>Never commit .env to version control</instruction>
+      <instruction>Use different credentials for dev/staging/production</instruction>
+    </user_instructions>
+  </credential_management>
+</voice_agent_configuration>
+
+<!-- Made with Bob -->
