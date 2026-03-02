@@ -1,0 +1,869 @@
+<voice_agent_deployment_and_examples>
+  <overview>
+    Complete guide for deploying voice-enabled agents with real-world examples,
+    deployment automation, credential management, and troubleshooting scenarios.
+  </overview>
+
+  <!-- DEPLOYMENT SECTION -->
+  <deployment_guide>
+    <deployment_principles>
+      <principle name="security_first">
+        <description>Never expose credentials in code or version control</description>
+        <practices>
+          <practice>Use environment variables for sensitive data</practice>
+          <practice>Provide sample credential files with placeholders</practice>
+          <practice>Add credential files to .gitignore</practice>
+          <practice>Use connection objects in watsonx Orchestrate</practice>
+        </practices>
+      </principle>
+
+      <principle name="automation">
+        <description>Automate deployment for consistency and repeatability</description>
+        <practices>
+          <practice>Create deployment scripts</practice>
+          <practice>Use infrastructure as code</practice>
+          <practice>Document manual steps clearly</practice>
+        </practices>
+      </principle>
+
+      <principle name="validation">
+        <description>Verify deployment success before going live</description>
+        <practices>
+          <practice>Run health checks</practice>
+          <practice>Test critical paths</practice>
+          <practice>Verify integrations</practice>
+          <practice>Monitor initial traffic</practice>
+        </practices>
+      </principle>
+
+      <principle name="rollback_ready">
+        <description>Always have a rollback plan</description>
+        <practices>
+          <practice>Document rollback procedures</practice>
+          <practice>Keep previous versions accessible</practice>
+          <practice>Test rollback process</practice>
+        </practices>
+      </principle>
+    </deployment_principles>
+
+    <credential_management>
+      <sample_files>
+        <file name="credentials.sample.yaml">
+          <purpose>Template for all required credentials</purpose>
+          <content><![CDATA[
+# Voice Agent Credentials Template
+# Copy to credentials.yaml and fill in actual values
+# DO NOT commit credentials.yaml to version control
+
+# Watson Services
+watson:
+  stt:
+    api_key: "YOUR_WATSON_STT_API_KEY"
+    service_url: "https://api.us-south.speech-to-text.watson.cloud.ibm.com"
+  tts:
+    api_key: "YOUR_WATSON_TTS_API_KEY"
+    service_url: "https://api.us-south.text-to-speech.watson.cloud.ibm.com"
+
+# watsonx Orchestrate
+orchestrate:
+  api_key: "YOUR_ORCHESTRATE_API_KEY"
+  url: "https://your-instance.watson-orchestrate.ibm.com"
+  space_id: "YOUR_SPACE_ID"
+
+# Channel Integrations
+channels:
+  genesys:
+    api_key: "YOUR_GENESYS_API_KEY"
+    client_secret: "YOUR_GENESYS_CLIENT_SECRET"
+  twilio:
+    account_sid: "YOUR_TWILIO_ACCOUNT_SID"
+    auth_token: "YOUR_TWILIO_AUTH_TOKEN"
+    whatsapp_number: "whatsapp:+14155238886"
+  slack:
+    bot_token: "xoxb-YOUR-BOT-TOKEN"
+    signing_secret: "YOUR_SIGNING_SECRET"
+          ]]></content>
+        </file>
+
+        <file name=".env.sample">
+          <purpose>Environment variables template</purpose>
+          <content><![CDATA[
+# Environment Variables Template
+# Copy to .env and fill in actual values
+
+WATSON_STT_API_KEY=your_stt_api_key
+WATSON_STT_URL=https://api.us-south.speech-to-text.watson.cloud.ibm.com
+WATSON_TTS_API_KEY=your_tts_api_key
+WATSON_TTS_URL=https://api.us-south.text-to-speech.watson.cloud.ibm.com
+
+WXO_API_KEY=your_orchestrate_api_key
+WXO_URL=https://your-instance.watson-orchestrate.ibm.com
+WXO_SPACE_ID=your_space_id
+
+ENVIRONMENT=development
+LOG_LEVEL=INFO
+          ]]></content>
+        </file>
+
+        <file name="CREDENTIALS.md">
+          <purpose>Instructions for obtaining credentials</purpose>
+          <sections>
+            <section>How to get Watson STT/TTS credentials</section>
+            <section>How to get watsonx Orchestrate API key</section>
+            <section>How to configure channel providers</section>
+            <section>Security best practices</section>
+          </sections>
+        </file>
+      </sample_files>
+
+      <gitignore_entries>
+        <entry>credentials.yaml</entry>
+        <entry>credentials.json</entry>
+        <entry>.env</entry>
+        <entry>.env.local</entry>
+        <entry>*.key</entry>
+        <entry>*.pem</entry>
+        <entry>secrets/</entry>
+      </gitignore_entries>
+    </credential_management>
+
+    <deployment_plan_template>
+      <file name="deployment_plan.md">
+        <template><![CDATA[
+# Voice Agent Deployment Plan
+
+## Overview
+**Project:** [Project Name]
+**Deployment Date:** [Date]
+**Environment:** [Development/Staging/Production]
+
+### Objectives
+- Deploy voice-enabled agent to watsonx Orchestrate
+- Configure voice channels
+- Set up monitoring and alerting
+- Validate end-to-end functionality
+
+### Components
+- Agent: [Agent Name]
+- Voice Config: [Config Name]
+- Channels: [List of channels]
+- Integrations: [External systems]
+
+## Pre-Deployment Checklist
+
+### Environment Preparation
+- [ ] watsonx Orchestrate instance accessible
+- [ ] Required credentials obtained and validated
+- [ ] Network connectivity verified
+- [ ] Backup of current configuration completed
+
+### Credential Setup
+- [ ] credentials.yaml populated with actual values
+- [ ] Environment variables configured
+- [ ] Orchestrate connections created
+- [ ] Channel provider accounts configured
+
+### Testing
+- [ ] Agent tested in development environment
+- [ ] Voice configuration validated
+- [ ] Channel integrations tested
+- [ ] Security review passed
+
+## Deployment Steps
+
+### Step 1: Deploy Agent
+```bash
+./deployment.sh deploy-agent
+```
+**Expected Output:** Agent created/updated successfully
+**Validation:** Verify agent appears in agent list
+
+### Step 2: Deploy Voice Configuration
+```bash
+./deployment.sh deploy-voice-config
+```
+**Expected Output:** Voice config imported successfully
+**Validation:** Test STT/TTS functionality
+
+### Step 3: Configure Channels
+```bash
+./deployment.sh deploy-channels
+```
+**Expected Output:** Channels created and configured
+**Validation:** Verify webhook URLs are accessible
+
+### Step 4: Deploy Tools
+```bash
+./deployment.sh deploy-tools
+```
+**Expected Output:** All tools imported successfully
+**Validation:** Verify tools are accessible to agent
+
+## Post-Deployment Validation
+
+### Health Checks
+- [ ] Agent responds to test messages
+- [ ] Voice input/output working correctly
+- [ ] All channels operational
+- [ ] Tool invocations successful
+
+### Smoke Tests
+1. Basic interaction test through each channel
+2. Voice quality test (STT accuracy, TTS naturalness)
+3. Integration test (external API calls)
+4. Load test (if applicable)
+
+### Monitoring Setup
+- [ ] Logging configured
+- [ ] Metrics collection enabled
+- [ ] Alerts configured
+- [ ] Dashboard created
+
+## Rollback Procedure
+
+### Rollback Triggers
+- Critical functionality broken
+- Performance degradation > 50%
+- Security vulnerability discovered
+
+### Rollback Steps
+1. Execute rollback script: `./deployment.sh rollback`
+2. Verify previous version functionality
+3. Notify stakeholders
+4. Schedule post-mortem
+
+## Troubleshooting
+
+### Common Issues
+**Agent not responding:** Check agent status, verify credentials
+**Voice quality problems:** Verify STT/TTS configuration
+**Channel failures:** Verify webhook URLs and authentication
+
+### Contact Information
+- Deployment Lead: [Name] - [Email]
+- Technical Support: [Team] - [Email]
+        ]]></template>
+      </file>
+    </deployment_plan_template>
+
+    <deployment_script_template>
+      <file name="deployment.sh">
+        <template><![CDATA[
+#!/bin/bash
+# Voice Agent Deployment Script
+
+set -e  # Exit on error
+set -u  # Exit on undefined variable
+
+# Color codes
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
+
+# Configuration
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_DIR="${SCRIPT_DIR}/configs"
+CREDENTIALS_FILE="${SCRIPT_DIR}/credentials.yaml"
+LOG_FILE="${SCRIPT_DIR}/deployment.log"
+
+# Functions
+log() {
+    echo "[$(date +'%Y-%m-%d %H:%M:%S')] $1" | tee -a "${LOG_FILE}"
+}
+
+error() {
+    echo -e "${RED}[ERROR] $1${NC}" | tee -a "${LOG_FILE}"
+    exit 1
+}
+
+success() {
+    echo -e "${GREEN}[SUCCESS] $1${NC}" | tee -a "${LOG_FILE}"
+}
+
+warning() {
+    echo -e "${YELLOW}[WARNING] $1${NC}" | tee -a "${LOG_FILE}"
+}
+
+check_prerequisites() {
+    log "Checking prerequisites..."
+    
+    if [ ! -f "${CREDENTIALS_FILE}" ]; then
+        error "Credentials file not found: ${CREDENTIALS_FILE}"
+    fi
+    
+    if ! command -v python3 &> /dev/null; then
+        error "Python 3 is required but not installed"
+    fi
+    
+    if ! command -v wxo &> /dev/null; then
+        error "watsonx Orchestrate ADK not installed"
+    fi
+    
+    success "Prerequisites check passed"
+}
+
+load_credentials() {
+    log "Loading credentials..."
+    # Load credentials from file
+    export $(cat "${CREDENTIALS_FILE}" | grep -v '^#' | xargs)
+    success "Credentials loaded"
+}
+
+deploy_agent() {
+    log "Deploying agent..."
+    wxo agent import "${CONFIG_DIR}/agent.yaml"
+    success "Agent deployed"
+}
+
+deploy_voice_config() {
+    log "Deploying voice configuration..."
+    wxo voice-config import "${CONFIG_DIR}/voice_config.yaml"
+    success "Voice configuration deployed"
+}
+
+deploy_channels() {
+    log "Deploying channels..."
+    
+    if [ -f "${CONFIG_DIR}/channels/phone_config.yaml" ]; then
+        wxo phone-config import "${CONFIG_DIR}/channels/phone_config.yaml"
+        success "Phone config deployed"
+    fi
+    
+    if [ -f "${CONFIG_DIR}/channels/whatsapp_config.yaml" ]; then
+        wxo channel import "${CONFIG_DIR}/channels/whatsapp_config.yaml"
+        success "WhatsApp channel deployed"
+    fi
+    
+    success "All channels deployed"
+}
+
+deploy_tools() {
+    log "Deploying tools..."
+    
+    for tool_file in "${CONFIG_DIR}"/tools/*.py; do
+        if [ -f "$tool_file" ]; then
+            wxo tool import python "$tool_file"
+            success "Deployed tool: $(basename $tool_file)"
+        fi
+    done
+    
+    success "All tools deployed"
+}
+
+validate_deployment() {
+    log "Validating deployment..."
+    
+    # Check agent exists
+    wxo agent list | grep -q "agent-name" || error "Agent not found"
+    
+    # Check voice config exists
+    wxo voice-config list | grep -q "voice-config-name" || error "Voice config not found"
+    
+    success "Deployment validation passed"
+}
+
+rollback() {
+    log "Rolling back deployment..."
+    warning "Rollback not yet implemented"
+    # Add rollback logic here
+}
+
+deploy_all() {
+    check_prerequisites
+    load_credentials
+    deploy_agent
+    deploy_voice_config
+    deploy_channels
+    deploy_tools
+    validate_deployment
+    success "Deployment completed successfully!"
+}
+
+# Main script
+case "${1:-}" in
+    deploy-all)
+        deploy_all
+        ;;
+    deploy-agent)
+        check_prerequisites
+        load_credentials
+        deploy_agent
+        ;;
+    deploy-voice-config)
+        check_prerequisites
+        load_credentials
+        deploy_voice_config
+        ;;
+    deploy-channels)
+        check_prerequisites
+        load_credentials
+        deploy_channels
+        ;;
+    deploy-tools)
+        check_prerequisites
+        load_credentials
+        deploy_tools
+        ;;
+    validate)
+        validate_deployment
+        ;;
+    rollback)
+        rollback
+        ;;
+    *)
+        echo "Usage: $0 {deploy-all|deploy-agent|deploy-voice-config|deploy-channels|deploy-tools|validate|rollback}"
+        exit 1
+        ;;
+esac
+        ]]></template>
+      </file>
+    </deployment_script_template>
+  </deployment_guide>
+
+  <!-- EXAMPLES SECTION -->
+  <complete_examples>
+    <example name="customer_service_voice_agent">
+      <title>Building Customer Service Voice Agent from Scratch</title>
+      <scenario>
+        Build voice-enabled customer service agent handling order inquiries,
+        returns, and product questions via phone and WhatsApp.
+      </scenario>
+
+      <workflow>
+        <phase name="discovery">
+          <step number="1">
+            <action>Gather requirements using ask_followup_question</action>
+            <questions>
+              <question>What is the primary purpose of this voice agent?</question>
+              <question>Which channels do you need?</question>
+              <question>What key capabilities should it have?</question>
+              <question>What external systems will it integrate with?</question>
+            </questions>
+          </step>
+
+          <step number="2">
+            <action>Gather voice-specific requirements</action>
+            <questions>
+              <question>What languages should the agent support?</question>
+              <question>STT/TTS provider preferences?</question>
+              <question>Audio quality requirements?</question>
+              <question>Expected call volume?</question>
+            </questions>
+          </step>
+        </phase>
+
+        <phase name="planning">
+          <step number="1">
+            <action>Create comprehensive plan.md</action>
+            <adk_search>
+              <query>voice agent architecture best practices</query>
+              <query>agent design patterns</query>
+            </adk_search>
+            <plan_sections>
+              <section>Project Overview</section>
+              <section>Requirements Summary</section>
+              <section>Technical Architecture</section>
+              <section>Implementation Phases</section>
+              <section>Testing Strategy</section>
+              <section>Deployment Plan</section>
+            </plan_sections>
+          </step>
+
+          <step number="2">
+            <action>Present plan for user review and approval</action>
+          </step>
+        </phase>
+
+        <phase name="implementation">
+          <step number="1">
+            <action>Create project structure</action>
+            <structure>
+              <directory>agents/customer_service_agent.yaml</directory>
+              <directory>configs/voice_config.yaml</directory>
+              <directory>configs/channels/phone_config.yaml</directory>
+              <directory>configs/channels/whatsapp_config.yaml</directory>
+              <directory>tools/order_lookup.py</directory>
+              <directory>credentials.sample.yaml</directory>
+              <directory>deployment.sh</directory>
+              <directory>deployment_plan.md</directory>
+            </structure>
+          </step>
+
+          <step number="2">
+            <action>Create agent with voice-optimized instructions</action>
+            <adk_search>
+              <query>agent YAML specification voice_configuration</query>
+              <query>agent instructions best practices</query>
+            </adk_search>
+            <key_instructions>
+              <instruction>Keep responses under 30 seconds</instruction>
+              <instruction>Use natural, conversational language</instruction>
+              <instruction>Confirm critical information</instruction>
+              <instruction>Provide clear next steps</instruction>
+            </key_instructions>
+          </step>
+
+          <step number="3">
+            <action>Create voice configuration</action>
+            <adk_search>
+              <query>voice configuration YAML specification</query>
+              <query>STT TTS provider configuration</query>
+            </adk_search>
+          </step>
+
+          <step number="4">
+            <action>Configure channels</action>
+            <adk_search>
+              <query>phone configuration specification</query>
+              <query>WhatsApp channel setup</query>
+            </adk_search>
+          </step>
+
+          <step number="5">
+            <action>Create tools for external integrations</action>
+            <adk_search>
+              <query>python tool creation</query>
+              <query>tool metadata specification</query>
+            </adk_search>
+          </step>
+
+          <step number="6">
+            <action>Create credential templates (sample files only)</action>
+          </step>
+        </phase>
+
+        <phase name="deployment">
+          <step number="1">
+            <action>Create deployment_plan.md</action>
+            <adk_search>
+              <query>deployment best practices</query>
+            </adk_search>
+          </step>
+
+          <step number="2">
+            <action>Create deployment.sh script</action>
+            <adk_search>
+              <query>CLI commands reference</query>
+            </adk_search>
+          </step>
+
+          <step number="3">
+            <action>Execute deployment</action>
+            <commands>
+              <command>chmod +x deployment.sh</command>
+              <command>./deployment.sh deploy-all</command>
+            </commands>
+          </step>
+
+          <step number="4">
+            <action>Validate deployment</action>
+            <tests>
+              <test>Test phone call</test>
+              <test>Send WhatsApp message</test>
+              <test>Verify order lookup</test>
+              <test>Check audio quality</test>
+            </tests>
+          </step>
+        </phase>
+      </workflow>
+
+      <key_learnings>
+        <learning>Always start with comprehensive requirements gathering</learning>
+        <learning>Create detailed plan.md before implementation</learning>
+        <learning>Search ADK documentation at critical steps</learning>
+        <learning>Use sample credential files, never actual credentials</learning>
+        <learning>Test voice quality early and often</learning>
+        <learning>Automate deployment with scripts</learning>
+      </key_learnings>
+    </example>
+
+    <example name="migrating_text_to_voice">
+      <title>Migrating Existing Text Agent to Voice</title>
+      <scenario>
+        User has existing text-based support agent and wants to add
+        voice capabilities via phone channel.
+      </scenario>
+
+      <workflow>
+        <phase name="analysis">
+          <step number="1">
+            <action>Review existing agent</action>
+            <tools>
+              <tool>read_file - Examine agent configuration</tool>
+              <tool>list_code_definition_names - Understand structure</tool>
+              <tool>search_files - Find related files</tool>
+            </tools>
+            <findings>
+              <finding>Long, detailed responses</finding>
+              <finding>Responses include bullet points and formatting</finding>
+              <finding>No confirmation of critical actions</finding>
+            </findings>
+          </step>
+
+          <step number="2">
+            <action>Identify voice enablement requirements</action>
+            <use_tool>ask_followup_question</use_tool>
+          </step>
+        </phase>
+
+        <phase name="planning">
+          <step number="1">
+            <action>Create migration plan</action>
+            <adk_search>
+              <query>migrating text agent to voice</query>
+              <query>voice optimization best practices</query>
+            </adk_search>
+            <plan_sections>
+              <section>Current State Analysis</section>
+              <section>Voice Optimization Strategy</section>
+              <section>Implementation Steps</section>
+              <section>Testing Plan</section>
+              <section>Rollout Strategy</section>
+            </plan_sections>
+          </step>
+
+          <step number="2">
+            <action>Identify required changes</action>
+            <changes>
+              <change type="response_optimization">
+                Shorten responses for voice (15-30 seconds)
+              </change>
+              <change type="formatting">
+                Remove visual formatting, use natural speech
+              </change>
+              <change type="confirmation">
+                Add confirmation for critical actions
+              </change>
+            </changes>
+          </step>
+        </phase>
+
+        <phase name="implementation">
+          <step number="1">
+            <action>Create voice-optimized agent version</action>
+            <recommendation>Create new agent for cleaner separation</recommendation>
+          </step>
+
+          <step number="2">
+            <action>Update agent instructions with voice guidelines</action>
+          </step>
+
+          <step number="3">
+            <action>Set up voice configuration</action>
+            <adk_search>
+              <query>voice configuration YAML specification</query>
+            </adk_search>
+          </step>
+
+          <step number="4">
+            <action>Configure phone channel</action>
+            <adk_search>
+              <query>phone configuration setup</query>
+            </adk_search>
+          </step>
+        </phase>
+
+        <phase name="testing">
+          <step number="1">
+            <action>Compare text vs voice interactions</action>
+            <test_scenarios>
+              <scenario>Order status inquiry</scenario>
+              <scenario>Return request</scenario>
+              <scenario>Error handling</scenario>
+            </test_scenarios>
+          </step>
+
+          <step number="2">
+            <action>Optimize based on testing</action>
+            <optimizations>
+              <optimization>Adjust response lengths</optimization>
+              <optimization>Improve confirmation flow</optimization>
+              <optimization>Refine error messages</optimization>
+            </optimizations>
+          </step>
+        </phase>
+
+        <phase name="rollout">
+          <step number="1">
+            <action>Gradual rollout strategy</action>
+            <stages>
+              <stage>Internal testing (1 week)</stage>
+              <stage>Beta users (2 weeks)</stage>
+              <stage>25% of traffic (1 week)</stage>
+              <stage>100% rollout</stage>
+            </stages>
+          </step>
+
+          <step number="2">
+            <action>Monitor and iterate</action>
+            <metrics>
+              <metric>Call completion rate</metric>
+              <metric>Average call duration</metric>
+              <metric>User satisfaction</metric>
+              <metric>Error rate</metric>
+            </metrics>
+          </step>
+        </phase>
+      </workflow>
+
+      <key_learnings>
+        <learning>Text agents need significant optimization for voice</learning>
+        <learning>Response length is critical for voice interactions</learning>
+        <learning>Confirmation steps are more important in voice</learning>
+        <learning>Visual formatting doesn't translate to voice</learning>
+        <learning>Gradual rollout allows for iteration</learning>
+      </key_learnings>
+    </example>
+
+    <example name="multi_language_voice_agent">
+      <title>Building Multi-Language Voice Agent</title>
+      <scenario>
+        Voice agent supporting English and Spanish for customer service
+      </scenario>
+
+      <recommended_approach>
+        <choice>Separate voice configs for better control</choice>
+        <implementation>
+          <step>Create voice_config_en.yaml with English settings</step>
+          <step>Create voice_config_es.yaml with Spanish settings</step>
+          <step>Configure agent to use appropriate config based on language</step>
+        </implementation>
+      </recommended_approach>
+
+      <agent_instructions_addition><![CDATA[
+## Language Handling
+- Detect user's language from first utterance
+- Switch to appropriate language for responses
+- Maintain language consistency throughout conversation
+- Offer language switch option if needed
+      ]]></agent_instructions_addition>
+    </example>
+  </complete_examples>
+
+  <common_patterns>
+    <pattern name="questionnaire_workflow">
+      <description>Interactive requirements gathering</description>
+      <implementation>
+        <step>Start with open-ended question</step>
+        <step>Use ask_followup_question with specific suggestions</step>
+        <step>Drill down into details</step>
+        <step>Summarize and confirm understanding</step>
+        <step>Create plan.md for review</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="credential_handling">
+      <description>Secure credential management</description>
+      <implementation>
+        <step>Create credentials.sample.yaml with placeholders</step>
+        <step>Add credentials.yaml to .gitignore</step>
+        <step>Document credential setup in CREDENTIALS.md</step>
+        <step>Use environment variables in deployment script</step>
+        <step>Create Orchestrate connections for production</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="deployment_automation">
+      <description>Automated deployment process</description>
+      <implementation>
+        <step>Create deployment_plan.md with detailed steps</step>
+        <step>Write deployment.sh script</step>
+        <step>Include validation checks</step>
+        <step>Implement rollback capability</step>
+        <step>Add logging and error handling</step>
+      </implementation>
+    </pattern>
+
+    <pattern name="voice_optimization">
+      <description>Optimizing agent for voice interactions</description>
+      <implementation>
+        <step>Shorten responses (target 15-30 seconds)</step>
+        <step>Use conversational language</step>
+        <step>Remove visual formatting</step>
+        <step>Add confirmation steps</step>
+        <step>Implement progressive disclosure</step>
+      </implementation>
+    </pattern>
+  </common_patterns>
+
+  <troubleshooting_examples>
+    <example name="poor_stt_accuracy">
+      <problem>Speech recognition frequently misunderstands users</problem>
+      <diagnosis>
+        <check>Verify audio quality and sample rate</check>
+        <check>Check language model selection</check>
+        <check>Review background noise levels</check>
+      </diagnosis>
+      <solution>
+        <step>Switch to appropriate acoustic model (telephony vs broadband)</step>
+        <step>Enable noise reduction</step>
+        <step>Consider custom language model for domain terms</step>
+        <step>Adjust silence detection sensitivity</step>
+      </solution>
+    </example>
+
+    <example name="high_latency">
+      <problem>Noticeable delay between user speech and agent response</problem>
+      <diagnosis>
+        <check>Measure STT processing time</check>
+        <check>Check agent processing time</check>
+        <check>Verify TTS generation time</check>
+        <check>Review network latency</check>
+      </diagnosis>
+      <solution>
+        <step>Enable streaming mode for STT/TTS</step>
+        <step>Optimize agent instructions for faster processing</step>
+        <step>Use regional endpoints closer to users</step>
+        <step>Cache common responses</step>
+      </solution>
+    </example>
+
+    <example name="channel_integration_failure">
+      <problem>Webhook not receiving events from channel provider</problem>
+      <diagnosis>
+        <check>Verify webhook URL is correct and accessible</check>
+        <check>Check SSL certificate validity</check>
+        <check>Review authentication credentials</check>
+        <check>Check firewall rules</check>
+      </diagnosis>
+      <solution>
+        <step>Test webhook URL with curl or Postman</step>
+        <step>Verify credentials are correct and not expired</step>
+        <step>Check webhook configuration in provider console</step>
+        <step>Review server logs for errors</step>
+      </solution>
+    </example>
+  </troubleshooting_examples>
+
+  <best_practices>
+    <practice category="planning">
+      <guideline>Always create plan.md before implementation</guideline>
+      <guideline>Search ADK documentation at critical steps</guideline>
+      <guideline>Get user approval before proceeding</guideline>
+    </practice>
+
+    <practice category="security">
+      <guideline>Never ask for or store actual credentials</guideline>
+      <guideline>Always create sample credential files</guideline>
+      <guideline>Add credential files to .gitignore</guideline>
+      <guideline>Use Orchestrate connections for production</guideline>
+    </practice>
+
+    <practice category="deployment">
+      <guideline>Automate deployment with scripts</guideline>
+      <guideline>Include validation checks</guideline>
+      <guideline>Document rollback procedures</guideline>
+      <guideline>Test thoroughly before going live</guideline>
+    </practice>
+
+    <practice category="voice_optimization">
+      <guideline>Keep responses concise (15-30 seconds)</guideline>
+      <guideline>Use conversational language</guideline>
+      <guideline>Confirm critical information</guideline>
+      <guideline>Test with diverse voices and accents</guideline>
+    </practice>
+  </best_practices>
+</voice_agent_deployment_and_examples>
+
+<!-- Made with Bob -->
