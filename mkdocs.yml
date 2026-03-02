@@ -50,7 +50,7 @@ nav:
       - Agents:
           - Overview: ai-core/agents/index.md
           - Agent Builder: ai-core/agents/agent-builder.md
-          - Agent Gateway: ai-core/agents/ai-gateway.md
+          - Agent Gateway: ai-core/agents/agent-gateway.md
           - Multi-Agent Orchestration: ai-core/agents/multi-agent-orchestration.md
           
       - Trusted AI:
