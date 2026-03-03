@@ -1,14 +1,14 @@
 # Bob Modes
 
 This directory contains custom Bob mode configurations that extend IBM Bob's capabilities with domain-specific expertise.
-**File:** [Application Observability](/Base Modes/application-observability.yaml)
 ---
 
 ## Available Modes
 
 ### Data for AI Mode
 **File:** Application Observability
-[Application Observability](/Base Modes/application-observability.yaml)
+
+[application-observability.yaml](Bob%20Modes/Base%20Modes/application-observability.yaml)
 
 ---
 
