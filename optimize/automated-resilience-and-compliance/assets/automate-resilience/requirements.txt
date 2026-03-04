@@ -1,0 +1,17 @@
+# IBM Concert Insights Dashboard Dependencies
+
+# Core Dash framework
+dash==2.14.2
+dash-bootstrap-components==1.5.0
+
+# Data visualization
+plotly==5.18.0
+
+# Data processing
+pandas==2.1.4
+
+# HTTP requests
+requests==2.31.0
+
+# Environment management
+python-dotenv==1.0.0
