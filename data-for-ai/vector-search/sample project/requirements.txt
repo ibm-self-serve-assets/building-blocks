@@ -102,7 +102,7 @@ pluggy==1.6.0
 polyfactory==2.22.2
 prompt_toolkit==3.0.52
 propcache==0.3.2
-protobuf==6.32.1
+protobuf==6.33.5
 psutil==7.1.0
 ptyprocess==0.7.0
 pure_eval==0.2.3
