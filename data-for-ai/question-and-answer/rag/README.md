@@ -6,7 +6,7 @@ Semantic search and question answering over documents using vector embeddings an
 
 ### Assets
 
-- **[Ingestion & Retrieval Service](./assets/ingestion-retrieval/)**: Complete RAG pipeline with document processing, embedding, and querying
+- **[RAG Accelerator](./assets/rag-accelerator/)**: Complete RAG pipeline with document processing, embedding, and querying
   - Ingest documents from IBM COS
   - Generate embeddings with IBM Watsonx
   - Store vectors in Milvus or OpenSearch
@@ -37,7 +37,7 @@ Semantic search and question answering over documents using vector embeddings an
 
 ## Quick Start
 
-1. **For complete RAG pipeline**: Navigate to [`assets/ingestion-retrieval`](./assets/ingestion-retrieval/) and follow the README
+1. **For complete RAG pipeline**: Navigate to [`assets/rag-accelerator`](./assets/rag-accelerator/) and follow the README
 
 2. **For MCP servers**: Choose from ingestion, retrieval, or base server templates in the Assets directory
 

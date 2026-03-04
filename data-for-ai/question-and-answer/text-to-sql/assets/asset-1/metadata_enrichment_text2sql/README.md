@@ -11,7 +11,7 @@ The purpose of the application is to demonstrate how metadata-aware LLM prompts 
 
 The following steps are required to use the service:
 1. Provision an instance of watsonx.data intelligence see [Setting up the IBM watsonx.data intelligence service](https://www.ibm.com/docs/en/watsonx/wdi/saas?topic=cloud-setting-up-watsonxdata-intelligence)
-2. Create and onboard the watsonx.data intelligence project see [onboarding]()
+2. Create and onboard the watsonx.data intelligence project see [Creating a project](https://dataplatform.cloud.ibm.com/docs/content/wsj/getting-started/projects.html?context=wx)
 3. Import data assets to the project (ex: tables within the prestoDB database) see [Adding a data asset from a connection](https://www.ibm.com/docs/en/watsonx/wdi/2.2.x?topic=catalog-adding-data-from-connection)
 5. Use the text_to_sql endpoint to generate SQL statements based on the data schemas
 
@@ -70,7 +70,7 @@ The following steps are required to use the service:
 
 ### Step 3: Deploy Metadata Enrichment FastAPI Application.
 
-Follow this link to deploy your application on Code Engine. [Guide](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data-for-ai/question-and-answer/text-to-sql/applications/code-engine-setup)
+Follow this link to deploy your application on Code Engine. [Guide](../../applications/code-engine-setup)
 
 Steps below will show how to deploy the application locally.
 
