@@ -13,9 +13,7 @@ The Building Block is a **reference implementation framework** that accelerates 
 
 <img width="1306" height="694" alt="image" src="https://github.com/user-attachments/assets/7a54cd40-9431-4e01-b391-d5df86910a93" />
 
-## Value Proposition  
-
-We provide a set of embeddable capabilities across key domains:
+Embeddable capabilities across key domains:
 
 - **AI Agents** – APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source that enable orchestration and intelligent task automation.
 - **Trusted AI** – Capabilities from watsonx.governance and watsonx.ai that support model validation, guardrails, and governance workflows.
