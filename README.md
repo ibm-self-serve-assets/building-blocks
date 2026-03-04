@@ -21,7 +21,6 @@ Embeddable capabilities across key domains:
 - **Build & Deploy** – Tools for infrastructure automation and AI-assisted development using Infrastructure-as-Code and code generation.
 - **Observe** – Observability capabilities including dependency mapping, anomaly detection, and application monitoring.
 - **Optimize** – AI-driven solutions for cost optimization, risk detection, and automated remediation across application environments. 
-
 <img width="1685" height="883" alt="Screenshot 2026-03-04 at 8 02 23 AM" src="https://github.com/user-attachments/assets/de78dc1f-87ab-41c2-9db6-b14ebcf3dbc9" />
 
 Our easy-to-consume, fully supported building blocks enable engineering teams to accelerate delivery, enhance mission-critical application stacks, and seamlessly integrate AI into enterprise and partner ecosystems.
