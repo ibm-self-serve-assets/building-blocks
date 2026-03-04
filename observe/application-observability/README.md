@@ -5,17 +5,12 @@
 ## 📑 Table of Contents
 
 - [Overview](#overview)
-- [Clear Objectives](#1-clear-objectives)
-- [Environment Setup](#2-environment-setup)
-- [Agent Deployment](#3-agent-deployment)
-- [Key Observability Features](#4-key-observability-features)
-- [Application Scenarios](#5-application-scenarios)
-- [Integration Points](#6-integration-points)
-- [Demo Flow & Storytelling](#7-demo-flow--storytelling)
-- [Documentation & Reusability](#8-documentation--reusability)
-- [Visualization & User Experience](#9-visualization--user-experience)
-- [Best Practices](#10-best-practices)
-- [Recommended Structure](#recommended-structure-for-a-sample-ibm-instana-demo)
+- [What's Included](#whats-included)
+- [Key Components](#key-components)
+- [Getting Started](#getting-started)
+- [Use Cases](#use-cases)
+- [Architecture](#architecture)
+- [Best Practices](#best-practices)
 - [Related Resources](#related-resources)
 
 ---
@@ -39,111 +34,311 @@
 
 ## Overview
 
-Key Aspects for Creating a Technology Building Block: Application Observability with IBM Instana
+This building block provides a complete application observability solution using **IBM Instana**. It includes a production-ready Python Dash dashboard for monitoring application health, an MCP server for AI-powered observability automation, and custom Bob modes for enhanced development workflows.
 
-## 1. Clear Objectives
-- Define the **purpose** of the building block  (e.g., monitoring microservices, APM, incident response).
-- Highlight **business value** (reduced MTTR, better user experience, proactive detection).
+### What You Get
 
-## 2. Environment Setup
-- Use **containerized workloads** (e.g., OpenShift) or **VM-based apps**.
-- Ensure **sample applications** (e.g., microservices, app) with meaningful transactions.
-- Provide **pre-configured Instana agent deployment steps**.
-
-## 3. Agent Deployment
-- Demonstrate **simple installation** of the Instana agent on:
-  - OpenShift clusters
-  - VMs (Linux/Windows)
-  - Docker containers
-- Show **auto-discovery** of services and dependencies.
-
-## 4. Key Observability Features
-- **Service & Infrastructure Monitoring**  
-  Visualize application services, APIs, and backend infrastructure.
-- **Automatic Root Cause Analysis**  
-  Show how Instana detects bottlenecks and pinpoints issues.
-- **Trace Analysis**  
-  Display distributed tracing across microservices.
-- **Metrics & Dashboards**  
-  Pre-build dashboards for CPU, memory, response times, and error rates.
-- **Custom Events & Alerts**  
-  Demonstrate setting up health rules and proactive alerting.
-
-## 5. Application Scenarios
-- Simulate **traffic load** (e.g., using locust, JMeter, or k6).
-- Trigger **failure scenarios** (e.g., kill a pod, DB slowdown) to showcase RCA.
-- Highlight **end-user experience monitoring**.
-
-## 6. Integration Points
-- Integrate with **IBM Cloud Pak for AIOps** or **Slack/Teams for notifications**.
-- Show **API-driven data export** to other observability platforms if needed.
-- Highlight ***integration*** with other IBM / Non - IBM offerings (Turbonomic, Concert, Kubecost) as per building block.
-
-## 7. building block     Flow & Storytelling
-- Begin with a **healthy system view** (baseline monitoring).
-- Introduce an **issue or anomaly**.
-- Use Instana’s features to **detect, analyze, and resolve** the issue.
-- Close by showing **improved system state** after resolution.
-
-## 8. Documentation & Reusability
-- Provide **step-by-step setup instructions** (OpenShift-focused if applicable).
-- Include **Terraform/Helm scripts** for automated setup.
-- Keep the building block **repeatable, simple, and modular** for quick re-runs.
-- ***Architecture Diagram*** of the building block.
-
-## 9. Visualization & User Experience
-- Use **clear dashboards, heatmaps, and service maps** for storytelling.
-- Highlight the **ease of navigation** from high-level insights to detailed traces.
-
-## 10. Best Practices
-- Focus on **simplicity** (avoid overcomplicating setup).
-- Ensure **data consistency** across metrics, traces, and logs.
-- Keep the building block **time-bound (10–15 minutes)** for effectiveness.
-- Provide **cleanup instructions** to avoid leftover resources/costs.
+✅ **Real-time Monitoring Dashboard** - Python Dash application with interactive visualizations  
+✅ **IBM Instana Integration** - Full REST API client with comprehensive metrics  
+✅ **MCP Server** - Model Context Protocol server for AI-powered observability  
+✅ **Custom Bob Modes** - Specialized modes for observability tasks  
+✅ **Production Ready** - Complete with setup scripts, logging, and error handling
 
 ---
 
-Recommended structure for a sample IBM Instana building block
+## What's Included
 
-```
-instana-building block/
-├── README.md # Documentation: overview, setup, usage
-├── manifests/ # OpenShift/Kubernetes manifests
-│ ├── instana-agent-daemonset.yaml # Instana agent deployment
-│ ├── service-monitor.yaml # Service monitor (Prometheus/metrics integration)
-│ └── building block-app-deployment.yaml # Sample microservices app
-├── helm/ # Helm charts (optional if using Helm for agent/app)
-│ └── instana-agent/ # Helm chart for Instana agent
-├── scripts/ # Helper scripts
-│ ├── deploy.sh # Deploy app + Instana agent
-│ ├── cleanup.sh # Destroy building block environment
-│ └── simulate-incident.sh # Script to inject failures/latency
-├── dashboards/ # JSON exports of Instana dashboards
-│ ├── app-performance.json
-│ └── infra-health.json
-├── traces/ # Sample trace data (for offline building block or training)
-│ ├── order-service-trace.json
-│ └── payment-service-trace.json
-├── alerts/ # Instana alert configurations (YAML/JSON)
-│ ├── error-rate-alert.json
-│ └── latency-threshold-alert.json
-└── docs/ # Supporting docs & diagrams
-├── architecture-diagram.png
-├── setup-guide.md
-└── troubleshooting.md
+### 1. Instana Observability Dashboard
 
+A comprehensive Python Dash application for monitoring applications through IBM Instana.
+
+**Location:** [`assets/application-observability/`](assets/application-observability/README.md)
+
+**Features:**
+- 📊 Real-time service health monitoring
+- 📈 Interactive visualizations (Plotly charts)
+- 🎯 Composite health scoring algorithm
+- 📋 Detailed service metrics tables
+- 🔄 Auto-refresh capabilities
+- 🎨 Modern, responsive UI with Bootstrap
+
+**Tech Stack:**
+- Python 3.8+ with Dash framework
+- Dash Bootstrap Components
+- Plotly for visualizations
+- pandas for data processing
+- IBM Instana REST API integration
+
+**Quick Start:**
+```bash
+cd assets/application-observability
+./scripts/setup.sh  # Unix/macOS/Linux
+# or
+scripts\setup.bat   # Windows
 ```
+
+[📖 Full Documentation](assets/application-observability/README.md) | [⚡ Quick Start](assets/application-observability/QUICKSTART.md) | [📊 Project Summary](assets/application-observability/PROJECT_SUMMARY.md)
 
 ---
 
-## Folder Purpose
-- **`manifests/`** → Deployment configs for app & Instana agent (OpenShift-ready).  
-- **`helm/`** → Helm-based deployment option.  
-- **`scripts/`** → Automation (deploy, clean up, simulate incidents).  
-- **`dashboards/`** → Exported Instana dashboards for reuse.  
-- **`traces/`** → Pre-captured trace data for building block fallback.  
-- **`alerts/`** → Alert rules for errors, latency, anomalies.  
-- **`docs/`** → Solution Architecture + documentation.
+### 2. Instana MCP Server
+
+Model Context Protocol server for integrating Instana observability with AI assistants like IBM Bob.
+
+**Location:** [`assets/instana-mcp/`](assets/instana-mcp/)
+
+**Capabilities:**
+- 🤖 AI-powered incident analysis
+- 📡 Real-time event streaming
+- 🔍 Automated root cause analysis
+- 📊 Kubernetes event monitoring
+- ⚠️ Agent monitoring and alerts
+
+**Deployment Options:**
+- **Code Engine:** [`deploy-ce/`](assets/instana-mcp/deploy-ce/) - IBM Cloud Code Engine deployment
+- **Container:** [`mcp-server/`](assets/instana-mcp/mcp-server/) - Docker containerized server
+
+**MCP Tools Available:**
+- `get_event` - Retrieve specific events by ID
+- `get_kubernetes_info_events` - K8s events with detailed analysis
+- `get_agent_monitoring_events` - Agent monitoring insights
+- `get_issues` - Issue event tracking
+- `get_incidents` - Critical incident management
+- `get_changes` - Change event monitoring
+- `get_events_by_ids` - Batch event retrieval
+
+---
+
+### 3. Custom Bob Modes
+
+Specialized IBM Bob modes for application observability workflows.
+
+**Location:** [`bob-modes/`](bob-modes/README.md)
+
+**Includes:**
+- **Application Observability Mode** ([`application-observability.yaml`](bob-modes/base-modes/application-observability.yaml))
+  - Domain-specific observability expertise
+  - Instana integration patterns
+  - Dashboard generation guidance
+  - Performance analysis workflows
+  - Service dependency mapping
+
+**Installation:**
+```bash
+# Copy to Bob's global modes directory
+cp bob-modes/base-modes/application-observability.yaml \
+   ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+```
+
+[📖 Bob Modes Documentation](bob-modes/README.md)
+
+---
+
+## Key Components
+
+### Dashboard Application
+
+**Service Health Monitoring:**
+- Real-time service call counts
+- Error rate tracking with trends
+- Latency monitoring (response times)
+- Composite health scores (0-100)
+
+**Interactive Visualizations:**
+- Summary cards with key metrics
+- Service health bar charts
+- Error rate analysis charts
+- Latency distribution graphs
+- Detailed service metrics tables
+
+**Health Score Algorithm:**
+- 40% Error rate (lower is better)
+- 30% Latency (lower is better)
+- 30% Call volume (higher indicates activity)
+
+### MCP Server Integration
+
+**Event Analysis:**
+- Kubernetes info events with detailed insights
+- Agent monitoring events with frequency analysis
+- Issue and incident tracking
+- Change event monitoring
+- Automated problem detection
+
+**AI-Powered Features:**
+- Natural language time ranges ("last 24 hours")
+- Automated event summarization
+- Top problems identification
+- Actionable fix suggestions
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Python 3.8 or higher
+- IBM Instana instance with API access
+- IBM Instana API token with read permissions
+- Network connectivity to Instana API endpoints
+
+### Quick Setup
+
+1. **Clone or navigate to the project:**
+   ```bash
+   cd observe/application-observability
+   ```
+
+2. **Choose your component:**
+
+   **For Dashboard:**
+   ```bash
+   cd assets/application-observability
+   ./scripts/setup.sh
+   # Edit .env with your Instana credentials
+   ./scripts/run.sh
+   # Access at http://localhost:8050
+   ```
+
+   **For MCP Server:**
+   ```bash
+   cd assets/instana-mcp/mcp-server
+   # Configure environment variables
+   docker build -t instana-mcp .
+   docker run -p 8080:8080 instana-mcp
+   ```
+
+   **For Bob Modes:**
+   ```bash
+   cd bob-modes
+   # Follow installation instructions in README.md
+   ```
+
+---
+
+## Use Cases
+
+### 1. Real-Time Application Monitoring
+
+Monitor your applications deployed on OpenShift or Kubernetes:
+- Track service health across microservices
+- Identify performance bottlenecks
+- Monitor error rates and latency
+- Visualize service dependencies
+
+**Example:** Monitor the [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) deployed via [Ansible](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+
+### 2. AI-Powered Incident Response
+
+Use the MCP server with IBM Bob for intelligent incident management:
+- Ask Bob: "What incidents occurred in the last 24 hours?"
+- Get automated root cause analysis
+- Receive actionable remediation suggestions
+- Track incident resolution progress
+
+### 3. Development Workflow Enhancement
+
+Use custom Bob modes for observability-focused development:
+- Generate monitoring dashboards
+- Implement observability patterns
+- Design service instrumentation
+- Create alerting strategies
+
+### 4. Performance Optimization
+
+Identify and resolve performance issues:
+- Analyze latency trends
+- Detect anomalies in service behavior
+- Optimize resource utilization
+- Improve user experience
+
+---
+
+## Architecture
+
+### High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    User / Developer                      │
+│                                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │   Browser    │  │   IBM Bob    │  │   CLI Tools  │ │
+│  │  Dashboard   │  │  (with MCP)  │  │              │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘ │
+└─────────┼──────────────────┼──────────────────┼─────────┘
+          │                  │                  │
+          ▼                  ▼                  ▼
+┌─────────────────────────────────────────────────────────┐
+│              Application Observability Layer             │
+│                                                          │
+│  ┌──────────────────┐         ┌──────────────────┐     │
+│  │  Dash Dashboard  │         │   MCP Server     │     │
+│  │  - Visualizations│         │  - AI Analysis   │     │
+│  │  - Metrics       │◄────────┤  - Event Stream  │     │
+│  │  - Health Scores │         │  - Automation    │     │
+│  └────────┬─────────┘         └────────┬─────────┘     │
+└───────────┼──────────────────────────────┼──────────────┘
+            │                              │
+            └──────────────┬───────────────┘
+                           ▼
+                  ┌─────────────────┐
+                  │  IBM Instana    │
+                  │  REST API       │
+                  │  - Applications │
+                  │  - Services     │
+                  │  - Metrics      │
+                  │  - Events       │
+                  │  - Traces       │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │  Monitored Apps │
+                  │  - Microservices│
+                  │  - Containers   │
+                  │  - Infrastructure│
+                  └─────────────────┘
+```
+
+### Component Interaction
+
+1. **Dashboard** queries Instana API for metrics and displays visualizations
+2. **MCP Server** provides AI-powered analysis and automation capabilities
+3. **Bob Modes** enhance development workflows with observability expertise
+4. **Instana** collects telemetry from monitored applications
+
+---
+
+## Best Practices
+
+### 1. Dashboard Configuration
+
+- **Target Specific Applications:** Configure `INSTANA_APPLICATION_NAME` for focused monitoring
+- **Adjust Refresh Intervals:** Balance real-time updates with API rate limits
+- **Customize Health Thresholds:** Tune health score weights for your use case
+- **Use Environment Variables:** Never hardcode credentials
+
+### 2. MCP Server Usage
+
+- **Natural Language Queries:** Use time ranges like "last 24 hours" or "last week"
+- **Batch Operations:** Retrieve multiple events efficiently with `get_events_by_ids`
+- **Event Filtering:** Use specific event types (incidents, issues, changes) for targeted analysis
+- **Rate Limiting:** Implement appropriate delays between API calls
+
+### 3. Monitoring Strategy
+
+- **Baseline Metrics:** Establish normal behavior patterns before alerting
+- **Composite Scoring:** Use health scores for quick assessment, drill down for details
+- **Trend Analysis:** Monitor changes over time, not just current state
+- **Service Dependencies:** Understand relationships between services
+
+### 4. Integration with CI/CD
+
+- **Pre-deployment Checks:** Verify service health before deployments
+- **Post-deployment Monitoring:** Track metrics after releases
+- **Automated Rollbacks:** Use health scores to trigger rollback decisions
+- **Performance Regression:** Compare metrics across deployments
 
 ---
 
@@ -156,15 +351,41 @@ instana-building block/
 - [Instana MCP Server](assets/instana-mcp/) - MCP integration
 - [Bob Modes](bob-modes/README.md) - Custom Bob modes for observability
 
-### Build & Deploy Building Blocks
+### Applications to Monitor
 - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample app to monitor
-- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
-- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md)
+  - [Deployment Guide](../../build-and-deploy/Iaas/assets/retailapp/deploy-steps.md)
+  - [JMeter Load Testing](../../build-and-deploy/Iaas/assets/retailapp/jmeter/README.md)
+- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
+
+### Build & Deploy Building Blocks
+- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md) - IBM Security Verify
+- [Code Assistant](../../build-and-deploy/code-assistant/README.md) - AI-powered development
+- [IaaS](../../build-and-deploy/Iaas/README.md) - Infrastructure as a Service
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration platform
 
 ### Optimize Building Blocks
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
-- [FinOps](../../optimize/finops/README.md) - Cost optimization
-- [Network Performance](../network-performance/README.md) - Network monitoring
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+- [Network Performance](../network-performance/README.md) - Network monitoring with IBM SevOne
+
+---
+
+## Support & Contribution
+
+### Getting Help
+
+- **Dashboard Issues:** Check [README](assets/application-observability/README.md) and logs in `assets/application-observability/logs/`
+- **MCP Server Issues:** Review MCP server logs and configuration
+- **Bob Modes:** See [Bob Modes documentation](bob-modes/README.md)
+- **Instana API:** Consult IBM Instana documentation
+
+### Contributing
+
+Contributions are welcome! Areas for enhancement:
+- Additional visualizations in the dashboard
+- New MCP tools for Instana integration
+- Enhanced Bob modes with more patterns
+- Integration examples with other IBM products
 
 ---
 
