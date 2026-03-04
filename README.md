@@ -18,25 +18,20 @@ The Building Block is a **reference implementation framework** that accelerates 
 ---
 
 ## Value Proposition  
-We offer a comprehensive set of embeddable capabilities across the following domains:
 
-**AI Agents** – Capabilities delivered via APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source.  
-Examples: orchestration, interoperability, intelligent task automation.  
+We provide a set of embeddable capabilities across key domains:
 
-**Trusted AI** – APIs and SDKs from watsonx.governance, watsonx.ai, and open source.  
-Examples: model validation, guardrails, governance workflows.  
+AI Agents – APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source that enable orchestration and intelligent task automation.
 
-**Data for AI** – Capabilities powered by watsonx.data, watsonx.ai, and open source.  
-Examples: Auto-RAG, model fine-tuning, Text-to-SQL transformations.  
+Trusted AI – Capabilities from watsonx.governance and watsonx.ai that support model validation, guardrails, and governance workflows.
 
-**Build & Deploy** – Deployable configuration, generating new code snippets based on natural language prompts.  
-Examples: Infrastructure-as-Code, AI-powered code assistants, and integration through iPaaS.  
+Data for AI – Solutions powered by watsonx.data and watsonx.ai for tasks such as Auto-RAG, model fine-tuning, and Text-to-SQL.
 
-**Observe** – Discovery with dependency mapping, AI-driven anomaly detection, and automated issue remediation.  
-Examples: Application observability and network performance monitoring.  
+Build & Deploy – Tools for infrastructure automation and AI-assisted development using Infrastructure-as-Code and code generation.
 
-**Optimize** – AI-powered solutions to detect risks early, enforce compliance continuously, and automate remediation across application environments.  
-Examples: FinOps-driven cost optimization, automated resource management, and compliance with resilience frameworks.  
+Observe – Observability capabilities including dependency mapping, anomaly detection, and application monitoring.
+
+Optimize – AI-driven solutions for cost optimization, risk detection, and automated remediation across application environments. 
 
 <img width="1685" height="883" alt="Screenshot 2026-03-04 at 8 02 23 AM" src="https://github.com/user-attachments/assets/de78dc1f-87ab-41c2-9db6-b14ebcf3dbc9" />
 
