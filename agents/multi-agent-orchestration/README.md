@@ -4,6 +4,8 @@
 
 The **Multi-Agent Orchestration** building block enables multiple AI agents to collaborate intelligently to achieve complex enterprise workflows. Each agent specializes in a specific domain (e.g., HR, IT, Finance, Customer Support), while the orchestration runtime coordinates them using context sharing, task routing, and feedback loops.
 
+📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/multi-agent-orchestration/)**
+
 ## What It Does
 
 - **Dynamic Task Delegation**: Automatically assigns subtasks to the most capable agent or external system
@@ -23,17 +25,9 @@ The **Multi-Agent Orchestration** building block enables multiple AI agents to c
 
 ### MCP (Model Context Protocol)
 Enables secure, two-way connections between data sources and AI-powered tools:
-- Call complex and custom-built tools
-- Control over how and when tools run
-- Test and manage tools in your own dev environment
-- Manage tools across large teams and diverse systems
 
 ### A2A (Agent-to-Agent)
 Enables AI agents to discover, communicate, and collaborate regardless of underlying technology:
-- Facilitates agent interoperability across frameworks
-- Standardized modality to expose agent capabilities
-- Structured task management including submission and progress tracking
-- Complements MCP's ability to interact with external data and tools
 
 ## How to Use
 
@@ -55,12 +49,12 @@ Follow best practices for designing and implementing multi-agent orchestration:
 
 ## Best Practices & Guidelines
 
-- [Best Practice Guide](./Best_Practice_Guide.md) - Comprehensive guide for multi-agent system design, tool development, and integration patterns
+- [Best Practice Guide](./assets/Best_Practice_Guide.md) - Comprehensive guide for multi-agent system design, tool development, and integration patterns
 
 ## Assets & Sample Projects
 
-- [AI Travel Planner](./AI-Travel-Planner/) - Demonstrates multi-agent collaboration for travel planning
-- [Optimal Supplier Selector](./Optimal-Supplier-Selector/) - Intelligent supplier selection workflow
+- [AI Travel Planner](./assets/AI-Travel-Planner/) - Demonstrates multi-agent collaboration for travel planning
+- [Optimal Supplier Selector](./assets/Optimal-Supplier-Selector/) - Intelligent supplier selection workflow
 
 ---
 

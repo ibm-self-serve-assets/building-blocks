@@ -4,6 +4,8 @@
 
 The **Agent Builder** building block enables developers to rapidly create autonomous, task-driven AI agents using the IBM watsonx Orchestrate Agentic Development Kit (ADK). These agents interact seamlessly with enterprise applications, tools, and data to automate business functions at scale.
 
+📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/agent-builder/)**
+
 ## What It Does
 
 - **Design & Assemble Agents**: Build agents using Agent Builder + ADK with configurable behaviors, instructions, rules, and boundaries
@@ -40,7 +42,7 @@ Explore Bob modes for guided agent development:
 
 ## Assets & Sample Projects
 
-- [Contextual Knowledge Hub](./contextual-knowledge-hub/) - Sample project demonstrating agent builder capabilities
+- [Contextual Knowledge Hub](./assets/contextual-knowledge-hub/) - Sample project demonstrating agent builder capabilities
 
 ---
 
