@@ -412,49 +412,6 @@ We welcome contributions! Please follow these guidelines:
 
 ---
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🙏 Acknowledgments
-
-- **IBM Instana** - Application Performance Monitoring
-- **Plotly Dash** - Interactive web application framework
-- **Dash Bootstrap Components** - Modern UI components
-
----
-
-## 📞 Support
-
-For questions, issues, or feature requests:
-
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Documentation**: See [docs/](docs/) directory
-
----
-
-## 🗺️ Roadmap
-
-### Current Version (v1.0)
-- ✅ Real-time service health monitoring
-- ✅ Error rate and latency tracking
-- ✅ Interactive visualizations
-- ✅ Configurable application targeting
-
-### Future Enhancements (v2.0)
-- 🔄 Real-time updates via WebSocket
-- 📊 Historical data analysis and trending
-- 🔔 Email/Slack alerting
-- 🎨 Custom dashboard layouts
-- 📱 Mobile-responsive design improvements
-- 🔐 User authentication
-- 📈 Advanced analytics
-- 🐳 Docker containerization
-
----
-
 <div align="center">
 
 **Built with ❤️ using Python, Dash, and IBM Instana**
