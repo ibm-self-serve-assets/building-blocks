@@ -1,0 +1,11 @@
+spec_version: v1
+kind: model
+name: google/gemini-2.5-pro
+display_name: Google Generative AI (Gemini 2.5 Pro)
+description: |
+  Google Generative AI model via API key authentication.
+tags:
+  - google
+  - genai
+model_type: chat
+provider_config: {}

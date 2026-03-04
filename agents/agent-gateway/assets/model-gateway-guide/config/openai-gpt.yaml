@@ -1,0 +1,14 @@
+spec_version: v1
+kind: model
+name: openai/gpt-oss-20b
+display_name: GPT-OSS-20b
+description: |-
+  OpenAI's open-weight models designed for powerful reasoning, agentic tasks, and versatile developer use cases.
+
+  GPT-OSS-20b: for lower latency, and local or specialized use cases (21B parameters with 3.6B active parameters)
+tags:
+  - openai
+  - gpt
+model_type: chat
+provider_config:
+  transform_to_form_data: false
