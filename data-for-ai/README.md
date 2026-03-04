@@ -4,12 +4,6 @@ Welcome to the **Building Block of Data for AI**.
 
 This framework provides ready-to-use accelerators that make it easier to operationalize data for AI/GenAI use cases. Each accelerator addresses a critical capability required to manage, process, and secure data for AI-driven applications. These accelerators are designed to integrate seamlessly with existing enterprise systems, reducing time-to-value for AI projects. By standardizing data access, governance, and enrichment, the framework ensures scalability, trust, and efficiency across diverse AI workloads.
 
----
-
-<img width="1536" height="1024" alt="accelerators_diagram" src="https://github.com/user-attachments/assets/3c296ea4-b258-4ead-9007-8e750830b0ca" />
-
-
----
 
 ## Data Ingestion
 - Comprehensive data ingestion solutions for **unstructured, structured, and semi-structured** data.
