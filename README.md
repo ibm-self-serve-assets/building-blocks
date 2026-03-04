@@ -47,8 +47,3 @@ Examples: FinOps-driven cost optimization, automated resource management, and co
 Our easy-to-consume, fully supported building blocks enable engineering teams to accelerate delivery, enhance mission-critical application stacks, and seamlessly integrate AI into enterprise and partner ecosystems.
 
 ---
-
-- Observability – Instana offering real-time application performance metrics.
-- Optimization – Turbonomic ensuring cost efficiency and workload balance.
-
-These building blocks serve as both engineering accelerators and business value multipliers, enabling teams to quickly deliver impactful, production-grade demos that resonate with partners.
