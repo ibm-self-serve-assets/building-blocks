@@ -5,7 +5,7 @@ The **Technology Building Block** is a curated set of IBM capabilities developed
 
 These building blocks showcase seamless integration across IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and reduce time-to-value. 
 
-For more information, see the [documentation] (https://ibm-self-serve-assets.github.io/building-blocks-docs/)
+For more information, see the [documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/)
 
 ## What is the Technology Building Block?  
 The Building Block is a **reference implementation framework** that accelerates engineering and partner-facing engagements. It enables teams to:  
