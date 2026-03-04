@@ -11,7 +11,7 @@ plotly==5.18.0
 pandas==2.1.4
 
 # HTTP requests
-requests==2.31.0
+requests==2.32.4
 
 # Environment management
 python-dotenv==1.0.0
