@@ -11,50 +11,55 @@ This framework provides ready-to-use accelerators that make it easier to operati
 
 ---
 
+## Data Ingestion
+- Comprehensive data ingestion solutions for **unstructured, structured, and semi-structured** data.
+- **IBM UDI** for unstructured data processing.
+- **Database connectors** for structured data with CDC support.
+
+---
+
 ## Zero-Copy Lakehouse
-- Enables seamless querying across databases, warehouses, and cloud object stores without data duplication.  
-- Reduces **costs and latency** by eliminating data movement.  
+- Enables seamless querying across databases, warehouses, and cloud object stores without data duplication.
+- Reduces **costs and latency** by eliminating data movement.
 
 ---
 
 ## Vector Search
-- Provides a **vector-based retrieval service** for GenAI pipelines.   
-- Powers **semantic similarity search** for retrieval-augmented generation (RAG).  
-- Optimized for **scalable AI workloads**.  
+- Provides a **vector-based retrieval service** for GenAI pipelines.
+- Powers **semantic similarity search** for retrieval-augmented generation (RAG).
+- Optimized for **scalable AI workloads**.
 
 ---
 
 ## Question & Answer
-- Delivers **natural language interfaces** to interact with data.  
-- **watsonx.data intelligence Text2SQL** converts natural language questions into executable SQL.    
+- Delivers **natural language interfaces** to interact with data.
+- **watsonx.data intelligence Text2SQL** converts natural language questions into executable SQL.
 
 ---
 
-## Data Security & Encryption 
-- Protects sensitive data through **masking, encryption, and access controls**.  
-- Enhances **data governance** and regulatory compliance.  
+## Data Security & Encryption
+- Protects sensitive data through **masking, encryption, and access controls**.
+- Enhances **data governance** and regulatory compliance.
 
 ---
 
 ## Getting Started
 
-Clone this repository:
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/ibm-self-serve-assets/building-blocks.git
+   cd building-blocks/data-for-ai
+   ```
 
-```bash
-git clone https://github.com/your-org/building-block-agents.git
-cd data-for-ai
-```
+2. **Explore the building blocks**:
+   - [`data-ingestion/`](./data-ingestion/) - Ingest unstructured, structured, and semi-structured data
+   - [`zero-copy-lakehouse/`](./zero-copy-lakehouse/) - Query across data sources without duplication
+   - [`vector-search/`](./vector-search/) - Semantic search for GenAI pipelines
+   - [`question-and-answer/`](./question-and-answer/) - RAG and Text-to-SQL capabilities
+   - [`data-security-and-encryption/`](./data-security-and-encryption/) - Data protection and governance
 
-Review the accelerators inside the repo:
+3. **Navigate to specific building block** and follow the README in each directory
 
-- `zero-copy-lakehouse/`  
-- `vector-search/`  
-- `q-and-a/`  
-- `data-security-and-encryption/` 
-
-Follow the documentation in each folder to integrate the accelerator into your application.
-
----
 
 ## Contributing
 
