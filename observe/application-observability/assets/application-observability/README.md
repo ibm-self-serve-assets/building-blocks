@@ -14,7 +14,7 @@
 This modular Python Dash application provides comprehensive observability insights for the **finvault** application using IBM Instana. It visualizes service health metrics, error rates, latency trends, and provides real-time monitoring of your application's performance.
 
 ### Target Application
-- **Primary Application**: `finvault`
+- **Primary Application**: `Retail`
 - **Configurable**: Easily switch to other applications via `.env` file
 
 ---
