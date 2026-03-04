@@ -17,7 +17,7 @@ The Building Block is a **reference implementation framework** that accelerates 
 - Seamlessly **integrate IBM services** like **watsonx.ai**, **watsonx.data**, **Instana**, **Turbonomic** abd other IBM offerings with partner and open-source ecosystems.  
 - Present **business-aligned outcomes** Showcasing seamless integration and value delivery through reusable building blocks that highlight the full potential of IBM’s capabilities.
 
-<img width="1696" height="901" alt="Building_Blocks" src="https://github.com/user-attachments/assets/df2d0cd3-a2ea-4c42-a24b-a03eed22b1e2" />
+<img width="1336" height="767" alt="Screenshot 2026-03-04 at 8 01 52 AM" src="https://github.com/user-attachments/assets/ceb48ee3-afb6-45e1-803b-0f1c3a2ae4da" />
 
 ---
 
@@ -42,43 +42,12 @@ Examples: Application observability and network performance monitoring.
 **Optimize** – AI-powered solutions to detect risks early, enforce compliance continuously, and automate remediation across application environments.  
 Examples: FinOps-driven cost optimization, automated resource management, and compliance with resilience frameworks.  
 
+<img width="1685" height="883" alt="Screenshot 2026-03-04 at 8 02 23 AM" src="https://github.com/user-attachments/assets/de78dc1f-87ab-41c2-9db6-b14ebcf3dbc9" />
 
 Our easy-to-consume, fully supported building blocks enable engineering teams to accelerate delivery, enhance mission-critical application stacks, and seamlessly integrate AI into enterprise and partner ecosystems.
 
 ---
 
-## Enterprise Architecture  
-The high-level enterprise architecture outlines the integration of **frontend applications (React-based UI)**, **backend services (API and orchestration layers)**, **AI models (watsonx.ai/Granite)**, and **observability/automation services (Instana, Turbonomic)**.  
-This modular design enables **end-to-end traceability, scalability, and governance**, ensuring the solution can adapt to both technical and business demands.  
-
----
-
-## Code Assets
-1. React Frontend (Demo Repo)
-Provides the demo UI with React + Tailwind + shadcn/ui.
-Includes modular components for invoking watsonx.ai endpoints and visualizing AI results.
-Optimized for client demos with lightweight configuration options.
-
-2. Integration Code
-Python/Node.js scripts for invoking AI endpoints and orchestrating workflows.
-Terraform modules & Helm charts for infrastructure-as-code automation.
-Prebuilt connectors for monitoring (Instana) and resource optimization (Turbonomic).
-
----
-
-## Accessing the Software (via TechZone)
-
-Navigate to [IBM TechZone](https://techzone.ibm.com/). 
-
----
-
-## Demo Value Proposition
-
-When demonstrating the Building Blocks, emphasize:
-
-- AI-Driven Outcomes – watsonx.ai generating actionable insights.
-- Governance & Compliance – watsonx.governance enforcing trust and auditability.
-- Data Readiness – watsonx.data providing governed data pipelines.
 - Observability – Instana offering real-time application performance metrics.
 - Optimization – Turbonomic ensuring cost efficiency and workload balance.
 
