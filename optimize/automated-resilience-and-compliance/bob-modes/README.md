@@ -30,8 +30,19 @@ governance, repeatability, and domain accuracy are critical.
 
 ### Application Resilience Mode
 
-**File:** `application-resilience.yaml`.
-**Location:** `Bob Modes/Base Modes/application-resilience.yaml`
+**File:** [`application-resilience.yaml`](base-modes/application-resilience.yaml:1)
+**Location:** `bob-modes/base-modes/application-resilience.yaml`
+
+This mode enhances IBM Bob with application resilience and compliance capabilities, including:
+
+- Python Dash application development for IBM Concert APIs
+- Vulnerability management and CVE tracking
+- Application monitoring and certificate lifecycle management
+- Interactive data visualizations with Plotly
+- Multi-tab interfaces with dynamic data loading
+- Production-ready error handling and logging
+
+Use this mode when building dashboards for vulnerability management, compliance tracking, or application resilience monitoring.
 
 ------------------------------------------------------------------------
 
@@ -60,6 +71,8 @@ Custom modes can be extended or modified to include:
 
 You can install custom modes using one of the following methods.
 
+For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
+
 ------------------------------------------------------------------------
 
 ### Method 1: Copy to Bob's Global Modes Directory (Recommended)
@@ -67,13 +80,13 @@ You can install custom modes using one of the following methods.
 #### Windows
 
 ``` powershell
-Copy-Item application-observability.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
+Copy-Item base-modes/application-resilience.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
 ```
 
 #### Linux / macOS
 
 ``` bash
-cp application-observability.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+cp base-modes/application-resilience.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
 ```
 
 After copying, restart IBM Bob for the new mode to become available.
@@ -85,10 +98,53 @@ After copying, restart IBM Bob for the new mode to become available.
 If you prefer not to copy files, you can configure IBM Bob to reference
 this directory directly.
 
-1.  Open IBM Bob configuration settings\
-2.  Add the local directory path under custom modes\
+1.  Open IBM Bob configuration settings
+2.  Add the local directory path under custom modes
 3.  Restart IBM Bob
 
 This approach is useful for development and version-controlled mode
 updates.
+
+------------------------------------------------------------------------
+
+## Verifying Installation
+
+After installation, verify the mode is available:
+
+1. Restart IBM Bob (VS Code)
+2. Open IBM Bob chat interface
+3. Look for "🛡️ Automate Resilience" in the mode selector
+4. Select the mode to start using application resilience capabilities
+
+------------------------------------------------------------------------
+
+## Troubleshooting
+
+### Mode Not Appearing
+
+- Verify the YAML file is in the correct location
+- Check for YAML syntax errors using a YAML validator
+- Restart IBM Bob completely (close and reopen VS Code)
+- Check IBM Bob logs for any mode loading errors
+
+### Permission Issues
+
+- Ensure you have write permissions to the configuration directories
+- On Linux/macOS, you may need to create directories if they don't exist:
+  ```bash
+  mkdir -p ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+  ```
+
+------------------------------------------------------------------------
+
+## What's Next?
+
+Once the mode is installed:
+
+1. **Explore Capabilities**: Ask Bob about IBM Concert API integration
+2. **Build Dashboards**: Create vulnerability management dashboards
+3. **Monitor Applications**: Track CVEs and compliance metrics
+4. **Visualize Data**: Generate interactive charts and reports
+
+For more information on using the Application Resilience mode, refer to the main README in the parent directory.
 
