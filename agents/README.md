@@ -1,6 +1,8 @@
 # Agents Building Blocks
 
-Thes Agents Building Blocks provide ready-to-use accelerators that make it easier to operationalize AI use cases. You can learn more in the [Agent Building Blocks documentation site](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/).
+These Agents Building Blocks provide ready-to-use accelerators that make it easier to operationalize AI use cases.
+
+📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/)**
 
 ---
 

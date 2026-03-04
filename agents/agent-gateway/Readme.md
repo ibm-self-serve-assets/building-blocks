@@ -4,6 +4,8 @@
 
 The **AI Gateway** building block provides a unified gateway for selecting the right LLM model and securely accessing the right tools and agents. It serves as a centralized orchestration layer that enables seamless integration with multiple foundation models and external systems while maintaining enterprise-grade security and governance.
 
+📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/ai-gateway/)**
+
 ## What It Does
 
 - **Model Gateway**: Unified API and orchestration layer for multiple foundation models (OpenAI, Anthropic, Google, IBM watsonx.ai)
@@ -63,7 +65,7 @@ Set up model gateway and ContextForge for your use case:
 ## Assets & Resources
 
 - [IBM MCP Context Forge](https://github.com/IBM/mcp-context-forge) - Open-source MCP Gateway, Proxy, and Registry
-- [Model Gateway Guide](./model-gateway-guide/) - Integration examples for OpenAI, Anthropic, Google Gemini, and more
+- [Model Gateway Guide](./assets/model-gateway-guide/) - Integration examples for OpenAI, Anthropic, Google Gemini, and more
 
 ---
 
