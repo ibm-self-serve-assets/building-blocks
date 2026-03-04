@@ -51,7 +51,7 @@ strategy, or resilience engineering initiatives.
 
 Each mode YAML file typically includes:
 
--   Mode metadata (name, description, version)/
+-   Mode metadata (name, description, version).
 -   Behavioral instructions.
 -   Domain context.
 -   Response formatting rules.

@@ -118,33 +118,5 @@ After installation, verify the mode is available:
 
 ------------------------------------------------------------------------
 
-## Troubleshooting
 
-### Mode Not Appearing
-
-- Verify the YAML file is in the correct location
-- Check for YAML syntax errors using a YAML validator
-- Restart IBM Bob completely (close and reopen VS Code)
-- Check IBM Bob logs for any mode loading errors
-
-### Permission Issues
-
-- Ensure you have write permissions to the configuration directories
-- On Linux/macOS, you may need to create directories if they don't exist:
-  ```bash
-  mkdir -p ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
-  ```
-
-------------------------------------------------------------------------
-
-## What's Next?
-
-Once the mode is installed:
-
-1. **Explore Capabilities**: Ask Bob about IBM Concert API integration
-2. **Build Dashboards**: Create vulnerability management dashboards
-3. **Monitor Applications**: Track CVEs and compliance metrics
-4. **Visualize Data**: Generate interactive charts and reports
-
-For more information on using the Application Resilience mode, refer to the main README in the parent directory.
 
