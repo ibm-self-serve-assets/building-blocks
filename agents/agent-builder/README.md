@@ -24,7 +24,7 @@ The **Agent Builder** building block enables developers to rapidly create autono
 
 ### 1. Explore Pre-existing Assets
 Browse the sample projects and demos to understand agent capabilities and implementation patterns:
-- Review the [Contextual Knowledge Hub](./contextual-knowledge-hub/) for working examples
+- Review the [Contextual Knowledge Hub](./assets/contextual-knowledge-hub/) for working examples
 - Study existing agent configurations and integrations
 
 ### 2. Build Your Own Agent
@@ -36,9 +36,9 @@ Use Bob modes to start building custom agents:
 ## Agent Builder Bob Modes
 
 Explore Bob modes for guided agent development:
-- [Agent Builder Base Mode](../ibm-bob/agent-builder-bob-modes/base-modes/agent-builder-base-mode) - Access agent builder modes and configurations
-- [Build Domain Agents](../ibm-bob/agent-builder-bob-modes/custom-modes/domain-agent-builder/) - Build custom domain-specific agents
-- [Voice Agent Builder](../ibm-bob/agent-builder-bob-modes/custom-modes/voice-agent-builder/) - Build voice-enabled agents with multi-channel support (phone, WhatsApp, SMS, Slack)
+- [Agent Builder Base Mode](./bob-modes/agent-builder-bob-modes/base-modes/agent-builder-base-mode) - Access agent builder modes and configurations
+- [Build Domain Agents](./bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder/) - Build custom domain-specific agents
+- [Voice Agent Builder](./bob-modes/agent-builder-bob-modes/custom-modes/voice-agent-builder/) - Build voice-enabled agents with multi-channel support (phone, WhatsApp, SMS, Slack)
 
 ## Assets & Sample Projects
 
