@@ -1,13 +1,9 @@
 # Technology Building Blocks – Embeddable AI & Automation 
 
 ## Introduction
-The **Technology Building Block** represents a curated set of **IBM capabilities** engineered by Build Engineering team to accelerate solution delivery and highlight the technical and business value of the IBM technology stack, with a strong focus on Embeddable AI. Each building block is designed to demonstrate the seamless integration of IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and speed time-to-value. 
+The **Technology Building Block** is a curated set of IBM capabilities developed by the Build Engineering team to accelerate solution delivery and demonstrate the value of the IBM technology stack, with a focus on Embeddable AI.
 
-The assets are structured around two key objectives: 
-- **Engineering Enablement** – Providing production-ready codebases, deployment automation, and integration templates that reduce development overhead and accelerate delivery. 
-- **Partner & Client Engagement** – Equipping teams with demo-ready assets that can be easily tailored to customer or partner environments, ensuring impactful solution showcases. 
-
-By standardizing these Building Blocks, we establish **consistent delivery practices**, **scalable architectures**, and **repeatable partner demonstrations**, enabling teams to deliver measurable outcomes in **governance, observability, scalability, and cost optimization**.
+These building blocks showcase seamless integration across IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and reduce time-to-value. 
 
 ---
 
