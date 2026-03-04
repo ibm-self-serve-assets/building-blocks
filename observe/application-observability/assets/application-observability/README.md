@@ -414,7 +414,7 @@ We welcome contributions! Please follow these guidelines:
 
 <div align="center">
 
-**Built with ❤️ using Python, Dash, and IBM Instana**
+**Built with using IBM Bob, Python, Dash, and IBM Instana**
 
 [⬆ Back to Top](#instana-observability-dashboard)
 
