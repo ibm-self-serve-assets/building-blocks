@@ -1,8 +1,25 @@
-# Bob Modes
+# 🤖 Bob Modes for Application Observability
 
-This directory contains custom IBM Bob mode configurations designed to
-extend IBM Bob's capabilities with domain-specific intelligence and
-workflow orchestration.
+---
+
+## 🔗 Navigation
+
+**Parent:**
+- [← Back to Application Observability](../README.md)
+
+**Assets:**
+- [Observability Dashboard](../assets/application-observability/README.md)
+- [Instana MCP Server](../assets/instana-mcp/)
+
+**Other Building Blocks:**
+- [Build & Deploy](../../../build-and-deploy/authentication-mgmt/README.md)
+- [Optimize](../../../optimize/finops/README.md)
+
+---
+
+## Overview
+
+This directory contains custom IBM Bob mode configurations designed to extend IBM Bob's capabilities with domain-specific intelligence and workflow orchestration.
 
 Bob modes define structured prompts, behavioral constraints, and domain
 context that enable IBM Bob to operate with specialized expertise across
@@ -224,4 +241,25 @@ IBM Bob stores MCP server configurations in a JSON file. The location varies by 
 4. The MCP server should automatically connect
 5. You can verify the connection by asking Bob to use one of the MCP tools (e.g., "Get incidents from the last 24 hours")
 
-------------------------------------------------------------------------
+---
+
+## 📚 Related Resources
+
+### Observability Assets
+- [Application Observability Overview](../README.md)
+- [Instana Dashboard](../assets/application-observability/README.md)
+  - [Quick Start](../assets/application-observability/QUICKSTART.md)
+  - [Project Summary](../assets/application-observability/PROJECT_SUMMARY.md)
+
+### Applications to Monitor
+- [Retail Application](../../../build-and-deploy/Iaas/assets/retailapp/README.md)
+- [Ansible Deployment](../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+
+### Related Building Blocks
+- [Automated Resilience](../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Network Performance](../../network-performance/README.md)
+- [FinOps](../../../optimize/finops/README.md)
+
+---
+
+**[⬆ Back to Top](#-bob-modes-for-application-observability)**

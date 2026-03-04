@@ -1,4 +1,14 @@
-# Ansible Retail Application Deployment - Project Summary
+# 📊 Ansible Retail Application Deployment - Project Summary
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Main README](README.md)
+- [← Quick Start Guide](QUICKSTART.md)
+- [Retail Application →](../retailapp/README.md)
+
+---
 
 ## Overview
 
@@ -346,3 +356,25 @@ ansible-playbook playbooks/deploy-development.yml --skip-tags seed
 This Ansible-based deployment automation provides a production-ready, maintainable, and scalable solution for deploying the Retail application on OpenShift. It successfully replaces the script-based approach while adding significant improvements in reliability, flexibility, and ease of use.
 
 The solution is ready for immediate use and can be easily extended or customized for specific requirements.
+
+---
+
+## 📚 Related Resources
+
+### Documentation
+- [Main README](README.md) - Comprehensive guide
+- [Quick Start Guide](QUICKSTART.md) - Get started quickly
+
+### Related Applications
+- [Retail Application](../retailapp/README.md) - Application overview
+- [Deployment Steps](../retailapp/deploy-steps.md) - Manual deployment
+- [JMeter Testing](../retailapp/jmeter/README.md) - Load testing
+
+### Building Blocks
+- [IaaS Overview](../../README.md)
+- [Application Observability](../../../../../observe/application-observability/README.md)
+- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+
+---
+
+**[⬆ Back to Top](#-ansible-retail-application-deployment---project-summary)**

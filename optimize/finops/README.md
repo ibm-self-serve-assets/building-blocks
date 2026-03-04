@@ -1,4 +1,31 @@
-# Creating a Technology Building Block for FinOps using IBM Turbonomic / IBM Apptio
+# 💰 FinOps with IBM Turbonomic / IBM Apptio
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [Key Aspects to Consider](#key-aspects-to-consider)
+- [Sample Folder Structure](#-sample-folder-structure)
+- [Related Resources](#related-resources)
+
+---
+
+## 🔗 Navigation
+
+**Optimize Building Blocks:**
+- [← Back to Optimize](../README.md)
+- [Automated Resilience →](../automated-resilience-and-compliance/assets/automate-resilience/README.md)
+
+**Other Categories:**
+- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
+- [Observe](../../observe/application-observability/README.md)
+
+---
+
+## Overview
+
+Creating a Technology Building Block for FinOps using IBM Turbonomic / IBM Apptio
 
 ## Key Aspects to Consider
 
@@ -97,3 +124,30 @@ finops-turbonomic-building block/
     ├── architecture-diagram.png                 # Architecture diagram for building block
     ├── finops-best-practices.md                 # Turbonomic FinOps practices
     └── troubleshooting.md                       # Common issues and fixes
+```
+
+---
+
+## 📚 Related Resources
+
+### Optimize Building Blocks
+- [Automated Resilience](../automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+  - [Quick Start](../automated-resilience-and-compliance/assets/automate-resilience/QUICKSTART.md)
+  - [Project Summary](../automated-resilience-and-compliance/assets/automate-resilience/PROJECT_SUMMARY.md)
+
+### Observe Building Blocks
+- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
+  - [Dashboard](../../observe/application-observability/assets/application-observability/README.md)
+- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+
+### Build & Deploy Building Blocks
+- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
+- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
+- [IaaS](../../build-and-deploy/Iaas/README.md) - Infrastructure as a Service
+- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md)
+- [Code Assistant](../../build-and-deploy/code-assistant/README.md)
+- [iPaaS](../../build-and-deploy/ipaas/README.md)
+
+---
+
+**[⬆ Back to Top](#-finops-with-ibm-turbonomic--ibm-apptio)**

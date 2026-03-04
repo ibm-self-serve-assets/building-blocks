@@ -1,4 +1,14 @@
-# Quick Start Guide - Instana Observability Dashboard
+# ⚡ Quick Start Guide - Instana Observability Dashboard
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Main README](README.md)
+- [Project Summary →](PROJECT_SUMMARY.md)
+- [← Application Observability](../../README.md)
+
+---
 
 This guide will help you get the Instana Observability Dashboard up and running in minutes.
 
@@ -173,3 +183,16 @@ The health score (0-100) is calculated based on:
 ---
 
 **Ready to monitor your applications!** 🚀
+
+---
+
+## 📚 Related Resources
+
+- [Main README](README.md) - Comprehensive documentation
+- [Project Summary](PROJECT_SUMMARY.md) - Detailed overview
+- [Application Observability](../../README.md) - Parent guide
+- [Bob Modes](../../bob-modes/README.md) - Custom modes
+
+---
+
+**[⬆ Back to Top](#-quick-start-guide---instana-observability-dashboard)**

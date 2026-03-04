@@ -1,4 +1,36 @@
-# Best Practices for IBM watsonx Code Assistant Building Blocks Development
+# 💻 IBM watsonx Code Assistant Building Blocks
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [Objective](#objective)
+- [Best Practices](#best-practices)
+- [Enterprise Architecture Overview](#enterprise-architecture-overview)
+- [Demo Recording Best Practices](#demo-recording-best-practices)
+- [Folder Structure](#folder-structure-for-code-development)
+- [Related Resources](#related-resources)
+
+---
+
+## 🔗 Navigation
+
+**Building Blocks:**
+- [← Authentication Management](../authentication-mgmt/README.md)
+- [← Back to Build & Deploy](../README.md)
+- [IaaS Building Blocks →](../Iaas/README.md)
+- [iPaaS Building Blocks →](../ipaas/README.md)
+
+**Other Categories:**
+- [Observe Building Blocks](../../observe/application-observability/README.md)
+- [Optimize Building Blocks](../../optimize/finops/README.md)
+
+---
+
+## Overview
+
+Best Practices for IBM watsonx Code Assistant Building Blocks Development
 
 ## Objective
 Develop a **demo building block for IBM watsonx Code Assistant** that demonstrates:
@@ -124,3 +156,27 @@ watsonx-code-assistant-demo/
     ├── unit/
     ├── integration/
     └── governance/
+
+---
+
+## 📚 Related Resources
+
+### Build & Deploy Building Blocks
+- [Authentication Management](../authentication-mgmt/README.md) - IBM Security Verify integration
+- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Terraform-based infrastructure
+  - [Ansible Deployment](../Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment with Ansible
+  - [Retail Application](../Iaas/assets/retailapp/README.md) - Sample retail app deployment
+- [Integration Platform as a Service (iPaaS)](../ipaas/README.md) - Integration workflows
+
+### Observe Building Blocks
+- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
+  - [Dashboard Application](../../observe/application-observability/assets/application-observability/README.md)
+- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+
+### Optimize Building Blocks
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+
+---
+
+**[⬆ Back to Top](#-ibm-watsonx-code-assistant-building-blocks)**

@@ -1,4 +1,14 @@
-# IBM Concert Insights Dashboard - Project Summary
+# 📊 IBM Concert Insights Dashboard - Project Summary
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Main README](README.md)
+- [← Quick Start Guide](QUICKSTART.md)
+- [← Optimize Building Blocks](../../README.md)
+
+---
 
 ## Overview
 
@@ -339,3 +349,27 @@ This dashboard is provided as-is for use with IBM Concert APIs.
 ---
 
 **Built with ❤️ using IBM Bob - Automate Resilience Mode**
+
+---
+
+## 📚 Related Resources
+
+### Documentation
+- [Main README](README.md) - Comprehensive guide
+- [Quick Start Guide](QUICKSTART.md) - Get started quickly
+
+### Optimize Building Blocks
+- [FinOps](../../../finops/README.md) - Cost optimization
+
+### Observe Building Blocks
+- [Application Observability](../../../../observe/application-observability/README.md)
+  - [Dashboard](../../../../observe/application-observability/assets/application-observability/README.md)
+- [Network Performance](../../../../observe/network-performance/README.md)
+
+### Build & Deploy
+- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md)
+- [Ansible Deployment](../../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+
+---
+
+**[⬆ Back to Top](#-ibm-concert-insights-dashboard---project-summary)**

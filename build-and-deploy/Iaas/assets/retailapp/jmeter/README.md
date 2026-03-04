@@ -1,5 +1,15 @@
 
-# Retail Application – JMeter Spike Test Framework
+# ⚡ Retail Application – JMeter Spike Test Framework
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Retail App](../README.md)
+- [← Deployment Steps](../deploy-steps.md)
+- [← Ansible Deployment](../../deploy-bob-anisble/README.md)
+
+---
 
 This repository contains a **JMeter-based spike test framework** used to simulate load on the Retail Sample Application backend.
 
@@ -114,3 +124,21 @@ These can be analyzed using:
 - Load parameters can be tuned in `run_spike.sh`
 - JMeter must have access to the `users.csv` file
 - Ensure sufficient cluster capacity before spike testing
+
+---
+
+## 📚 Related Resources
+
+### Application & Deployment
+- [Retail Application Overview](../README.md)
+- [Deployment Steps](../deploy-steps.md)
+- [Ansible Deployment Guide](../../deploy-bob-anisble/README.md)
+
+### Monitoring & Optimization
+- [Application Observability](../../../../../../observe/application-observability/README.md) - Monitor performance with Instana
+- [Automated Resilience](../../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../../../../../optimize/finops/README.md) - Cost optimization
+
+---
+
+**[⬆ Back to Top](#-retail-application--jmeter-spike-test-framework)**

@@ -1,9 +1,18 @@
-# Retail Application Deployment Guide
+# 📦 Retail Application Deployment Guide
 
-**Purpose:** End-to-end instructions for deploying the Retail Sample App
-to an OpenShift cluster using the automated deployment script.
+---
 
-------------------------------------------------------------------------
+## 🔗 Navigation
+
+- [← Back to Retail App](README.md)
+- [← Ansible Deployment (Recommended)](../deploy-bob-anisble/README.md)
+- [JMeter Load Testing →](jmeter/README.md)
+
+---
+
+**Purpose:** End-to-end instructions for deploying the Retail Sample App to an OpenShift cluster using the automated deployment script.
+
+---
 
 ## 1. Overview
 
@@ -217,3 +226,25 @@ Verify backend route:
 
 -   Script must run on RHEL/CentOS compatible environments.
 -   Docker Hub rate limits may apply.
+
+---
+
+## 📚 Related Resources
+
+### Deployment Options
+- [Ansible Deployment (Recommended)](../deploy-bob-anisble/README.md) - Production-ready automation
+  - [Quick Start Guide](../deploy-bob-anisble/QUICKSTART.md)
+  - [Project Summary](../deploy-bob-anisble/PROJECT_SUMMARY.md)
+- [Retail Application Overview](README.md)
+
+### Testing & Monitoring
+- [JMeter Load Testing](jmeter/README.md) - Performance testing
+- [Application Observability](../../../../../observe/application-observability/README.md) - Monitor with Instana
+
+### Building Blocks
+- [IaaS Overview](../../README.md)
+- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+
+---
+
+**[⬆ Back to Top](#-retail-application-deployment-guide)**

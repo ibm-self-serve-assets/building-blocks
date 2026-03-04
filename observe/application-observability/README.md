@@ -1,4 +1,45 @@
-# Key Aspects for Creating a Technology Building Block: Application Observability with IBM Instana
+# 🔍 Application Observability with IBM Instana
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [Clear Objectives](#1-clear-objectives)
+- [Environment Setup](#2-environment-setup)
+- [Agent Deployment](#3-agent-deployment)
+- [Key Observability Features](#4-key-observability-features)
+- [Application Scenarios](#5-application-scenarios)
+- [Integration Points](#6-integration-points)
+- [Demo Flow & Storytelling](#7-demo-flow--storytelling)
+- [Documentation & Reusability](#8-documentation--reusability)
+- [Visualization & User Experience](#9-visualization--user-experience)
+- [Best Practices](#10-best-practices)
+- [Recommended Structure](#recommended-structure-for-a-sample-ibm-instana-demo)
+- [Related Resources](#related-resources)
+
+---
+
+## 🔗 Navigation
+
+**Observe Building Blocks:**
+- [← Back to Observe](../README.md)
+- [Network Performance →](../network-performance/README.md)
+
+**Assets:**
+- [Observability Dashboard →](assets/application-observability/README.md)
+- [Instana MCP Server →](assets/instana-mcp/)
+- [Bob Modes →](bob-modes/README.md)
+
+**Other Categories:**
+- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
+- [Optimize](../../optimize/finops/README.md)
+
+---
+
+## Overview
+
+Key Aspects for Creating a Technology Building Block: Application Observability with IBM Instana
 
 ## 1. Clear Objectives
 - Define the **purpose** of the building block  (e.g., monitoring microservices, APM, incident response).
@@ -102,6 +143,29 @@ instana-building block/
 - **`dashboards/`** → Exported Instana dashboards for reuse.  
 - **`traces/`** → Pre-captured trace data for building block fallback.  
 - **`alerts/`** → Alert rules for errors, latency, anomalies.  
-- **`docs/`** → Solution Architecture + documentation.  
+- **`docs/`** → Solution Architecture + documentation.
 
 ---
+
+## 📚 Related Resources
+
+### Observability Assets
+- [Instana Observability Dashboard](assets/application-observability/README.md) - Python Dash application
+  - [Quick Start Guide](assets/application-observability/QUICKSTART.md)
+  - [Project Summary](assets/application-observability/PROJECT_SUMMARY.md)
+- [Instana MCP Server](assets/instana-mcp/) - MCP integration
+- [Bob Modes](bob-modes/README.md) - Custom Bob modes for observability
+
+### Build & Deploy Building Blocks
+- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample app to monitor
+- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md)
+
+### Optimize Building Blocks
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../optimize/finops/README.md) - Cost optimization
+- [Network Performance](../network-performance/README.md) - Network monitoring
+
+---
+
+**[⬆ Back to Top](#-application-observability-with-ibm-instana)**

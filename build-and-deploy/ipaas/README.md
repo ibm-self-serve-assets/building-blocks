@@ -1,4 +1,36 @@
-# IBM Integration platform as a service (iPaaS) Building Blocks Development Best Practises
+# 🔄 IBM Integration Platform as a Service (iPaaS) Building Blocks
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [Objective](#objective)
+- [Best Practices](#best-practices)
+- [Enterprise Architecture Overview](#enterprise-architecture-overview)
+- [Demo Flow & Recording](#demo-flow--recording)
+- [Differentiation from Competitors](#differentiation-from-competitors)
+- [Folder Structure](#folder-structure-for-code-development)
+- [Related Resources](#related-resources)
+
+---
+
+## 🔗 Navigation
+
+**Building Blocks:**
+- [← IaaS Building Blocks](../Iaas/README.md)
+- [← Back to Build & Deploy](../README.md)
+- [Authentication Management](../authentication-mgmt/README.md)
+- [Code Assistant](../code-assistant/README.md)
+
+**Other Categories:**
+- [Observe Building Blocks](../../observe/application-observability/README.md)
+- [Optimize Building Blocks](../../optimize/finops/README.md)
+
+---
+
+## Overview
+
 iPaaS allows enterprises to create and deploy integration flows that seamlessly connect applications and data across public and private clouds, as well as between cloud environments and on-premises data centers. These platforms help address enterprise integration and data management challenges by offering capabilities such as pre-built connectors, mapping, and data transformations, enabling organizations to orchestrate integration flows and ensure interoperability across diverse systems.
 
 Additionally, iPaaS solutions support a wide range of integration needs, including B2B integration, IoT connectivity, cloud-to-cloud integration, event stream processing, managed file transfer, and integrations across different business platforms and systems.
@@ -121,3 +153,28 @@ ibm-ipaas-demo/
     ├── unit/
     ├── integration/
     └── governance/
+```
+
+---
+
+## 📚 Related Resources
+
+### Build & Deploy Building Blocks
+- [Authentication Management](../authentication-mgmt/README.md) - IBM Security Verify integration
+- [Code Assistant](../code-assistant/README.md) - AI-powered code assistance
+- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Terraform-based infrastructure
+  - [Ansible Deployment](../Iaas/assets/deploy-bob-anisble/README.md)
+  - [Retail Application](../Iaas/assets/retailapp/README.md)
+
+### Observe Building Blocks
+- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
+  - [Dashboard Application](../../observe/application-observability/assets/application-observability/README.md)
+- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+
+### Optimize Building Blocks
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+
+---
+
+**[⬆ Back to Top](#-ibm-integration-platform-as-a-service-ipaas-building-blocks)**

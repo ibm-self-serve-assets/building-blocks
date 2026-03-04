@@ -1,4 +1,14 @@
-# Quick Start Guide
+# ⚡ Quick Start Guide
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Main README](README.md)
+- [Project Summary →](PROJECT_SUMMARY.md)
+- [Retail Application →](../retailapp/README.md)
+
+---
 
 This guide will help you deploy the Retail application to OpenShift in minutes.
 
@@ -134,4 +144,17 @@ ansible-playbook -i inventories/production/hosts playbooks/deploy-production.yml
 
 **Deployment Time**: Approximately 10-15 minutes for first-time deployment
 
-**Questions?** Check the main README.md or create an issue in the repository.
+**Questions?** Check the main [README.md](README.md) or create an issue in the repository.
+
+---
+
+## 📚 Related Resources
+
+- [Main README](README.md) - Comprehensive documentation
+- [Project Summary](PROJECT_SUMMARY.md) - Detailed project overview
+- [Retail Application](../retailapp/README.md) - Application details
+- [Deployment Steps](../retailapp/deploy-steps.md) - Manual deployment guide
+
+---
+
+**[⬆ Back to Top](#-quick-start-guide)**

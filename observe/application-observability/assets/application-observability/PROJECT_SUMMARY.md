@@ -1,4 +1,14 @@
-# Project Summary - Instana Observability Dashboard
+# 📊 Project Summary - Instana Observability Dashboard
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Main README](README.md)
+- [← Quick Start Guide](QUICKSTART.md)
+- [← Application Observability](../../README.md)
+
+---
 
 ## Overview
 
@@ -326,5 +336,30 @@ The Instana Observability Dashboard is a complete, production-ready application 
 **Project Status**: ✅ COMPLETE  
 **Version**: 1.0.0  
 **Last Updated**: 2026-03-04  
-**Target Application**: finvault  
+**Target Application**: finvault
 **Technology**: Python Dash + IBM Instana
+
+---
+
+## 📚 Related Resources
+
+### Documentation
+- [Main README](README.md) - Comprehensive guide
+- [Quick Start Guide](QUICKSTART.md) - Get started quickly
+
+### Observability
+- [Application Observability Overview](../../README.md)
+- [Bob Modes](../../bob-modes/README.md)
+
+### Applications
+- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md)
+- [Ansible Deployment](../../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+
+### Related Building Blocks
+- [Automated Resilience](../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../../../optimize/finops/README.md)
+- [Network Performance](../../../network-performance/README.md)
+
+---
+
+**[⬆ Back to Top](#-project-summary---instana-observability-dashboard)**

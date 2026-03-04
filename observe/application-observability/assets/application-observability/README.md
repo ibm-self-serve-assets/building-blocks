@@ -1,7 +1,25 @@
-# Instana Observability Dashboard
+# 📊 Instana Observability Dashboard
 
-> **A unified dashboard for monitoring application health and performance**  
+> **A unified dashboard for monitoring application health and performance**
 > *Powered by IBM Instana*
+
+---
+
+## 🔗 Navigation
+
+**Parent:**
+- [← Back to Application Observability](../../README.md)
+
+**Documentation:**
+- [Quick Start Guide →](QUICKSTART.md)
+- [Project Summary →](PROJECT_SUMMARY.md)
+
+**Other Building Blocks:**
+- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample app to monitor
+- [Automated Resilience](../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Network Performance](../../../network-performance/README.md)
+
+---
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/downloads/)
 [![Dash](https://img.shields.io/badge/dash-2.14.2-green)](https://dash.plotly.com/)
@@ -414,8 +432,31 @@ We welcome contributions! Please follow these guidelines:
 
 <div align="center">
 
-**Built with using IBM Bob, Python, Dash, and IBM Instana**
+**Built with ❤️ using IBM Bob, Python, Dash, and IBM Instana**
 
-[⬆ Back to Top](#instana-observability-dashboard)
+---
+
+## 📚 Related Resources
+
+### Documentation
+- [Quick Start Guide](QUICKSTART.md) - Get started in minutes
+- [Project Summary](PROJECT_SUMMARY.md) - Detailed project overview
+
+### Observability
+- [Application Observability Overview](../../README.md)
+- [Bob Modes](../../bob-modes/README.md) - Custom observability modes
+
+### Applications to Monitor
+- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md)
+- [Ansible Deployment](../../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+
+### Related Building Blocks
+- [Automated Resilience](../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../../../optimize/finops/README.md)
+- [Network Performance](../../../network-performance/README.md)
+
+---
+
+[⬆ Back to Top](#-instana-observability-dashboard)
 
 </div>

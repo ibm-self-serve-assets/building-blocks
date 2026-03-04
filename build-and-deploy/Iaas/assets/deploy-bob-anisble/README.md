@@ -1,8 +1,29 @@
-# Ansible-Based Retail Application Deployment for OpenShift
+# 🚀 Ansible-Based Retail Application Deployment for OpenShift
+
+---
+
+## 🔗 Navigation
+
+**Parent:**
+- [← Back to IaaS Building Blocks](../../README.md)
+- [Retail Application →](../retailapp/README.md)
+
+**Quick Links:**
+- [Quick Start Guide →](QUICKSTART.md)
+- [Project Summary →](PROJECT_SUMMARY.md)
+
+**Other Building Blocks:**
+- [Authentication Management](../../../../authentication-mgmt/README.md)
+- [Application Observability](../../../../../observe/application-observability/README.md)
+- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+
+---
+
+## 📋 Overview
 
 This repository contains production-ready Ansible automation for deploying the Retail application on OpenShift clusters. It replaces the previous script-based deployment approach with a robust, maintainable, and reusable Ansible solution.
 
-## Table of Contents
+## 📑 Table of Contents
 
 - [Overview](#overview)
 - [Features](#features)
@@ -409,3 +430,31 @@ For issues and questions:
 - Original deployment script by the Retail App team
 - OpenShift documentation and best practices
 - Ansible community for excellent modules and examples
+
+---
+
+## 📚 Related Resources
+
+### Quick Access
+- [Quick Start Guide](QUICKSTART.md) - Get started in minutes
+- [Project Summary](PROJECT_SUMMARY.md) - Detailed project overview
+
+### Related Applications
+- [Retail Application](../retailapp/README.md) - The application being deployed
+  - [Deployment Steps](../retailapp/deploy-steps.md)
+  - [JMeter Load Testing](../retailapp/jmeter/README.md)
+
+### Build & Deploy Building Blocks
+- [IaaS Overview](../../README.md) - Infrastructure as a Service
+- [Authentication Management](../../../../authentication-mgmt/README.md)
+- [Code Assistant](../../../../code-assistant/README.md)
+- [iPaaS](../../../../ipaas/README.md)
+
+### Observe & Optimize
+- [Application Observability](../../../../../observe/application-observability/README.md) - Monitor with Instana
+- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../../../../optimize/finops/README.md)
+
+---
+
+**[⬆ Back to Top](#-ansible-based-retail-application-deployment-for-openshift)**

@@ -1,4 +1,14 @@
-# Quick Start Guide
+# ⚡ Quick Start Guide - IBM Concert Insights Dashboard
+
+---
+
+## 🔗 Navigation
+
+- [← Back to Main README](README.md)
+- [Project Summary →](PROJECT_SUMMARY.md)
+- [← Optimize Building Blocks](../../README.md)
+
+---
 
 Get the IBM Concert Insights Dashboard up and running in 5 minutes!
 
@@ -157,3 +167,16 @@ For issues:
 - **Reset View**: Double-click charts to reset zoom
 
 Enjoy exploring your IBM Concert data! 🚀
+
+---
+
+## 📚 Related Resources
+
+- [Main README](README.md) - Comprehensive documentation
+- [Project Summary](PROJECT_SUMMARY.md) - Detailed overview
+- [FinOps](../../../finops/README.md) - Cost optimization
+- [Application Observability](../../../../observe/application-observability/README.md)
+
+---
+
+**[⬆ Back to Top](#-quick-start-guide---ibm-concert-insights-dashboard)**

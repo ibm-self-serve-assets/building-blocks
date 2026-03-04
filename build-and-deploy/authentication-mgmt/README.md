@@ -1,4 +1,36 @@
-# Creating a Technology Building Block for Authencation Management using IBM Security Verify
+# 🔐 Authentication Management with IBM Security Verify
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [Objective](#objective)
+- [Best Practices](#best-practices)
+- [Enterprise Architecture Overview](#enterprise-architecture-overview)
+- [Demo Flow](#demo-flow)
+- [Folder Structure](#suggested-folder-structure-for-code-development)
+- [Related Resources](#related-resources)
+
+---
+
+## 🔗 Navigation
+
+**Building Blocks:**
+- [← Back to Build & Deploy](../README.md)
+- [Code Assistant →](../code-assistant/README.md)
+- [IaaS Building Blocks →](../Iaas/README.md)
+- [iPaaS Building Blocks →](../ipaas/README.md)
+
+**Other Categories:**
+- [Observe Building Blocks](../../observe/application-observability/README.md)
+- [Optimize Building Blocks](../../optimize/finops/README.md)
+
+---
+
+## Overview
+
+# Creating a Technology Building Block for Authentication Management using IBM Security Verify
 
 IBM Security Verify is an Identity and Access Management (IAM) solution designed to help enterprises secure user access, protect digital identities, and ensure regulatory compliance across hybrid IT environments. It provides single sign-on (SSO), adaptive multi-factor authentication (MFA), identity governance, and lifecycle management to simplify and secure how employees, partners, and customers interact with applications and data. Security Verify enables enterprises to apply a zero-trust approach by continuously validating identities and context before granting access, thereby reducing risks of unauthorized access and insider threats.
 
@@ -122,3 +154,25 @@ ibm-security-verify-demo/
     ├── unit/
     ├── integration/
     └── governance/
+```
+
+---
+
+## 📚 Related Resources
+
+### Build & Deploy Building Blocks
+- [Code Assistant](../code-assistant/README.md) - AI-powered code assistance
+- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Terraform-based infrastructure
+- [Integration Platform as a Service (iPaaS)](../ipaas/README.md) - Integration workflows
+
+### Observe Building Blocks
+- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
+- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+
+### Optimize Building Blocks
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+
+---
+
+**[⬆ Back to Top](#-authentication-management-with-ibm-security-verify)**

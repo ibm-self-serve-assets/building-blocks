@@ -1,6 +1,37 @@
-# Infrastructure as a service (Terraform) Building Block Demo for IBM Cloud
+# 🏗️ Infrastructure as a Service (IaaS) - Terraform Building Blocks
 
-This repository provides a sample **Infrastructure as Code (IaC)** demo using Terraform on IBM Cloud.  
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [Key Aspects](#key-aspects)
+- [Example Project Structure](#example-project-structure)
+- [Cleanup](#cleanup)
+- [Related Resources](#related-resources)
+
+---
+
+## 🔗 Navigation
+
+**Building Blocks:**
+- [← Code Assistant](../code-assistant/README.md)
+- [← Back to Build & Deploy](../README.md)
+- [iPaaS Building Blocks →](../ipaas/README.md)
+
+**IaaS Assets:**
+- [Ansible Deployment Guide →](assets/deploy-bob-anisble/README.md)
+- [Retail Application →](assets/retailapp/README.md)
+
+**Other Categories:**
+- [Observe Building Blocks](../../observe/application-observability/README.md)
+- [Optimize Building Blocks](../../optimize/finops/README.md)
+
+---
+
+## Overview
+
+This repository provides a sample **Infrastructure as Code (IaC)** demo using Terraform on IBM Cloud.
 It is designed to be **simple, reusable, and cost-safe**, while showcasing best practices for demos and learning.
 
 ---
@@ -131,3 +162,32 @@ To remove resources and avoid costs:
 ```
 terraform destroy -auto-approve
 ```
+
+---
+
+## 📚 Related Resources
+
+### Build & Deploy Building Blocks
+- [Authentication Management](../authentication-mgmt/README.md) - IBM Security Verify integration
+- [Code Assistant](../code-assistant/README.md) - AI-powered code assistance
+- [Integration Platform as a Service (iPaaS)](../ipaas/README.md) - Integration workflows
+
+### IaaS Assets & Guides
+- [Ansible Deployment for Retail App](assets/deploy-bob-anisble/README.md) - Production-ready Ansible automation
+  - [Quick Start Guide](assets/deploy-bob-anisble/QUICKSTART.md)
+  - [Project Summary](assets/deploy-bob-anisble/PROJECT_SUMMARY.md)
+- [Retail Application](assets/retailapp/README.md) - Full-stack retail demo application
+  - [Deployment Steps](assets/retailapp/deploy-steps.md)
+  - [JMeter Load Testing](assets/retailapp/jmeter/README.md)
+
+### Observe Building Blocks
+- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
+- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+
+### Optimize Building Blocks
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+
+---
+
+**[⬆ Back to Top](#️-infrastructure-as-a-service-iaas---terraform-building-blocks)**

@@ -1,8 +1,28 @@
-# IBM Concert Insights Dashboard
+# 🎯 IBM Concert Insights Dashboard
+
+---
+
+## 🔗 Navigation
+
+**Parent:**
+- [← Back to Optimize](../../../README.md)
+
+**Documentation:**
+- [Quick Start Guide →](QUICKSTART.md)
+- [Project Summary →](PROJECT_SUMMARY.md)
+
+**Other Building Blocks:**
+- [Application Observability](../../../../observe/application-observability/README.md)
+- [FinOps](../../../finops/README.md)
+- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md)
+
+---
+
+## 📋 Overview
 
 A comprehensive Python Dash application for visualizing and managing IBM Concert data, including vulnerability management (CVEs), application monitoring, and certificate lifecycle tracking.
 
-## Features
+## ✨ Features
 
 ### 🔒 CVE Insights
 - **Comprehensive CVE Analytics**: View all vulnerabilities with severity-based categorization
@@ -268,3 +288,86 @@ The dashboard implements comprehensive error handling:
 | Timeout | Request timeout | Check network and API_TIMEOUT |
 | Connection | Network error | Verify CONCERT_BASE_URL |
 
+## Troubleshooting
+
+### Configuration Issues
+
+**Problem**: "Configuration validation failed"
+- **Solution**: Ensure all required variables are set in `.env` file
+
+**Problem**: "Authentication failed"
+- **Solution**: Verify `C_API_KEY` is correct (without the "C_API_KEY" prefix in .env)
+
+**Problem**: "Access forbidden"
+- **Solution**: Verify `INSTANCE_ID` matches your IBM Concert instance
+
+### API Issues
+
+**Problem**: "No data returned from API"
+- **Solution**: Check API endpoint availability and permissions
+
+**Problem**: "Request timeout"
+- **Solution**: Increase `API_TIMEOUT` in `.env` or check network connectivity
+
+### Application Issues
+
+**Problem**: "Module not found" errors
+- **Solution**: Ensure virtual environment is activated and dependencies are installed
+
+**Problem**: "Port already in use"
+- **Solution**: Change `PORT` in `.env` or stop the conflicting process
+
+## Dependencies
+
+- **dash** (2.14.2): Core Dash framework
+- **dash-bootstrap-components** (1.5.0): Bootstrap components for Dash
+- **plotly** (5.18.0): Interactive visualizations
+- **pandas** (2.1.4): Data processing
+- **requests** (2.31.0): HTTP client
+- **python-dotenv** (1.0.0): Environment variable management
+
+## Security Best Practices
+
+1. **Never commit `.env` file**: Contains sensitive credentials
+2. **Use `.env.example`**: Template for required variables
+3. **Rotate API keys**: Regularly update credentials
+4. **Restrict access**: Limit dashboard access to authorized users
+5. **Use HTTPS**: Deploy with SSL/TLS in production
+6. **Monitor logs**: Review `logs/app.log` for suspicious activity
+
+## Development
+
+### Adding New Features
+
+1. **New API endpoint**: Add method to [`api/concert_api.py`](api/concert_api.py)
+2. **New data processing**: Add method to [`utils/data_processor.py`](utils/data_processor.py)
+3. **New visualization**: Create new tab in `ui/` directory
+4. **Register callbacks**: Add callback registration in [`app.py`](app.py)
+
+### Testing API Responses
+
+Create a test script to verify API structure:
+
+```python
+from api.concert_api import ConcertAPIClient
+
+client = ConcertAPIClient()
+data = client.get_cves(limit=1)
+print(f"Sample structure: {list(data[0].keys())}")
+```
+
+## Support
+
+For issues related to:
+- **IBM Concert API**: Contact IBM Concert support
+- **Dashboard functionality**: Check logs in `logs/app.log`
+- **Configuration**: Review this README and `.env.example`
+
+## License
+
+This dashboard is provided as-is for use with IBM Concert APIs.
+
+## Version
+
+**Version**: 1.0.0  
+**Last Updated**: 2026-02-16
