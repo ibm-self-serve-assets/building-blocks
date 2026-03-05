@@ -28,7 +28,7 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
     If you don’t want to download the entire repository, you can download just this folder.
 
-    - Copy the URL of this folder from your browser.
+    - Copy the URL of this folder (https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder).
     - Go to: https://download-directory.github.io/.
     - Paste the folder URL there and press **Return/Enter**.
 
