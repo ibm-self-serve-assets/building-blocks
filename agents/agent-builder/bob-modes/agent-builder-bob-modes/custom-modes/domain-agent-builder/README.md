@@ -24,6 +24,16 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
 
+💡 **Tip: Download Only This Folder**
+
+If you don’t want to download the entire repository, you can download just this folder.
+
+- Copy the URL of this folder from your browser.
+- Go to: https://download-directory.github.io/.
+- Paste the folder URL there and press **Return/Enter**.
+
+This will download only the contents of the selected folder as a ZIP file.
+
 2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob. **Important**: When starting to use this Bob mode, your project folder should contain *only* the .bob folder downloaded from this custom mode. No additional files or folders should be present in the project folder to ensure Bob does not receive unwanted context while using this mode.
 
 3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
@@ -32,15 +42,17 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 5. **Answer Bob's questions.** Bob will ask multiple-choice questions to understand your requirements. Select an option, or click the pencil icon to edit and customize your answer.
 
-6. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
+6. **Start building the agent.** Bob will create a ToDo list and ask you to run some commands — click **Run** when prompted.
 
-7. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
+7. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
 
-8. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
+8. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
 
-9. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
+9. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
 
-10. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
+10. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
+
+11. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
 
 ## How It Works: uvx and the WXO ADK
 
