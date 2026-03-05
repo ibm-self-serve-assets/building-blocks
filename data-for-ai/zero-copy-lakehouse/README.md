@@ -12,9 +12,9 @@ Enable seamless querying across databases, warehouses, and cloud object stores w
   - Connects DB2 databases
   - Configures Presto engine catalogs
 
-### Bob Mode
+### Bob Modes
 
-- **[Base Mode](./bob-mode/base-mode/)**: AI assistant configuration for zero-copy lakehouse development
+- **[Base Modes](./bob-modes/base-modes/.bob/)**: AI assistant configuration for zero-copy lakehouse development
   - Expert guidance on lakehouse architecture
   - Federated query optimization
   - Data source integration
@@ -24,4 +24,4 @@ Enable seamless querying across databases, warehouses, and cloud object stores w
 
 1. **For automated setup**: Navigate to [`assets/setup-lakehouse`](./assets/setup-lakehouse/) and follow the README
 
-2. **For AI assistance**: Use the Bob Mode configuration in [`bob-mode/base-mode`](./bob-mode/base-mode/) with IBM Bob
+2. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes/.bob`](./bob-modes/base-modes/.bob/) with IBM Bob

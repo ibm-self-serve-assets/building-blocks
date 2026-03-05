@@ -12,9 +12,9 @@ Cloud-native serverless vector database built on Apache Cassandra with global di
   - Global distribution strategies
   - IBM Watsonx embeddings integration
 
-### Bob Mode
+### Bob Modes
 
-- **[Base Mode](./bob-mode/base-mode/)**: AI assistant configuration for Astra DB development
+- **[Base Modes](./bob-modes/base-modes/.bob/)**: AI assistant configuration for Astra DB development
   - Serverless database setup
   - Vector collection configuration
   - Global deployment strategies
@@ -24,4 +24,4 @@ Cloud-native serverless vector database built on Apache Cassandra with global di
 
 1. **For setup guides**: Explore the [`assets`](./assets/) directory for configuration examples
 
-2. **For AI assistance**: Use the Bob Mode configuration in [`bob-mode/base-mode`](./bob-mode/base-mode/) with IBM Bob
+2. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes/.bob`](./bob-modes/base-modes/.bob/) with IBM Bob

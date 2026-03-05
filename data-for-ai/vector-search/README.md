@@ -9,21 +9,21 @@ Vector-based retrieval services for GenAI pipelines, enabling semantic similarit
 High-performance vector database optimized for billion-scale vector search.
 
 - **[Data Ingestion Asset](./milvus/assets/data-ingestion-asset/)**: FastAPI service for document ingestion
-- **[Bob Mode](./milvus/bob-mode/)**: AI assistant configuration for Milvus development
+- **[Bob Modes](./milvus/bob-modes/)**: AI assistant configuration for Milvus development
 
 ### OpenSearch
 
 Open-source search and analytics engine with vector search capabilities.
 
 - **[Assets](./opensearch/assets/)**: Integration examples and configurations
-- **[Bob Mode](./opensearch/bob-mode/)**: AI assistant for OpenSearch development
+- **[Bob Modes](./opensearch/bob-modes/)**: AI assistant for OpenSearch development
 
 ### Datastax Astra DB
 
 Cloud-native serverless vector database built on Apache Cassandra.
 
 - **[Assets](./datastax-astradb/assets/)**: Configuration and setup guides
-- **[Bob Mode](./datastax-astradb/bob-mode/)**: AI assistant for Astra DB development
+- **[Bob Modes](./datastax-astradb/bob-modes/)**: AI assistant for Astra DB development
 
 ## Quick Start
 

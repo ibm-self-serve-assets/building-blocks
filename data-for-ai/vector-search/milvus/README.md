@@ -13,9 +13,9 @@ High-performance vector database optimized for billion-scale vector search with 
   - Store and index vectors in Milvus
   - Swagger UI for API testing
 
-### Bob Mode
+### Bob Modes
 
-- **[Base Mode](./bob-mode/base-mode/)**: AI assistant configuration for Milvus development
+- **[Base Modes](./bob-modes/base-modes/.bob/)**: AI assistant configuration for Milvus development
   - Milvus setup and configuration
   - Collection schema design
   - Index optimization
@@ -25,4 +25,4 @@ High-performance vector database optimized for billion-scale vector search with 
 
 1. **For document ingestion**: Navigate to [`assets/data-ingestion-asset`](./assets/data-ingestion-asset/) and follow the README
 
-2. **For AI assistance**: Use the Bob Mode configuration in [`bob-mode/base-mode`](./bob-mode/base-mode/) with IBM Bob
+2. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes/.bob`](./bob-modes/base-modes/.bob/) with IBM Bob

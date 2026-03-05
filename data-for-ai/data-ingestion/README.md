@@ -1,12 +1,12 @@
 # Data Ingestion
 
-Comprehensive data ingestion solutions for IBM watsonx.data covering unstructured, structured, and semi-structured data sources.
+Comprehensive data ingestion solutions for IBM watsonx.data covering unstructured and structured data sources.
 
 ## What's Included
 
 ### Assets
 
-- **[IBM UDI (Unstructured Data Ingestion)](./assets/ibm-udi/)**: Ingest unstructured data from various sources
+- **[Unstructured Data Ingestion](./assets/unstructured-data/)**: Ingest unstructured data from various sources
   - Document ingestion (PDF, DOCX, TXT, HTML)
   - Image and media file processing
   - Email and messaging data
@@ -18,15 +18,9 @@ Comprehensive data ingestion solutions for IBM watsonx.data covering unstructure
   - CDC (Change Data Capture) pipelines
   - Batch and streaming ingestion
 
-- **[Semi-Structured Data Ingestion](./assets/semi-structured-data/)**: Ingest semi-structured data formats
-  - JSON, XML, CSV processing
-  - Log file ingestion
-  - API data extraction
-  - Cloud storage integration (COS, S3)
+### Bob Modes
 
-### Bob Mode
-
-- **[Base Mode](./bob-mode/base-mode/)**: AI assistant configuration for data ingestion development
+- **[Base Modes](./bob-modes/base-modes/.bob/)**: AI assistant configuration for data ingestion development
   - Ingestion pipeline design
   - Data source integration
   - ETL/ELT optimization
@@ -34,10 +28,8 @@ Comprehensive data ingestion solutions for IBM watsonx.data covering unstructure
 
 ## Quick Start
 
-1. **For unstructured data**: Navigate to [`assets/ibm-udi`](./assets/ibm-udi/) and follow the README
+1. **For unstructured data**: Navigate to [`assets/unstructured-data`](./assets/unstructured-data/) and follow the README
 
 2. **For structured data**: Navigate to [`assets/structured-data`](./assets/structured-data/) and follow the README
 
-3. **For semi-structured data**: Navigate to [`assets/semi-structured-data`](./assets/semi-structured-data/) and follow the README
-
-4. **For AI assistance**: Use the Bob Mode configuration in [`bob-mode/base-mode`](./bob-mode/base-mode/) with IBM Bob
+3. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes/.bob`](./bob-modes/base-modes/.bob/) with IBM Bob

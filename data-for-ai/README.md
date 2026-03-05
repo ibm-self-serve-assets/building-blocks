@@ -6,7 +6,7 @@ This framework provides ready-to-use accelerators that make it easier to operati
 
 
 ## Data Ingestion
-- Comprehensive data ingestion solutions for **unstructured, structured, and semi-structured** data.
+- Comprehensive data ingestion solutions for **unstructured and structured** data.
 - **IBM UDI** for unstructured data processing.
 - **Database connectors** for structured data with CDC support.
 

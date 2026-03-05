@@ -10,7 +10,7 @@ Natural language interfaces to interact with data through RAG (Retrieval-Augment
 - **[RAG Ingestion MCP Server](./rag/assets/rag-ingestion-sse-mcp-server/)**: MCP server for document ingestion from IBM COS
 - **[RAG Retrieval MCP Server](./rag/assets/rag-retrieval-sse-mcp-server/)**: MCP server for semantic and keyword search
 - **[Base SSE MCP Server](./rag/assets/base-sse-mcp-server/)**: Template for building custom MCP servers
-- **[Bob Mode](./rag/bob-mode/)**: AI assistant mode specialized for RAG development
+- **[Bob Modes](./rag/bob-modes/)**: AI assistant mode specialized for RAG development
 
 ### Text-to-SQL
 

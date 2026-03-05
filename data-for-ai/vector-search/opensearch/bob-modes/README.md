@@ -19,7 +19,7 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-- **[`base-mode/opensearch.yaml`](base-mode/opensearch.yaml)**: Bob mode configuration for OpenSearch development
+- **[`base-modes/.bob/opensearch.yaml`](base-modes/.bob/opensearch.yaml)**: Bob mode configuration for OpenSearch development
 
 ---
 
@@ -61,7 +61,7 @@ This section provides step-by-step instructions for installing the custom Bob mo
 
 ### Installing the Custom Bob Mode
 
-The custom Bob mode ([`base-mode/opensearch.yaml`](base-mode/opensearch.yaml)) defines the behavior, expertise, and capabilities of IBM Bob when working with OpenSearch vector database tasks.
+The custom Bob mode ([`base-modes/.bob/opensearch.yaml`](base-modes/.bob/opensearch.yaml)) defines the behavior, expertise, and capabilities of IBM Bob when working with OpenSearch vector database tasks.
 
 For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
 
@@ -70,13 +70,13 @@ For detailed information about custom modes, see the [IBM Bob Custom Modes Docum
 **Windows**
 
 ```powershell
-Copy-Item base-mode/opensearch.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
+Copy-Item base-modes/.bob/opensearch.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
 ```
 
 **Linux / macOS**
 
 ```bash
-cp base-mode/opensearch.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+cp base-modes/.bob/opensearch.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
 ```
 
 After copying, restart IBM Bob for the new mode to become available.
