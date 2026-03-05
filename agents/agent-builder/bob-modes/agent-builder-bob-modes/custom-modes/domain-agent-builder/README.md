@@ -26,13 +26,13 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 💡 **Tip: Download Only This Folder**
 
-If you don’t want to download the entire repository, you can download just this folder.
+    If you don’t want to download the entire repository, you can download just this folder.
 
-- Copy the URL of this folder from your browser.
-- Go to: https://download-directory.github.io/.
-- Paste the folder URL there and press **Return/Enter**.
+    - Copy the URL of this folder from your browser.
+    - Go to: https://download-directory.github.io/.
+    - Paste the folder URL there and press **Return/Enter**.
 
-This will download only the contents of the selected folder as a ZIP file.
+    This will download only the contents of the selected folder as a ZIP file.
 
 2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob. **Important**: When starting to use this Bob mode, your project folder should contain *only* the .bob folder downloaded from this custom mode. No additional files or folders should be present in the project folder to ensure Bob does not receive unwanted context while using this mode.
 
