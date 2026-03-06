@@ -19,7 +19,7 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-- **[`base-modes/.bob/rag-builder.yaml`](base-modes/.bob/rag-builder.yaml)**: Bob mode configuration for RAG development
+- **[`base-modes/rag-builder.yaml`](base-modes/rag-builder.yaml)**: Bob mode configuration for RAG development
 
 ---
 
@@ -59,7 +59,7 @@ This section provides step-by-step instructions for installing the custom Bob mo
 
 ### Installing the Custom Bob Mode
 
-The custom Bob mode ([`base-modes/.bob/rag-builder.yaml`](base-modes/.bob/rag-builder.yaml)) defines the behavior, expertise, and capabilities of IBM Bob when working with RAG pipeline tasks.
+The custom Bob mode ([`base-modes/rag-builder.yaml`](base-modes/rag-builder.yaml)) defines the behavior, expertise, and capabilities of IBM Bob when working with RAG pipeline tasks.
 
 For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
 
@@ -68,13 +68,13 @@ For detailed information about custom modes, see the [IBM Bob Custom Modes Docum
 **Windows**
 
 ```powershell
-Copy-Item base-modes/.bob/rag-builder.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
+Copy-Item base-modes/rag-builder.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
 ```
 
 **Linux / macOS**
 
 ```bash
-cp base-modes/.bob/rag-builder.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+cp base-modes/rag-builder.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
 ```
 
 After copying, restart IBM Bob for the new mode to become available.

@@ -20,7 +20,7 @@ Comprehensive data ingestion solutions for IBM watsonx.data covering unstructure
 
 ### Bob Modes
 
-- **[Base Modes](./bob-modes/base-modes/.bob/)**: AI assistant configuration for data ingestion development
+- **[Base Modes](./bob-modes/base-modes/)**: AI assistant configuration for data ingestion development
   - Ingestion pipeline design
   - Data source integration
   - ETL/ELT optimization
@@ -32,4 +32,4 @@ Comprehensive data ingestion solutions for IBM watsonx.data covering unstructure
 
 2. **For structured data**: Navigate to [`assets/structured-data`](./assets/structured-data/) and follow the README
 
-3. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes/.bob`](./bob-modes/base-modes/.bob/) with IBM Bob
+3. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes`](./bob-modes/base-modes/) with IBM Bob

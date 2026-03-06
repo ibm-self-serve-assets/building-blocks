@@ -19,7 +19,7 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-- **[`base-modes/.bob/data-security.yaml`](base-modes/.bob/data-security.yaml)**: Bob mode configuration for data security development
+- **[`base-modes/data-security.yaml`](base-modes/data-security.yaml)**: Bob mode configuration for data security development
 
 ---
 
@@ -57,7 +57,7 @@ This section provides step-by-step instructions for installing the custom Bob mo
 
 ### Installing the Custom Bob Mode
 
-The custom Bob mode ([`base-modes/.bob/data-security.yaml`](base-modes/.bob/data-security.yaml)) defines the behavior, expertise, and capabilities of IBM Bob when working with data security and encryption tasks.
+The custom Bob mode ([`base-modes/data-security.yaml`](base-modes/data-security.yaml)) defines the behavior, expertise, and capabilities of IBM Bob when working with data security and encryption tasks.
 
 For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
 
@@ -66,13 +66,13 @@ For detailed information about custom modes, see the [IBM Bob Custom Modes Docum
 **Windows**
 
 ```powershell
-Copy-Item base-modes/.bob/data-security.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
+Copy-Item base-modes/data-security.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
 ```
 
 **Linux / macOS**
 
 ```bash
-cp base-modes/.bob/data-security.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+cp base-modes/data-security.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
 ```
 
 After copying, restart IBM Bob for the new mode to become available.

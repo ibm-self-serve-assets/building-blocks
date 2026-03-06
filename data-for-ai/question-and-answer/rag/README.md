@@ -29,7 +29,7 @@ Semantic search and question answering over documents using vector embeddings an
 
 ### Bob Modes
 
-- **[Base Modes](./bob-modes/base-modes/.bob/)**: AI assistant mode specialized for RAG development
+- **[Base Modes](./bob-modes/base-modes/)**: AI assistant mode specialized for RAG development
   - RAG pipeline design guidance
   - Vector database configuration
   - Document processing strategies
@@ -41,4 +41,4 @@ Semantic search and question answering over documents using vector embeddings an
 
 2. **For MCP servers**: Choose from ingestion, retrieval, or base server templates in the Assets directory
 
-3. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes/.bob`](./bob-modes/base-modes/.bob/) with IBM Bob
+3. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes`](./bob-modes/base-modes/) with IBM Bob
