@@ -59,7 +59,7 @@ matplotlib-inline==0.2.1
 milvus-lite==2.5.1
 multidict==6.7.0
 mypy_extensions==1.1.0
-nltk==3.9.2
+nltk==3.9.3
 numpy==2.3.5
 orjson==3.11.5
 packaging==25.0
