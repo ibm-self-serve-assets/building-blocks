@@ -80,7 +80,7 @@ pymilvus==2.5.11
 pypdf==6.4.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
-python-multipart==0.0.20
+python-multipart==0.0.22
 pytz==2025.2
 PyYAML==6.0.3
 regex==2025.11.3
