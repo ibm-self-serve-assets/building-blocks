@@ -33,6 +33,7 @@ PARAMETERS = {
         "milvus_user": os.getenv("MILVUS_USER"),
         "milvus_password": os.getenv("MILVUS_PASSWORD"),
         "milvus_ssl": os.getenv("MILVUS_SSL"),
+        "milvus_database": os.getenv("MILVUS_DATABASE"),
         "milvus_ssl_certificate": os.getenv("MILVUS_SSL_CERTIFICATE")
     },
     "RAG_advanced_parameter_set" : {
