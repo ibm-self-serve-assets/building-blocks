@@ -8,23 +8,22 @@ from fastapi.security import APIKeyHeader
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
 from app.src.model.QueryDataModel import QueryDataInput, QueryDataResponse
 import app.src.services.QueryService as query_service
-from app.src.services.COSService import COSService
-
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
 
 # Load environment variables
 load_dotenv()
 
+
+# Logging configuration controlled via .env
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+logging.basicConfig(level=LOG_LEVEL, format=LOG_FORMAT)
+logger = logging.getLogger("query_route")
+
 # Initialize router
 query_api_route = APIRouter(
     prefix="",
-    tags=["Query a Milvus collection."]
+    tags=["Query a Milvus and Elastic Search Vector DB"]
 )
 
 # API Key header
@@ -47,15 +46,12 @@ async def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
         detail="Invalid API credentials."
     )
 
-
-
-config = query_service.init_environment()
-
+# config = query_service.init_environment()
 
 # Routes
 @query_api_route.post("/query", 
-    description="Query a Milvus collection.",
-    summary="Query a Milvus collection.",
+    description="Query Milvus and Elastic Search Vector DB",
+    summary="Query Milvus and Elastic Search Vector DB",
     response_model=QueryDataResponse
 )
 async def get_ui_data(
@@ -63,10 +59,15 @@ async def get_ui_data(
     api_key: str = Security(get_api_key)
 ) -> QueryDataResponse:
     
+    config = {}
+    
     config['query'] = query_data_input.query
     config['num_results'] = query_data_input.num_results
-    config['num_rerank_results']= query_data_input.num_rerank_results
-    config['collection_name'] = query_data_input.collection_name
+    config['num_rerank_results'] = query_data_input.num_rerank_results
+    config['connection_name'] = query_data_input.connection_name
+    config['index_name'] = query_data_input.index_name
+
+    logger.debug("Received query request with config: %s", config)
 
     info = {}
 
@@ -74,26 +75,25 @@ async def get_ui_data(
         # Time the COS operation
         tic = time.perf_counter()
 
-        context, answer = query_service.generate_answer(config)
+        search_result, top_result = query_service.generate_answer(config)
 
-        data = {"answer": answer, "context": context}
+        data = {
+            "answer": top_result,
+            "context": search_result
+        }
 
         info["query-time"] = time.perf_counter() - tic
-
-        # Log performance info
-        logging.info(json.dumps(info, indent=4))
+        logger.info("Query performance info: %s", json.dumps(info))
 
         return QueryDataResponse(
             data=data,
             status="success",
-            message=f"Successfully queried Milvus."
+            message=f"Successfully queried Vector DB"
         )
 
     except Exception as e:
-        logging.error(f"Failed to query Milvus: {e}")
+        logger.exception("Failed to query Milvus: %s", e)
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to query Milvus."
+            detail="Failed to query Vector DB"
         )
-
-

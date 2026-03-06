@@ -1,0 +1,2 @@
+Generate milvus certificate using below command
+echo QUIT | openssl s_client -showcerts -connect <milvus-host>:<milvus-port> | awk '/-----BEGIN CERTIFICATE-----/ {p=1}; p; /-----END CERTIFICATE-----/ {p=0}' > milvus_conn.cert

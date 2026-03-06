@@ -1,448 +1,313 @@
-from dotenv import load_dotenv
 import os
-import sys
-import pandas as pd
-import json
-import numpy as np
+import shutil
 import warnings
 import logging
-import ast
+import hashlib
+from tqdm import tqdm
 
-from docling.datamodel.pipeline_options import PdfPipelineOptions, TableFormerMode
-from docling.document_converter import DocumentConverter, PdfFormatOption # import extra support for .json, markdown, HTML
-from docling.backend.pypdfium2_backend import PyPdfiumDocumentBackend
-from docling.datamodel.base_models import InputFormat
-from docling.chunking import HybridChunker
-import time
+from dotenv import load_dotenv
+from pymilvus import MilvusClient
 
-from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter # more splitter support / code-level custom splitters
+from ibm_watsonx_ai import Credentials
+from ibm_watsonx_ai.foundation_models import Embeddings
 
-from pymilvus.model.hybrid import BGEM3EmbeddingFunction
-from pymilvus.model.dense import SentenceTransformerEmbeddingFunction, InstructorEmbeddingFunction
-from pymilvus.model.sparse import SpladeEmbeddingFunction
+from app.src.utils import rag_helper_functions
+from app.src.utils.cos_ops import COSOperations
+from app.src.utils import config
+from app.src.utils.ingestion_helper import DocumentProcessor
+from app.src.utils.milvus_ops import MilvusOperations
+from app.src.utils.milvus_connection import MilvusConnection
+from app.src.utils.connection_factory import ConnectionFactory
+from dotenv import load_dotenv
 
-from transformers import AutoTokenizer
-from pymilvus import (
-    FieldSchema,
-    CollectionSchema,
-    DataType,
-    Collection,
-    AnnSearchRequest,
-    RRFRanker,
-    WeightedRanker,
-    connections,
-    MilvusClient
-)
+# Load environment variables
+load_dotenv()
 
-from app.src.utils.ingestion_helper_functions import json_document_converter
+# Logging configuration controlled via .env
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+logging.basicConfig(level=LOG_LEVEL, format=LOG_FORMAT)
+logger = logging.getLogger("ingest_service")
+
+# Get parameters from config
+parameter_sets = config.PARAMETERS
+parameter_sets_list = list(parameter_sets.keys())
+parameters=rag_helper_functions.get_parameter_sets(parameter_sets_list)
+logger.debug("Loaded ingestion parameters successfully")
 
 
-# remove if debugging
-warnings.filterwarnings("ignore")
+environment = parameters["environment"]
+ibm_api_key = parameters["watsonx_ai_api_key"]
+project_id = parameters["watsonx_project_id"]
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
+index_chunk_size = int(parameters["index_chunk_size"])
+chunk_size = int(parameters["chunk_size"])
+chunk_overlap = int(parameters["chunk_overlap"])
 
-########## Functions to initialize environment ##########
 
-def init_environment(collection_name, chunk_type): # chunk type is where you can choose between a markdown and a recursive text splitter
-    try:
-        load_dotenv()
-        config = {
-            'wxd_milvus_host': os.getenv("WXD_MILVUS_HOST"),
-            'wxd_milvus_port': os.getenv("WXD_MILVUS_PORT"),          
-            'wxd_milvus_user': os.getenv("WXD_MILVUS_USER"),
-            'wxd_milvus_password': os.getenv("WXD_MILVUS_PASSWORD"),
-            'watsonx_apikey': os.getenv("WATSONX_APIKEY"),
-            'watsonx_project_id': os.getenv("WATSONX_PROJECT_ID"),
-            'collection_name': collection_name,
-            'chunk_type': chunk_type
+def connection_setup(connection_name):
+    if connection_name != "milvus_connect":
+        raise ValueError(f"Unsupported connection: {connection_name}")
+
+    """ logger.info("Connecting to Milvus")
+
+    db_connection = {
+        "uri": f"https://{parameters["milvus_host"]}:{parameters["milvus_port"]}",  
+        "token": f"{parameters['milvus_user']}:{parameters['milvus_password']}",
+        "database": parameters.get("milvus_database", "default"),
+        "secure": parameters["milvus_ssl"].lower() == "true"
+    }
+
+    client = MilvusClient(**db_connection)
+
+    logger.info("MilvusClient connection established")
+    return client """
+
+    logger.debug("Initializing Milvus connection with connection_name=%s", connection_name)
+
+    if connection_name != "milvus_connect":
+        raise ValueError("Only milvus_connect is supported")
+
+    connection = ConnectionFactory.create_connection("milvus_connect",parameters)
+    client, connection_args = connection.connect()
+    logger.info("MilvusClient connection established")
+
+    return client, connection_args
+
+# Connect to Milvus
+logger.info("Setting up connection to Milvus")
+milvus_client, milvus_connection_args = connection_setup("milvus_connect")
+logger.debug("Milvus connection args: %s", milvus_connection_args)
+logger.info("Connection to Milvus established")
+
+
+def ensure_token_limit(text: str, max_tokens: int) -> str:
+    """
+    Lightweight token limiter using whitespace split.
+    Keeps ingestion safe from model max token violations.
+    """
+    words = text.split()
+    if len(words) > max_tokens:
+        return " ".join(words[:max_tokens])
+    return text
+
+def get_embedding(environment: str, parameters: dict, project_id: str):
+    """
+    Returns:
+        embedding instance
+        model_config dict (max_tokens, prefix)
+        embedding_dimension
+    """
+    logger.debug("Initializing embedding model")
+    if environment != "cloud":
+        raise ValueError("Only cloud environment is supported")
+
+    credentials = Credentials(
+        api_key=parameters["watsonx_ai_api_key"],
+        url=parameters["watsonx_url"],
+    )
+
+    model_id = parameters["embedding_model_id"]
+    
+    embedding = Embeddings(
+        model_id=model_id,
+        credentials=credentials,
+        project_id=project_id,
+        verify=True,
+    )
+
+    model_id_lower = model_id.lower()
+
+    if "e5" in model_id_lower:
+        model_config = {
+            "max_tokens": 512,
+            "prefix": "passage: ",
         }
-        validate_environment(config)
-        logging.info("Environment initialized successfully")
-        return config
-    except Exception as e:
-        logging.exception("Error initializing environment")
-        raise
+    else:
+        model_config = {
+            "max_tokens": 8000,
+            "prefix": "",
+        }
 
-def validate_environment(config):
+    logger.debug("Embedding model config: %s", model_config)
+    test_vector = embedding.embed_documents(["test"])[0]
+    embedding_dim = len(test_vector)
+    logger.info("Embedding dimension detected: %s", embedding_dim)
+
+    return embedding, model_config, embedding_dim
+
+def generate_hash(content):
+    return hashlib.sha256(content.encode()).hexdigest()
+
+def insert_docs_to_milvus(collection_name, split_docs, embedding, model_config):
+    max_tokens = model_config["max_tokens"]
+    prefix = model_config["prefix"]
+
+    with tqdm(total=len(split_docs), desc="Inserting Documents", unit="docs") as pbar:
+
+        try:
+            logger.info("Starting document insertion into Milvus collection '%s'", collection_name)
+            logger.debug("Total split_docs received: %s", len(split_docs))
+
+            for i in range(0, len(split_docs), index_chunk_size):
+                logger.debug("Processing chunk batch from %s to %s", i, i + index_chunk_size)
+                chunk = split_docs[i:i + index_chunk_size]
+                texts = []
+                valid_docs = []
+
+                for doc in chunk:
+                    safe_text = ensure_token_limit(
+                        doc.page_content,
+                        max_tokens - 20  # safety margin
+                    )
+
+                    formatted_text = f"{prefix}{safe_text}"
+
+                    texts.append(formatted_text)
+                    valid_docs.append(doc)
+
+                try:
+                    vectors = embedding.embed_documents(texts)
+                except Exception as e:
+                    logger.warning(f"Embedding batch failed. Skipping batch. Error: {e}")
+                    pbar.update(len(chunk))
+                    continue
+
+                data = []
+
+                for doc, vector in zip(valid_docs, vectors):
+
+                    doc_id = generate_hash(
+                        doc.page_content +
+                        '\nTitle: ' + doc.metadata.get('title', '') +
+                        '\nUrl: ' + doc.metadata.get('document_url', '') +
+                        '\nPage: ' + str(doc.metadata.get('page_number', ''))
+                    )
+
+                    data.append({
+                        "id": doc_id,
+                        "vector": vector,
+                        "title": doc.metadata.get("title", ""),
+                        "source": doc.metadata.get("source", ""),
+                        "document_url": doc.metadata.get("document_url", ""),
+                        "page_number": str(doc.metadata.get("page_number", "")),
+                        "chunk_seq": int(doc.metadata.get("chunk_seq", 0)),
+                        "text": doc.page_content,
+                    })
+
+                if data:
+                    milvus_client.insert(
+                        collection_name=collection_name,
+                        data=data
+                    )
+                    logger.info("Inserted %s documents into Milvus collection '%s'", len(data), collection_name)
+
+                pbar.update(len(chunk))
+
+            logger.info("Documents inserted into Milvus successfully")
+
+        except Exception as e:
+            logger.exception(f"Ingestion error: {e}")
+            raise
+
+def ingest_files(payload):
+
     """
-    Validates required environment variables and logs warnings for missing variables.
+    Ingest data from COS into vector database
     """
-    missing_vars = [key for key, value in config.items() if not value]
-    
-    if missing_vars:
-        error_msg = f"Required environment variables are missing: {', '.join(missing_vars)}"
-        logging.error(error_msg)
-        raise EnvironmentError(error_msg)
-    
 
-########## Main functions ##########    
+    logger.info("Starting ingestion process")
+    logger.debug("Ingestion payload: %s", payload)
 
-def ingest_files(config, files, search_type='hybrid', window_size='L'): 
+    connection_name = payload['connection_name']
+    bucket_name = payload["bucket_name"]
+    directory = payload["directory"]   
+    index_name = payload["index_name"]
 
-    # Flag to determine if custom embedding models are used
-    is_dual = False
+    try:
 
-    if search_type == 'dense': 
-        # NEW: window_size parameters
-        if window_size == 'S': 
-            ef_max_tokens = 512
-            embedding_model='all-MiniLM-L6-v2' 
-            ef = SentenceTransformerEmbeddingFunction(embedding_model=embedding_model, device='cpu')
-
-        elif window_size == 'M':
-            ef_max_tokens = 2048
-            embedding_model='all-MiniLM-L6-v2' 
-            ef = SentenceTransformerEmbeddingFunction(embedding_model=embedding_model, device='cpu')
-
-        elif window_size == 'L':
-            ef_max_tokens = 8192
-            embedding_model='hkunlp/instructor-xl' 
-            ef = InstructorEmbeddingFunction(model_name=embedding_model)
+        if bucket_name is None:
+            logger.error("Bucket name is required for COS ingestion")
+            raise ValueError("Bucket name is required for COS ingestion")
         
-        # Enter custom choice of model and context window size here: 
-        elif window_size == 'C':            
-            embedding_model=''
-            ef_max_tokens = AutoTokenizer.from_pretrained(embedding_model).model_max_length
-            ef = InstructorEmbeddingFunction(model_name=embedding_model)
-    
-
-    elif search_type == 'hybrid':
-        if window_size == 'S': 
-            ef_max_tokens = 512
-            embedding_model='BAAI/bge-small-en-v1.5'    # 'Snowflake/snowflake-arctic-embed-s', 'intfloat/multilingual-e5-large'
-            ef = BGEM3EmbeddingFunction(model_name=embedding_model, use_fp16=False, device="cpu") 
-
-        elif window_size == 'M':
-            ef_max_tokens = 2048
-            embedding_model='Snowflake/snowflake-arctic-embed-m-long'   # 'nbroad/xlm-roberta-base-2048', 'nomic-ai/nomic-bert-2048'
-            ef = BGEM3EmbeddingFunction(model_name=embedding_model, use_fp16=False, device="cpu")
-
-        elif window_size == 'L':
-            ef_max_tokens = 8192
-            embedding_model='BAAI/bge-m3'   # 'nomic-ai/nomic-embed-text-v1', 'jinaai/jina-embeddings-v2-base-en'
-            ef = BGEM3EmbeddingFunction(model_name=embedding_model, use_fp16=False, device="cpu")
-
-        elif window_size == 'C': 
-            # Sparse embedding functionality
-            sparse_ef = SpladeEmbeddingFunction(model_name="naver/splade-cocondenser-ensembledistil")
-
-            # Dense embedding functionality
-            embedding_model=''
-            ef_max_tokens = AutoTokenizer.from_pretrained(embedding_model).model_max_length
-
-            # Update flag
-            is_dual = True
+        if directory is None:
+            logger.error("Directory (prefix) is required for COS ingestion")
+            raise ValueError("Directory (prefix) is required for COS ingestion")
         
+        if index_name is None:
+            logger.error("Index name is required for vector database ingestion")
+            raise ValueError("Index name is required for vector database ingestion")
+        
+        if connection_name != "milvus_connect":
+            logger.error("currently only milvus connection is supported")
+            raise ConnectionError("currently only milvus connection is supported")
 
-    ef_tokenizer = AutoTokenizer.from_pretrained(embedding_model)
+        milvus_ops = None
 
-    if ef_max_tokens > ef_tokenizer.model_max_length:
-        raise ValueError(
-            f"Requested max token size ({ef_max_tokens}) exceeds "
-            f"the model's supported limit ({ef_tokenizer.model_max_length}) for {embedding_model}"
+        milvus_ops = MilvusOperations(client=milvus_client, parameters=parameters)
+
+        # COS Operations download files from prefix
+        cos_ops = COSOperations(bucket_name=bucket_name)
+
+        filtered_keys = cos_ops.get_filtered_keys(prefix=directory)
+        logger.info("Number of files found in COS: %s", len(filtered_keys))
+
+        if not filtered_keys:
+            logger.warning(f"No files found under prefix: {directory}")
+            return 0
+
+        local_directory = os.path.join("downloads", index_name)
+
+        documents_info = cos_ops.download_files(
+            keys=filtered_keys,
+            local_directory=local_directory
         )
 
-    ef_tokenizer.model_max_length = ef_max_tokens
+        logger.debug("Downloaded documents info: %s", documents_info)
 
+        # Process documents
+        logger.info("Processing documents")
 
-    pipeline_options = PdfPipelineOptions()
-    pipeline_options.do_table_structure = True
-    pipeline_options.table_structure_options.do_cell_matching = True
-    pipeline_options.table_structure_options.mode = TableFormerMode.ACCURATE  # use ACCURATE if you prefer more accurate TableFormer model, however it's slower
-
-    document_converter = DocumentConverter(format_options=
-                                        {
-                                            InputFormat.PDF: PdfFormatOption(pipeline_options=pipeline_options)
-                                            })
-    
-    print(1)
-    
-    EXPORT_TYPE = config['chunk_type']
-    print(EXPORT_TYPE)
-    if EXPORT_TYPE == "DOCLING_DOCS":
-        def extract_metadata(chunk):
-            metadata = {
-                    "page_no": None,
-                    "filename": None
-                }
-            if hasattr(chunk, 'meta'):
-
-                # Extract page information and content type
-                if hasattr(chunk.meta, 'doc_items'):
-                    for item in chunk.meta.doc_items:
-                        if hasattr(item, 'prov') and item.prov:
-                            for prov in item.prov:
-                                if hasattr(prov, 'page_no'):
-                                    metadata["page_no"] = prov.page_no
-                
-                if hasattr(chunk.meta, 'origin'):
-                    if hasattr(chunk.meta.origin, 'filename'):
-                        metadata['filename'] = chunk.meta.origin.filename
-                
-                return metadata
-
-        def convert_and_hybrid_chunk(file):
-            file_full_path = file['full_path']
-            filename = file['filename']
-            file_ext = filename.lower().split('.')[-1]
-
-            print(f"Converting {file_full_path} to a docling document and using hybrid chunker...")
-            start_time = time.time()
-
-            if file_ext == 'json':
-                doc = json_document_converter(file_full_path)
-            else: 
-                doc = document_converter.convert(file_full_path).document
-
-            chunker = HybridChunker(tokenizer=ef_tokenizer)
-            chunk_iter = chunker.chunk(dl_doc=doc)
-
-            # iterate over chunks, creating a chunk document object per chunk with the content and metadata
-            chunked_document_objects = []
-            for chunk in chunk_iter:
-                chunked_document_object = {"page_content": chunker.contextualize(chunk=chunk), "metadata": extract_metadata(chunk)}
-                chunked_document_objects.append(chunked_document_object)
-            end_time = time.time()
-            print(f"Converted {file_full_path} to a docling document and chunked\nNumber of chunks: {len(chunked_document_objects)}\nExecution time: {round(end_time - start_time, 2)}")
-            return chunked_document_objects
-        
-        document_objects = []
-        for file in files:
-            chunked_document_objects = convert_and_hybrid_chunk(file)
-            document_objects += chunked_document_objects
-
-    if EXPORT_TYPE == "MARKDOWN":
-        def convert_and_markdown_split(file):
-            file_full_path = file['full_path']
-            filename = file['filename']
-            file_ext = filename.lower().split('.')[-1]
-
-            print(f"Converting {filename} to a docling document and using markdown splitter...")
-            start_time = time.time()
-
-            if file_ext == 'json':
-                doc = json_document_converter(file_full_path).export_to_markdown()
-            else: 
-                doc = document_converter.convert(file_full_path).document.export_to_markdown()
-
-            splitter = MarkdownHeaderTextSplitter(
-            headers_to_split_on=[
-                ("#", "Header_1"),
-                ("##", "Header_2"),
-                ("###", "Header_3"),
-            ],
-            strip_headers=False
-            )
-
-            md_chunks = splitter.split_text(doc)
-
-            rcs_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-            chunks = sum((rcs_splitter.split_documents([d]) for d in md_chunks), [])
-
-            chunked_document_objects = []
-            for chunk in chunks:
-                print(chunk)
-                chunked_document_object = {"page_content": chunk.page_content}
-                chunked_document_object['metadata'] = chunk.metadata
-                chunked_document_object['metadata']['filename'] = filename
-                chunked_document_objects.append(chunked_document_object)
-            end_time = time.time()
-            print(f"Converted {file_full_path} to a markdown document and split\nNumber of chunks: {len(chunked_document_objects)}\nExecution time: {round(end_time - start_time, 2)}")
-            return chunked_document_objects
-        
-        document_objects = []
-        for file in files:
-            chunked_document_objects = convert_and_markdown_split(file)
-            document_objects += chunked_document_objects
-            
-    if EXPORT_TYPE == "RECURSIVE": 
-        def convert_and_recursive_split(file): 
-            file_full_path = file['full_path']
-            filename = file['filename']
-            print(f"Converting {filename} to a markdown document and using markdown splitter...")
-            file_ext = filename.lower().split('.')[-1]
-
-            start_time = time.time()
-                        
-            if file_ext == 'json':
-                doc = json_document_converter(file_full_path).export_to_markdown()
-            else: 
-                doc = document_converter.convert(file_full_path).document.export_to_markdown()
-                
-            chunk_size = 1000
-            chunk_overlap = 200
-            splitter = RecursiveCharacterTextSplitter(
-                chunk_size=chunk_size, chunk_overlap=chunk_overlap
-            )
-
-            # # Split
-            # splits = text_splitter.split_documents(md_header_chunks)
-            # chunk
-            chunks = splitter.create_documents([split for split in splitter.split_text(doc)])
-
-            chunked_document_objects = []
-            for chunk in chunks:
-                print(chunk)
-                chunked_document_object = {"page_content": chunk.page_content}
-                chunked_document_object['metadata'] = chunk.metadata
-                chunked_document_object['metadata']['filename'] = filename
-                chunked_document_objects.append(chunked_document_object)
-            end_time = time.time()
-            print(f"Converted {file_full_path} to a markdown document and recursively split\nNumber of chunks: {len(chunked_document_objects)}\nExecution time: {round(end_time - start_time, 2)}")
-            return chunked_document_objects
-
-        document_objects = []
-        for file in files: 
-            chunked_document_objects = convert_and_recursive_split(file)
-            document_objects += chunked_document_objects
-
-
-
-    print(EXPORT_TYPE)
-        
-    # show all chunks    
-    for i, chunk in enumerate(document_objects):
-        print(f"===Chunk {i}===")
-        print(f"chunk page content:\n{chunk['page_content']}\n")
-        print(f"chunk metadata:\n{chunk['metadata']}\n")
-
-    # get fields into lists
-    docs_list = [str(doc['page_content']) for doc in document_objects]
-    filename_list = [doc['metadata']['filename'] for doc in document_objects]
-    if EXPORT_TYPE == "DOCLING_DOCS":
-        page_no_list = [str(doc['metadata']['page_no']) for doc in document_objects]
-    elif EXPORT_TYPE == "MARKDOWN" or EXPORT_TYPE == 'RECURSIVE':
-        page_no_list = ["None"] * len(document_objects)
-
-
-
-    # create embeddings
-    dense_dim = ef.dim["dense"]
-
-    if is_dual: 
-        dense_embeddings = ef(docs_list)
-        sparse_embeddings = sparse_ef(docs_list)
-        
-        docs_embeddings = {
-            "dense": dense_embeddings,
-            "sparse": sparse_embeddings
+        processor_params = {
+            "include_all_html_tags": "false",
+            "ingestion_chunk_size": chunk_size,
+            "ingestion_chunk_overlap": chunk_overlap
         }
-    else: 
-        docs_embeddings = ef(docs_list)
 
+        processor = DocumentProcessor(processor_params)
 
-    # load into milvus collection
-    connections.connect(host=config['wxd_milvus_host'],
-                        port=config['wxd_milvus_port'],
-                        secure=True, user=config['wxd_milvus_user'],
-                        password=config['wxd_milvus_password'])
+        split_docs = processor.process_directory(
+            directory=local_directory,
+            rag_helper_functions=rag_helper_functions or {}
+        )
+        
+        
+        doc_length = len(split_docs)
+        logger.info("Total split documents: %s", doc_length)
 
-    client = MilvusClient(
-        uri=f"https://{config['wxd_milvus_host']}:{config['wxd_milvus_port']}",
-        user=config['wxd_milvus_user'],
-        password=config['wxd_milvus_password']
-    )
-    
-# if dual embeddings are used, start writing functionality for adding a sparse embedding function
+        # Create milvus collection & Insert chunks
+        if connection_name == "milvus_connect":
 
-    if search_type == 'hybrid':
+            embedding, model_config, embedding_dim = get_embedding( environment, parameters, project_id)
 
-        # CODE LEVEL: CUSTOM COLLECTION SCHEMA FORMAT
-        '''
-        fields = [
-            FieldSchema(name='id', dtype=DataType.VARCHAR, description='IDs', is_primary=True, auto_id=True, max_length=100),
-            FieldSchema(name='field_name', dtype=DataType.VARCHAR, description='custom field format', max_length=65535),
-            FieldSchema(name="sparse_vector", dtype=DataType.SPARSE_FLOAT_VECTOR, description='sparse embedding vectors'),
-            FieldSchema(name="dense_vector", dtype=DataType.FLOAT_VECTOR, description='dense embedding vectors', dim=dense_dim),
-        ]
-        '''
+            logger.debug("Creating Milvus collection: %s", index_name)
+            milvus_ops.create_collection( embedding_dim=embedding_dim, index_name=index_name)
 
-        fields = [
-            # Use auto generated id as primary key
-            FieldSchema(
-                name="id", dtype=DataType.VARCHAR, description='IDs', is_primary=True, auto_id=True, max_length=100
-            ),
-            FieldSchema(name='text', dtype=DataType.VARCHAR, description='text', max_length=65535),
-            FieldSchema(name='page_no', dtype=DataType.VARCHAR, description='page_no', max_length=100),    
-            FieldSchema(name='filename', dtype=DataType.VARCHAR, description='filename', max_length=300),
-            FieldSchema(name="sparse_vector", dtype=DataType.SPARSE_FLOAT_VECTOR, description='sparse embedding vectors'),
-            FieldSchema(name="dense_vector", dtype=DataType.FLOAT_VECTOR, description='dense embedding vectors', dim=dense_dim),
-        ]
+            logger.info("Inserting documents into Milvus")
 
-        collection_name = config['collection_name']
+            logger.info("Inserting documents into Milvus")
+            insert_docs_to_milvus(collection_name=index_name, split_docs=split_docs,
+                embedding=embedding, model_config=model_config)
 
-        if client.has_collection(collection_name=collection_name):
-            client.drop_collection(collection_name=collection_name)
-            print(f"Dropped existing collection: {collection_name}")
-        schema = CollectionSchema(fields, "")
+            return doc_length
 
-        col = Collection(collection_name, schema, consistentcy_level="Strong")
+        else:
+            logger.error(f"Unsupported connection: {connection_name}")
+            raise ValueError(f"Unsupported connection: {connection_name}")
 
-        # creating indexes for vectors
-        sparse_index = {"index_type": "SPARSE_INVERTED_INDEX", "metric_type": "IP"}
-        dense_index = {"index_type": "FLAT", "metric_type": "COSINE"}
-        col.create_index("sparse_vector", sparse_index)
-        col.create_index("dense_vector", dense_index)
-
-        # insert data into collection
-        entities = [
-            docs_list,
-            page_no_list,
-            filename_list,
-            docs_embeddings["sparse"],
-            docs_embeddings["dense"],
-        ]
-
-    elif search_type == 'dense':
-         # defining collection
-         # CODE LEVEL: CUSTOM COLLECTION SCHEMA FORMAT
-        '''
-        fields = [
-            FieldSchema(name='id', dtype=DataType.VARCHAR, description='IDs', is_primary=True, auto_id=True, max_length=100),
-            FieldSchema(name='field_name', dtype=DataType.VARCHAR, description='custom field format', max_length=65535),
-            FieldSchema(name="vector", dtype=DataType.FLOAT_VECTOR, description='embedding vectors', dim=dense_dim),
-        ]
-        '''
-    
-        fields = [
-            # Use auto generated id as primary key
-            FieldSchema(
-                name="id", dtype=DataType.VARCHAR, description='IDs', is_primary=True, auto_id=True, max_length=100
-            ),
-            FieldSchema(name='text', dtype=DataType.VARCHAR, description='text', max_length=65535),
-            FieldSchema(name='page_no', dtype=DataType.VARCHAR, description='page_no', max_length=100),    
-            FieldSchema(name='filename', dtype=DataType.VARCHAR, description='filename', max_length=300),
-            FieldSchema(name="dense_vector", dtype=DataType.FLOAT_VECTOR, description='dense embedding vectors', dim=dense_dim),
-        ]
-
-        collection_name = config['collection_name']
-
-        if client.has_collection(collection_name=collection_name):
-            client.drop_collection(collection_name=collection_name)
-            print(f"Dropped existing collection: {collection_name}")
-        schema = CollectionSchema(fields, "")
-
-        col = Collection(collection_name, schema, consistentcy_level="Strong")
-
-        # creating indexes for vectors
-        dense_index = {"index_type": "FLAT", "metric_type": "COSINE"}
-        col.create_index("dense_vector", dense_index)
-
-        # insert data into collection
-        entities = [
-            docs_list,
-            page_no_list,
-            filename_list,
-            docs_embeddings,
-        ]
-
-    col.insert(entities)
-    col.load()
-
-    return len(docs_list)
+    except Exception as e:
+        logger.exception(
+            f"Failed to ingest data in vector database. Please check logs {e}"
+        )
+        raise

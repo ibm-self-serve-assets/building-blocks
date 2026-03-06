@@ -7,23 +7,22 @@ from fastapi import APIRouter, HTTPException, Security
 from fastapi.security import APIKeyHeader
 from starlette.status import HTTP_403_FORBIDDEN, HTTP_500_INTERNAL_SERVER_ERROR
 from app.src.model.IngestDataModel import IngestDataInput, IngestDataResponse
-from app.src.services.COSService import COSService
 import app.src.services.IngestService as ingest_service
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
 
 # Load environment variables
 load_dotenv()
 
+# Logging configuration controlled via .env
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").upper()
+LOG_FORMAT = os.getenv("LOG_FORMAT", "%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+logging.basicConfig(level=LOG_LEVEL, format=LOG_FORMAT)
+logger = logging.getLogger("ingest_route")
+
 # Initialize router
 ingest_api_route = APIRouter(
     prefix="",
-    tags=["Ingest files from COS into Milvus."]
+    tags=["Ingest data into Elastic Search and Milvus Vector DB"]
 )
 
 # API Key header
@@ -43,14 +42,13 @@ async def get_api_key(api_key_header: str = Security(api_key_header)) -> str:
         return api_key_header
     raise HTTPException(
         status_code=HTTP_403_FORBIDDEN,
-        detail="Invalid REST_API_KEY."
+        detail="Invalid API credentials."
     )
-
 
 # Routes
 @ingest_api_route.post("/ingest-files", 
-    description="Ingest files from COS into Milvus.",
-    summary="Ingest files from COS into Milvus.",
+    description="Ingest data into Elastic Search and Milvus Vector DB",
+    summary="Ingest data into Elastic Search and Milvus Vector DB",
     response_model=IngestDataResponse
 )
 async def get_ui_data(
@@ -58,44 +56,35 @@ async def get_ui_data(
     api_key: str = Security(get_api_key)
 ) -> IngestDataResponse:
     
-    bucket_name = ingest_data_input.bucket_name
-    collection_name = ingest_data_input.collection_name
-    chunk_type = ingest_data_input.chunk_type
+    config = {}
+       
+    config['index_name'] = ingest_data_input.index_name
+    config['bucket_name'] = ingest_data_input.bucket_name
+    config['connection_name'] = ingest_data_input.connection_name
+    config['directory'] = ingest_data_input.directory
 
-    cos_service = COSService(bucket_name)
+    logger.debug("Received ingest request with config: %s", config)
+
     info = {}
 
     try:
-        # Time the COS operation
+        
         tic = time.perf_counter()
 
-        # Get files list from COS
-        files_list = cos_service.get_all_objects_from_cos(download_files=True)
-        
-        # Initialize environment
-        config = ingest_service.init_environment(collection_name, chunk_type)
-        
-        # Pass the files list directly to the ingest_files function
-        num_docs = ingest_service.ingest_files(config, files_list, # window_size = 'L', search = 'hybrid'
-                                               )
-        
-        # Track the time for performance analysis
-        info["ingestion-time"] = time.perf_counter() - tic
+        doc_length = ingest_service.ingest_files(config)
 
-        # Log performance info
-        logging.info(json.dumps(info, indent=4))
-
-        # Get list of filenames for the response message
-        filenames = [file['filename'] for file in files_list]
+        info["ingest-time"] = time.perf_counter() - tic
+        logger.info("Ingestion performance info: %s", json.dumps(info))
 
         return IngestDataResponse(
             status="success",
-            message=f"Successfully ingested {num_docs} docs from {len(filenames)} file(s)"
+            message=f"Data Ingestion successful for {doc_length} document chunks into vector database!"
         )
 
     except Exception as e:
-        logging.error(f"Failed to ingest files: {e}")
+        logger.exception("Failed to ingest data: %s", e)
         raise HTTPException(
             status_code=HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to ingest files: {str(e)}"
+            detail="Failed to ingest data"
         )
+        

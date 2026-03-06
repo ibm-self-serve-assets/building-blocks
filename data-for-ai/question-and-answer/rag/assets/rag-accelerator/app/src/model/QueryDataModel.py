@@ -7,9 +7,13 @@ class QueryDataInput(BaseModel):
         ..., 
         description="RAG query",
     )
-    collection_name: str = Field(
+    connection_name: str = Field(
         ..., 
-        description="Milvus collection to ingest files into.",
+        description="Milvus/Elastic Search connection name",
+    )
+    index_name: str = Field(
+        ..., 
+        description="Milvus collection/Elastic Search Index to ingest files into.",
     )
     num_results: int = Field(
         30, 
@@ -20,12 +24,12 @@ class QueryDataInput(BaseModel):
         description="Number of reranked results (chunks) to return for dense and sparse embeddings.",
     )
     
- 
     class Config:
         json_schema_extra = {
             "example": {
                 "query": "sample query",
-                "collection_name": "example_collection_name"
+                "connection_name": "example_connection_name",
+                "index_name":"example_index_name"
             }
         }
 

@@ -2,27 +2,32 @@ from pydantic import BaseModel, Field, field_validator
 from typing import List, Dict, Any, Optional, Union
 from enum import Enum
 
+
 class IngestDataInput(BaseModel):
     bucket_name: str = Field(
         ..., 
         description="COS bucket to ingest files from.",
     )
-    collection_name: str = Field(
-        ..., 
-        description="Milvus collection to ingest files into.",
+    index_name: str = Field(
+        ...,
+        description="Elastic search index name or milvus collection name",
     )
-    chunk_type: str = Field(
-        ..., 
-        description="Use Markdown splitter or Docling Hybrid Chunker",
+    connection_name: str = Field(
+        ...,
+        description="connection name for (milvuswxd/milvus/elasticsearch)",
+    )
+    directory: str = Field(
+        ...,
+        description="temporary directory name to store files",
     )
     
- 
     class Config:
         json_schema_extra = {
             "example": {
                 "bucket_name": "example-bucket-name",
-                "collection_name": "example_collection_name",
-                "chunk_type": "MARKDOWN"
+                "index_name": "example_index_name",
+                "connection_name":"example_connection",
+                "directory":"example_directory_name"
             }
         }
 
