@@ -10,7 +10,7 @@ numpy==1.26.2
 plotly==5.18.0
 
 # HTTP & API
-requests==2.31.0
+requests==2.32.4
 
 # Configuration
 python-dotenv==1.0.0
