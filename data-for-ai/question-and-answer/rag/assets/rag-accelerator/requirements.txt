@@ -32,7 +32,7 @@ langsmith==0.4.56
 
 # Document Processing
 unstructured[all-docs]==0.16.0
-pypdf==6.4.1
+pypdf==6.7.5
 python-docx==1.1.2
 python-pptx==1.0.2
 beautifulsoup4==4.14.3
