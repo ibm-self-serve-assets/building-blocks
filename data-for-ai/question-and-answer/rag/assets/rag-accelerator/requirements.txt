@@ -48,7 +48,7 @@ requests-toolbelt==1.0.0
 # Data Processing
 numpy==2.3.5
 pandas==2.2.3
-nltk==3.9.2
+nltk==3.9.3
 
 # Utilities
 python-dotenv==1.2.1
