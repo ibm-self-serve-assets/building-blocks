@@ -34,7 +34,14 @@ PARAMETERS = {
         "milvus_password": os.getenv("MILVUS_PASSWORD"),
         "milvus_ssl": os.getenv("MILVUS_SSL"),
         "milvus_database": os.getenv("MILVUS_DATABASE"),
-        "milvus_ssl_certificate": os.getenv("MILVUS_SSL_CERTIFICATE")
+        "milvus_ssl_certificate": os.getenv("MILVUS_SSL_CERTIFICATE"),
+        "opensearch_host": os.getenv("OPENSEARCH_HOST"),
+        "opensearch_port": os.getenv("OPENSEARCH_PORT"),
+        "opensearch_user": os.getenv("OPENSEARCH_USER"),
+        "opensearch_password": os.getenv("OPENSEARCH_PASSWORD"),
+        "opensearch_use_ssl": os.getenv("OPENSEARCH_USE_SSL"),
+        "opensearch_verify_certs": os.getenv("OPENSEARCH_VERIFY_CERTS"),
+        "opensearch_ca_certs": os.getenv("OPENSEARCH_CA_CERTS")
     },
     "RAG_advanced_parameter_set" : {
         "embedding_model_id":  os.getenv("RAG_ADV_MILVUS_EMBEDDING_MODEL_ID"),

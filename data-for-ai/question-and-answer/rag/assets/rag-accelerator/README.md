@@ -133,14 +133,14 @@ class ConnectionFactory:
 
 ## Features
 
-- ✅ **Multi-Database Support**: Milvus and OpenSearch vector databases
-- ✅ **Flexible Document Processing**: Support for PDF, DOCX, PPTX, Markdown, HTML
-- ✅ **Configurable Chunking**: Customizable chunk size and overlap
-- ✅ **IBM watsonx.ai Integration**: Embeddings and LLM inference
-- ✅ **Cloud Object Storage**: Document ingestion from IBM COS
-- ✅ **REST API**: FastAPI-based with automatic OpenAPI documentation
-- ✅ **Extensible Architecture**: Easy to add new vector databases or features
-- ✅ **Production Ready**: Logging, error handling, and API key authentication
+- **Multi-Database Support**: Milvus and OpenSearch vector databases
+- **Flexible Document Processing**: Support for PDF, DOCX, PPTX, Markdown, HTML
+- **Configurable Chunking**: Customizable chunk size and overlap
+- **IBM watsonx.ai Integration**: Embeddings and LLM inference
+- **Cloud Object Storage**: Document ingestion from IBM COS
+- **REST API**: FastAPI-based with automatic OpenAPI documentation
+- **Extensible Architecture**: Easy to add new vector databases or features
+- **Production Ready**: Logging, error handling, and API key authentication
 
 ## Prerequisites
 
@@ -904,7 +904,7 @@ For issues and questions:
 
 ## Team
 
-**Created and Architected By**: Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki
+**Created and Architected By**: Anand Das, Anindya Neogi, Joseph Kim, Shivam Solanki, Rishit Barochia, Himangshu Mech
 
 ---
 

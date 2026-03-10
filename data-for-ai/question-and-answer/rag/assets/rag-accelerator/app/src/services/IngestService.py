@@ -16,6 +16,7 @@ from app.src.utils.cos_ops import COSOperations
 from app.src.utils import config
 from app.src.utils.ingestion_helper import DocumentProcessor
 from app.src.utils.milvus_ops import MilvusOperations
+from app.src.utils.opensearch_ops import OpenSearchOperations
 from app.src.utils.milvus_connection import MilvusConnection
 from app.src.utils.connection_factory import ConnectionFactory
 from dotenv import load_dotenv
@@ -47,39 +48,26 @@ chunk_overlap = int(parameters["chunk_overlap"])
 
 
 def connection_setup(connection_name):
-    if connection_name != "milvus_connect":
-        raise ValueError(f"Unsupported connection: {connection_name}")
+    """
+    Setup connection based on connection_name.
+    Supports both 'milvus_connect' and 'opensearch_connect'.
+    """
+    logger.debug("Initializing connection with connection_name=%s", connection_name)
 
-    """ logger.info("Connecting to Milvus")
+    if connection_name not in ["milvus_connect", "opensearch_connect"]:
+        raise ValueError(f"Unsupported connection: {connection_name}. Supported: milvus_connect, opensearch_connect")
 
-    db_connection = {
-        "uri": f"https://{parameters["milvus_host"]}:{parameters["milvus_port"]}",  
-        "token": f"{parameters['milvus_user']}:{parameters['milvus_password']}",
-        "database": parameters.get("milvus_database", "default"),
-        "secure": parameters["milvus_ssl"].lower() == "true"
-    }
-
-    client = MilvusClient(**db_connection)
-
-    logger.info("MilvusClient connection established")
-    return client """
-
-    logger.debug("Initializing Milvus connection with connection_name=%s", connection_name)
-
-    if connection_name != "milvus_connect":
-        raise ValueError("Only milvus_connect is supported")
-
-    connection = ConnectionFactory.create_connection("milvus_connect",parameters)
+    connection = ConnectionFactory.create_connection(connection_name, parameters)
     client, connection_args = connection.connect()
-    logger.info("MilvusClient connection established")
+    logger.info(f"{connection_name} connection established")
 
     return client, connection_args
 
-# Connect to Milvus
-logger.info("Setting up connection to Milvus")
-milvus_client, milvus_connection_args = connection_setup("milvus_connect")
-logger.debug("Milvus connection args: %s", milvus_connection_args)
-logger.info("Connection to Milvus established")
+# Initialize connections lazily - will be set up when needed
+milvus_client = None
+milvus_connection_args = None
+opensearch_client = None
+opensearch_connection_args = None
 
 
 def ensure_token_limit(text: str, max_tokens: int) -> str:
@@ -140,11 +128,12 @@ def get_embedding(environment: str, parameters: dict, project_id: str):
 def generate_hash(content):
     return hashlib.sha256(content.encode()).hexdigest()
 
-def insert_docs_to_milvus(collection_name, split_docs, embedding, model_config):
+def insert_docs_to_milvus(client, collection_name, split_docs, embedding, model_config):
+    """Insert documents into Milvus collection."""
     max_tokens = model_config["max_tokens"]
     prefix = model_config["prefix"]
 
-    with tqdm(total=len(split_docs), desc="Inserting Documents", unit="docs") as pbar:
+    with tqdm(total=len(split_docs), desc="Inserting Documents into Milvus", unit="docs") as pbar:
 
         try:
             logger.info("Starting document insertion into Milvus collection '%s'", collection_name)
@@ -197,7 +186,7 @@ def insert_docs_to_milvus(collection_name, split_docs, embedding, model_config):
                     })
 
                 if data:
-                    milvus_client.insert(
+                    client.insert(
                         collection_name=collection_name,
                         data=data
                     )
@@ -211,10 +200,87 @@ def insert_docs_to_milvus(collection_name, split_docs, embedding, model_config):
             logger.exception(f"Ingestion error: {e}")
             raise
 
+
+def insert_docs_to_opensearch(client, index_name, split_docs, embedding, model_config):
+    """Insert documents into OpenSearch index."""
+    max_tokens = model_config["max_tokens"]
+    prefix = model_config["prefix"]
+
+    with tqdm(total=len(split_docs), desc="Inserting Documents into OpenSearch", unit="docs") as pbar:
+
+        try:
+            logger.info("Starting document insertion into OpenSearch index '%s'", index_name)
+            logger.debug("Total split_docs received: %s", len(split_docs))
+
+            for i in range(0, len(split_docs), index_chunk_size):
+                logger.debug("Processing chunk batch from %s to %s", i, i + index_chunk_size)
+                chunk = split_docs[i:i + index_chunk_size]
+                texts = []
+                valid_docs = []
+
+                for doc in chunk:
+                    safe_text = ensure_token_limit(
+                        doc.page_content,
+                        max_tokens - 20  # safety margin
+                    )
+
+                    formatted_text = f"{prefix}{safe_text}"
+
+                    texts.append(formatted_text)
+                    valid_docs.append(doc)
+
+                try:
+                    vectors = embedding.embed_documents(texts)
+                except Exception as e:
+                    logger.warning(f"Embedding batch failed. Skipping batch. Error: {e}")
+                    pbar.update(len(chunk))
+                    continue
+
+                # Bulk insert into OpenSearch
+                bulk_data = []
+                for doc, vector in zip(valid_docs, vectors):
+
+                    doc_id = generate_hash(
+                        doc.page_content +
+                        '\nTitle: ' + doc.metadata.get('title', '') +
+                        '\nUrl: ' + doc.metadata.get('document_url', '') +
+                        '\nPage: ' + str(doc.metadata.get('page_number', ''))
+                    )
+
+                    # OpenSearch bulk format: action and source
+                    bulk_data.append({"index": {"_index": index_name, "_id": doc_id}})
+                    bulk_data.append({
+                        "id": doc_id,
+                        "vector": vector,
+                        "title": doc.metadata.get("title", ""),
+                        "source": doc.metadata.get("source", ""),
+                        "document_url": doc.metadata.get("document_url", ""),
+                        "page_number": str(doc.metadata.get("page_number", "")),
+                        "chunk_seq": int(doc.metadata.get("chunk_seq", 0)),
+                        "text": doc.page_content,
+                    })
+
+                if bulk_data:
+                    # Bulk insert
+                    response = client.bulk(body=bulk_data, refresh=True)
+                    if response.get("errors"):
+                        logger.warning("Some documents failed to index in OpenSearch")
+                    else:
+                        logger.info("Inserted %s documents into OpenSearch index '%s'", len(valid_docs), index_name)
+
+                pbar.update(len(chunk))
+
+            logger.info("Documents inserted into OpenSearch successfully")
+
+        except Exception as e:
+            logger.exception(f"Ingestion error: {e}")
+            raise
+
 def ingest_files(payload):
 
     """
-    Ingest data from COS into vector database
+    Ingest data from COS into vector database.
+    Supports both Milvus and OpenSearch based on connection_name.
     """
 
     logger.info("Starting ingestion process")
@@ -222,7 +288,7 @@ def ingest_files(payload):
 
     connection_name = payload['connection_name']
     bucket_name = payload["bucket_name"]
-    directory = payload["directory"]   
+    directory = payload["directory"]
     index_name = payload["index_name"]
 
     try:
@@ -239,13 +305,14 @@ def ingest_files(payload):
             logger.error("Index name is required for vector database ingestion")
             raise ValueError("Index name is required for vector database ingestion")
         
-        if connection_name != "milvus_connect":
-            logger.error("currently only milvus connection is supported")
-            raise ConnectionError("currently only milvus connection is supported")
+        if connection_name not in ["milvus_connect", "opensearch_connect"]:
+            logger.error(f"Unsupported connection: {connection_name}")
+            raise ConnectionError(f"Unsupported connection: {connection_name}. Supported: milvus_connect, opensearch_connect")
 
-        milvus_ops = None
-
-        milvus_ops = MilvusOperations(client=milvus_client, parameters=parameters)
+        # Setup connection dynamically based on connection_name
+        logger.info(f"Setting up {connection_name} connection")
+        client, connection_args = connection_setup(connection_name)
+        logger.debug(f"{connection_name} connection args: %s", connection_args)
 
         # COS Operations download files from prefix
         cos_ops = COSOperations(bucket_name=bucket_name)
@@ -286,18 +353,34 @@ def ingest_files(payload):
         doc_length = len(split_docs)
         logger.info("Total split documents: %s", doc_length)
 
-        # Create milvus collection & Insert chunks
+        # Get embeddings
+        embedding, model_config, embedding_dim = get_embedding(environment, parameters, project_id)
+
+        # Create index/collection & Insert chunks based on connection type
         if connection_name == "milvus_connect":
 
-            embedding, model_config, embedding_dim = get_embedding( environment, parameters, project_id)
+            logger.info("Processing Milvus ingestion")
+            milvus_ops = MilvusOperations(client=client, parameters=parameters)
 
             logger.debug("Creating Milvus collection: %s", index_name)
-            milvus_ops.create_collection( embedding_dim=embedding_dim, index_name=index_name)
+            milvus_ops.create_collection(embedding_dim=embedding_dim, index_name=index_name)
 
             logger.info("Inserting documents into Milvus")
+            insert_docs_to_milvus(client=client, collection_name=index_name, split_docs=split_docs,
+                embedding=embedding, model_config=model_config)
 
-            logger.info("Inserting documents into Milvus")
-            insert_docs_to_milvus(collection_name=index_name, split_docs=split_docs,
+            return doc_length
+
+        elif connection_name == "opensearch_connect":
+
+            logger.info("Processing OpenSearch ingestion")
+            opensearch_ops = OpenSearchOperations(client=client, parameters=parameters)
+
+            logger.debug("Creating OpenSearch index: %s", index_name)
+            opensearch_ops.create_index(embedding_dim=embedding_dim, index_name=index_name)
+
+            logger.info("Inserting documents into OpenSearch")
+            insert_docs_to_opensearch(client=client, index_name=index_name, split_docs=split_docs,
                 embedding=embedding, model_config=model_config)
 
             return doc_length

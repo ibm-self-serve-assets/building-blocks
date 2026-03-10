@@ -34,22 +34,25 @@ project_id = parameters["watsonx_project_id"]
 
 def connection_setup(connection_name: str):
     """
-    Only milvus_connect supported
+    Setup connection based on connection_name.
+    Supports both 'milvus_connect' and 'opensearch_connect'.
     """
+    logger.debug("Initializing connection with connection_name=%s", connection_name)
 
-    if connection_name != "milvus_connect":
-        raise ValueError("Only milvus_connect is supported")
+    if connection_name not in ["milvus_connect", "opensearch_connect"]:
+        raise ValueError(f"Unsupported connection: {connection_name}. Supported: milvus_connect, opensearch_connect")
 
-    connection = ConnectionFactory.create_connection("milvus_connect",parameters)
+    connection = ConnectionFactory.create_connection(connection_name, parameters)
     client, connection_args = connection.connect()
+    logger.info(f"{connection_name} connection established")
 
     return client, connection_args
 
-# Connect to Milvus
-logger.info("Setting up connection to Milvus")
-milvus_client, milvus_connection_args = connection_setup("milvus_connect")
-logger.debug("Milvus connection args: %s", milvus_connection_args)
-logger.info("Connection to Milvus established")
+# Initialize connections lazily - will be set up when needed
+milvus_client = None
+milvus_connection_args = None
+opensearch_client = None
+opensearch_connection_args = None
 
 ### embedding from watsonx.ai
 def get_embedding():
@@ -91,7 +94,7 @@ def get_embedding():
     return embedding
 
 
-def search_milvus(index_name: str, question: str, top_k: int = 5):
+def search_milvus(client, connection_args, index_name: str, question: str, top_k: int = 5):
     """
     Dense search only using Milvus (L2 + IVF_FLAT)
     """
@@ -99,14 +102,6 @@ def search_milvus(index_name: str, question: str, top_k: int = 5):
     logger.debug("Search parameters: index_name=%s, top_k=%s", index_name, top_k)
     try:
         embedding = get_embedding()
-
-        """
-        dense_index_param = {
-            "metric_type": "L2",
-            "index_type": "IVF_FLAT",
-            "params": {"nlist": 1024},
-        }
-        """
 
         hybrid_search = (parameters.get("milvus_hybrid_search", "false").lower()== "true")
         logger.debug("Hybrid search enabled: %s", hybrid_search)
@@ -121,9 +116,8 @@ def search_milvus(index_name: str, question: str, top_k: int = 5):
         logger.info("Initializing Milvus vector store...")
         vector_store = Milvus(
             embedding_function=embedding,
-            #index_params=dense_index_param,
             vector_field=vector_field_name,
-            connection_args=milvus_connection_args,
+            connection_args=connection_args,
             primary_field="id",
             consistency_level="Strong",
             collection_name=index_name,
@@ -147,9 +141,79 @@ def search_milvus(index_name: str, question: str, top_k: int = 5):
         raise
 
 
+def search_opensearch(client, index_name: str, question: str, top_k: int = 5):
+    """
+    KNN search using OpenSearch
+    """
+    logger.info("OpenSearch search started")
+    logger.debug("Search parameters: index_name=%s, top_k=%s", index_name, top_k)
+    try:
+        embedding = get_embedding()
+
+        # Get query vector
+        query_vector = embedding.embed_documents([question])[0]
+
+        logger.info(f"Index name: {index_name} and question: {question}")
+
+        if parameters["vectorsearch_top_n_results"]:
+            top_k = int(parameters["vectorsearch_top_n_results"])
+
+        # Build KNN query
+        query_body = {
+            "size": top_k,
+            "query": {
+                "knn": {
+                    "vector": {
+                        "vector": query_vector,
+                        "k": top_k
+                    }
+                }
+            },
+            "_source": ["id", "title", "source", "document_url", "page_number", "chunk_seq", "text"]
+        }
+
+        logger.info("Performing KNN search in OpenSearch...")
+        response = client.search(index=index_name, body=query_body)
+
+        # Format results similar to Milvus format
+        search_result = []
+        hits = response.get("hits", {}).get("hits", [])
+        
+        for hit in hits:
+            source = hit.get("_source", {})
+            score = hit.get("_score", 0.0)
+            
+            # Create a document-like object
+            class Document:
+                def __init__(self, page_content, metadata):
+                    self.page_content = page_content
+                    self.metadata = metadata
+            
+            doc = Document(
+                page_content=source.get("text", ""),
+                metadata={
+                    "title": source.get("title", ""),
+                    "source": source.get("source", ""),
+                    "document_url": source.get("document_url", ""),
+                    "page_number": source.get("page_number", ""),
+                    "chunk_seq": source.get("chunk_seq", 0)
+                }
+            )
+            
+            search_result.append((doc, score))
+
+        logger.debug("Search result count: %s", len(search_result))
+        return search_result
+
+    except Exception as e:
+        logger.exception("OpenSearch search failed: %s", e)
+        raise
+
+
 def generate_answer(payload: dict):
     """
-    Called from /query route
+    Called from /query route.
+    Supports both Milvus and OpenSearch based on connection_name.
     """
 
     logger.info("Generating answer for query")
@@ -157,9 +221,20 @@ def generate_answer(payload: dict):
 
     question = payload["query"]
     index_name = payload["index_name"]
+    connection_name = payload.get("connection_name", "milvus_connect")
 
-    # Perform search
-    search_result = search_milvus(index_name, question)
+    # Setup connection dynamically based on connection_name
+    logger.info(f"Setting up {connection_name} connection for query")
+    client, connection_args = connection_setup(connection_name)
+    logger.debug(f"{connection_name} connection args: %s", connection_args)
+
+    # Perform search based on connection type
+    if connection_name == "milvus_connect":
+        search_result = search_milvus(client, connection_args, index_name, question)
+    elif connection_name == "opensearch_connect":
+        search_result = search_opensearch(client, index_name, question)
+    else:
+        raise ValueError(f"Unsupported connection: {connection_name}")
 
     if not search_result:
         return [], "No relevant documents found."
@@ -175,7 +250,7 @@ def generate_answer(payload: dict):
         })
 
     logger.debug("Formatted results count: %s", len(formatted_results))
-    top_result = formatted_results[0]["text"]
+    top_result = formatted_results[0]["text"] if formatted_results else "No relevant documents found."
 
     logger.info("Answer generation completed")
     return formatted_results, top_result
