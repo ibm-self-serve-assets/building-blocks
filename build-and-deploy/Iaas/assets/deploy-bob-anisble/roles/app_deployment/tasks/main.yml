@@ -11,15 +11,6 @@
   failed_when: false
   changed_when: "'created' in namespace_deploy.stdout or 'configured' in namespace_deploy.stdout"
 
-- name: Deploy service account
-  command: oc apply -f {{ k8s_dir }}/serviceaccount.yaml -n {{ namespace }}
-  register: sa_deploy
-  changed_when: "'created' in sa_deploy.stdout or 'configured' in sa_deploy.stdout"
-
-- name: Display service account deployment status
-  debug:
-    msg: "Service account deployed: {{ sa_deploy.stdout }}"
-
 - name: Deploy PostgreSQL PVC
   command: oc apply -f {{ k8s_dir }}/postgres-pvc.yaml -n {{ namespace }}
   register: pvc_deploy
