@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: retail-postgres
+  namespace: {{ namespace }}
+  labels:
+    app: retail-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: retail-postgres
+  template:
+    metadata:
+      labels:
+        app: retail-postgres
+    spec:
+      serviceAccountName: retail
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
+        fsGroupChangePolicy: "OnRootMismatch"
+      imagePullSecrets:
+        - name: dockerhub-secret
+      containers:
+        - name: postgres
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 999
+            capabilities:
+              drop:
+                - ALL
+          image: {{ postgres_full_image }}
+          env:
+            - name: POSTGRES_DB
+              value: {{ db_name }}
+            - name: POSTGRES_USER
+              value: {{ db_user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ db_password }}
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          ports:
+            - containerPort: 5432
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: retail-postgres-pvc

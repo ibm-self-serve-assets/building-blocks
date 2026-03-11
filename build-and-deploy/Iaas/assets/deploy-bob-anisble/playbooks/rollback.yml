@@ -1,0 +1,115 @@
+---
+# Rollback Playbook for Retail Application
+# Use this playbook to rollback to previous deployment state
+
+- name: Rollback Retail Application Deployment
+  hosts: local
+  gather_facts: yes
+  vars_files:
+    - "../group_vars/{{ env_name | default('development') }}.yml"
+  vars:
+    environment: "{{ env_name | default('development') }}"
+  
+  pre_tasks:
+    - name: Display rollback information
+      debug:
+        msg:
+          - "=========================================="
+          - "Retail Application Rollback"
+          - "=========================================="
+          - "Environment: {{ environment }}"
+          - "Namespace: {{ namespace }}"
+          - "=========================================="
+
+    - name: Verify required environment variables
+      assert:
+        that:
+          - lookup('env', 'OC_TOKEN') | length > 0
+        fail_msg: "OC_TOKEN environment variable is not set"
+        success_msg: "OC_TOKEN is set"
+
+    - name: Login to OpenShift cluster
+      command: >
+        oc login {{ openshift_server }}
+        --token={{ lookup('env', 'OC_TOKEN') }}
+        --insecure-skip-tls-verify=true
+      no_log: true
+      register: oc_login
+      changed_when: "'Logged into' in oc_login.stdout"
+
+  tasks:
+    - name: Rollback backend deployment
+      command: oc rollout undo deployment/retail-backend -n {{ namespace }}
+      register: backend_rollback
+      changed_when: true
+      failed_when: false
+
+    - name: Display backend rollback status
+      debug:
+        msg: "Backend rollback: {{ 'Success' if backend_rollback.rc == 0 else 'Failed or no previous revision' }}"
+
+    - name: Wait for backend rollback to complete
+      command: oc rollout status deployment/retail-backend -n {{ namespace }} --timeout=300s
+      register: backend_rollback_status
+      changed_when: false
+      when: backend_rollback.rc == 0
+
+    - name: Rollback frontend deployment
+      command: oc rollout undo deployment/retail-frontend -n {{ namespace }}
+      register: frontend_rollback
+      changed_when: true
+      failed_when: false
+
+    - name: Display frontend rollback status
+      debug:
+        msg: "Frontend rollback: {{ 'Success' if frontend_rollback.rc == 0 else 'Failed or no previous revision' }}"
+
+    - name: Wait for frontend rollback to complete
+      command: oc rollout status deployment/retail-frontend -n {{ namespace }} --timeout=300s
+      register: frontend_rollback_status
+      changed_when: false
+      when: frontend_rollback.rc == 0
+
+    - name: Rollback PostgreSQL deployment
+      command: oc rollout undo deployment/retail-postgres -n {{ namespace }}
+      register: postgres_rollback
+      changed_when: true
+      failed_when: false
+
+    - name: Display PostgreSQL rollback status
+      debug:
+        msg: "PostgreSQL rollback: {{ 'Success' if postgres_rollback.rc == 0 else 'Failed or no previous revision' }}"
+
+    - name: Wait for PostgreSQL rollback to complete
+      command: oc rollout status deployment/retail-postgres -n {{ namespace }} --timeout=300s
+      register: postgres_rollback_status
+      changed_when: false
+      when: postgres_rollback.rc == 0
+
+    - name: Get all pods status after rollback
+      command: oc get pods -n {{ namespace }}
+      register: pods_status
+      changed_when: false
+
+    - name: Display pods status
+      debug:
+        msg: "{{ pods_status.stdout_lines }}"
+
+  post_tasks:
+    - name: Display rollback summary
+      debug:
+        msg:
+          - "=========================================="
+          - "Rollback Completed"
+          - "=========================================="
+          - "Environment: {{ environment }}"
+          - "Namespace: {{ namespace }}"
+          - "Backend: {{ 'Rolled back' if backend_rollback.rc == 0 else 'No rollback performed' }}"
+          - "Frontend: {{ 'Rolled back' if frontend_rollback.rc == 0 else 'No rollback performed' }}"
+          - "PostgreSQL: {{ 'Rolled back' if postgres_rollback.rc == 0 else 'No rollback performed' }}"
+          - "=========================================="
+          - "Verify application status:"
+          - "oc get pods -n {{ namespace }}"
+          - "=========================================="
+
+# Made with Bob

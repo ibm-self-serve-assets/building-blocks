@@ -36,17 +36,30 @@
     regexp: "image:\\s+[\"']?docker\\.io/technologybuildingblocks/retail-backend:.*[\"']?"
     replace: "image: {{ backend_full_image }}"
 
+- name: Add serviceAccountName to backend deployment
+  lineinfile:
+    path: "{{ k8s_dir }}/backend-deployment.yaml"
+    insertafter: '^\s+spec:\s*$'
+    line: '      serviceAccountName: retail'
+    state: present
+
 - name: Update frontend image reference
   replace:
     path: "{{ k8s_dir }}/frontend-deployment.yaml"
     regexp: "image:\\s+[\"']?docker\\.io/technologybuildingblocks/retail-frontend:.*[\"']?"
     replace: "image: {{ frontend_full_image }}"
 
-- name: Update PostgreSQL image reference
-  replace:
-    path: "{{ k8s_dir }}/postgres-deployment.yaml"
-    regexp: "image:\\s+[\"']?docker\\.io/technologybuildingblocks/retail-postgres.*:.*[\"']?"
-    replace: "image: {{ postgres_full_image }}"
+- name: Add serviceAccountName to frontend deployment
+  lineinfile:
+    path: "{{ k8s_dir }}/frontend-deployment.yaml"
+    insertafter: '^\s+spec:\s*$'
+    line: '      serviceAccountName: retail'
+    state: present
+
+- name: Generate PostgreSQL deployment with proper security context
+  template:
+    src: postgres-deployment-patch.yaml.j2
+    dest: "{{ k8s_dir }}/postgres-deployment.yaml"
 
 - name: Update backend replicas
   replace:

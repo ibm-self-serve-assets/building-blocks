@@ -1,0 +1,28 @@
+---
+# Handlers for Application Deployment
+
+- name: restart backend
+  command: oc rollout restart deployment/retail-backend -n {{ namespace }}
+  listen: "restart backend deployment"
+
+- name: restart frontend
+  command: oc rollout restart deployment/retail-frontend -n {{ namespace }}
+  listen: "restart frontend deployment"
+
+- name: restart postgres
+  command: oc rollout restart deployment/retail-postgres -n {{ namespace }}
+  listen: "restart postgres deployment"
+
+- name: wait for backend rollout
+  command: oc rollout status deployment/retail-backend -n {{ namespace }} --timeout=300s
+  listen: "wait backend ready"
+
+- name: wait for frontend rollout
+  command: oc rollout status deployment/retail-frontend -n {{ namespace }} --timeout=300s
+  listen: "wait frontend ready"
+
+- name: wait for postgres rollout
+  command: oc rollout status deployment/retail-postgres -n {{ namespace }} --timeout=300s
+  listen: "wait postgres ready"
+
+# Made with Bob

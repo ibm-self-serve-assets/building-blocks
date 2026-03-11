@@ -160,6 +160,104 @@
     msg: "{{ jmeter_version_output.stdout if jmeter_symlink_check.stat.exists else jmeter_version_direct.stdout }}"
   when: jmeter_symlink_check.stat.exists or jmeter_check.stat.exists
 
+- name: Check if Trivy is installed
+  command: which trivy
+  register: trivy_check
+  failed_when: false
+  changed_when: false
+
+- name: Download and install Trivy
+  block:
+    - name: Create temporary directory for Trivy
+      tempfile:
+        state: directory
+        suffix: trivy
+      register: trivy_temp_dir
+
+    - name: Download Trivy
+      get_url:
+        url: "https://github.com/aquasecurity/trivy/releases/download/v{{ trivy_version }}/trivy_{{ trivy_version }}_Linux-64bit.tar.gz"
+        dest: "{{ trivy_temp_dir.path }}/trivy.tar.gz"
+        mode: '0644'
+
+    - name: Extract Trivy
+      unarchive:
+        src: "{{ trivy_temp_dir.path }}/trivy.tar.gz"
+        dest: "{{ trivy_temp_dir.path }}"
+        remote_src: yes
+
+    - name: Install Trivy to /usr/local/bin
+      copy:
+        src: "{{ trivy_temp_dir.path }}/trivy"
+        dest: /usr/local/bin/trivy
+        mode: '0755'
+        remote_src: yes
+      become: true
+
+    - name: Clean up temporary directory
+      file:
+        path: "{{ trivy_temp_dir.path }}"
+        state: absent
+  when: trivy_check.rc != 0
+
+- name: Verify Trivy installation
+  command: trivy --version
+  register: trivy_version_output
+  changed_when: false
+
+- name: Display Trivy version
+  debug:
+    msg: "{{ trivy_version_output.stdout }}"
+
+- name: Check if Vault is installed
+  command: which vault
+  register: vault_check
+  failed_when: false
+  changed_when: false
+
+- name: Download and install HashiCorp Vault
+  block:
+    - name: Create temporary directory for Vault
+      tempfile:
+        state: directory
+        suffix: vault
+      register: vault_temp_dir
+
+    - name: Download Vault
+      get_url:
+        url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+        dest: "{{ vault_temp_dir.path }}/vault.zip"
+        mode: '0644'
+
+    - name: Extract Vault
+      unarchive:
+        src: "{{ vault_temp_dir.path }}/vault.zip"
+        dest: "{{ vault_temp_dir.path }}"
+        remote_src: yes
+
+    - name: Install Vault to /usr/local/bin
+      copy:
+        src: "{{ vault_temp_dir.path }}/vault"
+        dest: /usr/local/bin/vault
+        mode: '0755'
+        remote_src: yes
+      become: true
+
+    - name: Clean up temporary directory
+      file:
+        path: "{{ vault_temp_dir.path }}"
+        state: absent
+  when: vault_check.rc != 0
+
+- name: Verify Vault installation
+  command: vault version
+  register: vault_version_output
+  changed_when: false
+
+- name: Display Vault version
+  debug:
+    msg: "{{ vault_version_output.stdout }}"
+
 - name: Display installation summary
   debug:
     msg:
@@ -168,5 +266,7 @@
       - "Java 11: Installed"
       - "OpenShift CLI: {{ oc_version.stdout }}"
       - "Apache JMeter: {{ jmeter_version }}"
+      - "Trivy: {{ trivy_version }}"
+      - "HashiCorp Vault: {{ vault_version }}"
 
 # Made with Bob

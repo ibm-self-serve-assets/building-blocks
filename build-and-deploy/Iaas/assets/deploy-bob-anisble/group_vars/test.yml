@@ -6,7 +6,7 @@ environment: test
 namespace: retail-test
 
 # OpenShift Configuration
-openshift_server: "https://api.your-cluster.example.com:6443"
+openshift_server: "{{ lookup('env', 'OC_URL') }}"
 openshift_token: "{{ lookup('env', 'OC_TOKEN') }}"
 
 # Docker Hub Configuration

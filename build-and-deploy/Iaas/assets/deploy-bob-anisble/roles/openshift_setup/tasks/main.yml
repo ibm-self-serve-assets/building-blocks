@@ -45,14 +45,112 @@
   failed_when: false
   changed_when: false
 
-- name: Create namespace if it doesn't exist
-  command: oc create namespace {{ namespace }}
-  when: namespace_check.rc != 0
+- name: Create namespace using oc adm new-project if it doesn't exist
+  command: oc adm new-project {{ namespace }}
   register: namespace_created
+  when: namespace_check.rc != 0
+  failed_when: false
 
-- name: Display namespace status
+- name: Display namespace creation status
   debug:
-    msg: "{{ 'Namespace created' if namespace_created.changed else 'Namespace already exists' }}: {{ namespace }}"
+    msg: "{{ 'Namespace created: ' + namespace if namespace_created.changed else 'Namespace already exists: ' + namespace }}"
+
+- name: Add anyuid SCC to default service account
+  command: >
+    oc adm policy add-scc-to-user anyuid
+    -z default
+    -n {{ namespace }}
+  register: anyuid_scc_added
+  changed_when: "'added' in anyuid_scc_added.stdout or 'already' not in anyuid_scc_added.stdout"
+  failed_when: false
+
+- name: Display anyuid SCC configuration status
+  debug:
+    msg: "{{ 'anyuid SCC added to default service account' if anyuid_scc_added.changed else 'anyuid SCC already configured for default service account' }}"
+
+- name: Add privileged SCC to default service account
+  command: >
+    oc adm policy add-scc-to-user privileged
+    -z default
+    -n {{ namespace }}
+  register: privileged_scc_added
+  changed_when: "'added' in privileged_scc_added.stdout or 'already' not in privileged_scc_added.stdout"
+  failed_when: false
+
+- name: Display privileged SCC configuration status
+  debug:
+    msg: "{{ 'privileged SCC added to default service account' if privileged_scc_added.changed else 'privileged SCC already configured for default service account' }}"
+
+- name: Create ServiceAccount manifest from template
+  template:
+    src: serviceaccount.yaml.j2
+    dest: /tmp/serviceaccount.yaml
+  delegate_to: localhost
+
+- name: Apply ServiceAccount
+  command: oc apply -f /tmp/serviceaccount.yaml
+  register: serviceaccount_created
+  changed_when: "'created' in serviceaccount_created.stdout or 'configured' in serviceaccount_created.stdout"
+
+- name: Display ServiceAccount creation status
+  debug:
+    msg: "{{ 'ServiceAccount retail created/updated in namespace ' + namespace }}"
+
+- name: Create ClusterRole manifest from template
+  template:
+    src: clusterrole.yaml.j2
+    dest: /tmp/clusterrole.yaml
+  delegate_to: localhost
+
+- name: Apply ClusterRole
+  command: oc apply -f /tmp/clusterrole.yaml
+  register: clusterrole_created
+  changed_when: "'created' in clusterrole_created.stdout or 'configured' in clusterrole_created.stdout"
+
+- name: Display ClusterRole creation status
+  debug:
+    msg: "ClusterRole retail created/updated"
+
+- name: Create ClusterRoleBinding manifest from template
+  template:
+    src: clusterrolebinding.yaml.j2
+    dest: /tmp/clusterrolebinding.yaml
+  delegate_to: localhost
+
+- name: Apply ClusterRoleBinding
+  command: oc apply -f /tmp/clusterrolebinding.yaml
+  register: clusterrolebinding_created
+  changed_when: "'created' in clusterrolebinding_created.stdout or 'configured' in clusterrolebinding_created.stdout"
+
+- name: Display ClusterRoleBinding creation status
+  debug:
+    msg: "ClusterRoleBinding retail created/updated"
+
+- name: Add anyuid SCC to retail service account
+  command: >
+    oc adm policy add-scc-to-user anyuid
+    -z retail
+    -n {{ namespace }}
+  register: retail_anyuid_scc_added
+  changed_when: "'added' in retail_anyuid_scc_added.stdout or 'already' not in retail_anyuid_scc_added.stdout"
+  failed_when: false
+
+- name: Display retail ServiceAccount anyuid SCC status
+  debug:
+    msg: "{{ 'anyuid SCC added to retail service account' if retail_anyuid_scc_added.changed else 'anyuid SCC already configured for retail service account' }}"
+
+- name: Add privileged SCC to retail service account
+  command: >
+    oc adm policy add-scc-to-user privileged
+    -z retail
+    -n {{ namespace }}
+  register: retail_privileged_scc_added
+  changed_when: "'added' in retail_privileged_scc_added.stdout or 'already' not in retail_privileged_scc_added.stdout"
+  failed_when: false
+
+- name: Display retail ServiceAccount privileged SCC status
+  debug:
+    msg: "{{ 'privileged SCC added to retail service account' if retail_privileged_scc_added.changed else 'privileged SCC already configured for retail service account' }}"
 
 - name: Switch to target namespace
   command: oc project {{ namespace }}
@@ -123,6 +221,9 @@
       - "Cluster: {{ openshift_server }}"
       - "User: {{ current_user }}"
       - "Namespace: {{ current_namespace }}"
+      - "ServiceAccount: retail (with anyuid and privileged SCC)"
+      - "ClusterRole: retail"
+      - "ClusterRoleBinding: retail"
       - "Docker Hub secret: dockerhub-secret"
 
 # Made with Bob

@@ -55,10 +55,26 @@
     --timeout=300s
   register: postgres_ready
   changed_when: false
+  retries: 2
+  delay: 10
+  until: postgres_ready.rc == 0
+
+- name: Get PostgreSQL pod status details
+  command: oc get pods -l app=retail-postgres -n {{ namespace }} -o wide
+  register: postgres_pod_details
+  changed_when: false
 
 - name: Display PostgreSQL readiness status
   debug:
-    msg: "PostgreSQL is ready"
+    msg:
+      - "PostgreSQL is ready"
+      - "{{ postgres_pod_details.stdout_lines }}"
+
+- name: Save current backend deployment state for rollback
+  command: oc get deployment retail-backend -n {{ namespace }} -o yaml
+  register: backend_previous_state
+  changed_when: false
+  failed_when: false
 
 - name: Deploy backend deployment
   command: oc apply -f {{ k8s_dir }}/backend-deployment.yaml -n {{ namespace }}
@@ -104,10 +120,20 @@
     --timeout=300s
   register: backend_ready
   changed_when: false
+  retries: 2
+  delay: 10
+  until: backend_ready.rc == 0
+
+- name: Get backend pod status details
+  command: oc get pods -l app=retail-backend -n {{ namespace }} -o wide
+  register: backend_pod_details
+  changed_when: false
 
 - name: Display backend readiness status
   debug:
-    msg: "Backend is ready"
+    msg:
+      - "Backend is ready"
+      - "{{ backend_pod_details.stdout_lines }}"
 
 - name: Get backend route URL
   command: oc get route retail-backend -n {{ namespace }} -o jsonpath='{.spec.host}'
@@ -120,6 +146,22 @@
 
 - name: Display backend route
   debug:
+- name: Verify backend health endpoint
+  uri:
+    url: "{{ backend_route }}/health"
+    status_code: 200
+    timeout: 30
+    validate_certs: no
+  register: backend_health
+  retries: 5
+  delay: 10
+  until: backend_health.status == 200
+  failed_when: false
+
+- name: Display backend health status
+  debug:
+    msg: "Backend health check: {{ 'Passed' if backend_health.status == 200 else 'Failed - continuing anyway' }}"
+
     msg: "Backend route: {{ backend_route }}"
 
 - name: Deploy frontend deployment
@@ -166,10 +208,20 @@
     --timeout=300s
   register: frontend_ready
   changed_when: false
+  retries: 2
+  delay: 10
+  until: frontend_ready.rc == 0
+
+- name: Get frontend pod status details
+  command: oc get pods -l app=retail-frontend -n {{ namespace }} -o wide
+  register: frontend_pod_details
+  changed_when: false
 
 - name: Display frontend readiness status
   debug:
-    msg: "Frontend is ready"
+    msg:
+      - "Frontend is ready"
+      - "{{ frontend_pod_details.stdout_lines }}"
 
 - name: Get frontend route URL
   command: oc get route retail-frontend -n {{ namespace }} -o jsonpath='{.spec.host}'

@@ -1,6 +1,27 @@
 ---
 # Container Image Building and Pushing Tasks
 
+- name: Validate required variables
+  assert:
+    that:
+      - backend_dir is defined
+      - frontend_dir is defined
+      - postgres_dir is defined
+      - docker_username is defined
+      - docker_password is defined
+    fail_msg: "Required variables for container image building are not set"
+    success_msg: "All required variables validated"
+
+- name: Check disk space before building
+  shell: df -h {{ app_source_dir }} | awk 'NR==2 {print $5}' | sed 's/%//'
+  register: disk_usage
+  changed_when: false
+  failed_when: disk_usage.stdout | int > 90
+
+- name: Display disk usage
+  debug:
+    msg: "Disk usage: {{ disk_usage.stdout }}%"
+
 - name: Login to Docker Hub
   command: >
     podman login {{ docker_registry }}
@@ -9,10 +30,17 @@
   no_log: true
   register: docker_login
   changed_when: "'Login Succeeded' in docker_login.stdout"
+  retries: 3
+  delay: 5
+  until: docker_login.rc == 0
 
 - name: Display Docker Hub login status
   debug:
     msg: "Successfully logged in to Docker Hub"
+
+- name: Record build start time
+  set_fact:
+    build_start_time: "{{ ansible_date_time.epoch }}"
 
 - name: Build PostgreSQL container image
   command: >
@@ -23,20 +51,8 @@
     chdir: "{{ postgres_dir }}"
   register: postgres_build
   changed_when: true
-
-- name: Display PostgreSQL build status
-  debug:
-    msg: "PostgreSQL image built successfully"
-
-- name: Push PostgreSQL image to Docker Hub
-  command: >
-    podman push {{ docker_registry }}/{{ docker_username }}/{{ postgres_image_name }}:{{ postgres_image_tag }}
-  register: postgres_push
-  changed_when: true
-
-- name: Display PostgreSQL push status
-  debug:
-    msg: "PostgreSQL image pushed to {{ docker_registry }}/{{ docker_username }}/{{ postgres_image_name }}:{{ postgres_image_tag }}"
+  async: 600
+  poll: 0
 
 - name: Build backend container image
   command: >
@@ -47,20 +63,8 @@
     chdir: "{{ backend_dir }}"
   register: backend_build
   changed_when: true
-
-- name: Display backend build status
-  debug:
-    msg: "Backend image built successfully"
-
-- name: Push backend image to Docker Hub
-  command: >
-    podman push {{ docker_registry }}/{{ docker_username }}/{{ backend_image_name }}:{{ backend_image_tag }}
-  register: backend_push
-  changed_when: true
-
-- name: Display backend push status
-  debug:
-    msg: "Backend image pushed to {{ docker_registry }}/{{ docker_username }}/{{ backend_image_name }}:{{ backend_image_tag }}"
+  async: 600
+  poll: 0
 
 - name: Build frontend container image (initial build)
   command: >
@@ -71,20 +75,94 @@
     chdir: "{{ frontend_dir }}"
   register: frontend_build
   changed_when: true
+  async: 600
+  poll: 0
 
-- name: Display frontend build status
+- name: Wait for PostgreSQL build to complete
+  async_status:
+    jid: "{{ postgres_build.ansible_job_id }}"
+  register: postgres_build_result
+  until: postgres_build_result.finished
+  retries: 60
+  delay: 10
+
+- name: Wait for backend build to complete
+  async_status:
+    jid: "{{ backend_build.ansible_job_id }}"
+  register: backend_build_result
+  until: backend_build_result.finished
+  retries: 60
+  delay: 10
+
+- name: Wait for frontend build to complete
+  async_status:
+    jid: "{{ frontend_build.ansible_job_id }}"
+  register: frontend_build_result
+  until: frontend_build_result.finished
+  retries: 60
+  delay: 10
+
+- name: Display build completion status
   debug:
-    msg: "Frontend image built successfully"
+    msg:
+      - "All container images built successfully"
+      - "PostgreSQL: Built"
+      - "Backend: Built"
+      - "Frontend: Built"
+
+- name: Push PostgreSQL image to Docker Hub
+  command: >
+    podman push {{ docker_registry }}/{{ docker_username }}/{{ postgres_image_name }}:{{ postgres_image_tag }}
+  register: postgres_push
+  changed_when: true
+  retries: 3
+  delay: 10
+  until: postgres_push.rc == 0
+
+- name: Display PostgreSQL push status
+  debug:
+    msg: "PostgreSQL image pushed to {{ docker_registry }}/{{ docker_username }}/{{ postgres_image_name }}:{{ postgres_image_tag }}"
+
+- name: Push backend image to Docker Hub
+  command: >
+    podman push {{ docker_registry }}/{{ docker_username }}/{{ backend_image_name }}:{{ backend_image_tag }}
+  register: backend_push
+  changed_when: true
+  retries: 3
+  delay: 10
+  until: backend_push.rc == 0
+
+- name: Display backend push status
+  debug:
+    msg: "Backend image pushed to {{ docker_registry }}/{{ docker_username }}/{{ backend_image_name }}:{{ backend_image_tag }}"
 
 - name: Push frontend image to Docker Hub
   command: >
     podman push {{ docker_registry }}/{{ docker_username }}/{{ frontend_image_name }}:{{ frontend_image_tag }}
   register: frontend_push
   changed_when: true
+  retries: 3
+  delay: 10
+  until: frontend_push.rc == 0
 
 - name: Display frontend push status
   debug:
     msg: "Frontend image pushed to {{ docker_registry }}/{{ docker_username }}/{{ frontend_image_name }}:{{ frontend_image_tag }}"
+
+- name: Clean up dangling images
+  command: podman image prune -f
+  when: cleanup_images | default(true)
+  register: image_cleanup
+  changed_when: true
+
+- name: Display cleanup status
+  debug:
+    msg: "Cleaned up dangling images"
+  when: cleanup_images | default(true)
+
+- name: Calculate build duration
+  set_fact:
+    build_duration: "{{ ansible_date_time.epoch | int - build_start_time | int }}"
 
 - name: Set container image facts
   set_fact:
@@ -99,5 +177,6 @@
       - "Backend: {{ backend_full_image }}"
       - "Frontend: {{ frontend_full_image }}"
       - "PostgreSQL: {{ postgres_full_image }}"
+      - "Build duration: {{ build_duration }} seconds"
 
 # Made with Bob

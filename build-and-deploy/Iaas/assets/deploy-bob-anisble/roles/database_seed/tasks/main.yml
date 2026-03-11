@@ -45,17 +45,6 @@
     fail_msg: "PostgreSQL pod is not running"
     success_msg: "PostgreSQL pod is running"
 
-#- name: Copy seed data to PostgreSQL pod
-#  command: >
-#    oc cp {{ db_seed_path }}
-#    {{ namespace }}/{{ postgres_pod.stdout }}:/tmp/full_dump.sql
-#  register: copy_seed
-#  changed_when: true
-
-#- name: Display seed data copy status
-#  debug:
-#    msg: "Seed data copied to PostgreSQL pod"
-
 - name: Check if database already has data
   command: >
     oc exec {{ postgres_pod.stdout }} -n {{ namespace }} --
@@ -64,19 +53,30 @@
   register: table_count
   changed_when: false
   failed_when: false
+  retries: 3
+  delay: 5
+  until: table_count.rc == 0 or table_count.rc == 1
 
 - name: Display current database state
   debug:
     msg: "Database check: {{ table_count.stdout if table_count.rc == 0 else 'Database may not exist yet' }}"
 
-- name: Load seed data into PostgreSQL
-  command: >
-    oc exec {{ postgres_pod.stdout }} -n {{ namespace }} --
-    psql -U {{ db_user }} -d {{ db_name }} -f /tmp/full_dump.sql
+- name: Record seed start time
+  set_fact:
+    seed_start_time: "{{ ansible_date_time.epoch }}"
+
+- name: Load seed data into PostgreSQL via stdin (streaming)
+  shell: |
+    cat {{ db_seed_path }} | oc exec -i {{ postgres_pod.stdout }} -n {{ namespace }} -- \
+    psql -U {{ db_user }} -d {{ db_name }}
   register: seed_load
   changed_when: true
+  no_log: false
   environment:
     PGPASSWORD: "{{ db_password }}"
+  retries: 2
+  delay: 10
+  until: seed_load.rc == 0
 
 - name: Display seed data load status
   debug:
@@ -94,13 +94,9 @@
   debug:
     msg: "Tables in database: {{ final_table_count.stdout_lines }}"
 
-- name: Clean up seed file from pod
-  command: >
-    oc exec {{ postgres_pod.stdout }} -n {{ namespace }} --
-    rm -f /tmp/full_dump.sql
-  register: cleanup
-  changed_when: true
-  failed_when: false
+- name: Calculate seed duration
+  set_fact:
+    seed_duration: "{{ ansible_date_time.epoch | int - seed_start_time | int }}"
 
 - name: Restart backend deployment to refresh database connections
   command: oc rollout restart deployment/retail-backend -n {{ namespace }}
@@ -111,6 +107,9 @@
   command: oc rollout status deployment/retail-backend -n {{ namespace }} --timeout=300s
   register: backend_rollout
   changed_when: false
+  retries: 2
+  delay: 10
+  until: backend_rollout.rc == 0
 
 - name: Display backend restart status
   debug:
@@ -128,6 +127,7 @@
       - "PostgreSQL pod: {{ postgres_pod_name }}"
       - "Database: {{ db_name }}"
       - "Seed file: {{ db_seed_path }}"
+      - "Seed duration: {{ seed_duration }} seconds"
       - "Backend restarted and ready"
 
 # Made with Bob

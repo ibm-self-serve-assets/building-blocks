@@ -2,6 +2,7 @@
 # Default variables for openshift_setup role
 
 namespace: "retail-dev"
+service_account_name: "retail"
 docker_registry: "docker.io"
 
 # Made with Bob
