@@ -24,23 +24,35 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
 
-2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
+💡 **Tip: Download Only This Folder**
 
+    If you don’t want to download the entire repository, you can download just this folder.
+
+    - Copy the URL of this folder (https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder).
+    - Go to: https://download-directory.github.io/.
+    - Paste the folder URL there and press **Return/Enter**.
+
+    This will download only the contents of the selected folder as a ZIP file.
+
+2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
+   
 3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
 
 4. **Ask Bob to build an agent.** For example: *"Build a financial advisor agent"*
 
 5. **Answer Bob's questions.** Bob will ask multiple-choice questions to understand your requirements. Select an option, or click the pencil icon to edit and customize your answer.
 
-6. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
+6. **Start building the agent.** Bob will create a ToDo list and ask you to run some commands — click **Run** when prompted.
 
-7. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
+7. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
 
-8. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
+8. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
 
-9. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
+9. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
 
-10. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
+10. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
+
+11. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
 
 ## How It Works: uvx and the WXO ADK
 
@@ -134,7 +146,6 @@ The LLM (`groq/openai/gpt-oss-120b`) sits on top and routes:
 
 ## Key Design Decisions
 
-- **Embedded data in tools**: WXO tools run in isolated cloud environments and cannot access local files. Data is embedded as Python dicts directly in tool code.
 - **Tool isolation**: Each tool is self-contained. Tools cannot call other tools. The agent LLM orchestrates multi-tool workflows.
 - **5 tools recommended**: 5 or fewer tools is recommended for optimal performance (typically 3 entity + 1 communication + 1 domain-specific), though agents can use more if needed.
 - **uvx for CLI**: All orchestrate commands use `uvx --from ibm-watsonx-orchestrate` for isolated execution without manual venv activation.
