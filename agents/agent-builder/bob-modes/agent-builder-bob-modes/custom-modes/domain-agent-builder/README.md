@@ -1,6 +1,6 @@
 # WXO Domain Agent Builder using Bob
 
-A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents end-to-end through an interactive workflow.
+A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents for your desired domain through an interactive workflow - from start to finish.
 
 ## What It Does
 
