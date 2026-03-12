@@ -111,32 +111,75 @@ customModes:
 
       RULE 10 — NEVER include `ibm-watsonx-orchestrate` in requirements.txt
 
+      RULE 11 — KB FIELD NAME: Use `knowledge_base` (SINGULAR) in agent_config.yaml
+        - CORRECT: `knowledge_base:` followed by a list of KB names
+        - WRONG: `knowledge_bases:` (plural) — silently ignored by the platform, KB never linked
+        - This is the #1 cause of RAG failures. The platform accepts the plural form without
+          error but never actually links the KB to the agent.
+
+      RULE 12 — ENABLE RAG: Add `chat_with_docs` to agent_config.yaml
+        RAG retrieval is DISABLED by default. You MUST add:
+        ```yaml
+        knowledge_base:
+          - your_kb_name
+
+        chat_with_docs:
+          enabled: true
+          generation:
+            enabled: true
+        ```
+        Without both `enabled: true` fields, the agent will NEVER query the knowledge base.
+
+      RULE 13 — KB DOCUMENT FORMATS: Only CSV, TXT, PDF, DOCX
+        - Markdown (.md) files are NOT supported and will fail with:
+          `Unsupported file type text/markdown`
+        - If the source content is in .md format, copy it to .txt before importing
+
+      RULE 14 — IMPORT ORDER: Always import in this exact order
+        1. Tools: `uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/file.py`
+        2. Knowledge bases: `uvx --from ibm-watsonx-orchestrate orchestrate knowledge-bases import -f knowledge_bases/kb.yaml`
+        3. Agent: `uvx --from ibm-watsonx-orchestrate orchestrate agents import -f agent_config.yaml`
+        NEVER import the agent before its tools or knowledge bases are registered.
+
+      RULE 15 — AGENT INSTRUCTIONS MUST MENTION KB: If the agent has a knowledge base,
+        the agent's `instructions:` field MUST explicitly tell the agent to consult the KB.
+        Without this, the agent will hallucinate answers using LLM training data instead of
+        querying the KB. Add a dedicated section like:
+        ```
+        ## Knowledge Base
+        You have access to [kb_name] containing [what it contains].
+        ALWAYS consult this knowledge base when asked about [relevant topics].
+        ```
+
       ================================================================
-      END OF MANDATORY RULES
+      END OF MANDATORY RULES (15 rules total)
       ================================================================
 
       ## Reference Template
 
-      The proven, deployed, working template is at: .bob/healthcare-assistant-agent/
+      The proven, deployed, working template is at: .bob/portfolio-advisor-agent/
       - Copy this entire directory when starting a new agent
-      - Replace domain-specific terms (patient → customer, etc.)
-      - This agent is live on WXO and has been successfully tested
+      - Replace domain-specific terms (account_holder → customer, etc.)
+      - This agent has been deployed, tested, and evaluated with 8 benchmark scenarios (100% pass)
+      - Includes working RAG/knowledge base configuration with correct field names
+      - See agent_original_issues.md for common pitfalls and how they were resolved
 
       Template structure:
-      - agent_config.yaml — Agent configuration (starts with spec_version: v1, uses llm: groq/openai/gpt-oss-120b)
-      - tools/patient_tools.py — Entity management tools with @tool decorator and embedded data
+      - agent_config.yaml — Agent configuration with correct knowledge_base (singular) and chat_with_docs
+      - tools/account_holder_tools.py — Entity management tools with @tool decorator and embedded data
       - tools/communication_tools.py — Self-contained communication tool with its own embedded data
-      - knowledge_bases/ — KB YAML with embeddings_model_name format
-      - data/ — CSV files (for knowledge base vectorization only, NOT for tool data loading)
+      - knowledge_bases/ — KB YAML with embeddings_model_name format, documents in CSV/TXT only
+      - data/ — CSV and TXT files (for knowledge base vectorization only, NOT for tool data loading)
       - scripts/ — Automated deployment scripts using uvx
+      - agent_original_issues.md — Common issues found and how they were fixed
 
       ## Detailed Instructions
 
       You have access to XML instruction files in .bob/rules-domain-agent-builder/:
       1. 1_agent_building_workflow.xml — 7-phase workflow with interview questions
-      2. 2_wxo_best_practices.xml — Development best practices
-      3. 3_domain_examples.xml — Domain examples (Healthcare, Retail, Education, Finance, etc.)
-      4. 4_file_generation_templates.xml — File templates and validation checklists
+      2. 2_domain_examples.xml — Domain examples (Healthcare, Retail, Education, Finance, etc.)
+      3. 3_file_templates.xml — Code templates for all agent files
+      4. 4_wxo_deployment_practices.xml — CLI commands, env activation, deployment order, tool isolation, and common pitfalls
 
       IMPORTANT: If ANYTHING in the XML files contradicts the MANDATORY RULES above,
       the MANDATORY RULES take precedence. Always.
@@ -152,15 +195,17 @@ customModes:
       - Plan tools (max 5), knowledge base, data structure
 
       Phase 3: Project Setup
-      - Copy .bob/healthcare-assistant-agent/ to new directory
-      - Remove leftover healthcare files (patient_tools.py, patients.csv, healthcare_patient_kb.yaml)
+      - Copy .bob/portfolio-advisor-agent/ to new directory
+      - Remove leftover portfolio advisor files (account_holder_tools.py, account_holders.csv, finance_portfolio_kb.yaml)
       - Do NOT put env activate inside scripts — Bob handles env activation by piping API key during deployment
 
       Phase 4: File Generation
       - agent_config.yaml: MUST have spec_version: v1, llm: groq/openai/gpt-oss-120b
+      - agent_config.yaml: Use `knowledge_base:` (SINGULAR), add `chat_with_docs` if RAG needed
+      - agent_config.yaml: Instructions MUST mention KB and when to consult it
       - [entity]_tools.py: Embed data as Python dicts, use @tool, max 3-4 tools
       - communication_tools.py: Self-contained with its own embedded data copy
-      - knowledge_bases/: Use embeddings_model_name format
+      - knowledge_bases/: Use embeddings_model_name format, documents must be CSV/TXT/PDF/DOCX (NOT .md)
       - scripts/: Use uvx for all orchestrate commands
 
       Phase 5: Deployment
@@ -204,6 +249,10 @@ customModes:
         You are the {Agent Name}...
         {Role, capabilities, tiers, guidelines}
 
+        ## Knowledge Base
+        You have access to {kb_name} containing {description}.
+        ALWAYS consult this knowledge base when asked about {relevant topics}.
+
       tools:
         - tool_name_1
         - tool_name_2
@@ -211,8 +260,15 @@ customModes:
         - tool_name_4
         - tool_name_5
 
-      knowledge_bases:
+      # ⚠️ CRITICAL: Use knowledge_base (SINGULAR), NOT knowledge_bases (plural)
+      knowledge_base:
         - {kb_name_with_underscores}
+
+      # ⚠️ CRITICAL: Required for RAG — without this, agent will NEVER query the KB
+      chat_with_docs:
+        enabled: true
+        generation:
+          enabled: true
       ```
 
       ## Quick Reference: Knowledge Base YAML Structure

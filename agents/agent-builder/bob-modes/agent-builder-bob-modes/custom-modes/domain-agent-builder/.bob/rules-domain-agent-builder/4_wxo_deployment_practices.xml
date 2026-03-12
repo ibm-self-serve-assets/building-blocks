@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wxo_deployment_practices>
+  <overview>
+    Critical deployment practices for watsonx Orchestrate agents.
+    Covers CLI commands, environment activation, deployment order, tool isolation, and common pitfalls.
+  </overview>
+
+  <environment_activation>
+    <rule>Bob activates the WXO environment during deployment by asking the user for their API key</rule>
+    <rule>Activation command: echo "API_KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</rule>
+    <rule>Scripts must NOT call `orchestrate env activate` — it hangs with interactive prompts in scripts</rule>
+    <rule>Do NOT use .env files for authentication — use the piped env activate approach</rule>
+    <rule>Run env activate BEFORE deploy_all.sh — all scripts assume the environment is already active</rule>
+  </environment_activation>
+
+  <cli_commands>
+    <critical_warning>⚠️ Use these EXACT commands — wrong syntax will fail silently or error</critical_warning>
+    <rule>All commands prefixed with: uvx --from ibm-watsonx-orchestrate</rule>
+
+    <reference><![CDATA[
+# Activate environment (Bob runs this BEFORE deploy_all.sh, NOT inside scripts)
+# echo "<API_KEY>" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env
+
+# Import tools: use "tools" (plural), -k for kind, -f for file
+uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/my_tool.py
+
+# Import knowledge base: use "knowledge-bases" (NOT "kb"), -f for file
+uvx --from ibm-watsonx-orchestrate orchestrate knowledge-bases import -f knowledge_bases/my_kb.yaml
+
+# Import agent config: use "agents" (plural), -f for file
+uvx --from ibm-watsonx-orchestrate orchestrate agents import -f agent_config.yaml
+
+# Deploy agent: use "agents" (plural), -n for name
+uvx --from ibm-watsonx-orchestrate orchestrate agents deploy -n my_agent_name
+    ]]></reference>
+
+    <wrong_commands>
+      NEVER use these wrong forms:
+      - "tool import" → MUST be "tools import" (plural)
+      - "agent import" → MUST be "agents import" (plural)
+      - "kb import" → MUST be "knowledge-bases import"
+      - "--path" flag → MUST be "-f"
+      - "--file-path" flag → MUST be "-f"
+    </wrong_commands>
+  </cli_commands>
+
+  <deployment_order>
+    <rule>Always deploy in this exact order:</rule>
+    <step>0. Bob asks user for API key and activates env: echo "KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</step>
+    <step>1. Import tools: orchestrate tools import -k python -f ...</step>
+    <step>2. Import knowledge bases: orchestrate knowledge-bases import -f ...</step>
+    <step>3. Import agent config: orchestrate agents import -f agent_config.yaml</step>
+    <step>4. Deploy agent: orchestrate agents deploy -n agent_name</step>
+    <rationale>Agent depends on tools and knowledge bases being available first</rationale>
+  </deployment_order>
+
+  <script_requirements>
+    <rule>Make all scripts executable (chmod +x)</rule>
+    <rule>Include error handling (set -e)</rule>
+    <rule>⚠️ EVERY script MUST resolve SCRIPT_DIR and PROJECT_ROOT, then cd "$PROJECT_ROOT"</rule>
+    <rule>⚠️ Scripts must NOT call `orchestrate env activate` — Bob handles env activation by piping API key before running scripts</rule>
+    <rule>deploy_all.sh must call sub-scripts using "$SCRIPT_DIR/import_tools.sh" (NOT "./scripts/import_tools.sh")</rule>
+
+    <mandatory_boilerplate><![CDATA[
+⚠️ EVERY script MUST start with this boilerplate (after #!/bin/bash and set -e):
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+
+cd "$PROJECT_ROOT"
+    ]]></mandatory_boilerplate>
+  </script_requirements>
+
+  <tool_isolation>
+    <critical_warning>⚠️ CRITICAL: Tools CANNOT call other tools directly</critical_warning>
+    <rule>Each tool must be completely self-contained and independent</rule>
+    <rule>Tools cannot import or invoke other tool functions</rule>
+    <rule>The agent orchestrates tool calls, not the tools themselves</rule>
+    <explanation>WXO tools run in isolated execution contexts. Cross-tool function calls will fail.</explanation>
+  </tool_isolation>
+
+  <data_access>
+    <critical_warning>⚠️ WXO tools run in an isolated cloud environment and CANNOT access local files.</critical_warning>
+    <rule>NEVER use file system access in tools (os.path, open(), csv.DictReader with files)</rule>
+    <rule>Embed data directly in tools for small datasets (less than 100 records)</rule>
+    <rule>Use external APIs for large or dynamic datasets</rule>
+    <rule>Use knowledge bases for semantic search, not structured lookups</rule>
+    <rule>CSV files in the project are for knowledge base import only, NOT for tool file access</rule>
+  </data_access>
+
+  <common_pitfalls>
+    <pitfall name="missing_api_key">
+      <problem>WXO environment not activated before running scripts</problem>
+      <symptom>Authentication errors (401 Unauthorized) during deployment</symptom>
+      <solution>Ask user for API key and activate: echo "KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</solution>
+    </pitfall>
+
+    <pitfall name="env_activate_in_scripts">
+      <problem>Scripts calling `orchestrate env activate` directly</problem>
+      <symptom>Script hangs waiting for interactive input</symptom>
+      <solution>Remove env activate from scripts — Bob handles activation before running scripts</solution>
+    </pitfall>
+
+    <pitfall name="wrong_cli_syntax">
+      <problem>Using singular forms or wrong flags in CLI commands</problem>
+      <symptom>Commands fail silently or return errors</symptom>
+      <solution>Use exact plural forms: "tools import", "agents import", "knowledge-bases import" with -f flag</solution>
+    </pitfall>
+
+    <pitfall name="missing_decorator">
+      <problem>Tool functions without @tool decorator</problem>
+      <symptom>Tools not recognized by agent</symptom>
+      <solution>Add @tool decorator: from ibm_watsonx_orchestrate.agent_builder.tools import tool</solution>
+    </pitfall>
+
+    <pitfall name="tools_loading_files">
+      <problem>Tools trying to load CSV files using file system paths</problem>
+      <symptom>FileNotFoundError when tool runs in WXO cloud</symptom>
+      <solution>Embed data directly in tool code or use external APIs</solution>
+    </pitfall>
+
+    <pitfall name="cross_tool_calls">
+      <problem>One tool importing or calling another tool's functions</problem>
+      <symptom>ImportError or undefined function errors in WXO</symptom>
+      <solution>Make each tool self-contained with its own embedded data</solution>
+    </pitfall>
+  </common_pitfalls>
+</wxo_deployment_practices>
+
+<!-- Made with Bob -->

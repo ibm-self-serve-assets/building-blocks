@@ -1,0 +1,27 @@
+spec_version: v1
+name: finance_portfolio_kb
+description: |
+  Comprehensive knowledge base for Portfolio Advisor Agent.
+
+  Contains:
+  - Account holder profiles and portfolio information
+  - Investment policies and target allocations
+  - Fee schedules and minimum investment requirements
+  - Compliance and regulatory guidelines
+  - KYC/AML policies and transaction monitoring thresholds
+
+documents:
+  - ../data/account_holders.csv
+  - ../data/investment_policies.txt
+  - ../data/compliance_guidelines.txt
+
+vector_index:
+  embeddings_model_name: ibm/slate-125m-english-rtrvr-v2
+
+metadata:
+  domain: "finance"
+  entity_type: "account_holders"
+  version: "2.0"
+  last_updated: "2026-03-07"
+
+# Made with Bob

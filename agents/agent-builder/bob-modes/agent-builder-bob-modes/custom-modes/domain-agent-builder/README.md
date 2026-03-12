@@ -1,6 +1,6 @@
 # WXO Domain Agent Builder using Bob
 
-A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents in your custom domain end-to-end through an interactive workflow.
+A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents end-to-end through an interactive workflow.
 
 ## What It Does
 
@@ -24,17 +24,7 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
 
-💡 **Tip: Download Only This Folder**
-
-    If you don’t want to download the entire repository, you can download just this folder.
-
-    - Copy the URL of this folder (https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder).
-    - Go to: https://download-directory.github.io/.
-    - Paste the folder URL there and press **Return/Enter**.
-
-    This will download only the contents of the selected folder as a ZIP file.
-
-2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob. **Important**: When starting to use this Bob mode, your project folder should contain *only* the .bob folder downloaded from this custom mode. No additional files or folders should be present in the project folder to ensure Bob does not receive unwanted context while using this mode.
+2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
 
 3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
 
@@ -42,17 +32,15 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 5. **Answer Bob's questions.** Bob will ask multiple-choice questions to understand your requirements. Select an option, or click the pencil icon to edit and customize your answer.
 
-6. **Start building the agent.** Bob will create a ToDo list and ask you to run some commands — click **Run** when prompted.
+6. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
 
-7. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
+7. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
 
-8. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
+8. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
 
-9. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
+9. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
 
-10. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
-
-11. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
+10. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
 
 ## How It Works: uvx and the WXO ADK
 
@@ -76,23 +64,27 @@ domain-agent-builder/
 └── .bob/                                  # Bob mode config, rules, and templates
     ├── custom_modes.yaml                  # Bob mode configuration
     ├── rules-domain-agent-builder/        # Rule files Bob reads during the workflow
-    │   ├── 0_TEMPLATE_USAGE_GUIDE.md
     │   ├── 1_agent_building_workflow.xml  # 7-phase workflow
-    │   ├── 2_wxo_best_practices.xml      # Best practices and CLI commands
-    │   ├── 3_domain_examples.xml         # Domain examples
-    │   ├── 4_file_generation_templates.xml# File templates and validation
-    │   └── CRITICAL_DEPLOYMENT_CHECKLIST.md
-    └── healthcare-assistant-agent/        # Reference template (proven, deployed)
+    │   ├── 2_domain_examples.xml         # Domain examples
+    │   ├── 3_file_templates.xml          # File templates and validation
+    │   └── 4_wxo_deployment_practices.xml # WXO deployment practices
+    └── portfolio-advisor-agent/           # Reference template (proven, deployed)
         ├── agent_config.yaml
+        ├── BUSINESS_USE_CASE.md
         ├── README.md
         ├── TROUBLESHOOTING.md
+        ├── agent_original_issues.md
         ├── tools/
-        │   ├── patient_tools.py
+        │   ├── account_holder_tools.py
         │   └── communication_tools.py
         ├── data/
-        │   └── patients.csv
+        │   ├── account_holders.csv
+        │   ├── compliance_guidelines.md
+        │   ├── compliance_guidelines.txt
+        │   ├── investment_policies.md
+        │   └── investment_policies.txt
         ├── knowledge_bases/
-        │   └── healthcare_patient_kb.yaml
+        │   └── finance_portfolio_kb.yaml
         ├── scripts/
         │   ├── deploy_all.sh
         │   ├── import_tools.sh
@@ -142,6 +134,7 @@ The LLM (`groq/openai/gpt-oss-120b`) sits on top and routes:
 
 ## Key Design Decisions
 
+- **Embedded data in tools**: WXO tools run in isolated cloud environments and cannot access local files. Data is embedded as Python dicts directly in tool code.
 - **Tool isolation**: Each tool is self-contained. Tools cannot call other tools. The agent LLM orchestrates multi-tool workflows.
 - **5 tools recommended**: 5 or fewer tools is recommended for optimal performance (typically 3 entity + 1 communication + 1 domain-specific), though agents can use more if needed.
 - **uvx for CLI**: All orchestrate commands use `uvx --from ibm-watsonx-orchestrate` for isolated execution without manual venv activation.
@@ -154,10 +147,10 @@ The mode's behavior is defined in `.bob/rules-domain-agent-builder/`:
 | File | Purpose |
 |------|---------|
 | `1_agent_building_workflow.xml` | 7-phase workflow (interview → deploy) |
-| `2_wxo_best_practices.xml` | Development best practices and CLI commands |
-| `3_domain_examples.xml` | Domain examples (healthcare, retail, education, finance) |
-| `4_file_generation_templates.xml` | File templates and validation checklists |
+| `2_domain_examples.xml` | Domain examples (healthcare, retail, education, finance) |
+| `3_file_templates.xml` | File templates and validation checklists |
+| `4_wxo_deployment_practices.xml` | WXO deployment practices and common pitfalls |
 
 ## Reference Template
 
-The proven, deployed healthcare agent at `.bob/healthcare-assistant-agent/` serves as the foundation. Bob copies it and adapts it for each new domain. New agents are created parallel to `.bob/` in the project root.
+The proven, deployed portfolio advisor agent at `.bob/portfolio-advisor-agent/` serves as the foundation. Bob copies it and adapts it for each new domain. New agents are created parallel to `.bob/` in the project root.

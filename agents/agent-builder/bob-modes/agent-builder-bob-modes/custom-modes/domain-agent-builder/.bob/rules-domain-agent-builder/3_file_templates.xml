@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<file_generation_templates>
+  <overview>
+    Templates for generating each file type in a WXO agent project.
+    All templates use generic placeholders — replace with domain-specific values.
+  </overview>
+
+  <placeholder_guide>
+    <placeholders>
+      <placeholder name="{agent_name_snake_case}">Agent identifier in snake_case (e.g., customer_service_agent)</placeholder>
+      <placeholder name="{Agent Display Name}">User-friendly agent name (e.g., Customer Service Agent)</placeholder>
+      <placeholder name="{domain}">Domain or industry (e.g., healthcare, retail, finance)</placeholder>
+      <placeholder name="{entity_type}">Entity name (e.g., customers, patients, students)</placeholder>
+      <placeholder name="{Entity Type}">Capitalized entity type for display</placeholder>
+      <placeholder name="{Tier 1-4}">Names of tier/segment levels</placeholder>
+      <placeholder name="{capability_N}">Specific agent capabilities</placeholder>
+      <placeholder name="{communication_type_N}">Types of messages the agent generates</placeholder>
+      <placeholder name="{field_name}">Domain-specific data field names</placeholder>
+    </placeholders>
+  </placeholder_guide>
+
+  <agent_config_template>
+    <template><![CDATA[
+spec_version: v1
+name: {agent_name_snake_case}
+display_name: {Agent Display Name}
+description: |
+  {Comprehensive description of what the agent does and its purpose}
+  This agent helps {entity_type} with:
+  - {Primary capability 1}
+  - {Primary capability 2}
+  - {Primary capability 3}
+  - {Primary capability 4}
+
+# ⚠️ CRITICAL: Always use this exact LLM - DO NOT CHANGE
+llm: groq/openai/gpt-oss-120b
+
+instructions: |
+  You are the {Agent Display Name} - "{Catchy tagline or motto}"
+
+  ## Your Role
+  Help {entity_type} with:
+  - {Detailed capability 1 with context}
+  - {Detailed capability 2 with context}
+  - {Detailed capability 3 with context}
+  - {Detailed capability 4 with context}
+  - {Detailed capability 5 with context}
+
+  ## {Entity Type} Segments/Tiers
+  - **{Tier 1}**: {Tier 1 description and benefits}
+  - **{Tier 2}**: {Tier 2 description and benefits}
+  - **{Tier 3}**: {Tier 3 description and benefits}
+  - **{Tier 4}**: {Tier 4 description and benefits}
+
+  ## Communication Guidelines
+  1. Be professional yet friendly
+  2. Personalize responses with {entity_type}'s name and tier
+  3. Suggest relevant services and tier upgrades when appropriate
+  4. Never share sensitive information inappropriately
+  5. Provide context about tier benefits
+  6. {Domain-specific guideline}
+
+  ## Key Behaviors
+  - Always acknowledge tier status
+  - Highlight tier-specific benefits
+  - Suggest upgrades when close to next tier
+  - Celebrate milestones and achievements
+  - Alert on unusual activity or important events
+  - Provide actionable insights
+  - {Domain-specific behavior}
+
+  ## Knowledge Base
+  You have access to {kb_name} containing {description of KB content}.
+  ALWAYS consult this knowledge base when asked about:
+  - {Topic 1}
+  - {Topic 2}
+  - {Topic 3}
+
+  ## Available Tools
+  ### {Entity Type} Management Tools
+  - **get_{entity_type}_data**: Retrieve {entity_type} profiles and information
+  - **get_{entity_type}_by_id**: Get specific {entity_type} details
+  - **get_{entity_type}_by_tier**: Filter {entity_type} by tier/segment
+  - **calculate_{entity_type}_metrics**: Compute analytics and metrics
+  ### Communication Tools
+  - **generate_communication**: Create personalized messages
+  ### {Domain-Specific Tool Category} (if applicable)
+  - **{domain_specific_tool_1}**: {Description}
+
+  ## Communication Types
+  You can generate these types of communications:
+  1. **{Communication Type 1}**: {Description and use case}
+  2. **{Communication Type 2}**: {Description and use case}
+  3. **{Communication Type 3}**: {Description and use case}
+  4. **{Communication Type 4}**: {Description and use case}
+  5. **{Communication Type 5}**: {Description and use case}
+
+# ⚠️ CRITICAL: Maximum 5 tools per agent
+tools:
+  - name: get_{entity_type}_data
+    description: Retrieve {entity_type} data with flexible filtering options
+  - name: get_{entity_type}_by_id
+    description: Get a specific {entity_type} by their unique identifier
+  - name: get_{entity_type}_by_tier
+    description: Retrieve all {entity_type} in a specific tier/segment
+  - name: generate_communication
+    description: Generate personalized communications for {entity_type}
+
+# ⚠️ CRITICAL: Use knowledge_base (SINGULAR), NOT knowledge_bases (plural)
+knowledge_base:
+  - {knowledge_base_name}
+
+# ⚠️ CRITICAL: Required for RAG
+chat_with_docs:
+  enabled: true
+  generation:
+    enabled: true
+
+tags:
+  - {tag_1_with_underscores}
+  - {tag_2_with_underscores}
+  - {tag_3_with_underscores}
+# ⚠️ CRITICAL: Tags MUST use underscores, NEVER hyphens!
+    ]]></template>
+  </agent_config_template>
+
+  <entity_tools_template>
+    <template><![CDATA[
+"""
+{Entity Type} Management Tools for {Agent Display Name}
+"""
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
+from typing import Dict, List, Optional, Any
+
+ENTITY_DATA = [
+    {{
+        "{entity_id_field}": "{SAMPLE_ID_1}",
+        "name": "{Sample Entity Name 1}",
+        "email": "{sample1@example.com}",
+        "tier": "{Tier 1}",
+        "status": "active",
+        "{domain_field_1}": "{sample_value_1}",
+        "{domain_field_2}": "{sample_value_2}",
+    }},
+    {{
+        "{entity_id_field}": "{SAMPLE_ID_2}",
+        "name": "{Sample Entity Name 2}",
+        "email": "{sample2@example.com}",
+        "tier": "{Tier 2}",
+        "status": "active",
+        "{domain_field_1}": "{sample_value_3}",
+        "{domain_field_2}": "{sample_value_4}",
+    }},
+    # Add 3-8 more sample entities with diverse data
+]
+
+@tool
+def get_{entity_type}_data(
+    {entity_id_field}: Optional[str] = None,
+    tier: Optional[str] = None,
+    status: Optional[str] = None,
+    limit: Optional[int] = None
+) -> List[Dict[str, Any]]:
+    """Retrieve {entity_type} data with flexible filtering options."""
+    results = ENTITY_DATA.copy()
+    if {entity_id_field}:
+        results = [e for e in results if e.get("{entity_id_field}") == {entity_id_field}]
+    if tier:
+        results = [e for e in results if e.get("tier") == tier]
+    if status:
+        results = [e for e in results if e.get("status") == status]
+    if limit and limit > 0:
+        results = results[:limit]
+    return results
+
+@tool
+def get_{entity_type}_by_id({entity_id_field}: str) -> Optional[Dict[str, Any]]:
+    """Retrieve a single {entity_type} by their unique identifier."""
+    for entity in ENTITY_DATA:
+        if entity.get("{entity_id_field}") == {entity_id_field}:
+            return entity
+    return {{"error": f"{Entity Type} {{{entity_id_field}}} not found"}}
+
+@tool
+def get_{entity_type}_by_tier(tier: str) -> List[Dict[str, Any]]:
+    """Retrieve all {entity_type} in a specific tier/segment."""
+    return [e for e in ENTITY_DATA if e.get("tier") == tier]
+
+@tool
+def calculate_{entity_type}_metrics(tier: Optional[str] = None) -> Dict[str, Any]:
+    """Calculate aggregated metrics for {entity_type}."""
+    entities = ENTITY_DATA if not tier else get_{entity_type}_by_tier(tier)
+    return {{
+        "total_count": len(entities),
+        "active_count": len([e for e in entities if e.get("status") == "active"]),
+        "tier_distribution": {{
+            t: len([e for e in entities if e.get("tier") == t])
+            for t in set(e.get("tier") for e in entities)
+        }},
+    }}
+    ]]></template>
+  </entity_tools_template>
+
+  <communication_tools_template>
+    <key_points>
+      <point>Include 5 message types with HTML templates</point>
+      <point>Embed data directly — WXO cannot access local files</point>
+      <point>Tools must be self-contained, NOT call other tools</point>
+      <point>Add tier-specific styling and personalization</point>
+    </key_points>
+    <template><![CDATA[
+"""
+Communication Tools for {Agent Display Name}
+Data is embedded directly since WXO tools cannot access local files.
+Tools do NOT call other tools — they run in isolation.
+"""
+from ibm_watsonx_orchestrate.agent_builder.tools import tool
+from typing import Dict, Optional, Any, List
+
+{ENTITY_TYPE}_DATA = [
+    {{"{entity_id_field}": "{SAMPLE_ID_1}", "name": "Sample {Entity Type} 1", "tier": "{Tier 1}", "status": "active", "email": "sample1@example.com"}},
+    {{"{entity_id_field}": "{SAMPLE_ID_2}", "name": "Sample {Entity Type} 2", "tier": "{Tier 2}", "status": "active", "email": "sample2@example.com"}},
+    {{"{entity_id_field}": "{SAMPLE_ID_3}", "name": "Sample {Entity Type} 3", "tier": "{Tier 3}", "status": "active", "email": "sample3@example.com"}},
+    # Add 5-10 realistic sample records with domain-specific fields
+]
+
+@tool
+def generate_communication(
+    {entity_id_field}: str,
+    message_type: str,
+    {entity_type}_name: Optional[str] = None,
+    tier: Optional[str] = None,
+    custom_content: Optional[str] = None
+) -> Dict[str, Any]:
+    """Generate personalized communications for {entity_type}.
+    message_type: '{type_1}', '{type_2}', '{type_3}', '{type_4}', '{type_5}'
+    """
+    {entity_type} = None
+    for e in {ENTITY_TYPE}_DATA:
+        if e.get('{entity_id_field}') == {entity_id_field}:
+            {entity_type} = e
+            break
+    if not {entity_type}:
+        return {{"error": f"{Entity Type} {{{entity_id_field}}} not found", "subject": "Error",
+                 "body": f"<p>Could not find {entity_type} with ID {{{entity_id_field}}}</p>", "format": "html"}}
+
+    actual_name = {entity_type}_name or {entity_type}.get('name', 'Valued {Entity Type}')
+    actual_tier = tier or {entity_type}.get('tier', '{Tier 1}')
+    template = _get_message_template(message_type, actual_tier)
+    personalized = _personalize_content(template, actual_name, actual_tier, custom_content)
+    return {{"subject": personalized["subject"], "body": personalized["body"], "format": "html",
+             "{entity_id_field}": {entity_id_field}, "message_type": message_type}}
+
+def _get_message_template(message_type: str, tier: Optional[str] = None) -> Dict[str, str]:
+    """Get message template based on type and tier."""
+    tier_colors = {{"{Tier 1}": "#3498db", "{Tier 2}": "#9b59b6", "{Tier 3}": "#f39c12", "{Tier 4}": "#2c3e50"}}
+    tier_color = tier_colors.get(tier, "#3498db")
+    templates = {{
+        "{type_1}": {{
+            "subject": "{Subject for message type 1}",
+            "body": f"""
+            <html><body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+            <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+              <div style="background: {{tier_color}}; color: white; padding: 20px; text-align: center;">
+                <h1>{Agent Display Name}</h1>
+                <p style="margin: 0;">{Tagline or motto}</p>
+              </div>
+              <div style="padding: 30px; background: #f9f9f9;">
+                <p>Dear {{{{name}}}},</p>
+                <p>{Message content for type 1}</p>
+                {{{{custom_content}}}}
+                <p>{Tier-specific benefit or message}</p>
+                <div style="text-align: center; margin: 30px 0;">
+                  <a href="#" style="background: {{tier_color}}; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px;">{Call to Action}</a>
+                </div>
+                <p>Best regards,<br>{Agent Display Name}</p>
+              </div>
+              <div style="text-align: center; padding: 20px; color: #666; font-size: 12px;">
+                <p>{Footer text or disclaimer}</p>
+              </div>
+            </div></body></html>"""
+        }},
+        # Add templates for types 2-5 following the same HTML pattern
+    }}
+    return templates.get(message_type, templates["{type_1}"])
+
+def _personalize_content(template: Dict[str, str], name: str, tier: str, custom_content: Optional[str] = None) -> Dict[str, str]:
+    """Personalize message template with {entity_type} information."""
+    body = template["body"].replace("{{{{name}}}}", name).replace("{{{{tier}}}}", tier)
+    body = body.replace("{{{{custom_content}}}}", f"<p>{custom_content}</p>" if custom_content else "")
+    return {{"subject": template["subject"], "body": body}}
+    ]]></template>
+    <message_types>
+      <type name="{type_1}">General updates and information</type>
+      <type name="{type_2}">Celebrating achievements and milestones</type>
+      <type name="{type_3}">Important notifications and alerts</type>
+      <type name="{type_4}">Special offers and promotions</type>
+      <type name="{type_5}">Status updates and progress reports</type>
+    </message_types>
+  </communication_tools_template>
+
+  <knowledge_base_template>
+    <template><![CDATA[
+spec_version: v1
+name: {domain}_{entity_type}_kb
+description: |
+  Comprehensive knowledge base for {Agent Display Name}.
+  Contains:
+  - {Entity Type} profiles and information
+  - {Data type 2} (e.g., location data, reference data)
+  - {Data type 3} (e.g., documentation, guides)
+
+documents:
+  - ../data/{entity_type}.csv
+  - ../data/{reference_data_1}.csv
+  - ../data/{reference_data_2}.csv
+
+vector_index:
+  embeddings_model_name: ibm/slate-125m-english-rtrvr-v2
+
+metadata:
+  domain: "{domain}"
+  entity_type: "{entity_type}"
+  version: "1.0"
+  last_updated: "{YYYY-MM-DD}"
+    ]]></template>
+  </knowledge_base_template>
+
+  <data_file_template>
+    <guidelines>
+      <guideline>Use clear, descriptive column headers</guideline>
+      <guideline>Include 5-10 diverse sample records representing all tiers</guideline>
+      <guideline>Use realistic, domain-appropriate values</guideline>
+    </guidelines>
+    <example_structure><![CDATA[
+{entity_id_field},name,email,phone,tier,status,{domain_field_1},{domain_field_2},{domain_field_3}
+{ID_001},{Name 1},{email1@example.com},{phone1},{Tier 1},active,{value1},{value2},{value3}
+{ID_002},{Name 2},{email2@example.com},{phone2},{Tier 2},active,{value4},{value5},{value6}
+{ID_003},{Name 3},{email3@example.com},{phone3},{Tier 3},active,{value7},{value8},{value9}
+{ID_004},{Name 4},{email4@example.com},{phone4},{Tier 4},active,{value10},{value11},{value12}
+{ID_005},{Name 5},{email5@example.com},{phone5},{Tier 1},inactive,{value13},{value14},{value15}
+    ]]></example_structure>
+  </data_file_template>
+
+  <deployment_script_template>
+    <critical_requirements>
+      <requirement>EVERY script MUST resolve SCRIPT_DIR and PROJECT_ROOT</requirement>
+      <requirement>EVERY script MUST cd "$PROJECT_ROOT" before orchestrate commands</requirement>
+      <requirement>deploy_all.sh MUST call sub-scripts using "$SCRIPT_DIR/" prefix, NOT "./"</requirement>
+      <requirement>Scripts must NOT call `orchestrate env activate`</requirement>
+    </critical_requirements>
+    <script_boilerplate>
+      <template><![CDATA[
+# Get script directory and project root
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+cd "$PROJECT_ROOT"
+      ]]></template>
+    </script_boilerplate>
+
+    <deploy_all_template>
+      <template><![CDATA[
+#!/bin/bash
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+echo "=========================================="
+echo "Deploying {Agent Display Name}"
+echo "=========================================="
+cd "$PROJECT_ROOT"
+echo "Step 1: Importing tools..."
+"$SCRIPT_DIR/import_tools.sh"
+echo ""
+echo "Step 2: Importing knowledge base..."
+"$SCRIPT_DIR/import_kb.sh"
+echo ""
+echo "Step 3: Deploying agent..."
+"$SCRIPT_DIR/deploy_agent.sh"
+echo ""
+echo "=========================================="
+echo "✓ {Agent Display Name} deployed successfully!"
+echo "=========================================="
+      ]]></template>
+    </deploy_all_template>
+
+    <import_tools_template>
+      <template><![CDATA[
+#!/bin/bash
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+echo "Importing tools..."
+cd "$PROJECT_ROOT"
+echo "1. Importing {entity_type}_tools.py..."
+uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/{entity_type}_tools.py
+echo "✓ {Entity Type} tools imported"
+echo "2. Importing communication_tools.py..."
+uvx --from ibm-watsonx-orchestrate orchestrate tools import -k python -f tools/communication_tools.py
+echo "✓ Communication tools imported"
+echo "=========================================="
+echo "✓ All tools imported successfully!"
+echo "=========================================="
+      ]]></template>
+    </import_tools_template>
+
+    <import_kb_template>
+      <template><![CDATA[
+#!/bin/bash
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+echo "Importing knowledge base..."
+cd "$PROJECT_ROOT"
+uvx --from ibm-watsonx-orchestrate orchestrate knowledge-bases import -f knowledge_bases/{domain}_{entity_type}_kb.yaml
+echo "=========================================="
+echo "✓ Knowledge base imported successfully!"
+echo "=========================================="
+      ]]></template>
+    </import_kb_template>
+
+    <deploy_agent_template>
+      <template><![CDATA[
+#!/bin/bash
+set -e
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PROJECT_ROOT="$( cd "$SCRIPT_DIR/.." && pwd )"
+echo "Deploying agent..."
+cd "$PROJECT_ROOT"
+AGENT_NAME=$(grep "^name:" agent_config.yaml | head -1 | awk '{print $2}')
+if [ -z "$AGENT_NAME" ]; then
+    echo "ERROR: Could not extract agent name from agent_config.yaml"
+    exit 1
+fi
+uvx --from ibm-watsonx-orchestrate orchestrate agents import -f agent_config.yaml
+uvx --from ibm-watsonx-orchestrate orchestrate agents deploy -n "$AGENT_NAME"
+echo "=========================================="
+echo "✓ Agent '$AGENT_NAME' deployed successfully!"
+echo "=========================================="
+      ]]></template>
+    </deploy_agent_template>
+  </deployment_script_template>
+
+  <readme_template>
+    <template><![CDATA[
+# {Agent Display Name}
+
+{Brief description of the agent and its purpose in the {domain} domain}
+
+## Overview
+The {Agent Display Name} is a watsonx Orchestrate agent designed to help {entity_type} with:
+- {Primary capability 1}
+- {Primary capability 2}
+- {Primary capability 3}
+- {Primary capability 4}
+
+## Quick Start
+```bash
+cp .env.example .env   # Add your WXO_API_KEY
+chmod +x scripts/*.sh
+./scripts/deploy_all.sh
+```
+
+## Project Structure
+```
+{agent_name_snake_case}-agent/
+├── agent_config.yaml
+├── tools/
+│   ├── {entity_type}_tools.py
+│   └── communication_tools.py
+├── data/
+│   ├── {entity_type}.csv
+│   └── {reference_data}.csv
+├── knowledge_bases/
+│   └── {domain}_kb.yaml
+└── scripts/
+    ├── deploy_all.sh
+    ├── import_tools.sh
+    └── import_kb.sh
+```
+
+## {Entity Type} Tiers
+- **{Tier 1}**: {Description}
+- **{Tier 2}**: {Description}
+- **{Tier 3}**: {Description}
+- **{Tier 4}**: {Description}
+
+## Sample Queries
+- "Show me all {entity_type} in {Tier 1}"
+- "Get details for {entity_type} {SAMPLE_ID}"
+- "Generate a {type_1} for {entity_type} {SAMPLE_ID}"
+- "Calculate metrics for {Tier 1} {entity_type}"
+
+## Troubleshooting
+- **API key not found**: Ensure `.env` file exists with valid `WXO_API_KEY`
+- **Tool import fails**: Check Python syntax and `@tool` decorators
+- **KB import fails**: Verify YAML syntax and data file paths
+    ]]></template>
+  </readme_template>
+
+  <business_use_case_template>
+    <file_path>{agent-name}-agent/BUSINESS_USE_CASE.md</file_path>
+    <template><![CDATA[
+# {Agent Display Name} — Business Use Case
+
+## Business Use Case
+{1-2 paragraphs: What business problem does this agent solve? Who are the target users?}
+
+## Agent Capabilities
+**Entity Management**
+- {Capability 1: e.g., Look up individual entities by ID or name}
+- {Capability 2: e.g., Filter entities by tier, status, or other criteria}
+- {Capability 3: e.g., View entity details and associated metadata}
+
+**Analytics & Metrics**
+- {Capability 4: e.g., Calculate aggregate metrics across entities}
+- {Capability 5: e.g., Generate statistics by tier or segment}
+
+**Communication**
+- {Capability 6: e.g., Generate personalized emails and notifications}
+- {Capability 7: e.g., Create formatted reports for specific entities}
+
+**Knowledge Base**
+- {Capability 8: e.g., Answer open-ended domain questions from indexed documents}
+
+## Sample Queries
+- "Get {entity_type} {ENTITY_ID_1}"
+- "Show me all {TIER_1} {entity_type_plural}"
+- "Calculate {entity_type} metrics"
+- "Generate a {communication_type} for {ENTITY_ID_1}"
+- "{Domain-specific open-ended question}"
+
+## Example Interaction
+**Query:** "{Pick one representative query using a real entity ID}"
+**Expected Response:**
+```
+{Show the expected output}
+```
+
+## Entity Model
+| Tier | Description | Count |
+|------|-------------|-------|
+| {TIER_1} | {What this tier represents} | {N} |
+| {TIER_2} | {What this tier represents} | {N} |
+| {TIER_3} | {What this tier represents} | {N} |
+| {TIER_4} | {What this tier represents} | {N} |
+]]></template>
+    <instructions>
+      <instruction>Replace ALL placeholders with domain-specific values</instruction>
+      <instruction>Sample queries MUST use real entity IDs from the embedded data</instruction>
+      <instruction>Use domain-appropriate terminology consistently</instruction>
+      <instruction>The Example Interaction should show a realistic response</instruction>
+    </instructions>
+  </business_use_case_template>
+
+  <generation_workflow>
+    <step number="1">
+      <action>Copy portfolio-advisor-agent directory</action>
+      <command>cp -r .bob/portfolio-advisor-agent ./{agent-name}-agent</command>
+    </step>
+    <step number="2">
+      <action>Generate agent_config.yaml</action>
+      <details>Replace all placeholders with domain-specific values</details>
+    </step>
+    <step number="3">
+      <action>Create {entity_type}_tools.py from account_holder_tools.py</action>
+      <details>Rename, update embedded data structure and sample data</details>
+    </step>
+    <step number="4">
+      <action>Customize communication_tools.py</action>
+      <details>Adapt message types and templates</details>
+    </step>
+    <step number="5">
+      <action>Generate data files</action>
+      <details>Create realistic sample data in CSV format</details>
+    </step>
+    <step number="6">
+      <action>Update knowledge base configuration</action>
+      <details>Set correct name and document paths</details>
+    </step>
+    <step number="7">
+      <action>Customize deployment scripts</action>
+      <details>Update agent name references</details>
+    </step>
+    <step number="8">
+      <action>Create README.md</action>
+    </step>
+    <step number="9">
+      <action>Ask user for WXO API key and activate environment</action>
+      <details>echo "API_KEY" | uvx --from ibm-watsonx-orchestrate orchestrate env activate wxo-uv-env</details>
+    </step>
+    <step number="10">
+      <action>Deploy agent</action>
+      <command>cd ./{agent-name}-agent && ./scripts/deploy_all.sh</command>
+    </step>
+    <step number="11">
+      <action>Generate BUSINESS_USE_CASE.md after successful deployment</action>
+    </step>
+  </generation_workflow>
+</file_generation_templates>
+
+<!-- Made with Bob -->
