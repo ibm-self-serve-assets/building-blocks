@@ -1,11 +1,12 @@
 # Core Web Framework
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
-starlette==0.40.0
+starlette==0.50.0
 pydantic==2.12.5
 pydantic-settings==2.12.0
 pydantic_core==2.41.5
 python-multipart==0.0.20
+ipywidgets==8.1.8
 
 # IBM Cloud Services
 ibm-cloud-sdk-core==3.24.2
@@ -46,7 +47,7 @@ requests==2.32.5
 requests-toolbelt==1.0.0
 
 # Data Processing
-numpy==2.3.5
+numpy==1.26.4
 pandas==2.2.3
 nltk==3.9.2
 
