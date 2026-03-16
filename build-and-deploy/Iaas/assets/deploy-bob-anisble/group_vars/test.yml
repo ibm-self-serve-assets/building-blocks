@@ -34,6 +34,10 @@ db_password: "retail_password"
 db_host: "retail-postgres"
 db_port: "5432"
 
+# Storage Configuration
+storage_class: "ocs-storagecluster-ceph-rbd"
+postgres_pvc_size: "10Gi"
+
 # Application Settings
 backend_replicas: 2
 frontend_replicas: 2

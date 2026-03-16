@@ -34,6 +34,10 @@ db_password: "{{ lookup('env', 'DB_PASSWORD') | default('retail_password', true)
 db_host: "retail-postgres"
 db_port: "5432"
 
+# Storage Configuration
+storage_class: "ocs-storagecluster-ceph-rbd"
+postgres_pvc_size: "20Gi"
+
 # Application Settings
 backend_replicas: 3
 frontend_replicas: 3

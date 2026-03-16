@@ -61,6 +61,20 @@
     src: postgres-deployment-patch.yaml.j2
     dest: "{{ k8s_dir }}/postgres-deployment.yaml"
 
+- name: Update PostgreSQL PVC storage class
+  replace:
+    path: "{{ k8s_dir }}/postgres-pvc.yaml"
+    regexp: 'storageClassName:\s+.*'
+    replace: "storageClassName: {{ storage_class }}"
+  when: storage_class is defined
+
+- name: Update PostgreSQL PVC storage size
+  replace:
+    path: "{{ k8s_dir }}/postgres-pvc.yaml"
+    regexp: 'storage:\s+.*'
+    replace: "storage: {{ postgres_pvc_size }}"
+  when: postgres_pvc_size is defined
+
 - name: Update backend replicas
   replace:
     path: "{{ k8s_dir }}/backend-deployment.yaml"
@@ -160,6 +174,8 @@
       - "Backend image: {{ backend_full_image }}"
       - "Frontend image: {{ frontend_full_image }}"
       - "PostgreSQL image: {{ postgres_full_image }}"
+      - "Storage class: {{ storage_class }}"
+      - "PostgreSQL PVC size: {{ postgres_pvc_size }}"
 
 - name: Set manifests facts
   set_fact:

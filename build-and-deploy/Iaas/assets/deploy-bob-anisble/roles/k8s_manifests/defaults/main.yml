@@ -5,4 +5,8 @@ namespace: "retail-dev"
 backend_replicas: 2
 frontend_replicas: 2
 
+# Storage Configuration
+storage_class: "ocs-storagecluster-ceph-rbd"
+postgres_pvc_size: "5Gi"
+
 # Made with Bob
