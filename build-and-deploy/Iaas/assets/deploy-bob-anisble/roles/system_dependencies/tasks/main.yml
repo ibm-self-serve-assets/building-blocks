@@ -201,9 +201,10 @@
   when: trivy_check.rc != 0
 
 - name: Verify Trivy installation
-  command: trivy --version
+  command: /usr/local/bin/trivy --version
   register: trivy_version_output
   changed_when: false
+  when: trivy_check.rc != 0 or trivy_check.rc == 0
 
 - name: Display Trivy version
   debug:
@@ -250,7 +251,7 @@
   when: vault_check.rc != 0
 
 - name: Verify Vault installation
-  command: vault version
+  command: /usr/local/bin/vault version
   register: vault_version_output
   changed_when: false
 
