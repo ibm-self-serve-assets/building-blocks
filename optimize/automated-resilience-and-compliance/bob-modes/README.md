@@ -118,10 +118,10 @@ After completing the setup:
 
 ## 🧠 Best Practices
 
--   Always **append**, never overwrite `custom_modes.yaml`\
--   Keep each mode isolated under its own rules folder\
--   Validate YAML formatting carefully (indentation matters)\
--   Reload the UI if changes are not reflected immediately
+-   Always **append**, never overwrite `custom_modes.yaml`.
+-   Keep each mode isolated under its own rules folder.
+-   Validate YAML formatting carefully (indentation matters).
+-   Reload the UI if changes are not reflected immediately.
 
 ------------------------------------------------------------------------
 
@@ -129,6 +129,6 @@ After completing the setup:
 
 After completing these steps:
 
--   Application Resilience mode will be available in Bob UI\
--   Existing modes will continue to function without disruption\
--   You can start using the mode for **Application Resilience**
+-   Application Resilience mode will be available in Bob UI.
+-   Existing modes will continue to function without disruption.
+-   You can start using the mode for **Application Resilience**.
