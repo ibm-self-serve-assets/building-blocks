@@ -1,7 +1,7 @@
 # 🚀 Step 1: Import Application Resilience Custom Bob Mode (via Bob UI)
 
 Before using IBM Bob with Instana, you need to import the **Application
-Observability custom mode** into your project.
+Resilience custom mode** into your project.
 
 ------------------------------------------------------------------------
 
