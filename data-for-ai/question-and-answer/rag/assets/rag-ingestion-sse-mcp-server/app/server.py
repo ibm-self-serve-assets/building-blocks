@@ -829,49 +829,106 @@ async def ingest_from_cos_prefix(
             "chunks_created": chunk_count,
         }
 
-    # Milvus bulk insert path
+    # Milvus ingestion path
     _milvus_connect(vdb)
     coll = create_collection(dest_name, embedding, vdb)
-    writer = create_remote_writer(coll, vdb)
 
-    batch_files: List[List[str]] = []
-    for key in cos_files:
-        file_map = process_cos_file(cos_client, source_bucket, key)
-        for fname, content in file_map.items():
-            processed_count += 1
-            _, split_docs = process_file((fname, content), chunk_cfg)
-            chunk_count += len(split_docs)
+    if vdb.milvus_use_bulk_ingestion:
+        # Bulk insert path
+        logger.info("Using Milvus bulk ingestion mode")
+        writer = create_remote_writer(coll, vdb)
 
-            records = prepare_docs_for_ingestion([(fname, split_docs)], embedding, vdb)
-            logger.info("Prepared %d Milvus bulk records for file=%s", len(records), fname)
-            for rec in records:
-                writer.append_row(rec)
+        batch_files: List[List[str]] = []
+        for key in cos_files:
+            file_map = process_cos_file(cos_client, source_bucket, key)
+            for fname, content in file_map.items():
+                processed_count += 1
+                _, split_docs = process_file((fname, content), chunk_cfg)
+                chunk_count += len(split_docs)
 
-        logger.info("Committing RemoteBulkWriter batch for COS key=%s", key)
-        files = writer.commit()
-        logger.info("RemoteBulkWriter commit completed key=%s files=%s", key, files)
-        if files:
-            batch_files.append(files)
+                records = prepare_docs_for_ingestion([(fname, split_docs)], embedding, vdb)
+                logger.info("Prepared %d Milvus bulk records for file=%s", len(records), fname)
+                for rec in records:
+                    writer.append_row(rec)
 
-    task_ids = []
-    for files in batch_files:
-        logger.info("Submitting Milvus bulk insert collection=%s files=%s", dest_name, files)
-        task_id = utility.do_bulk_insert(collection_name=dest_name, files=files)
-        logger.info("Milvus bulk insert submitted collection=%s task_id=%s", dest_name, task_id)
-        task_ids.append(task_id)
+            logger.info("Committing RemoteBulkWriter batch for COS key=%s", key)
+            files = writer.commit()
+            logger.info("RemoteBulkWriter commit completed key=%s files=%s", key, files)
+            if files:
+                batch_files.append(files)
 
-    logger.info("Milvus bulk ingestion submitted collection=%s files_seen=%d files_processed=%d chunks_created=%d bulk_batches=%d", dest_name, len(cos_files), processed_count, chunk_count, len(batch_files))
-    return {
-        "status": "started",
-        "vector_db": "milvus",
-        "destination_collection": dest_name,
-        "cos_bucket": source_bucket,
-        "cos_prefix": cos_prefix,
-        "files_seen": len(cos_files),
-        "files_processed": processed_count,
-        "chunks_created": chunk_count,
-        "bulk_tasks": [str(t) for t in task_ids],
-    }
+        task_ids = []
+        for files in batch_files:
+            logger.info("Submitting Milvus bulk insert collection=%s files=%s", dest_name, files)
+            task_id = utility.do_bulk_insert(collection_name=dest_name, files=files)
+            logger.info("Milvus bulk insert submitted collection=%s task_id=%s", dest_name, task_id)
+            task_ids.append(task_id)
+
+        logger.info("Milvus bulk ingestion submitted collection=%s files_seen=%d files_processed=%d chunks_created=%d bulk_batches=%d", dest_name, len(cos_files), processed_count, chunk_count, len(batch_files))
+        return {
+            "status": "started",
+            "vector_db": "milvus",
+            "destination_collection": dest_name,
+            "cos_bucket": source_bucket,
+            "cos_prefix": cos_prefix,
+            "files_seen": len(cos_files),
+            "files_processed": processed_count,
+            "chunks_created": chunk_count,
+            "bulk_tasks": [str(t) for t in task_ids],
+        }
+    else:
+        # Direct insert path
+        logger.info("Using Milvus direct insert mode")
+        all_records = []
+        file_details = []
+        
+        for key in cos_files:
+            logger.info("Milvus direct ingestion processing COS key=%s", key)
+            file_map = process_cos_file(cos_client, source_bucket, key)
+            for fname, content in file_map.items():
+                processed_count += 1
+                _, split_docs = process_file((fname, content), chunk_cfg)
+                file_chunk_count = len(split_docs)
+                chunk_count += file_chunk_count
+
+                records = prepare_docs_for_ingestion([(fname, split_docs)], embedding, vdb)
+                logger.info("Prepared %d Milvus records for file=%s", len(records), fname)
+                all_records.extend(records)
+                
+                # Track file details
+                file_details.append({
+                    "filename": fname,
+                    "chunks": file_chunk_count
+                })
+
+        documents_inserted = 0
+        if all_records:
+            logger.info("Inserting %d records into Milvus collection=%s", len(all_records), dest_name)
+            coll.insert(all_records)
+            coll.flush()
+            logger.info("Milvus direct insert completed collection=%s", dest_name)
+            
+            # Verify insertion by getting collection count
+            coll.load()
+            documents_inserted = coll.num_entities
+            logger.info("Verified Milvus collection=%s total_documents=%d", dest_name, documents_inserted)
+
+        logger.info("Milvus direct ingestion complete collection=%s files_seen=%d files_processed=%d chunks_created=%d documents_in_collection=%d", dest_name, len(cos_files), processed_count, chunk_count, documents_inserted)
+        
+        return {
+            "status": "success",
+            "vector_db": "milvus",
+            "destination_collection": dest_name,
+            "cos_bucket": source_bucket,
+            "cos_prefix": cos_prefix,
+            "files_seen": len(cos_files),
+            "files_processed": processed_count,
+            "chunks_created": chunk_count,
+            "documents_inserted": len(all_records),
+            "total_documents_in_collection": documents_inserted,
+            "file_details": file_details[:10] if len(file_details) > 10 else file_details,
+            "summary": f"Successfully ingested {processed_count} files into '{dest_name}' collection. Created {chunk_count} chunks from {len(cos_files)} files. Collection now contains {documents_inserted} total documents."
+        }
 
 
 # =============================================================================
@@ -1036,6 +1093,74 @@ async def ingest_from_cos(prefix: str = "", bucket: str = "", destination_index:
         bucket=b if b != "" else None,
         destination_index=d if d != "" else None,
     )
+
+
+@mcp.tool(description="Verify ingestion by checking document count in Milvus collection")
+async def verify_milvus_collection(collection_name: str = "") -> Dict[str, Any]:
+    logger.info("MCP tool verify_milvus_collection called collection_name=%s", collection_name)
+    vdb = load_vector_db_config()
+    
+    if vdb.db_type != "milvus":
+        return {
+            "status": "error",
+            "message": f"Vector DB type is {vdb.db_type}, not milvus. This tool only works with Milvus."
+        }
+    
+    coll_name = collection_name.strip() if collection_name else vdb.milvus_collection
+    
+    try:
+        _milvus_connect(vdb)
+        
+        # Check if collection exists
+        if coll_name not in utility.list_collections():
+            return {
+                "status": "error",
+                "collection": coll_name,
+                "message": f"Collection '{coll_name}' does not exist",
+                "available_collections": utility.list_collections()
+            }
+        
+        # Get collection and load it
+        coll = Collection(name=coll_name)
+        coll.load()
+        
+        # Get document count
+        num_entities = coll.num_entities
+        
+        # Get a sample document if any exist
+        sample_doc = None
+        if num_entities > 0:
+            results = coll.query(
+                expr="",
+                output_fields=["id", "title", "source", "text"],
+                limit=1
+            )
+            if results:
+                doc = results[0]
+                sample_doc = {
+                    "id": doc.get("id", "N/A"),
+                    "title": doc.get("title", "N/A"),
+                    "source": doc.get("source", "N/A"),
+                    "text_preview": doc.get("text", "N/A")[:200] + "..." if doc.get("text") else "N/A"
+                }
+        
+        logger.info("Milvus collection verification complete collection=%s count=%d", coll_name, num_entities)
+        
+        return {
+            "status": "success",
+            "collection": coll_name,
+            "document_count": num_entities,
+            "sample_document": sample_doc,
+            "message": f"Collection has {num_entities} documents"
+        }
+        
+    except Exception as e:
+        logger.error("Error verifying Milvus collection collection=%s error=%s", coll_name, str(e))
+        return {
+            "status": "error",
+            "collection": coll_name,
+            "message": f"Error: {str(e)}"
+        }
 
 
 # Streamable HTTP ASGI app (provides /mcp)
