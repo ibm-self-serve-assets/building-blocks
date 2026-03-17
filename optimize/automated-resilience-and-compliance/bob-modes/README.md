@@ -12,9 +12,9 @@ You can directly add the Application Resilience mode.
 
 ### 📁 Add Mode Configuration
 
-1. Download and extract `application-resilience.zip` file.
-2. Open your project in **Bob UI**
-3. Navigate to the project workspace (file explorer)
+1. Download and extract `application-resilience.zip` file in base-modes folder.
+3. Open your project in **Bob UI**
+4. Navigate to the project workspace (file explorer)
 3. Copy the content of `.bob` folder extracted as part Step 1:
 
 ```{=html}
