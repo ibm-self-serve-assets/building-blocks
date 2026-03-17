@@ -19,6 +19,7 @@ import platform
 import socket
 import json
 import hashlib
+import logging
 import tarfile
 import tempfile
 from dataclasses import dataclass, asdict
@@ -45,7 +46,9 @@ from langchain_community.document_loaders import (
     UnstructuredPowerPointLoader,
     UnstructuredFileLoader,
     BSHTMLLoader,
+    TextLoader,
 )
+from langchain_core.documents import Document
 from bs4 import BeautifulSoup
 from langchain_core.documents import Document
 
@@ -81,6 +84,17 @@ from ibm_watsonx_ai.foundation_models import Embeddings
 # Load .env early
 # =============================================================================
 load_dotenv()
+
+
+# =============================================================================
+# Logging
+# =============================================================================
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO").strip().upper()
+logging.basicConfig(
+    level=getattr(logging, LOG_LEVEL, logging.INFO),
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+logger = logging.getLogger("rag_ingestion_server")
 
 
 # =============================================================================
@@ -242,6 +256,7 @@ class VectorDbConfig:
     milvus_secure: bool = False
     milvus_collection: str = "rag_collection"
     milvus_hybrid_search: bool = False
+    milvus_use_bulk_ingestion: bool = False
 
     # Milvus bulk-writer remote path (COS/S3)
     bulk_remote_path: str = ""
@@ -312,6 +327,7 @@ def load_vector_db_config() -> VectorDbConfig:
         milvus_secure=_env_bool("MILVUS_SECURE", False),
         milvus_collection=os.getenv("MILVUS_COLLECTION", "rag_collection").strip(),
         milvus_hybrid_search=_env_bool("MILVUS_HYBRID_SEARCH", False),
+        milvus_use_bulk_ingestion=_env_bool("MILVUS_USE_BULK_INGESTION", False),
 
         bulk_remote_path=os.getenv("MILVUS_BULK_REMOTE_PATH", "").strip(),
         bulk_cos_endpoint=os.getenv("MILVUS_BULK_COS_ENDPOINT", "").strip(),
@@ -349,6 +365,7 @@ def _mask_username(val: str) -> str:
 
 def _cos_client_from_config(cfg: CosConfig):
     endpoint = cfg.endpoint if cfg.endpoint.startswith("https://") else ("https://" + cfg.endpoint)
+    logger.info("Initializing COS client for endpoint=%s bucket=%s", endpoint, cfg.bucket)
     return ibm_boto3.client(
         "s3",
         ibm_api_key_id=cfg.api_key,
@@ -359,12 +376,14 @@ def _cos_client_from_config(cfg: CosConfig):
 
 
 def get_cos_objects(cos_client, bucket_name: str, prefix: str) -> List[str]:
+    logger.info("Listing COS objects from bucket=%s prefix=%s", bucket_name, prefix or "<root>")
     objects: List[str] = []
     paginator = cos_client.get_paginator("list_objects_v2")
     for page in paginator.paginate(Bucket=bucket_name, Prefix=prefix or ""):
         if "Contents" in page:
             for obj in page["Contents"]:
                 objects.append(obj["Key"])
+    logger.info("Listed %d COS objects from bucket=%s prefix=%s", len(objects), bucket_name, prefix or "<root>")
     return objects
 
 
@@ -403,12 +422,14 @@ def get_split_documents(documents: List[Document], chunk_cfg: ChunkingConfig) ->
         chunk.metadata["chunk_seq"] = chunk_id
         chunk_id += 1
 
+    logger.info("Created %d split documents", len(split_documents))
     return split_documents
 
 
 def process_file(file: Tuple[str, bytes], chunk_cfg: ChunkingConfig) -> Tuple[str, List[Document]]:
     file_name, file_content = file
     file_type = file_name.split(".")[-1].lower()
+    logger.info("Processing file name=%s type=%s size_bytes=%d", file_name, file_type, len(file_content))
 
     with tempfile.NamedTemporaryFile(suffix=f".{file_type}", delete=True) as temp_file:
         temp_file.write(file_content)
@@ -419,7 +440,19 @@ def process_file(file: Tuple[str, bytes], chunk_cfg: ChunkingConfig) -> Tuple[st
         elif file_type == "docx":
             loader = Docx2txtLoader(temp_file.name)
         elif file_type in ["md", "txt"]:
-            loader = UnstructuredFileLoader(temp_file.name)
+            # Read text files directly to avoid UnstructuredFileLoader hanging issues
+            try:
+                text_content = file_content.decode('utf-8')
+            except UnicodeDecodeError:
+                # Fallback to latin-1 if utf-8 fails
+                text_content = file_content.decode('latin-1', errors='ignore')
+            
+            # Create a Document directly instead of using a loader
+            documents = [Document(page_content=text_content, metadata={"source": file_name})]
+            logger.info("Loaded 1 raw document for file=%s (direct text read)", file_name)
+            split_docs = get_split_documents(documents, chunk_cfg)
+            logger.info("Finished processing file=%s chunks=%d", file_name, len(split_docs))
+            return file_name, split_docs
         elif file_type == "pptx":
             loader = UnstructuredPowerPointLoader(temp_file.name, mode="elements")
         elif file_type == "html":
@@ -439,20 +472,26 @@ def process_file(file: Tuple[str, bytes], chunk_cfg: ChunkingConfig) -> Tuple[st
 
             loader = BSHTMLLoader(temp_file.name) if not chunk_cfg.include_all_html_tags else StructuredHTMLLoader(temp_file.name)
         else:
+            logger.warning("Skipping unsupported file type for file=%s type=%s", file_name, file_type)
             return file_name, []
 
+        logger.info("Loading parsed documents for file=%s using loader=%s", file_name, loader.__class__.__name__)
         documents = loader.load()
+        logger.info("Loaded %d raw documents for file=%s", len(documents), file_name)
         split_docs = get_split_documents(documents, chunk_cfg)
+        logger.info("Finished processing file=%s chunks=%d", file_name, len(split_docs))
         return file_name, split_docs
 
 
 def process_cos_file(cos_client, bucket_name: str, file_key: str) -> Dict[str, bytes]:
+    logger.info("Fetching COS object bucket=%s key=%s", bucket_name, file_key)
     map_file_content: Dict[str, bytes] = {}
 
     response = cos_client.get_object(Bucket=bucket_name, Key=file_key)
     file_body = response["Body"].read()
     file_type = file_key.split(".")[-1].lower()
 
+    logger.info("Fetched COS object key=%s size_bytes=%d type=%s", file_key, len(file_body), file_type)
     if file_type == "tar":
         tar_bytes = BytesIO(file_body)
         if tar_bytes.getbuffer().nbytes > 1:
@@ -465,6 +504,7 @@ def process_cos_file(cos_client, bucket_name: str, file_key: str) -> Dict[str, b
     elif file_type in SUPPORTED_FILE_TYPES[1:]:
         map_file_content[file_key] = file_body
 
+    logger.info("Expanded COS object key=%s into %d ingestible file(s)", file_key, len(map_file_content))
     return map_file_content
 
 
@@ -473,6 +513,12 @@ def generate_hash(content: str) -> str:
 
 
 def get_embedding(embed_cfg: EmbeddingConfig) -> Embeddings:
+    logger.info(
+        "Initializing embeddings client url=%s project_id=%s model_id=%s",
+        embed_cfg.watsonx_url,
+        embed_cfg.project_id,
+        embed_cfg.embedding_model_id,
+    )
     credentials = Credentials(api_key=embed_cfg.watsonx_api_key, url=embed_cfg.watsonx_url)
     return Embeddings(
         model_id=embed_cfg.embedding_model_id,
@@ -483,6 +529,13 @@ def get_embedding(embed_cfg: EmbeddingConfig) -> Embeddings:
 
 
 def _opensearch_client(vdb: VectorDbConfig) -> OpenSearch:
+    logger.info(
+        "Initializing OpenSearch client host=%s port=%s use_ssl=%s index=%s",
+        vdb.opensearch_host,
+        vdb.opensearch_port,
+        vdb.opensearch_use_ssl,
+        vdb.opensearch_index,
+    )
     http_auth = None
     if vdb.opensearch_username or vdb.opensearch_password:
         http_auth = (vdb.opensearch_username, vdb.opensearch_password)
@@ -496,7 +549,9 @@ def _opensearch_client(vdb: VectorDbConfig) -> OpenSearch:
 
 
 def _ensure_opensearch_index(os_client: OpenSearch, index_name: str, embedding_dim: int) -> None:
+    logger.info("Ensuring OpenSearch index exists index=%s embedding_dim=%d", index_name, embedding_dim)
     if os_client.indices.exists(index=index_name):
+        logger.info("OpenSearch index already exists index=%s", index_name)
         return
 
     mapping = {
@@ -515,21 +570,37 @@ def _ensure_opensearch_index(os_client: OpenSearch, index_name: str, embedding_d
         },
     }
     os_client.indices.create(index=index_name, body=mapping)
+    logger.info("Created OpenSearch index index=%s", index_name)
 
 
 def _milvus_connect(vdb: VectorDbConfig) -> None:
+    logger.info(
+        "Connecting to Milvus host=%s port=%s secure=%s user_set=%s",
+        vdb.milvus_host,
+        vdb.milvus_port,
+        vdb.milvus_secure,
+        bool(vdb.milvus_user),
+    )
     kwargs: Dict[str, Any] = {"host": vdb.milvus_host, "port": str(vdb.milvus_port), "secure": vdb.milvus_secure}
     if vdb.milvus_user:
         kwargs["user"] = vdb.milvus_user
     if vdb.milvus_password:
         kwargs["password"] = vdb.milvus_password
     connections.connect(alias="default", **kwargs)
+    logger.info("Connected to Milvus alias=default")
 
 
 def create_collection(collection_name: str, embedding: Embeddings, vdb: VectorDbConfig) -> Collection:
+    logger.info(
+        "Ensuring Milvus collection exists collection=%s hybrid_search=%s",
+        collection_name,
+        vdb.milvus_hybrid_search,
+    )
     dim = len(embedding.embed_query("a"))
+    logger.info("Resolved embedding dimension=%d for collection=%s", dim, collection_name)
 
     if collection_name not in utility.list_collections():
+        logger.info("Milvus collection does not exist and will be created collection=%s", collection_name)
         dense_index_params = {"metric_type": "L2", "index_type": "IVF_FLAT", "params": {"nlist": 1024}}
         sparse_index_params = {"metric_type": "BM25", "index_type": "SPARSE_INVERTED_INDEX", "params": {"drop_ratio_build": 0.2}}
 
@@ -554,8 +625,11 @@ def create_collection(collection_name: str, embedding: Embeddings, vdb: VectorDb
             coll_schema = CollectionSchema(fields)
             coll_schema.add_function(bm25_func)
             coll = Collection(name=collection_name, schema=coll_schema)
+            logger.info("Created Milvus collection schema collection=%s mode=hybrid", collection_name)
             coll.create_index(field_name="dense", index_params=dense_index_params)
+            logger.info("Created Milvus dense index collection=%s", collection_name)
             coll.create_index(field_name="sparse", index_params=sparse_index_params)
+            logger.info("Created Milvus sparse index collection=%s", collection_name)
         else:
             fields = [
                 FieldSchema("id", DataType.VARCHAR, is_primary=True, max_length=65535, auto_id=False),
@@ -569,14 +643,25 @@ def create_collection(collection_name: str, embedding: Embeddings, vdb: VectorDb
             ]
             coll_schema = CollectionSchema(fields)
             coll = Collection(name=collection_name, schema=coll_schema)
+            logger.info("Created Milvus collection schema collection=%s mode=dense", collection_name)
             coll.create_index(field_name="vector", index_params=dense_index_params)
+            logger.info("Created Milvus vector index collection=%s", collection_name)
     else:
+        logger.info("Milvus collection already exists collection=%s", collection_name)
         coll = Collection(name=collection_name)
 
+    logger.info("Milvus collection ready collection=%s schema_fields=%s", collection_name, [f.name for f in coll.schema.fields])
     return coll
 
 
 def _remote_bulk_writer_connect_param(vdb: VectorDbConfig):
+    logger.info(
+        "Preparing RemoteBulkWriter connection endpoint=%s bucket=%s region=%s remote_path=%s",
+        vdb.bulk_cos_endpoint,
+        vdb.bulk_cos_bucket,
+        vdb.bulk_cos_region,
+        vdb.bulk_remote_path,
+    )
     if not vdb.bulk_cos_endpoint or not vdb.bulk_cos_bucket:
         raise ValueError("Milvus bulk writer requires MILVUS_BULK_COS_* env vars (endpoint, bucket, keys/region).")
 
@@ -591,15 +676,18 @@ def _remote_bulk_writer_connect_param(vdb: VectorDbConfig):
 
 
 def create_remote_writer(collection_obj: Collection, vdb: VectorDbConfig) -> RemoteBulkWriter:
+    logger.info("Creating RemoteBulkWriter for collection=%s", collection_obj.name)
     if not vdb.bulk_remote_path:
         raise ValueError("MILVUS_BULK_REMOTE_PATH is required for Milvus bulk writer.")
     conn = _remote_bulk_writer_connect_param(vdb)
-    return RemoteBulkWriter(
+    writer = RemoteBulkWriter(
         schema=collection_obj.schema,
         remote_path=vdb.bulk_remote_path,
         connect_param=conn,
         file_type=BulkFileType.NUMPY,
     )
+    logger.info("RemoteBulkWriter created collection=%s file_type=%s", collection_obj.name, BulkFileType.NUMPY)
+    return writer
 
 
 def prepare_docs_for_ingestion(
@@ -607,13 +695,16 @@ def prepare_docs_for_ingestion(
     embedding: Embeddings,
     vdb: VectorDbConfig,
 ) -> List[Dict[str, Any]]:
+    logger.info("Preparing documents for ingestion file_groups=%d vector_db=%s", len(processed_files), vdb.db_type)
     all_documents: List[Document] = []
     all_embeddings: List[List[float]] = []
 
     for _, documents in processed_files:
         if not documents:
             continue
+        logger.info("Generating embeddings for file=%s chunks=%d", _, len(documents))
         doc_embeddings = embedding.embed_documents([str(doc.page_content) for doc in documents])
+        logger.info("Generated embeddings for file=%s chunks=%d", _, len(documents))
         all_documents.extend(documents)
         all_embeddings.extend(doc_embeddings)
 
@@ -648,6 +739,7 @@ def prepare_docs_for_ingestion(
 
         records.append(base)
 
+    logger.info("Prepared %d records for ingestion into vector_db=%s", len(records), vdb.db_type)
     return records
 
 
@@ -657,6 +749,12 @@ async def ingest_from_cos_prefix(
     bucket: Optional[str] = None,
     destination_index: Optional[str] = None,
 ) -> Dict[str, Any]:
+    logger.info(
+        "Starting ingestion request prefix=%s bucket=%s destination_override=%s",
+        prefix,
+        bucket,
+        destination_index,
+    )
     cos_cfg = load_cos_config()
     embed_cfg = load_embedding_config()
     chunk_cfg = load_chunking_config()
@@ -672,6 +770,13 @@ async def ingest_from_cos_prefix(
     source_bucket = (bucket or "").strip() or cos_cfg.bucket
     cos_prefix = (prefix if prefix is not None else cos_cfg.prefix) or ""
     dest = (destination_index or "").strip()
+    logger.info(
+        "Resolved ingestion configuration vector_db=%s source_bucket=%s cos_prefix=%s use_bulk=%s",
+        vdb.db_type,
+        source_bucket,
+        cos_prefix or "<root>",
+        vdb.milvus_use_bulk_ingestion if vdb.db_type == "milvus" else None,
+    )
 
     if vdb.db_type == "opensearch":
         dest_name = dest or vdb.opensearch_index
@@ -681,6 +786,7 @@ async def ingest_from_cos_prefix(
     cos_client = _cos_client_from_config(cos_cfg)
     cos_objects = get_cos_objects(cos_client, source_bucket, cos_prefix)
     cos_files = [k for k in cos_objects if k.lower().endswith(tuple(SUPPORTED_FILE_TYPES))]
+    logger.info("Filtered ingestible COS files count=%d from total_objects=%d", len(cos_files), len(cos_objects))
 
     embedding = get_embedding(embed_cfg)
 
@@ -694,6 +800,7 @@ async def ingest_from_cos_prefix(
 
         actions = []
         for key in cos_files:
+            logger.info("OpenSearch ingestion processing COS key=%s", key)
             file_map = process_cos_file(cos_client, source_bucket, key)
             for fname, content in file_map.items():
                 processed_count += 1
@@ -701,12 +808,16 @@ async def ingest_from_cos_prefix(
                 chunk_count += len(split_docs)
 
                 records = prepare_docs_for_ingestion([(fname, split_docs)], embedding, vdb)
+                logger.info("Prepared %d OpenSearch records for file=%s", len(records), fname)
                 for rec in records:
                     actions.append({"_index": dest_name, "_id": rec["id"], "_source": rec})
 
         if actions:
+            logger.info("Bulk indexing %d records into OpenSearch index=%s", len(actions), dest_name)
             os_bulk(os_client, actions)
+            logger.info("OpenSearch bulk indexing completed index=%s", dest_name)
 
+        logger.info("OpenSearch ingestion complete index=%s files_seen=%d files_processed=%d chunks_created=%d", dest_name, len(cos_files), processed_count, chunk_count)
         return {
             "status": "success",
             "vector_db": "opensearch",
@@ -732,18 +843,24 @@ async def ingest_from_cos_prefix(
             chunk_count += len(split_docs)
 
             records = prepare_docs_for_ingestion([(fname, split_docs)], embedding, vdb)
+            logger.info("Prepared %d Milvus bulk records for file=%s", len(records), fname)
             for rec in records:
                 writer.append_row(rec)
 
+        logger.info("Committing RemoteBulkWriter batch for COS key=%s", key)
         files = writer.commit()
+        logger.info("RemoteBulkWriter commit completed key=%s files=%s", key, files)
         if files:
             batch_files.append(files)
 
     task_ids = []
     for files in batch_files:
+        logger.info("Submitting Milvus bulk insert collection=%s files=%s", dest_name, files)
         task_id = utility.do_bulk_insert(collection_name=dest_name, files=files)
+        logger.info("Milvus bulk insert submitted collection=%s task_id=%s", dest_name, task_id)
         task_ids.append(task_id)
 
+    logger.info("Milvus bulk ingestion submitted collection=%s files_seen=%d files_processed=%d chunks_created=%d bulk_batches=%d", dest_name, len(cos_files), processed_count, chunk_count, len(batch_files))
     return {
         "status": "started",
         "vector_db": "milvus",
@@ -766,6 +883,10 @@ def _print_bootstrap_status(name: str, ok: bool, detail: str = "") -> None:
     msg = f"[BOOTSTRAP] {name}: {status}"
     if detail:
         msg += f" - {detail}"
+    if ok:
+        logger.info(msg)
+    else:
+        logger.error(msg)
     print(msg, flush=True)
 
 
@@ -906,6 +1027,7 @@ def get_ingestion_configuration() -> Dict[str, Any]:
 
 @mcp.tool(description="Ingest files from COS into the configured vector database. Supports per-call bucket and destination index/collection.")
 async def ingest_from_cos(prefix: str = "", bucket: str = "", destination_index: str = "") -> Dict[str, Any]:
+    logger.info("MCP tool ingest_from_cos called prefix=%s bucket=%s destination_index=%s", prefix, bucket, destination_index)
     p = prefix if prefix is not None else ""
     b = bucket if bucket is not None else ""
     d = destination_index if destination_index is not None else ""
