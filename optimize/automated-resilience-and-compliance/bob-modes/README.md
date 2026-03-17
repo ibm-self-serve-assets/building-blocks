@@ -12,9 +12,10 @@ You can directly add the Application Resilience mode.
 
 ### 📁 Add Mode Configuration
 
-1.  Open your project in **Bob UI**
-2.  Navigate to the project workspace (file explorer)
-3.  Create the following structure if not already present:
+1. Download and extract `application-resilience.zip` file.
+2. Open your project in **Bob UI**
+3. Navigate to the project workspace (file explorer)
+3. Copy the content of `.bob` folder extracted as part Step 1:
 
 ```{=html}
 <!-- -->
@@ -57,8 +58,9 @@ carefully to avoid breaking existing setups.
 
 ### ✏️ Append New Mode Configuration
 
-1.  Open `.bob/custom_modes.yaml` in the Bob UI editor\
-2.  Add the Application Resilience mode at the end of the file
+1. Download and extract `application-resilience.zip` file. 
+2. Open `.bob/custom_modes.yaml` in the Bob UI editor\
+3. Add the Application Resilience mode at the end of the file
 
 #### Example:
 
