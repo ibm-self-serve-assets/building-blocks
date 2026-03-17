@@ -43,6 +43,7 @@ HOST=0.0.0.0
 PORT=8080
 SERVER_NAME=rag-retrieval-mcp
 SERVER_VERSION=1.0.0
+SERVER_DESCRIPTION=Retrieval MCP Server for querying RAG indexes (OpenSearch or Milvus)
 ENVIRONMENT=development
 ```
 
@@ -679,3 +680,420 @@ For issues and questions:
   - Bootstrap connectivity checks
   - Bearer token authentication
   - Configuration masking
+
+## Adding to IBM Bob
+
+This section explains how to configure IBM Bob to use this RAG Retrieval MCP Server.
+
+### Prerequisites
+
+1. **Start Milvus** (if using local Milvus):
+   ```bash
+   cd data-for-ai/milvus
+   ./run-local.sh start
+   ```
+
+2. **Ensure Data is Ingested**:
+   Make sure you've already ingested documents using the RAG Ingestion MCP Server.
+
+3. **Configure Environment**:
+   Ensure `.env` file is properly configured with Milvus connection details.
+
+4. **Start the MCP Server**:
+   ```bash
+   cd data-for-ai/rag-retrieval-sse-mcp-server
+   python app/server.py
+   ```
+   
+   The server will start on `http://localhost:8081`
+
+### Bob Configuration
+
+#### Option 1: Using Bob's MCP Settings UI
+
+1. Open Bob in VS Code
+2. Click on the Bob icon in the sidebar
+3. Navigate to **Settings** → **MCP Servers**
+4. Click **Add Server**
+5. Configure the server:
+
+   **Server Configuration:**
+   ```json
+   {
+     "name": "rag-retrieval-local-mcp",
+     "transport": "streamablehttp",
+     "url": "http://localhost:8081/mcp"
+   }
+   ```
+
+6. Click **Save** and **Restart Bob**
+
+#### Option 2: Manual Configuration (bob_mcp_settings.json)
+
+Add the following configuration to your Bob MCP settings file:
+
+**Location:** `.bob/bob_mcp_settings.json` (in your workspace root)
+
+```json
+{
+  "mcpServers": {
+    "rag-retrieval-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}
+```
+
+**Complete Example with Both Ingestion and Retrieval:**
+
+```json
+{
+  "mcpServers": {
+    "rag-ingestion-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp"
+    },
+    "rag-retrieval-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}
+```
+
+#### Option 3: VS Code Settings (settings.json)
+
+Add to your VS Code workspace settings:
+
+**Location:** `.vscode/settings.json`
+
+```json
+{
+  "bob.mcpServers": {
+    "rag-retrieval-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}
+```
+
+### Authentication (Optional)
+
+If you've set `APP_BEARER_TOKEN` in your `.env` file, configure authentication:
+
+```json
+{
+  "mcpServers": {
+    "rag-retrieval-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8081/mcp",
+      "headers": {
+        "Authorization": "Bearer your_token_here"
+      }
+    }
+  }
+}
+```
+
+### Verification
+
+After configuration, verify the connection:
+
+1. **Check Bob's MCP Status**:
+   - Open Bob
+   - Look for "rag-retrieval-local-mcp" in connected servers
+   - Status should show "Connected"
+
+2. **Test with Bob**:
+   Ask Bob to use the retrieval tools:
+   ```
+   Can you show me the available retrieval tools?
+   ```
+
+3. **Test Server Directly**:
+   ```bash
+   # Health check
+   curl http://localhost:8081/health
+   
+   # Server info
+   curl http://localhost:8081/
+   ```
+
+### Using the MCP Server with Bob
+
+Once configured, you can ask Bob to perform retrieval tasks:
+
+#### Example 1: Get Server Information
+```
+Bob, can you get the retrieval server information?
+```
+
+Bob will use the `get_server_info` tool.
+
+#### Example 2: View Configuration
+```
+Bob, show me the current retrieval configuration.
+```
+
+Bob will use the `get_retrieval_configuration` tool.
+
+#### Example 3: Semantic Search
+```
+Bob, search for information about "how to change wiper blades" in the product_insights collection.
+```
+
+Bob will use the `retrieve` tool with:
+```json
+{
+  "query": "how to change wiper blades",
+  "k": 5,
+  "destination_index": "product_insights"
+}
+```
+
+#### Example 4: Keyword Search (OpenSearch only)
+```
+Bob, do a keyword search for "Model X wiper blade" in the documentation.
+```
+
+Bob will use the `keyword_search` tool with:
+```json
+{
+  "query": "Model X wiper blade",
+  "k": 5
+}
+```
+
+### Available Tools in Bob
+
+Once connected, Bob can use these tools:
+
+| Tool | Description | Usage |
+|------|-------------|-------|
+| `get_server_info` | Get server details | "Show me server info" |
+| `get_server_time` | Get current server time | "What time is it on the server?" |
+| `get_hostname` | Get server hostname | "What's the server hostname?" |
+| `get_retrieval_configuration` | View configuration | "Show retrieval config" |
+| `retrieve` | Semantic search | "Search for 'wiper blade replacement'" |
+| `keyword_search` | Keyword search (OpenSearch) | "Keyword search for 'Model X'" |
+
+### Troubleshooting Bob Integration
+
+#### Server Not Connecting
+
+1. **Verify Server is Running**:
+   ```bash
+   curl http://localhost:8081/health
+   ```
+   
+   Expected response:
+   ```json
+   {
+     "status": "healthy",
+     "server": "rag-retrieval-mcp-local",
+     "version": "1.0.0"
+   }
+   ```
+
+2. **Check Port Availability**:
+   ```bash
+   # Windows
+   netstat -ano | findstr :8081
+   
+   # Linux/Mac
+   lsof -i :8081
+   ```
+
+3. **Verify Configuration**:
+   - Check `bob_mcp_settings.json` syntax
+   - Ensure URL is correct: `http://localhost:8081/mcp`
+   - Verify transport type: `streamablehttp`
+
+4. **Check Bob Logs**:
+   - Open VS Code Developer Tools (Help → Toggle Developer Tools)
+   - Look for MCP connection errors in Console
+
+#### No Search Results
+
+1. **Verify Data is Ingested**:
+   - Check if documents were successfully ingested
+   - Use ingestion server's tools to verify
+
+2. **Check Collection/Index**:
+   ```
+   Bob, show me the retrieval configuration
+   ```
+   Verify the collection/index name matches your ingested data
+
+3. **Try Different Search Types**:
+   - If semantic search returns nothing, try keyword search
+   - Adjust the `k` parameter to get more results
+
+#### Authentication Errors
+
+If using bearer token authentication:
+
+1. **Verify Token in .env**:
+   ```env
+   APP_BEARER_TOKEN=your_secret_token
+   ```
+
+2. **Add to Bob Configuration**:
+   ```json
+   {
+     "headers": {
+       "Authorization": "Bearer your_secret_token"
+     }
+   }
+   ```
+
+3. **Test with curl**:
+   ```bash
+   curl -H "Authorization: Bearer your_secret_token" http://localhost:8081/health
+   ```
+
+### Production Deployment
+
+For production use with Bob:
+
+#### Deploy to IBM Code Engine
+
+1. **Build and Push Image**:
+   ```bash
+   docker build -t us.icr.io/your-namespace/rag-retrieval-mcp:latest .
+   docker push us.icr.io/your-namespace/rag-retrieval-mcp:latest
+   ```
+
+2. **Create Code Engine Application**:
+   ```bash
+   ibmcloud ce application create \
+     --name rag-retrieval-mcp \
+     --image us.icr.io/your-namespace/rag-retrieval-mcp:latest \
+     --port 8080 \
+     --env-from-secret rag-retrieval-secrets \
+     --min-scale 1 \
+     --max-scale 3
+   ```
+
+3. **Get Application URL**:
+   ```bash
+   ibmcloud ce application get --name rag-retrieval-mcp
+   ```
+
+4. **Update Bob Configuration**:
+   ```json
+   {
+     "mcpServers": {
+       "rag-retrieval-remote-mcp": {
+         "transport": "streamablehttp",
+         "url": "https://rag-retrieval-mcp.your-region.codeengine.appdomain.cloud/mcp",
+         "headers": {
+           "Authorization": "Bearer your_production_token"
+         }
+       }
+     }
+   }
+   ```
+
+### Complete Setup Example
+
+Here's a complete step-by-step setup:
+
+```bash
+# 1. Start Milvus
+cd data-for-ai/milvus
+./run-local.sh start
+
+# 2. Ingest documents (using ingestion server)
+cd ../rag-ingestion-sse-mcp-server
+python app/server.py &
+# Use Bob or API to ingest documents
+
+# 3. Configure retrieval environment
+cd ../rag-retrieval-sse-mcp-server
+cp .env.example .env
+# Edit .env with your credentials
+
+# 4. Start retrieval MCP server
+python app/server.py
+
+# 5. In another terminal, verify server
+curl http://localhost:8081/health
+
+# 6. Configure Bob (create/edit .bob/bob_mcp_settings.json)
+cat > ../../.bob/bob_mcp_settings.json << 'EOF'
+{
+  "mcpServers": {
+    "rag-ingestion-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp"
+    },
+    "rag-retrieval-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}
+EOF
+
+# 7. Restart VS Code/Bob
+
+# 8. Test with Bob
+# Ask: "Bob, search for 'product features' in the documentation"
+```
+
+### Environment-Specific Configurations
+
+#### Development (Local)
+```json
+{
+  "mcpServers": {
+    "rag-retrieval-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8081/mcp"
+    }
+  }
+}
+```
+
+#### Staging
+```json
+{
+  "mcpServers": {
+    "rag-retrieval-staging-mcp": {
+      "transport": "streamablehttp",
+      "url": "https://rag-retrieval-staging.your-domain.com/mcp",
+      "headers": {
+        "Authorization": "Bearer staging_token"
+      }
+    }
+  }
+}
+```
+
+#### Production
+```json
+{
+  "mcpServers": {
+    "rag-retrieval-remote-mcp": {
+      "transport": "streamablehttp",
+      "url": "https://rag-retrieval.your-domain.com/mcp",
+      "headers": {
+        "Authorization": "Bearer production_token"
+      }
+    }
+  }
+}
+```
+
+### Support
+
+For issues with Bob integration:
+1. Check server logs: `python app/server.py` output
+2. Verify Bob configuration: `.bob/bob_mcp_settings.json`
+3. Test server directly: `curl http://localhost:8081/health`
+4. Review Bob logs in VS Code Developer Tools
+5. Ensure Milvus is running and has ingested data
+6. Verify Watsonx credentials are valid

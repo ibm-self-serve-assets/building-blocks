@@ -532,6 +532,7 @@ async def retrieve(
         coll.load()
 
         # Milvus search
+        # Schema: id, title, source, page_number, chunk_seq, document_url, text, vector
         search_params = {"metric_type": "L2", "params": {"nprobe": 10}}
         res = coll.search(
             data=[vector],

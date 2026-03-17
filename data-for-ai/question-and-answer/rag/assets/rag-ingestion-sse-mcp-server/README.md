@@ -44,8 +44,13 @@ HOST=0.0.0.0
 PORT=8080
 SERVER_NAME=rag-ingestion-mcp
 SERVER_VERSION=1.0.0
+SERVER_DESCRIPTION=Base MCP Server for Data for AI Building Block (with RAG ingestion)
 ENVIRONMENT=development
+PUBLIC_BASE_URL=
+ALLOWED_HOSTS=
+ALLOWED_ORIGINS=
 APP_BEARER_TOKEN=your_optional_bearer_token
+LOG_LEVEL=INFO
 ```
 
 #### IBM Cloud Object Storage
@@ -96,8 +101,9 @@ MILVUS_PASSWORD=your_password
 MILVUS_SECURE=false
 MILVUS_COLLECTION=rag_collection
 MILVUS_HYBRID_SEARCH=false
+MILVUS_USE_BULK_INGESTION=false
 
-# Milvus bulk-writer remote storage (required for Milvus)
+# Milvus bulk-writer remote storage (required for Milvus bulk ingestion)
 MILVUS_BULK_REMOTE_PATH=your_remote_path
 MILVUS_BULK_COS_ENDPOINT=your_cos_endpoint
 MILVUS_BULK_COS_ACCESS_KEY=your_access_key
@@ -487,3 +493,373 @@ For issues and questions:
   - OpenSearch and Milvus integration
   - Watsonx embeddings
   - Bootstrap connectivity checks
+
+## Adding to IBM Bob
+
+This section explains how to configure IBM Bob to use this RAG Ingestion MCP Server.
+
+### Prerequisites
+
+1. **Start Milvus** (if using local Milvus):
+   ```bash
+   cd data-for-ai/milvus
+   ./run-local.sh start
+   ```
+
+2. **Configure Environment**:
+   Ensure `.env` file is properly configured with Milvus connection details.
+
+3. **Start the MCP Server**:
+   ```bash
+   cd data-for-ai/rag-ingestion-sse-mcp-server
+   python app/server.py
+   ```
+   
+   The server will start on `http://localhost:8080`
+
+### Bob Configuration
+
+#### Option 1: Using Bob's MCP Settings UI
+
+1. Open Bob in VS Code
+2. Click on the Bob icon in the sidebar
+3. Navigate to **Settings** → **MCP Servers**
+4. Click **Add Server**
+5. Configure the server:
+
+   **Server Configuration:**
+   ```json
+   {
+     "name": "rag-ingestion-local-mcp",
+     "transport": "streamablehttp",
+     "url": "http://localhost:8080/mcp"
+   }
+   ```
+
+6. Click **Save** and **Restart Bob**
+
+#### Option 2: Manual Configuration (bob_mcp_settings.json)
+
+Add the following configuration to your Bob MCP settings file:
+
+**Location:** `.bob/bob_mcp_settings.json` (in your workspace root)
+
+```json
+{
+  "mcpServers": {
+    "rag-ingestion-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp"
+    }
+  }
+}
+```
+
+#### Option 3: VS Code Settings (settings.json)
+
+Add to your VS Code workspace settings:
+
+**Location:** `.vscode/settings.json`
+
+```json
+{
+  "bob.mcpServers": {
+    "rag-ingestion-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp"
+    }
+  }
+}
+```
+
+### Authentication (Optional)
+
+If you've set `APP_BEARER_TOKEN` in your `.env` file, configure authentication:
+
+```json
+{
+  "mcpServers": {
+    "rag-ingestion-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp",
+      "headers": {
+        "Authorization": "Bearer your_token_here"
+      }
+    }
+  }
+}
+```
+
+### Verification
+
+After configuration, verify the connection:
+
+1. **Check Bob's MCP Status**:
+   - Open Bob
+   - Look for "rag-ingestion-local-mcp" in connected servers
+   - Status should show "Connected"
+
+2. **Test with Bob**:
+   Ask Bob to use the ingestion tools:
+   ```
+   Can you show me the available ingestion tools?
+   ```
+
+3. **Test Server Directly**:
+   ```bash
+   # Health check
+   curl http://localhost:8080/health
+   
+   # Server info
+   curl http://localhost:8080/
+   ```
+
+### Using the MCP Server with Bob
+
+Once configured, you can ask Bob to perform ingestion tasks:
+
+#### Example 1: Get Server Information
+```
+Bob, can you get the ingestion server information?
+```
+
+Bob will use the `get_server_info` tool.
+
+#### Example 2: View Configuration
+```
+Bob, show me the current ingestion configuration.
+```
+
+Bob will use the `get_ingestion_configuration` tool.
+
+#### Example 3: Ingest from COS
+```
+Bob, ingest documents from COS with prefix "products/" into the product_insights collection.
+```
+
+Bob will use the `ingest_from_cos` tool with:
+```json
+{
+  "prefix": "products/",
+  "destination_index": "product_insights"
+}
+```
+
+### Available Tools in Bob
+
+Once connected, Bob can use these tools:
+
+| Tool | Description | Usage |
+|------|-------------|-------|
+| `get_server_info` | Get server details | "Show me server info" |
+| `get_server_time` | Get current server time | "What time is it on the server?" |
+| `get_hostname` | Get server hostname | "What's the server hostname?" |
+| `get_ingestion_configuration` | View configuration | "Show ingestion config" |
+| `ingest_from_cos` | Ingest from COS | "Ingest from COS prefix 'data/'" |
+
+### Troubleshooting Bob Integration
+
+#### Server Not Connecting
+
+1. **Verify Server is Running**:
+   ```bash
+   curl http://localhost:8080/health
+   ```
+   
+   Expected response:
+   ```json
+   {
+     "status": "healthy",
+     "server": "rag-ingestion-mcp-local",
+     "version": "1.0.0"
+   }
+   ```
+
+2. **Check Port Availability**:
+   ```bash
+   # Windows
+   netstat -ano | findstr :8080
+   
+   # Linux/Mac
+   lsof -i :8080
+   ```
+
+3. **Verify Configuration**:
+   - Check `bob_mcp_settings.json` syntax
+   - Ensure URL is correct: `http://localhost:8080/mcp`
+   - Verify transport type: `streamablehttp`
+
+4. **Check Bob Logs**:
+   - Open VS Code Developer Tools (Help → Toggle Developer Tools)
+   - Look for MCP connection errors in Console
+
+#### Authentication Errors
+
+If using bearer token authentication:
+
+1. **Verify Token in .env**:
+   ```env
+   APP_BEARER_TOKEN=your_secret_token
+   ```
+
+2. **Add to Bob Configuration**:
+   ```json
+   {
+     "headers": {
+       "Authorization": "Bearer your_secret_token"
+     }
+   }
+   ```
+
+3. **Test with curl**:
+   ```bash
+   curl -H "Authorization: Bearer your_secret_token" http://localhost:8080/health
+   ```
+
+#### Tools Not Appearing
+
+1. **Restart Bob**: After configuration changes, restart VS Code
+2. **Check Server Response**: Verify `/` endpoint returns tool list
+3. **Review Bob Output**: Look for tool registration messages
+
+### Production Deployment
+
+For production use with Bob:
+
+#### Deploy to IBM Code Engine
+
+1. **Build and Push Image**:
+   ```bash
+   docker build -t us.icr.io/your-namespace/rag-ingestion-mcp:latest .
+   docker push us.icr.io/your-namespace/rag-ingestion-mcp:latest
+   ```
+
+2. **Create Code Engine Application**:
+   ```bash
+   ibmcloud ce application create \
+     --name rag-ingestion-mcp \
+     --image us.icr.io/your-namespace/rag-ingestion-mcp:latest \
+     --port 8080 \
+     --env-from-secret rag-mcp-secrets \
+     --min-scale 1 \
+     --max-scale 3
+   ```
+
+3. **Get Application URL**:
+   ```bash
+   ibmcloud ce application get --name rag-ingestion-mcp
+   ```
+
+4. **Update Bob Configuration**:
+   ```json
+   {
+     "mcpServers": {
+       "rag-ingestion-remote-mcp": {
+         "transport": "streamablehttp",
+         "url": "https://rag-ingestion-mcp.your-region.codeengine.appdomain.cloud/mcp",
+         "headers": {
+           "Authorization": "Bearer your_production_token"
+         }
+       }
+     }
+   }
+   ```
+
+#### Security Considerations
+
+1. **Use HTTPS**: Always use HTTPS in production
+2. **Enable Authentication**: Set `APP_BEARER_TOKEN` for production
+3. **Rotate Tokens**: Regularly update bearer tokens
+4. **Network Security**: Use VPC/private endpoints when possible
+5. **Monitor Access**: Log and monitor all API calls
+
+### Complete Setup Example
+
+Here's a complete step-by-step setup:
+
+```bash
+# 1. Start Milvus
+cd data-for-ai/milvus
+./run-local.sh start
+
+# 2. Configure environment
+cd ../rag-ingestion-sse-mcp-server
+cp .env.example .env
+# Edit .env with your credentials
+
+# 3. Start MCP server
+python app/server.py
+
+# 4. In another terminal, verify server
+curl http://localhost:8080/health
+
+# 5. Configure Bob (create/edit .bob/bob_mcp_settings.json)
+cat > ../../.bob/bob_mcp_settings.json << 'EOF'
+{
+  "mcpServers": {
+    "rag-ingestion-local-mcp": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp"
+    }
+  }
+}
+EOF
+
+# 6. Restart VS Code/Bob
+
+# 7. Test with Bob
+# Ask: "Bob, show me the ingestion server configuration"
+```
+
+### Environment-Specific Configurations
+
+#### Development (Local)
+```json
+{
+  "mcpServers": {
+    "rag-ingestion-mcp-local": {
+      "transport": "streamablehttp",
+      "url": "http://localhost:8080/mcp"
+    }
+  }
+}
+```
+
+#### Staging
+```json
+{
+  "mcpServers": {
+    "rag-ingestion-mcp-staging": {
+      "transport": "streamablehttp",
+      "url": "https://rag-mcp-staging.your-domain.com/mcp",
+      "headers": {
+        "Authorization": "Bearer staging_token"
+      }
+    }
+  }
+}
+```
+
+#### Production
+```json
+{
+  "mcpServers": {
+    "rag-ingestion-mcp-production": {
+      "transport": "streamablehttp",
+      "url": "https://rag-mcp.your-domain.com/mcp",
+      "headers": {
+        "Authorization": "Bearer production_token"
+      }
+    }
+  }
+}
+```
+
+### Support
+
+For issues with Bob integration:
+1. Check server logs: `python app/server.py` output
+2. Verify Bob configuration: `.bob/bob_mcp_settings.json`
+3. Test server directly: `curl http://localhost:8080/health`
+4. Review Bob logs in VS Code Developer Tools
+5. Ensure all prerequisites are running (Milvus, etc.)
