@@ -1,122 +1,134 @@
-# Bob Modes
+# 🚀 Step 1: Import Application Resilience Custom Bob Mode (via Bob UI)
 
-This directory contains custom IBM Bob mode configurations designed to
-extend IBM Bob's capabilities with domain-specific intelligence and
-workflow orchestration.
-
-Bob modes define structured prompts, behavioral constraints, and domain
-context that enable IBM Bob to operate with specialized expertise across
-observability, security, DevSecOps, infrastructure automation, and
-secret management domains.
+Before using IBM Bob with Instana, you need to import the **Application
+Observability custom mode** into your project.
 
 ------------------------------------------------------------------------
 
-## Overview
+## 🆕 For New Projects
 
-Custom Bob modes allow you to:
+When working with a **new project**, there are no existing custom modes.
+You can directly add the Application Resilience mode.
 
--   Inject domain-specific knowledge into Bob interactions.
--   Standardize workflows across teams.
--   Automate repetitive engineering tasks,
--   Integrate Bob with external systems (e.g., Vault, Ansible, Instana).
--   Enable consistent architectural and operational guidance.
+### 📁 Add Mode Configuration
 
-These modes are particularly useful in enterprise environments where
-governance, repeatability, and domain accuracy are critical.
+1.  Open your project in **Bob UI**
+2.  Navigate to the project workspace (file explorer)
+3.  Create the following structure if not already present:
 
-------------------------------------------------------------------------
-
-## Available Modes
-
-### Application Resilience Mode
-
-**File:** [`application-resilience.yaml`](base-modes/application-resilience.yaml:1)
-**Location:** `bob-modes/base-modes/application-resilience.yaml`
-
-This mode enhances IBM Bob with application resilience and compliance capabilities, including:
-
-- Python Dash application development for IBM Concert APIs
-- Vulnerability management and CVE tracking
-- Application monitoring and certificate lifecycle management
-- Interactive data visualizations with Plotly
-- Multi-tab interfaces with dynamic data loading
-- Production-ready error handling and logging
-
-Use this mode when building dashboards for vulnerability management, compliance tracking, or application resilience monitoring.
-
-------------------------------------------------------------------------
-
-## Mode Structure
-
-Each mode YAML file typically includes:
-
--   Mode metadata (name, description, version)/
--   Behavioral instructions.
--   Domain context.
--   Response formatting rules.
--   Integration hooks.
--   Constraints and guardrails.
-
-Custom modes can be extended or modified to include:
-
--   DevSecOps workflows.
--   Vault deployment automation.
--   Secret scanning and remediation logic.
--   Infrastructure-as-Code orchestration.
--   Architecture generation patterns.
-
-------------------------------------------------------------------------
-
-## Installing Bob Modes
-
-You can install custom modes using one of the following methods.
-
-For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
-
-------------------------------------------------------------------------
-
-### Method 1: Copy to Bob's Global Modes Directory (Recommended)
-
-#### Windows
-
-``` powershell
-Copy-Item base-modes/application-resilience.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
+```{=html}
+<!-- -->
 ```
+    .bob/
+    ├── custom_modes.yaml
+    └── rules/
+        └── application-observability/
+            └── [mode rules files]
 
-#### Linux / macOS
+4.  Copy the provided:
+    -   `custom_modes.yaml`
+    -   `rules/*/` folder
+5.  Paste them into the `.bob/` directory
 
-``` bash
-cp base-modes/application-resilience.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+------------------------------------------------------------------------
+
+### ▶️ Start Using the Mode
+
+-   Refresh or reload the Bob UI (if required)
+-   Navigate to **Modes / Custom Modes section**
+-   Select **Application Resilience**
+-   Start using it in your workflows
+
+------------------------------------------------------------------------
+
+## 🔁 For Existing Projects
+
+If your project already has custom modes configured, follow these steps
+carefully to avoid breaking existing setups.
+
+------------------------------------------------------------------------
+
+### ⚠️ Do Not Overwrite Existing Configuration
+
+-   Do **not replace** the existing `.bob/custom_modes.yaml`
+-   This file may already contain active modes used by your project
+
+------------------------------------------------------------------------
+
+### ✏️ Append New Mode Configuration
+
+1.  Open `.bob/custom_modes.yaml` in the Bob UI editor\
+2.  Add the Application Resilience mode at the end of the file
+
+#### Example:
+
+    # Existing custom modes
+    - slug: existing-mode-1
+      name: Existing Mode 1
+      # ... existing configuration ...
+
+    - slug: existing-mode-2
+      name: Existing Mode 2
+      # ... existing configuration ...
+
+    # Add Application Resilience mode
+    - slug: application-observability
+      name: Application Resilience
+      # ... new mode configuration ...
+
+------------------------------------------------------------------------
+
+### 📂 Maintain Rules Folder Structure
+
+1.  Navigate to `.bob/rules/`
+2.  Add the new rules folder:
+
+```{=html}
+<!-- -->
 ```
+    application-observability/
 
-After copying, restart IBM Bob for the new mode to become available.
+3.  Ensure the final structure looks like:
 
-------------------------------------------------------------------------
+```{=html}
+<!-- -->
+```
+    .bob/
+    ├── custom_modes.yaml
+    └── rules/
+        ├── existing-mode-1/
+        ├── existing-mode-2/
+        └── application-observability/
 
-### Method 2: Reference Modes from Current Repository
-
-If you prefer not to copy files, you can configure IBM Bob to reference
-this directory directly.
-
-1.  Open IBM Bob configuration settings
-2.  Add the local directory path under custom modes
-3.  Restart IBM Bob
-
-This approach is useful for development and version-controlled mode
-updates.
-
-------------------------------------------------------------------------
-
-## Verifying Installation
-
-After installation, verify the mode is available:
-
-1. Restart IBM Bob (VS Code)
-2. Open IBM Bob chat interface
-3. Look for "🛡️ Automate Resilience" in the mode selector
-4. Select the mode to start using application resilience capabilities
+👉 Do **not modify or delete existing rule folders**
 
 ------------------------------------------------------------------------
 
+### ✅ Verify in Bob UI
 
+After completing the setup:
 
+-   Go to **Modes / Custom Modes**
+-   Confirm:
+    -   Existing modes are still available
+    -   **Application Resilience** mode appears
+-   Open the mode and ensure no configuration errors are shown
+
+------------------------------------------------------------------------
+
+## 🧠 Best Practices
+
+-   Always **append**, never overwrite `custom_modes.yaml`\
+-   Keep each mode isolated under its own rules folder\
+-   Validate YAML formatting carefully (indentation matters)\
+-   Reload the UI if changes are not reflected immediately
+
+------------------------------------------------------------------------
+
+## 🎯 Outcome
+
+After completing these steps:
+
+-   Application Resilience mode will be available in Bob UI\
+-   Existing modes will continue to function without disruption\
+-   You can start using the mode for **Application Resilience**
