@@ -35,10 +35,13 @@ Use Bob modes to start building custom agents:
 
 ## Agent Builder Bob Modes
 
-Explore Bob modes for guided agent development:
-- [Agent Builder Base Mode](./bob-modes/agent-builder-bob-modes/base-modes/agent-builder-base-mode) - Access agent builder modes and configurations
-- [Build Domain Agents](./bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder/) - Build custom domain-specific agents
-- [Voice Agent Builder](./bob-modes/agent-builder-bob-modes/custom-modes/voice-agent-builder/) - Build voice-enabled agents with multi-channel support (phone, WhatsApp, SMS, Slack)
+Download and install Bob modes for guided agent development:
+
+- **[Agent Builder Base Mode](./bob-modes/agent-builder-bob-modes/base-modes/agent-builder-base-mode.zip)** ⬇️ - Foundation mode for agent building workflows
+- **[Domain Agent Builder](./bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder.zip)** ⬇️ - Build custom domain-specific agents (healthcare, retail, finance, etc.)
+- **[Voice Agent Builder](./bob-modes/agent-builder-bob-modes/custom-modes/voice-agent-builder.zip)** ⬇️ - Build voice-enabled agents with multi-channel support (phone, WhatsApp, SMS, Slack)
+
+📖 See the [bob-modes README](./bob-modes/README.md) for installation instructions.
 
 ## Assets & Sample Projects
 

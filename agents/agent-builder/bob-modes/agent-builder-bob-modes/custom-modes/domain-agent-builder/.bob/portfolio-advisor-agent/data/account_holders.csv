@@ -1,9 +1,0 @@
-account_id,name,email,phone,tier,status,portfolio_value,stocks,bonds,real_estate,cash,investment_goals,risk_tolerance,ytd_return,account_opened
-ACC001,Sarah Johnson,sarah.johnson@email.com,555-0101,Diamond,active,2500000.00,60,25,10,5,Long-term growth and wealth preservation,Moderate,12.5,2020-03-15
-ACC002,Michael Chen,michael.chen@email.com,555-0102,Gold,active,850000.00,70,20,5,5,Aggressive growth for retirement,High,15.2,2019-07-22
-ACC003,Emily Rodriguez,emily.rodriguez@email.com,555-0103,Silver,active,325000.00,55,35,5,5,Balanced growth and income,Moderate,9.8,2021-01-10
-ACC004,David Thompson,david.thompson@email.com,555-0104,Bronze,active,75000.00,50,40,0,10,Building wealth for first home,Low,7.5,2022-05-18
-ACC005,Jennifer Martinez,jennifer.martinez@email.com,555-0105,Gold,active,1200000.00,65,25,8,2,Retirement planning and legacy building,Moderate-High,11.3,2018-11-05
-ACC006,Robert Kim,robert.kim@email.com,555-0106,Silver,active,280000.00,60,30,5,5,College savings and retirement,Moderate,10.1,2020-09-12
-ACC007,Lisa Anderson,lisa.anderson@email.com,555-0107,Diamond,active,3800000.00,55,30,12,3,Wealth preservation and philanthropic planning,Conservative,8.9,2017-02-28
-ACC008,James Wilson,james.wilson@email.com,555-0108,Bronze,active,45000.00,45,45,0,10,Emergency fund and long-term savings,Low,6.2,2023-03-20
