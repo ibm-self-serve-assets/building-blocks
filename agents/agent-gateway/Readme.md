@@ -1,4 +1,4 @@
-# AI Gateway
+# Agent Gateway
 
 ## Overview
 
