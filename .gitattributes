@@ -1,5 +1,5 @@
-*.mp4 filter=lfs diff=lfs merge=lfs -text
-*.mov filter=lfs diff=lfs merge=lfs -text
-*.avi filter=lfs diff=lfs merge=lfs -text
-*.mkv filter=lfs diff=lfs merge=lfs -text
-*.webm filter=lfs diff=lfs merge=lfs -text
+*.mp4 !text !filter !merge !diff
+*.mov !text !filter !merge !diff
+*.avi !text !filter !merge !diff
+*.mkv !text !filter !merge !diff
+*.webm !text !filter !merge !diff
