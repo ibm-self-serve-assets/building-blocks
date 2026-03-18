@@ -5,7 +5,9 @@ This directory contains custom Bob modes for integrating third-party LLM models 
 ## 📦 Available Modes
 
 ### Base Mode
-- **agent-gateway-bob-mode** - Comprehensive mode for integrating third-party LLM models (OpenAI, Anthropic, Google, Azure, AWS Bedrock, and more) into watsonx Orchestrate
+- **agent-model-gateway-bob-mode** - Comprehensive mode for integrating third-party LLM models (OpenAI, Anthropic, Google, Azure, AWS Bedrock, and more) into watsonx Orchestrate
+
+💡 **Tip:** If you're viewing this on GitHub, you can download the .zip file directly by clicking the link in the main [Agent Gateway README](../../README.md).
 
 ---
 
