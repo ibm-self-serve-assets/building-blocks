@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **AI Gateway** building block provides a unified gateway for selecting the right LLM model and securely accessing the right tools and agents. It serves as a centralized orchestration layer that enables seamless integration with multiple foundation models and external systems while maintaining enterprise-grade security and governance.
+The **Agent Gateway** building block provides a unified gateway for selecting the right LLM model and securely accessing the right tools and agents. It serves as a centralized orchestration layer that enables seamless integration with multiple foundation models and external systems while maintaining enterprise-grade security and governance.
 
 📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/ai-gateway/)**
 
@@ -56,7 +56,11 @@ Set up model gateway and ContextForge for your use case:
 
 ## Bob Modes for AI Gateway
 
-> 🚧 **Coming Soon**: Documentation for Agent Gateway Bob Modes will be available here.
+Download and install Bob modes for AI Gateway development:
+
+- **[Agent Model Gateway Base Mode](./bob-modes/base-modes/agent-model-gateway-bob-mode.zip)** ⬇️ - Comprehensive mode for integrating third-party LLM models into watsonx Orchestrate via the AI Gateway
+
+📖 See the [bob-modes README](./bob-modes/README.md) for installation instructions.
 
 ## Guides & Documentation
 
