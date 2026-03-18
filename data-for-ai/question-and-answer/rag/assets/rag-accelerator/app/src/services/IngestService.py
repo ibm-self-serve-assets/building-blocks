@@ -297,10 +297,11 @@ def ingest_files(payload):
             logger.error("Bucket name is required for COS ingestion")
             raise ValueError("Bucket name is required for COS ingestion")
         
-        if directory is None:
-            logger.error("Directory (prefix) is required for COS ingestion")
-            raise ValueError("Directory (prefix) is required for COS ingestion")
-        
+        if directory is None or directory == "" :
+            logger.info("Empty directory specified, ingesting all files from bucket root")
+        else:
+            logger.info(f"Ingesting files from directory: {directory}")
+            
         if index_name is None:
             logger.error("Index name is required for vector database ingestion")
             raise ValueError("Index name is required for vector database ingestion")
@@ -315,7 +316,7 @@ def ingest_files(payload):
         logger.debug(f"{connection_name} connection args: %s", connection_args)
 
         # COS Operations download files from prefix
-        cos_ops = COSOperations(bucket_name=bucket_name)
+        cos_ops: COSOperations = COSOperations(bucket_name=bucket_name)
 
         filtered_keys = cos_ops.get_filtered_keys(prefix=directory)
         logger.info("Number of files found in COS: %s", len(filtered_keys))
