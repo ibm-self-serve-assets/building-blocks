@@ -17,7 +17,7 @@ docker_registry: "docker.io"
 # Application Configuration
 app_repo_url: "https://github.com/SunilManika/retailapp.git"
 app_repo_branch: "main"
-app_source_dir: "/tmp/retailapp"
+app_source_dir: "~/retailapp"
 
 # Image Configuration
 backend_image_name: "retail-backend"
