@@ -1,0 +1,103 @@
+---
+# Initialize and unseal Vault
+
+- name: Check if Vault is initialized
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/sys/init"
+    method: GET
+    return_content: yes
+  register: vault_init_status
+  failed_when: false
+
+- name: Initialize Vault
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/sys/init"
+    method: PUT
+    body_format: json
+    body:
+      secret_shares: "{{ vault_unseal_keys_shares }}"
+      secret_threshold: "{{ vault_unseal_keys_threshold }}"
+    return_content: yes
+  register: vault_init_result
+  when: not vault_init_status.json.initialized
+
+- name: Save Vault initialization data
+  copy:
+    content: "{{ vault_init_result.json | to_nice_json }}"
+    dest: "{{ vault_config_dir }}/vault-init.json"
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    mode: '0600'
+  when: vault_init_result.changed
+
+- name: Display initialization warning
+  debug:
+    msg: |
+      IMPORTANT: Vault has been initialized!
+      Unseal keys and root token have been saved to {{ vault_config_dir }}/vault-init.json
+      Please backup this file securely and remove it from the server!
+  when: vault_init_result.changed
+
+- name: Check Vault seal status
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/sys/seal-status"
+    method: GET
+    return_content: yes
+  register: vault_seal_status
+
+- name: Unseal Vault
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/sys/unseal"
+    method: PUT
+    body_format: json
+    body:
+      key: "{{ item }}"
+    return_content: yes
+  loop: "{{ vault_init_result.json.keys_base64[:vault_unseal_keys_threshold] }}"
+  when:
+    - vault_init_result.changed
+    - vault_seal_status.json.sealed
+  no_log: true
+
+- name: Enable KV v2 secrets engine
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/sys/mounts/secret"
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_init_result.json.root_token }}"
+    body_format: json
+    body:
+      type: "kv"
+      options:
+        version: "2"
+    status_code: [200, 204]
+  when: vault_init_result.changed
+  failed_when: false
+
+- name: Enable Transit secrets engine
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/sys/mounts/transit"
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_init_result.json.root_token }}"
+    body_format: json
+    body:
+      type: "transit"
+    status_code: [200, 204]
+  when: vault_init_result.changed
+  failed_when: false
+
+- name: Create Transit encryption key
+  uri:
+    url: "http://127.0.0.1:{{ vault_port }}/v1/transit/keys/secret-scanner-key"
+    method: POST
+    headers:
+      X-Vault-Token: "{{ vault_init_result.json.root_token }}"
+    body_format: json
+    body:
+      type: "aes256-gcm96"
+    status_code: [200, 204]
+  when: vault_init_result.changed
+  failed_when: false
+
+# Made with Bob

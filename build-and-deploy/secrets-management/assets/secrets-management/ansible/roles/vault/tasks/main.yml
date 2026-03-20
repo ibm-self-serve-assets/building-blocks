@@ -1,0 +1,38 @@
+---
+# Main tasks for Vault installation
+
+- name: Include OS-specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+  tags: always
+
+- name: Install prerequisites
+  include_tasks: prerequisites.yml
+  tags: prerequisites
+
+- name: Create Vault user and group
+  include_tasks: user.yml
+  tags: user
+
+- name: Install Vault binary
+  include_tasks: install.yml
+  tags: install
+
+- name: Configure Vault
+  include_tasks: configure.yml
+  tags: configure
+
+- name: Setup Vault service
+  include_tasks: service.yml
+  tags: service
+
+- name: Configure firewall
+  include_tasks: firewall.yml
+  tags: firewall
+  when: ansible_os_family in ['RedHat', 'Debian']
+
+- name: Initialize Vault
+  include_tasks: initialize.yml
+  tags: initialize
+  when: vault_initialize | bool
+
+# Made with Bob

@@ -1,0 +1,29 @@
+---
+# Setup Vault systemd service
+
+- name: Create Vault systemd service file
+  template:
+    src: vault.service.j2
+    dest: /etc/systemd/system/vault.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify: restart vault
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+
+- name: Enable and start Vault service
+  systemd:
+    name: vault
+    enabled: yes
+    state: started
+
+- name: Wait for Vault to be ready
+  wait_for:
+    port: "{{ vault_port }}"
+    delay: 5
+    timeout: 60
+
+# Made with Bob

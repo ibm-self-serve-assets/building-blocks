@@ -1,0 +1,10 @@
+---
+# RedHat/CentOS specific variables
+
+vault_prerequisites:
+  - curl
+  - unzip
+  - jq
+  - ca-certificates
+
+# Made with Bob

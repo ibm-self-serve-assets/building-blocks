@@ -1,0 +1,32 @@
+---
+# Main playbook for Vault deployment
+
+- name: Deploy HashiCorp Vault
+  hosts: vault_servers
+  become: yes
+  gather_facts: yes
+
+  roles:
+    - vault
+
+  post_tasks:
+    - name: Display Vault status
+      debug:
+        msg: |
+          Vault has been successfully deployed!
+          
+          Access Vault at: http://{{ ansible_default_ipv4.address }}:{{ vault_port }}
+          
+          IMPORTANT SECURITY NOTES:
+          1. Unseal keys and root token are stored in {{ vault_config_dir }}/vault-init.json
+          2. Backup this file securely and remove it from the server
+          3. Store unseal keys in separate secure locations
+          4. Never commit vault-init.json to version control
+          5. Enable TLS in production by setting vault_tls_disable: false
+          
+          Next steps:
+          1. Export VAULT_ADDR: export VAULT_ADDR=http://{{ ansible_default_ipv4.address }}:{{ vault_port }}
+          2. Export VAULT_TOKEN: export VAULT_TOKEN=<root_token_from_init_file>
+          3. Verify: vault status
+
+# Made with Bob

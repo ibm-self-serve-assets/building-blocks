@@ -1,0 +1,50 @@
+---
+# Vault installation defaults
+
+# Vault version to install
+vault_version: "1.15.4"
+
+# Vault binary download URL
+vault_download_url: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+
+# Installation paths
+vault_bin_path: "/usr/local/bin/vault"
+vault_config_dir: "/etc/vault.d"
+vault_data_dir: "/opt/vault/data"
+vault_log_dir: "/var/log/vault"
+
+# Vault service user
+vault_user: "vault"
+vault_group: "vault"
+
+# Vault configuration
+vault_address: "0.0.0.0"
+vault_port: 8200
+vault_cluster_port: 8201
+vault_api_addr: "http://{{ ansible_default_ipv4.address }}:{{ vault_port }}"
+vault_cluster_addr: "http://{{ ansible_default_ipv4.address }}:{{ vault_cluster_port }}"
+
+# Storage backend (file, consul, raft)
+vault_storage_backend: "file"
+vault_storage_path: "{{ vault_data_dir }}"
+
+# TLS configuration
+vault_tls_disable: true
+vault_tls_cert_file: ""
+vault_tls_key_file: ""
+
+# UI configuration
+vault_ui_enabled: true
+
+# Log level (trace, debug, info, warn, err)
+vault_log_level: "info"
+
+# Auto-unseal configuration (optional)
+vault_auto_unseal: false
+
+# Initialize Vault after installation
+vault_initialize: true
+vault_unseal_keys_shares: 5
+vault_unseal_keys_threshold: 3
+
+# Made with Bob

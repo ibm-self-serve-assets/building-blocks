@@ -1,0 +1,36 @@
+---
+# Configure firewall for Vault
+
+- name: Configure firewalld (RedHat/CentOS)
+  block:
+    - name: Open Vault API port
+      firewalld:
+        port: "{{ vault_port }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+
+    - name: Open Vault cluster port
+      firewalld:
+        port: "{{ vault_cluster_port }}/tcp"
+        permanent: yes
+        state: enabled
+        immediate: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: Configure UFW (Debian/Ubuntu)
+  block:
+    - name: Allow Vault API port
+      ufw:
+        rule: allow
+        port: "{{ vault_port }}"
+        proto: tcp
+
+    - name: Allow Vault cluster port
+      ufw:
+        rule: allow
+        port: "{{ vault_cluster_port }}"
+        proto: tcp
+  when: ansible_os_family == 'Debian'
+
+# Made with Bob

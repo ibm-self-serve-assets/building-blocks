@@ -1,0 +1,10 @@
+---
+# Handlers for Vault role
+
+- name: restart vault
+  systemd:
+    name: vault
+    state: restarted
+    daemon_reload: yes
+
+# Made with Bob
