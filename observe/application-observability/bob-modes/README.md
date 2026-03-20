@@ -1,265 +1,392 @@
-# 🤖 Bob Modes for Application Observability
+# 🔍 Application Observability with IBM Instana
+
+---
+
+## 📑 Table of Contents
+
+- [Overview](#overview)
+- [What's Included](#whats-included)
+- [Key Components](#key-components)
+- [Getting Started](#getting-started)
+- [Use Cases](#use-cases)
+- [Architecture](#architecture)
+- [Best Practices](#best-practices)
+- [Related Resources](#related-resources)
 
 ---
 
 ## 🔗 Navigation
 
-**Parent:**
-- [← Back to Application Observability](../README.md)
+**Observe Building Blocks:**
+- [← Back to Observe](../README.md)
+- [Network Performance →](../network-performance/README.md)
 
 **Assets:**
-- [Observability Dashboard](../assets/application-observability/README.md)
-- [Instana MCP Server](../assets/instana-mcp/)
+- [Observability Dashboard →](assets/application-observability/README.md)
+- [Instana MCP Server →](assets/instana-mcp/)
+- [Bob Modes →](bob-modes/README.md)
 
-**Other Building Blocks:**
-- [Build & Deploy](../../../build-and-deploy/authentication-mgmt/README.md)
-- [Optimize](../../../optimize/finops/README.md)
+**Other Categories:**
+- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
+- [Optimize](../../optimize/finops/README.md)
 
 ---
 
 ## Overview
 
-This directory contains custom IBM Bob mode configurations designed to extend IBM Bob's capabilities with domain-specific intelligence and workflow orchestration.
+This building block provides a complete application observability solution using **IBM Instana**. It includes a production-ready Python Dash dashboard for monitoring application health, an MCP server for AI-powered observability automation, and custom Bob modes for enhanced development workflows.
 
-Bob modes define structured prompts, behavioral constraints, and domain
-context that enable IBM Bob to operate with specialized expertise across
-observability, security, DevSecOps, infrastructure automation, and
-secret management domains.
+### What You Get
 
-------------------------------------------------------------------------
+✅ **Real-time Monitoring Dashboard** - Python Dash application with interactive visualizations  
+✅ **IBM Instana Integration** - Full REST API client with comprehensive metrics  
+✅ **MCP Server** - Model Context Protocol server for AI-powered observability  
+✅ **Custom Bob Modes** - Specialized modes for observability tasks  
+✅ **Production Ready** - Complete with setup scripts, logging, and error handling
 
-## Overview
+---
 
-Custom Bob modes allow you to:
+## What's Included
 
--   Inject domain-specific knowledge into Bob interactions.
--   Standardize workflows across teams.
--   Automate repetitive engineering tasks,
--   Integrate Bob with external systems (e.g., Vault, Ansible, Instana).
--   Enable consistent architectural and operational guidance.
+### 1. Instana Observability Dashboard
 
-These modes are particularly useful in enterprise environments where
-governance, repeatability, and domain accuracy are critical.
+A comprehensive Python Dash application for monitoring applications through IBM Instana.
 
-------------------------------------------------------------------------
+**Location:** [`assets/application-observability/`](assets/application-observability/README.md)
 
-## Available Modes
+**Features:**
+- 📊 Real-time service health monitoring
+- 📈 Interactive visualizations (Plotly charts)
+- 🎯 Composite health scoring algorithm
+- 📋 Detailed service metrics tables
+- 🔄 Auto-refresh capabilities
+- 🎨 Modern, responsive UI with Bootstrap
 
-### Application Observability Mode
+**Tech Stack:**
+- Python 3.8+ with Dash framework
+- Dash Bootstrap Components
+- Plotly for visualizations
+- pandas for data processing
+- IBM Instana REST API integration
 
-**File:** `application-observability.yaml`.
-**Location:** `Bob Modes/Base Modes/application-observability.yaml`
-
-This mode enhances IBM Bob with observability-specific capabilities,
-including:
-
--   Full-stack application monitoring guidance.
--   Integration with IBM Instana.
--   Dashboard generation patterns.
--   Performance analysis workflows.
--   Service dependency mapping.
-
-Use this mode when working on observability dashboards, monitoring
-strategy, or resilience engineering initiatives.
-
-------------------------------------------------------------------------
-
-## Mode Structure
-
-Each mode YAML file typically includes:
-
--   Mode metadata (name, description, version).
--   Behavioral instructions.
--   Domain context.
--   Response formatting rules.
--   Integration hooks.
--   Constraints and guardrails.
-
-Custom modes can be extended or modified to include:
-
--   DevSecOps workflows.
--   Vault deployment automation.
--   Secret scanning and remediation logic.
--   Infrastructure-as-Code orchestration.
--   Architecture generation patterns.
-
-------------------------------------------------------------------------
-
-## Installing Bob Modes and MCP Server
-
-This section provides step-by-step instructions for installing both the custom Bob mode and the MCP server configuration.
-
-------------------------------------------------------------------------
-
-## Part 1: Installing the Custom Bob Mode
-
-The custom Bob mode ([`application-observability.yaml`](base-modes/application-observability.yaml:1)) defines the behavior, expertise, and capabilities of IBM Bob when working with application observability tasks.
-
-For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
-
-### Method 1: Copy to Bob's Global Modes Directory (Recommended)
-
-#### Windows
-
-``` powershell
-Copy-Item base-modes/application-observability.yaml "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
+**Quick Start:**
+```bash
+cd assets/application-observability
+./scripts/setup.sh  # Unix/macOS/Linux
+# or
+scripts\setup.bat   # Windows
 ```
 
-#### Linux / macOS
+[📖 Full Documentation](assets/application-observability/README.md) | [⚡ Quick Start](assets/application-observability/QUICKSTART.md) | [📊 Project Summary](assets/application-observability/PROJECT_SUMMARY.md)
 
-``` bash
-cp base-modes/application-observability.yaml ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+---
+
+### 2. Instana MCP Server
+
+Model Context Protocol server for integrating Instana observability with AI assistants like IBM Bob.
+
+**Location:** [`assets/instana-mcp/`](assets/instana-mcp/)
+
+**Capabilities:**
+- 🤖 AI-powered incident analysis
+- 📡 Real-time event streaming
+- 🔍 Automated root cause analysis
+- 📊 Kubernetes event monitoring
+- ⚠️ Agent monitoring and alerts
+
+**Deployment Options:**
+- **Code Engine:** [`deploy-ce/`](assets/instana-mcp/deploy-ce/) - IBM Cloud Code Engine deployment
+- **Container:** [`mcp-server/`](assets/instana-mcp/mcp-server/) - Docker containerized server
+
+**MCP Tools Available:**
+- `get_event` - Retrieve specific events by ID
+- `get_kubernetes_info_events` - K8s events with detailed analysis
+- `get_agent_monitoring_events` - Agent monitoring insights
+- `get_issues` - Issue event tracking
+- `get_incidents` - Critical incident management
+- `get_changes` - Change event monitoring
+- `get_events_by_ids` - Batch event retrieval
+
+---
+
+### 3. Custom Bob Modes
+
+Specialized IBM Bob modes for application observability workflows.
+
+**Location:** [`bob-modes/`](bob-modes/README.md)
+
+**Includes:**
+- **Application Observability Mode** ([`application-observability.yaml`](bob-modes/base-modes/application-observability.yaml))
+  - Domain-specific observability expertise
+  - Instana integration patterns
+  - Dashboard generation guidance
+  - Performance analysis workflows
+  - Service dependency mapping
+
+**Installation:**
+```bash
+# Copy to Bob's global modes directory
+cp bob-modes/base-modes/application-observability.yaml \
+   ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
 ```
 
-After copying, restart IBM Bob for the new mode to become available.
+[📖 Bob Modes Documentation](bob-modes/README.md)
 
-------------------------------------------------------------------------
+---
 
-### Method 2: Reference Modes from Current Repository
+## Key Components
 
-If you prefer not to copy files, you can configure IBM Bob to reference
-this directory directly.
+### Dashboard Application
 
-1.  Open IBM Bob configuration settings
-2.  Add the local directory path under custom modes
-3.  Restart IBM Bob
+**Service Health Monitoring:**
+- Real-time service call counts
+- Error rate tracking with trends
+- Latency monitoring (response times)
+- Composite health scores (0-100)
 
-This approach is useful for development and version-controlled mode
-updates.
+**Interactive Visualizations:**
+- Summary cards with key metrics
+- Service health bar charts
+- Error rate analysis charts
+- Latency distribution graphs
+- Detailed service metrics tables
 
-------------------------------------------------------------------------
+**Health Score Algorithm:**
+- 40% Error rate (lower is better)
+- 30% Latency (lower is better)
+- 30% Call volume (higher indicates activity)
 
-## Part 2: Installing the MCP Server Configuration
+### MCP Server Integration
 
-The MCP server configuration ([`application-observability.json`](base-modes/application-observability.json:1)) enables IBM Bob to connect to the Application Observability MCP server and access observability tools and data.
+**Event Analysis:**
+- Kubernetes info events with detailed insights
+- Agent monitoring events with frequency analysis
+- Issue and incident tracking
+- Change event monitoring
+- Automated problem detection
 
-### Step 1: Locate Your MCP Settings File
+**AI-Powered Features:**
+- Natural language time ranges ("last 24 hours")
+- Automated event summarization
+- Top problems identification
+- Actionable fix suggestions
 
-IBM Bob stores MCP server configurations in a JSON file. The location varies by operating system:
+---
 
-#### Windows
+## Getting Started
+
+### Prerequisites
+
+- Python 3.8 or higher
+- IBM Instana instance with API access
+- IBM Instana API token with read permissions
+- Network connectivity to Instana API endpoints
+
+### Quick Setup
+
+1. **Clone or navigate to the project:**
+   ```bash
+   cd observe/application-observability
+   ```
+
+2. **Choose your component:**
+
+   **For Dashboard:**
+   ```bash
+   cd assets/application-observability
+   ./scripts/setup.sh
+   # Edit .env with your Instana credentials
+   ./scripts/run.sh
+   # Access at http://localhost:8050
+   ```
+
+   **For MCP Server:**
+   ```bash
+   cd assets/instana-mcp/mcp-server
+   # Configure environment variables
+   docker build -t instana-mcp .
+   docker run -p 8080:8080 instana-mcp
+   ```
+
+   **For Bob Modes:**
+   ```bash
+   cd bob-modes
+   # Follow installation instructions in README.md
+   ```
+
+---
+
+## Use Cases
+
+### 1. Real-Time Application Monitoring
+
+Monitor your applications deployed on OpenShift or Kubernetes:
+- Track service health across microservices
+- Identify performance bottlenecks
+- Monitor error rates and latency
+- Visualize service dependencies
+
+**Example:** Monitor the [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) deployed via [Ansible](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+
+### 2. AI-Powered Incident Response
+
+Use the MCP server with IBM Bob for intelligent incident management:
+- Ask Bob: "What incidents occurred in the last 24 hours?"
+- Get automated root cause analysis
+- Receive actionable remediation suggestions
+- Track incident resolution progress
+
+### 3. Development Workflow Enhancement
+
+Use custom Bob modes for observability-focused development:
+- Generate monitoring dashboards
+- Implement observability patterns
+- Design service instrumentation
+- Create alerting strategies
+
+### 4. Performance Optimization
+
+Identify and resolve performance issues:
+- Analyze latency trends
+- Detect anomalies in service behavior
+- Optimize resource utilization
+- Improve user experience
+
+---
+
+## Architecture
+
+### High-Level Architecture
+
 ```
-%APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\cline_mcp_settings.json
+┌─────────────────────────────────────────────────────────┐
+│                    User / Developer                      │
+│                                                          │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
+│  │   Browser    │  │   IBM Bob    │  │   CLI Tools  │ │
+│  │  Dashboard   │  │  (with MCP)  │  │              │ │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘ │
+└─────────┼──────────────────┼──────────────────┼─────────┘
+          │                  │                  │
+          ▼                  ▼                  ▼
+┌─────────────────────────────────────────────────────────┐
+│              Application Observability Layer             │
+│                                                          │
+│  ┌──────────────────┐         ┌──────────────────┐     │
+│  │  Dash Dashboard  │         │   MCP Server     │     │
+│  │  - Visualizations│         │  - AI Analysis   │     │
+│  │  - Metrics       │◄────────┤  - Event Stream  │     │
+│  │  - Health Scores │         │  - Automation    │     │
+│  └────────┬─────────┘         └────────┬─────────┘     │
+└───────────┼──────────────────────────────┼──────────────┘
+            │                              │
+            └──────────────┬───────────────┘
+                           ▼
+                  ┌─────────────────┐
+                  │  IBM Instana    │
+                  │  REST API       │
+                  │  - Applications │
+                  │  - Services     │
+                  │  - Metrics      │
+                  │  - Events       │
+                  │  - Traces       │
+                  └────────┬────────┘
+                           │
+                           ▼
+                  ┌─────────────────┐
+                  │  Monitored Apps │
+                  │  - Microservices│
+                  │  - Containers   │
+                  │  - Infrastructure│
+                  └─────────────────┘
 ```
 
-#### Linux
-```
-~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json
-```
+### Component Interaction
 
-#### macOS
-```
-~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json
-```
+1. **Dashboard** queries Instana API for metrics and displays visualizations
+2. **MCP Server** provides AI-powered analysis and automation capabilities
+3. **Bob Modes** enhance development workflows with observability expertise
+4. **Instana** collects telemetry from monitored applications
 
-### Step 2: Add the MCP Server Configuration
+---
 
-1. Open the `cline_mcp_settings.json` file in a text editor
-2. If the file is empty or doesn't exist, create it with the following structure:
+## Best Practices
 
-```json
-{
-  "mcpServers": {
-    "Application Observability": {
-      "command": "uvx",
-      "args": [
-        "mcp-proxy",
-        "--transport",
-        "streamablehttp",
-        "https://mcp-instana.268gjj8oawf7.us-south.codeengine.appdomain.cloud/mcp"
-      ],
-      "description": "Base MCP Server for Application Observability Building Block",
-      "disabled": false,
-      "alwaysAllow": [
-        "manage_instana_resources",
-        "manage_custom_dashboards",
-        "analyze_infrastructure_elicitation",
-        "get_actions",
-        "get_action_details",
-        "get_action_types",
-        "get_action_tags",
-        "get_action_matches",
-        "submit_automation_action",
-        "get_action_instance_details",
-        "list_action_instances",
-        "delete_action_instance",
-        "get_event",
-        "get_kubernetes_info_events",
-        "get_agent_monitoring_events",
-        "get_issues",
-        "get_incidents",
-        "get_changes",
-        "get_events_by_ids",
-        "get_website_page_load",
-        "get_website_catalog_metrics",
-        "get_website_beacon_metrics_v2",
-        "get_website_catalog_tags",
-        "get_website_tag_catalog",
-        "get_website_beacon_groups",
-        "get_website_beacons",
-        "get_websites",
-        "create_website",
-        "delete_website",
-        "rename_website",
-        "get_website_geo_location_configuration",
-        "update_website_geo_location_configuration",
-        "get_website_ip_masking_configuration",
-        "update_website_ip_masking_configuration",
-        "get_website_geo_mapping_rules",
-        "set_website_geo_mapping_rules",
-        "upload_source_map_file",
-        "clear_source_map_upload_configuration"
-      ]
-    }
-  }
-}
-```
+### 1. Dashboard Configuration
 
-3. If the file already contains other MCP servers, merge the "Application Observability" entry into the existing `mcpServers` object:
+- **Target Specific Applications:** Configure `INSTANA_APPLICATION_NAME` for focused monitoring
+- **Adjust Refresh Intervals:** Balance real-time updates with API rate limits
+- **Customize Health Thresholds:** Tune health score weights for your use case
+- **Use Environment Variables:** Never hardcode credentials
 
-```json
-{
-  "mcpServers": {
-    "existing-server": {
-      ...
-    },
-    "Application Observability": {
-      "command": "uvx",
-      ...
-    }
-  }
-}
-```
+### 2. MCP Server Usage
 
-4. Save the file
+- **Natural Language Queries:** Use time ranges like "last 24 hours" or "last week"
+- **Batch Operations:** Retrieve multiple events efficiently with `get_events_by_ids`
+- **Event Filtering:** Use specific event types (incidents, issues, changes) for targeted analysis
+- **Rate Limiting:** Implement appropriate delays between API calls
 
-### Step 3: Verify Installation
+### 3. Monitoring Strategy
 
-1. Restart IBM Bob (VS Code)
-2. Open IBM Bob chat interface
-3. Switch to the "🔍 Application Observability" mode from the mode selector
-4. The MCP server should automatically connect
-5. You can verify the connection by asking Bob to use one of the MCP tools (e.g., "Get incidents from the last 24 hours")
+- **Baseline Metrics:** Establish normal behavior patterns before alerting
+- **Composite Scoring:** Use health scores for quick assessment, drill down for details
+- **Trend Analysis:** Monitor changes over time, not just current state
+- **Service Dependencies:** Understand relationships between services
+
+### 4. Integration with CI/CD
+
+- **Pre-deployment Checks:** Verify service health before deployments
+- **Post-deployment Monitoring:** Track metrics after releases
+- **Automated Rollbacks:** Use health scores to trigger rollback decisions
+- **Performance Regression:** Compare metrics across deployments
 
 ---
 
 ## 📚 Related Resources
 
 ### Observability Assets
-- [Application Observability Overview](../README.md)
-- [Instana Dashboard](../assets/application-observability/README.md)
-  - [Quick Start](../assets/application-observability/QUICKSTART.md)
-  - [Project Summary](../assets/application-observability/PROJECT_SUMMARY.md)
+- [Instana Observability Dashboard](assets/application-observability/README.md) - Python Dash application
+  - [Quick Start Guide](assets/application-observability/QUICKSTART.md)
+  - [Project Summary](assets/application-observability/PROJECT_SUMMARY.md)
+- [Instana MCP Server](assets/instana-mcp/) - MCP integration
+- [Bob Modes](bob-modes/README.md) - Custom Bob modes for observability
 
 ### Applications to Monitor
-- [Retail Application](../../../build-and-deploy/Iaas/assets/retailapp/README.md)
-- [Ansible Deployment](../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample app to monitor
+  - [Deployment Guide](../../build-and-deploy/Iaas/assets/retailapp/deploy-steps.md)
+  - [JMeter Load Testing](../../build-and-deploy/Iaas/assets/retailapp/jmeter/README.md)
+- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
 
-### Related Building Blocks
-- [Automated Resilience](../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
-- [Network Performance](../../network-performance/README.md)
-- [FinOps](../../../optimize/finops/README.md)
+### Build & Deploy Building Blocks
+- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md) - IBM Security Verify
+- [Code Assistant](../../build-and-deploy/code-assistant/README.md) - AI-powered development
+- [IaaS](../../build-and-deploy/Iaas/README.md) - Infrastructure as a Service
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration platform
+
+### Optimize Building Blocks
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+- [Network Performance](../network-performance/README.md) - Network monitoring with IBM SevOne
 
 ---
 
-**[⬆ Back to Top](#-bob-modes-for-application-observability)**
+## Support & Contribution
+
+### Getting Help
+
+- **Dashboard Issues:** Check [README](assets/application-observability/README.md) and logs in `assets/application-observability/logs/`
+- **MCP Server Issues:** Review MCP server logs and configuration
+- **Bob Modes:** See [Bob Modes documentation](bob-modes/README.md)
+- **Instana API:** Consult IBM Instana documentation
+
+### Contributing
+
+Contributions are welcome! Areas for enhancement:
+- Additional visualizations in the dashboard
+- New MCP tools for Instana integration
+- Enhanced Bob modes with more patterns
+- Integration examples with other IBM products
+
+---
+
+**[⬆ Back to Top](#-application-observability-with-ibm-instana)**
