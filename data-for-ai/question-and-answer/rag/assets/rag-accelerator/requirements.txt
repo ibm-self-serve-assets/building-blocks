@@ -1,7 +1,7 @@
 # Core Web Framework
 fastapi==0.115.0
 uvicorn[standard]==0.32.0
-starlette==0.50.0
+starlette>=0.37.2
 pydantic==2.12.5
 pydantic-settings==2.12.0
 pydantic_core==2.41.5
@@ -65,7 +65,7 @@ certifi==2025.11.12
 # Database & Storage
 SQLAlchemy==2.0.44
 elasticsearch==8.18.1
-
+tiktoken==0.12.0
 # Optional: Development & Testing (comment out for production)
 # pytest==8.3.0
 # pytest-asyncio==0.24.0
