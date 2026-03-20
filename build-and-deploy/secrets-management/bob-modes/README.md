@@ -1,6 +1,6 @@
 # 🚀 Step 1: Import Application Resilience Custom Bob Mode (via Bob UI)
 
-Before using IBM Bob with IBM Concert, you need to import the **Application
+Before using IBM Bob with Instana, you need to import the **Application
 Resilience custom mode** into your project.
 
 ------------------------------------------------------------------------

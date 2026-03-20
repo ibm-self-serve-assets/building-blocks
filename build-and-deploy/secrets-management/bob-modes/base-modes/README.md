@@ -1,18 +1,17 @@
-# 🚀 Step 1: Import Application Resilience Custom Bob Mode (via Bob UI)
+# 🚀 Step 1: Import Secrets Management Custom Bob Mode (via Bob UI)
 
-Before using IBM Bob with IBM Concert, you need to import the **Application
-Resilience custom mode** into your project.
+Before using IBM Bob with Hashicorp Vault, you need to import the **Secrets Management custom mode** into your project.
 
 ------------------------------------------------------------------------
 
 ## 🆕 For New Projects
 
 When working with a **new project**, there are no existing custom modes.
-You can directly add the Application Resilience mode.
+You can directly add the Secrets Management mode.
 
 ### 📁 Add Mode Configuration
 
-1. Download and extract `application-resilience.zip` file in base-modes folder.
+1. Download and extract `secrets-management.zip.zip` file in base-modes folder.
 3. Open your project in **Bob UI**
 4. Navigate to the project workspace (file explorer)
 3. Copy the content of `.bob` folder extracted as part Step 1:
@@ -23,7 +22,7 @@ You can directly add the Application Resilience mode.
     .bob/
     ├── custom_modes.yaml
     └── rules/
-        └── application-observability/
+        └── secrets-management.zip/
             └── [mode rules files]
 
 4.  Copy the provided:
@@ -37,7 +36,7 @@ You can directly add the Application Resilience mode.
 
 -   Refresh or reload the Bob UI (if required)
 -   Navigate to **Modes / Custom Modes section**
--   Select **Application Resilience**
+-   Select **Secrets Management**
 -   Start using it in your workflows
 
 ------------------------------------------------------------------------
@@ -58,9 +57,9 @@ carefully to avoid breaking existing setups.
 
 ### ✏️ Append New Mode Configuration
 
-1. Download and extract `application-resilience.zip` file. 
+1. Download and extract `secrets-management.zip.zip` file. 
 2. Open `.bob/custom_modes.yaml` in the Bob UI editor\
-3. Add the Application Resilience mode at the end of the file
+3. Add the Secrets Management mode at the end of the file
 
 #### Example:
 
@@ -73,9 +72,9 @@ carefully to avoid breaking existing setups.
       name: Existing Mode 2
       # ... existing configuration ...
 
-    # Add Application Resilience mode
-    - slug: application-observability
-      name: Application Resilience
+    # Add Secrets Management mode
+    - slug: secrets-management.zip
+      name: Secrets Management
       # ... new mode configuration ...
 
 ------------------------------------------------------------------------
@@ -88,7 +87,7 @@ carefully to avoid breaking existing setups.
 ```{=html}
 <!-- -->
 ```
-    application-observability/
+    secrets-management.zip/
 
 3.  Ensure the final structure looks like:
 
@@ -100,7 +99,7 @@ carefully to avoid breaking existing setups.
     └── rules/
         ├── existing-mode-1/
         ├── existing-mode-2/
-        └── application-observability/
+        └── secrets-management.zip/
 
 👉 Do **not modify or delete existing rule folders**
 
@@ -113,7 +112,7 @@ After completing the setup:
 -   Go to **Modes / Custom Modes**
 -   Confirm:
     -   Existing modes are still available
-    -   **Application Resilience** mode appears
+    -   **Secrets Management** mode appears
 -   Open the mode and ensure no configuration errors are shown
 
 ------------------------------------------------------------------------
@@ -131,6 +130,6 @@ After completing the setup:
 
 After completing these steps:
 
--   Application Resilience mode will be available in Bob UI.
+-   Secrets Management mode will be available in Bob UI.
 -   Existing modes will continue to function without disruption.
--   You can start using the mode for **Application Resilience**.
+-   You can start using the mode for **Secrets Management**.
