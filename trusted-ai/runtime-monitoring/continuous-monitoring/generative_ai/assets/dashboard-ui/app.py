@@ -196,8 +196,8 @@ def render_evaluation_dashboard():
         st.altair_chart(drift_line + threshold_lines, use_container_width=True)
 
         # --- Factsheet link ---
-        project_pta_id = "400f2f5c-4fa3-480c-9334-67e30471f468"
-        project_id = "2ee97ecb-f652-41a9-b360-dd2a7d594a8b"
+        project_pta_id = os.environ.get("WXG_PROJECT_PTA_ID", "<your-project-pta-id>")
+        project_id = os.environ.get("WXG_PROJECT_ID", "<your-project-id>")
         factsheet_url = f"https://dataplatform.cloud.ibm.com/wx/prompt-details/{project_pta_id}/factsheet?context=wx&project_id={project_id}"
         st.markdown(f"[View Factsheet]({factsheet_url})", unsafe_allow_html=True)
 # --- Utility Functions ---
