@@ -1,4 +1,4 @@
-# 💻 IBM watsonx Code Assistant Building Blocks
+# 💻 IBM Secrets Management Building Blocks
 
 ---
 
@@ -30,10 +30,10 @@
 
 ## Overview
 
-Best Practices for IBM watsonx Code Assistant Building Blocks Development
+Best Practices for IBM Secrets Management Building Blocks Development
 
 ## Objective
-Develop a **demo building block for IBM watsonx Code Assistant** that demonstrates:
+Develop a **demo building block for IBM Secrets Management** that demonstrates:
 - **Agentic AI** using **watsonx Orchestrate** for automated code suggestions and workflow execution.
 - **Governance** using **watsonx.governance** to ensure trusted and auditable AI-driven code assistance.
 - **Data & AI** using **watsonx.data** and **watsonx.ai** for secure, scalable code analysis, contextual understanding, and insights.
@@ -80,7 +80,7 @@ The demo will highlight the **integration of IBM Stack components** and the diff
 ## Enterprise Architecture Overview
 
 ### Logical Components
-- **watsonx Code Assistant**: Central AI-driven coding assistant.
+- **Secrets Management**: Central AI-driven coding assistant.
 - **watsonx Orchestrate**: Automates code workflows and approvals.
 - **watsonx.governance**: Enforces compliance, audit trails, and explainability.
 - **watsonx.data**: Centralized data for code samples, training datasets, and model inputs.
