@@ -15,14 +15,8 @@ High-performance vector database optimized for billion-scale vector search with 
 
 ### Bob Modes
 
-- **[Base Modes](./bob-modes/base-modes/)**: AI assistant configuration for Milvus development
-  - Milvus setup and configuration
-  - Collection schema design
-  - Index optimization
-  - Query performance tuning
+Coming soon: AI assistant configuration for Milvus development will be available in future releases.
 
 ## Quick Start
 
 1. **For document ingestion**: Navigate to [`assets/data-ingestion-asset`](./assets/data-ingestion-asset/) and follow the README
-
-2. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes`](./bob-modes/base-modes/) with IBM Bob

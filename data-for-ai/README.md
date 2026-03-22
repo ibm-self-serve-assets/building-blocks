@@ -63,4 +63,4 @@ We welcome contributions! Please fork this repo, create a feature branch, and op
 
 ## License
 
-This project is licensed under the [Apache 2.0 License](LICENSE).
+This project is licensed under the Apache 2.0 License.

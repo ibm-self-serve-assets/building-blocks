@@ -14,14 +14,8 @@ Enable seamless querying across databases, warehouses, and cloud object stores w
 
 ### Bob Modes
 
-- **[Base Modes](./bob-modes/base-modes/)**: AI assistant configuration for zero-copy lakehouse development
-  - Expert guidance on lakehouse architecture
-  - Federated query optimization
-  - Data source integration
-  - Performance tuning
+Coming soon: AI assistant configuration for zero-copy lakehouse development will be available in future releases.
 
 ## Quick Start
 
 1. **For automated setup**: Navigate to [`assets/setup-lakehouse`](./assets/setup-lakehouse/) and follow the README
-
-2. **For AI assistance**: Use the Bob Mode configuration in [`bob-modes/base-modes`](./bob-modes/base-modes/) with IBM Bob

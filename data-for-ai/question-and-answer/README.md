@@ -15,8 +15,8 @@ Natural language interfaces to interact with data through RAG (Retrieval-Augment
 ### Text-to-SQL
 
 - **[Metadata Enrichment](./text-to-sql/assets/asset-1/metadata_enrichment_text2sql/)**: Enhance SQL generation with enriched metadata
-- **[Applications](./text-to-sql/applications/)**: FastAPI tools for Text-to-SQL services
-- **[Deployment Guides](./text-to-sql/applications/)**: OpenShift and Code Engine deployment instructions
+- **[Applications](./text-to-sql/assets/asset-1/applications/)**: FastAPI tools for Text-to-SQL services
+- **[Deployment Guides](./text-to-sql/assets/asset-1/applications/)**: OpenShift and Code Engine deployment instructions
 
 ## Quick Start
 
