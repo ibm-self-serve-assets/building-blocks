@@ -6,5 +6,10 @@ jmeter_install_dir: "/opt/jmeter"
 openshift_cli_version: "4.18.28"
 trivy_version: "0.69.3"
 vault_version: "1.18.3"
+vault_config_dir: "/etc/vault.d"
+vault_data_dir: "/opt/vault/data"
+vault_log_dir: "/var/log/vault"
+vault_address: "http://127.0.0.1:8200"
+vault_unseal_keys_file: "/tmp/vault-keys.json"
 
 # Made with Bob

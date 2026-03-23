@@ -1,0 +1,9 @@
+---
+# Handlers for system_dependencies role
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: yes
+  become: true
+
+# Made with Bob

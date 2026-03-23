@@ -259,6 +259,244 @@
   debug:
     msg: "{{ vault_version_output.stdout }}"
 
+# Vault Configuration and Setup
+- name: Create Vault configuration directory
+  file:
+    path: "{{ vault_config_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Create Vault data directory
+  file:
+    path: "{{ vault_data_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Create Vault log directory
+  file:
+    path: "{{ vault_log_dir }}"
+    state: directory
+    mode: '0755'
+  become: true
+
+- name: Create Vault configuration file
+  copy:
+    dest: "{{ vault_config_dir }}/vault.hcl"
+    content: |
+      storage "file" {
+        path = "{{ vault_data_dir }}"
+      }
+
+      listener "tcp" {
+        address     = "127.0.0.1:8200"
+        tls_disable = 1
+      }
+
+      api_addr = "{{ vault_address }}"
+      cluster_addr = "https://127.0.0.1:8201"
+      ui = true
+      log_level = "Info"
+    mode: '0644'
+  become: true
+
+- name: Create Vault systemd service file
+  copy:
+    dest: /etc/systemd/system/vault.service
+    content: |
+      [Unit]
+      Description=HashiCorp Vault
+      Documentation=https://www.vaultproject.io/docs/
+      Requires=network-online.target
+      After=network-online.target
+      ConditionFileNotEmpty={{ vault_config_dir }}/vault.hcl
+
+      [Service]
+      Type=notify
+      User=root
+      Group=root
+      ProtectSystem=full
+      ProtectHome=read-only
+      PrivateTmp=yes
+      PrivateDevices=yes
+      SecureBits=keep-caps
+      AmbientCapabilities=CAP_IPC_LOCK
+      CapabilityBoundingSet=CAP_SYSLOG CAP_IPC_LOCK
+      NoNewPrivileges=yes
+      ExecStart=/usr/local/bin/vault server -config={{ vault_config_dir }}/vault.hcl
+      ExecReload=/bin/kill --signal HUP $MAINPID
+      KillMode=process
+      KillSignal=SIGINT
+      Restart=on-failure
+      RestartSec=5
+      TimeoutStopSec=30
+      LimitNOFILE=65536
+      LimitMEMLOCK=infinity
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: '0644'
+  become: true
+  notify: Reload systemd
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+  become: true
+
+- name: Enable Vault service
+  systemd:
+    name: vault
+    enabled: yes
+  become: true
+
+- name: Start Vault service
+  systemd:
+    name: vault
+    state: started
+  become: true
+
+- name: Wait for Vault to be ready
+  wait_for:
+    host: 127.0.0.1
+    port: 8200
+    delay: 5
+    timeout: 60
+
+- name: Check if Vault is already initialized
+  uri:
+    url: "{{ vault_address }}/v1/sys/init"
+    method: GET
+    return_content: yes
+  register: vault_init_status
+  failed_when: false
+
+- name: Initialize Vault
+  uri:
+    url: "{{ vault_address }}/v1/sys/init"
+    method: POST
+    body_format: json
+    body:
+      secret_shares: 5
+      secret_threshold: 3
+    return_content: yes
+  register: vault_init_result
+  when: not vault_init_status.json.initialized
+
+- name: Save Vault unseal keys and root token
+  copy:
+    content: "{{ vault_init_result.json | to_nice_json }}"
+    dest: "{{ vault_unseal_keys_file }}"
+    mode: '0644'
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+  become: true
+  when: vault_init_result.json is defined
+
+- name: Display Vault initialization info
+  debug:
+    msg:
+      - "Vault has been initialized!"
+      - "Root Token: {{ vault_init_result.json.root_token }}"
+      - "Unseal keys saved to: {{ vault_unseal_keys_file }}"
+      - "IMPORTANT: Store these keys securely!"
+  when: vault_init_result.json is defined
+
+- name: Check if vault keys file exists
+  stat:
+    path: "{{ vault_unseal_keys_file }}"
+  register: vault_keys_file_stat
+
+- name: Read Vault unseal keys from file
+  slurp:
+    src: "{{ vault_unseal_keys_file }}"
+  register: vault_keys_content
+  when: vault_keys_file_stat.stat.exists
+
+- name: Parse Vault keys
+  set_fact:
+    vault_keys: "{{ vault_keys_content.content | b64decode | from_json }}"
+  when:
+    - vault_keys_content is defined
+    - vault_keys_content.content is defined
+
+- name: Display message if Vault was already initialized
+  debug:
+    msg:
+      - "Vault was already initialized."
+      - "If you need to unseal Vault, please provide the unseal keys manually."
+      - "Unseal keys file not found at: {{ vault_unseal_keys_file }}"
+      - "You can unseal manually using: vault operator unseal <key>"
+  when:
+    - vault_init_status.json.initialized
+    - not vault_keys_file_stat.stat.exists
+
+- name: Check Vault seal status
+  uri:
+    url: "{{ vault_address }}/v1/sys/seal-status"
+    method: GET
+    return_content: yes
+  register: vault_seal_status
+
+- name: Unseal Vault (key 1)
+  uri:
+    url: "{{ vault_address }}/v1/sys/unseal"
+    method: POST
+    body_format: json
+    body:
+      key: "{{ vault_keys.keys_base64[0] }}"
+    return_content: yes
+  register: unseal_result_1
+  when:
+    - vault_seal_status.json.sealed
+    - vault_keys is defined
+    - vault_keys.keys_base64 is defined
+
+- name: Unseal Vault (key 2)
+  uri:
+    url: "{{ vault_address }}/v1/sys/unseal"
+    method: POST
+    body_format: json
+    body:
+      key: "{{ vault_keys.keys_base64[1] }}"
+    return_content: yes
+  register: unseal_result_2
+  when:
+    - vault_seal_status.json.sealed
+    - vault_keys is defined
+    - vault_keys.keys_base64 is defined
+
+- name: Unseal Vault (key 3)
+  uri:
+    url: "{{ vault_address }}/v1/sys/unseal"
+    method: POST
+    body_format: json
+    body:
+      key: "{{ vault_keys.keys_base64[2] }}"
+    return_content: yes
+  register: unseal_result_3
+  when:
+    - vault_seal_status.json.sealed
+    - vault_keys is defined
+    - vault_keys.keys_base64 is defined
+
+- name: Verify Vault is unsealed
+  uri:
+    url: "{{ vault_address }}/v1/sys/seal-status"
+    method: GET
+    return_content: yes
+  register: final_seal_status
+
+- name: Display Vault status
+  debug:
+    msg:
+      - "Vault Status:"
+      - "  Sealed: {{ final_seal_status.json.sealed }}"
+      - "  Initialized: {{ final_seal_status.json.initialized }}"
+      - "  Cluster Name: {{ final_seal_status.json.cluster_name | default('N/A') }}"
+      - "  Version: {{ final_seal_status.json.version }}"
+
 - name: Display installation summary
   debug:
     msg:
