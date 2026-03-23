@@ -250,11 +250,173 @@
   debug:
     msg: "{{ routes_status.stdout_lines }}"
 
+- name: Check if RAG secrets manifest exists
+  stat:
+    path: "{{ app_source_dir }}/k8s/rag-secrets.yaml"
+  register: rag_secrets_check
+
+- name: Deploy RAG secrets
+  command: oc apply -f {{ app_source_dir }}/k8s/rag-secrets.yaml -n {{ namespace }}
+  register: rag_secrets_deploy
+  changed_when: "'created' in rag_secrets_deploy.stdout or 'configured' in rag_secrets_deploy.stdout"
+  when: rag_secrets_check.stat.exists
+
+- name: Display RAG secrets status
+  debug:
+    msg: "RAG secrets deployed: {{ rag_secrets_deploy.stdout }}"
+  when: rag_secrets_check.stat.exists
+
+- name: Check if RAG deployment manifest exists
+  stat:
+    path: "{{ app_source_dir }}/k8s/rag-deployment.yaml"
+  register: rag_retrieval_deployment_check
+
+- name: Deploy RAG Retrieval deployment
+  command: oc apply -f {{ app_source_dir }}/k8s/rag-deployment.yaml -n {{ namespace }}
+  register: rag_retrieval_deploy
+  changed_when: "'created' in rag_retrieval_deploy.stdout or 'configured' in rag_retrieval_deploy.stdout"
+  when: rag_retrieval_deployment_check.stat.exists
+
+- name: Display RAG Retrieval deployment status
+  debug:
+    msg: "RAG Retrieval deployment deployed: {{ rag_retrieval_deploy.stdout }}"
+  when: rag_retrieval_deployment_check.stat.exists
+
+- name: Check if RAG Accelerator deployment manifest exists
+  stat:
+    path: "{{ k8s_dir }}/rag-deployment.yaml"
+  register: rag_deployment_check
+
+- name: Deploy RAG Accelerator deployment
+  command: oc apply -f {{ k8s_dir }}/rag-deployment.yaml -n {{ namespace }}
+  register: rag_deploy
+  changed_when: "'created' in rag_deploy.stdout or 'configured' in rag_deploy.stdout"
+  when: rag_deployment_check.stat.exists
+
+- name: Display RAG Accelerator deployment status
+  debug:
+    msg: "RAG Accelerator deployment deployed: {{ rag_deploy.stdout }}"
+  when: rag_deployment_check.stat.exists
+
+- name: Check if RAG service manifest exists
+  stat:
+    path: "{{ k8s_dir }}/rag-service.yaml"
+  register: rag_service_check
+
+- name: Deploy RAG service
+  command: oc apply -f {{ k8s_dir }}/rag-service.yaml -n {{ namespace }}
+  register: rag_svc_deploy
+  changed_when: "'created' in rag_svc_deploy.stdout or 'configured' in rag_svc_deploy.stdout"
+  when: rag_service_check.stat.exists
+
+- name: Display RAG service status
+  debug:
+    msg: "RAG service deployed: {{ rag_svc_deploy.stdout }}"
+  when: rag_service_check.stat.exists
+
+- name: Check if RAG route manifest exists
+  stat:
+    path: "{{ k8s_dir }}/rag-route.yaml"
+  register: rag_route_check
+
+- name: Deploy RAG route
+  command: oc apply -f {{ k8s_dir }}/rag-route.yaml -n {{ namespace }}
+  register: rag_route_deploy
+  changed_when: "'created' in rag_route_deploy.stdout or 'configured' in rag_route_deploy.stdout"
+  when: rag_route_check.stat.exists
+
+- name: Display RAG route status
+  debug:
+    msg: "RAG route deployed: {{ rag_route_deploy.stdout }}"
+  when: rag_route_check.stat.exists
+
+- name: Wait for RAG Retrieval pods to be ready
+  command: >
+    oc wait --for=condition=ready pod
+    -l app=rag-retrieval-api
+    -n {{ namespace }}
+    --timeout=300s
+  register: rag_retrieval_ready
+  changed_when: false
+  retries: 2
+  delay: 10
+  until: rag_retrieval_ready.rc == 0
+  when: rag_retrieval_deployment_check.stat.exists
+  failed_when: false
+
+- name: Get RAG Retrieval pod status details
+  command: oc get pods -l app=rag-retrieval-api -n {{ namespace }} -o wide
+  register: rag_retrieval_pod_details
+  changed_when: false
+  when: rag_retrieval_deployment_check.stat.exists
+  failed_when: false
+
+- name: Display RAG Retrieval readiness status
+  debug:
+    msg:
+      - "RAG Retrieval pods status:"
+      - "{{ rag_retrieval_pod_details.stdout_lines }}"
+  when:
+    - rag_retrieval_deployment_check.stat.exists
+    - rag_retrieval_pod_details.stdout_lines is defined
+
+- name: Wait for RAG Accelerator pods to be ready
+  command: >
+    oc wait --for=condition=ready pod
+    -l app=rag
+    -n {{ namespace }}
+    --timeout=300s
+  register: rag_ready
+  changed_when: false
+  retries: 2
+  delay: 10
+  until: rag_ready.rc == 0
+  when: rag_deployment_check.stat.exists
+  failed_when: false
+
+- name: Get RAG Accelerator pod status details
+  command: oc get pods -l app=rag -n {{ namespace }} -o wide
+  register: rag_pod_details
+  changed_when: false
+  when: rag_deployment_check.stat.exists
+  failed_when: false
+
+- name: Display RAG Accelerator readiness status
+  debug:
+    msg:
+      - "RAG Accelerator pods status:"
+      - "{{ rag_pod_details.stdout_lines }}"
+  when:
+    - rag_deployment_check.stat.exists
+    - rag_pod_details.stdout_lines is defined
+
+- name: Get RAG route URL
+  command: oc get route rag -n {{ namespace }} -o jsonpath='{.spec.host}'
+  register: rag_route_url
+  changed_when: false
+  when: rag_route_check.stat.exists
+  failed_when: false
+
+- name: Set RAG route fact
+  set_fact:
+    rag_route: "https://{{ rag_route_url.stdout }}"
+  when:
+    - rag_route_check.stat.exists
+    - rag_route_url.stdout is defined
+    - rag_route_url.stdout | length > 0
+
+- name: Display RAG route
+  debug:
+    msg: "RAG route: {{ rag_route }}"
+  when: rag_route is defined
+
 - name: Set deployment facts
   set_fact:
     deployment_complete: true
     backend_url: "{{ backend_route }}"
     frontend_url: "{{ frontend_route }}"
+    rag_url: "{{ rag_route | default('Not deployed') }}"
+    rag_retrieval_url: "{{ rag_retrieval_route | default('Not deployed') }}"
 
 - name: Display deployment summary
   debug:
@@ -263,6 +425,8 @@
       - "Namespace: {{ namespace }}"
       - "Backend URL: {{ backend_url }}"
       - "Frontend URL: {{ frontend_url }}"
+      - "RAG Accelerator URL: {{ rag_url | default('Not deployed') }}"
+      - "RAG Retrieval URL: {{ rag_retrieval_url | default('Not deployed') }}"
       - "PostgreSQL: Running"
       - "All pods are ready"
 

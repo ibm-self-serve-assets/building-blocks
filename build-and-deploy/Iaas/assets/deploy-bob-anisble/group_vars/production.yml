@@ -18,6 +18,8 @@ docker_registry: "docker.io"
 app_repo_url: "https://github.com/SunilManika/retailapp.git"
 app_repo_branch: "main"
 app_source_dir: "~/retailapp"
+rag_source_dir: "{{ playbook_dir }}/../../../data-for-ai/question-and-answer/rag/assets/rag-accelerator"
+rag_retrieval_source_dir: "{{ app_source_dir }}/data-for-ai/rag-retrieval-fastapi-server"
 
 # Image Configuration
 backend_image_name: "retail-backend"
@@ -26,6 +28,10 @@ frontend_image_name: "retail-frontend"
 frontend_image_tag: "1.0.0"
 postgres_image_name: "retail-postgres"
 postgres_image_tag: "1.0.0"
+rag_image_name: "retail-rag"
+rag_image_tag: "1.0.0"
+rag_retrieval_image_name: "retail-rag-retrieval"
+rag_retrieval_image_tag: "1.0.0"
 
 # Database Configuration
 db_name: "retaildb"
@@ -41,6 +47,7 @@ postgres_pvc_size: "20Gi"
 # Application Settings
 backend_replicas: 3
 frontend_replicas: 3
+rag_replicas: 3
 jwt_secret: "{{ lookup('env', 'JWT_SECRET') }}"
 node_env: "production"
 

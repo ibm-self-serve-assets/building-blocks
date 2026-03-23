@@ -78,6 +78,62 @@
   async: 600
   poll: 0
 
+- name: Display RAG source directory path
+  debug:
+    msg: "RAG source directory: {{ rag_source_dir }}"
+
+- name: Check if RAG source directory exists
+  stat:
+    path: "{{ rag_source_dir }}"
+  register: rag_dir_check
+
+- name: Display RAG directory check result
+  debug:
+    msg:
+      - "RAG directory exists: {{ rag_dir_check.stat.exists }}"
+      - "RAG directory path: {{ rag_source_dir }}"
+
+- name: Build RAG container image
+  command: >
+    podman build
+    -t {{ docker_registry }}/{{ docker_username }}/{{ rag_image_name }}:{{ rag_image_tag }}
+    {{ rag_source_dir }}
+  args:
+    chdir: "{{ rag_source_dir }}"
+  register: rag_build
+  changed_when: true
+  async: 600
+  poll: 0
+  when: rag_dir_check.stat.exists
+
+- name: Display RAG retrieval source directory path
+  debug:
+    msg: "RAG retrieval source directory: {{ rag_retrieval_source_dir }}"
+
+- name: Check if RAG retrieval source directory exists
+  stat:
+    path: "{{ rag_retrieval_source_dir }}"
+  register: rag_retrieval_dir_check
+
+- name: Display RAG retrieval directory check result
+  debug:
+    msg:
+      - "RAG retrieval directory exists: {{ rag_retrieval_dir_check.stat.exists }}"
+      - "RAG retrieval directory path: {{ rag_retrieval_source_dir }}"
+
+- name: Build RAG retrieval container image
+  command: >
+    podman build
+    -t {{ docker_registry }}/{{ docker_username }}/{{ rag_retrieval_image_name }}:{{ rag_retrieval_image_tag }}
+    {{ rag_retrieval_source_dir }}
+  args:
+    chdir: "{{ rag_retrieval_source_dir }}"
+  register: rag_retrieval_build
+  changed_when: true
+  async: 600
+  poll: 0
+  when: rag_retrieval_dir_check.stat.exists
+
 - name: Wait for PostgreSQL build to complete
   async_status:
     jid: "{{ postgres_build.ansible_job_id }}"
@@ -102,6 +158,24 @@
   retries: 60
   delay: 10
 
+- name: Wait for RAG build to complete
+  async_status:
+    jid: "{{ rag_build.ansible_job_id }}"
+  register: rag_build_result
+  until: rag_build_result.finished
+  retries: 60
+  delay: 10
+  when: rag_dir_check.stat.exists
+
+- name: Wait for RAG retrieval build to complete
+  async_status:
+    jid: "{{ rag_retrieval_build.ansible_job_id }}"
+  register: rag_retrieval_build_result
+  until: rag_retrieval_build_result.finished
+  retries: 60
+  delay: 10
+  when: rag_retrieval_dir_check.stat.exists
+
 - name: Display build completion status
   debug:
     msg:
@@ -109,6 +183,8 @@
       - "PostgreSQL: Built"
       - "Backend: Built"
       - "Frontend: Built"
+      - "RAG Accelerator: {{ 'Built' if rag_dir_check.stat.exists else 'Skipped (source not found)' }}"
+      - "RAG Retrieval: {{ 'Built' if rag_retrieval_dir_check.stat.exists else 'Skipped (source not found)' }}"
 
 - name: Push PostgreSQL image to Docker Hub
   command: >
@@ -149,6 +225,36 @@
   debug:
     msg: "Frontend image pushed to {{ docker_registry }}/{{ docker_username }}/{{ frontend_image_name }}:{{ frontend_image_tag }}"
 
+- name: Push RAG image to Docker Hub
+  command: >
+    podman push {{ docker_registry }}/{{ docker_username }}/{{ rag_image_name }}:{{ rag_image_tag }}
+  register: rag_push
+  changed_when: true
+  retries: 3
+  delay: 10
+  until: rag_push.rc == 0
+  when: rag_dir_check.stat.exists
+
+- name: Display RAG push status
+  debug:
+    msg: "RAG image pushed to {{ docker_registry }}/{{ docker_username }}/{{ rag_image_name }}:{{ rag_image_tag }}"
+  when: rag_dir_check.stat.exists
+
+- name: Push RAG retrieval image to Docker Hub
+  command: >
+    podman push {{ docker_registry }}/{{ docker_username }}/{{ rag_retrieval_image_name }}:{{ rag_retrieval_image_tag }}
+  register: rag_retrieval_push
+  changed_when: true
+  retries: 3
+  delay: 10
+  until: rag_retrieval_push.rc == 0
+  when: rag_retrieval_dir_check.stat.exists
+
+- name: Display RAG retrieval push status
+  debug:
+    msg: "RAG retrieval image pushed to {{ docker_registry }}/{{ docker_username }}/{{ rag_retrieval_image_name }}:{{ rag_retrieval_image_tag }}"
+  when: rag_retrieval_dir_check.stat.exists
+
 - name: Clean up dangling images
   command: podman image prune -f
   when: cleanup_images | default(true)
@@ -169,6 +275,8 @@
     backend_full_image: "{{ docker_registry }}/{{ docker_username }}/{{ backend_image_name }}:{{ backend_image_tag }}"
     frontend_full_image: "{{ docker_registry }}/{{ docker_username }}/{{ frontend_image_name }}:{{ frontend_image_tag }}"
     postgres_full_image: "{{ docker_registry }}/{{ docker_username }}/{{ postgres_image_name }}:{{ postgres_image_tag }}"
+    rag_full_image: "{{ docker_registry }}/{{ docker_username }}/{{ rag_image_name }}:{{ rag_image_tag }}"
+    rag_retrieval_full_image: "{{ docker_registry }}/{{ docker_username }}/{{ rag_retrieval_image_name }}:{{ rag_retrieval_image_tag }}"
 
 - name: Display container images summary
   debug:
@@ -177,6 +285,8 @@
       - "Backend: {{ backend_full_image }}"
       - "Frontend: {{ frontend_full_image }}"
       - "PostgreSQL: {{ postgres_full_image }}"
+      - "RAG Accelerator: {{ rag_full_image }}"
+      - "RAG Retrieval: {{ rag_retrieval_full_image }}"
       - "Build duration: {{ build_duration }} seconds"
 
 # Made with Bob

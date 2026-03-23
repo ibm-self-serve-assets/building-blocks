@@ -1,20 +1,24 @@
-.PHONY: help deploy-dev deploy-test deploy-prod check-env clean lint
+.PHONY: help deploy-dev deploy-test deploy-prod check-env clean lint check-docker-env
 
 # Default target
 help:
 	@echo "Retail Application Deployment - Makefile"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  deploy-dev      - Deploy to development environment"
-	@echo "  deploy-test     - Deploy to test environment"
-	@echo "  deploy-prod     - Deploy to production environment"
+	@echo "  deploy-dev      - Deploy to development environment (includes RAG)"
+	@echo "  deploy-test     - Deploy to test environment (includes RAG)"
+	@echo "  deploy-prod     - Deploy to production environment (includes RAG)"
 	@echo "  check-env       - Verify environment variables are set"
+	@echo "  check-docker-env - Verify Docker environment variables"
 	@echo "  lint            - Run ansible-lint on playbooks"
 	@echo "  clean           - Clean up temporary files"
 	@echo "  list-roles      - List all available roles"
 	@echo "  verify-dev      - Verify development deployment"
 	@echo "  verify-test     - Verify test deployment"
 	@echo "  verify-prod     - Verify production deployment"
+	@echo ""
+	@echo "Note: RAG image building is integrated into the deployment playbooks"
+	@echo "      via the container_images role. No separate build step needed."
 	@echo ""
 	@echo "Usage examples:"
 	@echo "  make deploy-dev"
@@ -28,6 +32,13 @@ check-env:
 	@test -n "$$DOCKER_USERNAME" || (echo "ERROR: DOCKER_USERNAME is not set" && exit 1)
 	@test -n "$$DOCKER_PASSWORD" || (echo "ERROR: DOCKER_PASSWORD is not set" && exit 1)
 	@echo "✓ All required environment variables are set"
+
+# Check if Docker environment variables are set
+check-docker-env:
+	@echo "Checking Docker environment variables..."
+	@test -n "$$DOCKER_USERNAME" || (echo "ERROR: DOCKER_USERNAME is not set" && exit 1)
+	@test -n "$$DOCKER_PASSWORD" || (echo "ERROR: DOCKER_PASSWORD is not set" && exit 1)
+	@echo "✓ Docker environment variables are set"
 
 # Deploy to development
 deploy-dev: check-env
@@ -81,6 +92,7 @@ clean:
 	@find . -name "*.retry" -delete
 	@find . -name "*.log" -delete
 	@rm -f deployment-info-*.txt
+	@rm -f rag-build-info-*.txt
 	@echo "✓ Cleanup complete"
 
 # Dry run for development

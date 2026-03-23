@@ -33,7 +33,7 @@
 - name: Update backend image reference
   replace:
     path: "{{ k8s_dir }}/backend-deployment.yaml"
-    regexp: "image:\\s+[\"']?docker\\.io/technologybuildingblocks/retail-backend:.*[\"']?"
+    regexp: "image:\\s+[\"']?(?:docker\\.io/)?[^:]+/retail-backend:[^\"'\\s]+"
     replace: "image: {{ backend_full_image }}"
 
 - name: Add serviceAccountName to backend deployment
@@ -46,7 +46,7 @@
 - name: Update frontend image reference
   replace:
     path: "{{ k8s_dir }}/frontend-deployment.yaml"
-    regexp: "image:\\s+[\"']?docker\\.io/technologybuildingblocks/retail-frontend:.*[\"']?"
+    regexp: "image:\\s+[\"']?(?:docker\\.io/)?[^:]+/[^:]+:[^\"'\\s]+"
     replace: "image: {{ frontend_full_image }}"
 
 - name: Add serviceAccountName to frontend deployment
@@ -55,6 +55,78 @@
     insertafter: '^\s+spec:\s*$'
     line: '      serviceAccountName: retail'
     state: present
+
+- name: Check if RAG deployment manifest exists
+  stat:
+    path: "{{ k8s_dir }}/rag-deployment.yaml"
+  register: rag_deployment_exists
+
+- name: Update RAG Accelerator image reference
+  replace:
+    path: "{{ k8s_dir }}/rag-deployment.yaml"
+    regexp: "image:\\s+[\"']?(?:docker\\.io/)?[^:]+/retail-rag:[^\"'\\s]+"
+    replace: "image: {{ rag_full_image }}"
+  when: rag_deployment_exists.stat.exists
+
+- name: Add serviceAccountName to RAG deployment
+  lineinfile:
+    path: "{{ k8s_dir }}/rag-deployment.yaml"
+    insertafter: '^\s+spec:\s*$'
+    line: '      serviceAccountName: retail'
+    state: present
+  when: rag_deployment_exists.stat.exists
+
+- name: Update RAG replicas
+  replace:
+    path: "{{ k8s_dir }}/rag-deployment.yaml"
+    regexp: 'replicas:\s+\d+'
+    replace: "replicas: {{ rag_replicas | default(1) }}"
+  when: rag_deployment_exists.stat.exists
+
+- name: Check if RAG Retrieval deployment manifest exists (try multiple possible names)
+  stat:
+    path: "{{ item }}"
+  register: rag_retrieval_deployment_check
+  loop:
+    - "{{ app_source_dir }}/k8s/rag-deployment.yaml"
+    - "{{ k8s_dir }}/rag-retrieval-deployment.yaml"
+    - "{{ k8s_dir }}/rag-retrieval-api-deployment.yaml"
+    - "{{ app_source_dir }}/data-for-ai/rag-retrieval-fastapi-server/k8s/deployment.yaml"
+    - "{{ app_source_dir }}/data-for-ai/rag-retrieval-fastapi-server/deployment.yaml"
+
+- name: Set RAG Retrieval deployment path
+  set_fact:
+    rag_retrieval_deployment_path: "{{ item.item }}"
+  when: item.stat.exists
+  loop: "{{ rag_retrieval_deployment_check.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Display RAG Retrieval deployment path
+  debug:
+    msg: "RAG Retrieval deployment found at: {{ rag_retrieval_deployment_path | default('Not found') }}"
+
+- name: Update RAG Retrieval image reference
+  replace:
+    path: "{{ rag_retrieval_deployment_path }}"
+    regexp: "image:\\s+[\"']?(?:docker\\.io/)?[^:]+/retail-rag-retrieval:[^\"'\\s]+"
+    replace: "image: {{ rag_retrieval_full_image }}"
+  when: rag_retrieval_deployment_path is defined
+
+- name: Add serviceAccountName to RAG Retrieval deployment
+  lineinfile:
+    path: "{{ rag_retrieval_deployment_path }}"
+    insertafter: '^\s+spec:\s*$'
+    line: '      serviceAccountName: retail'
+    state: present
+  when: rag_retrieval_deployment_path is defined
+
+- name: Update RAG Retrieval replicas
+  replace:
+    path: "{{ rag_retrieval_deployment_path }}"
+    regexp: 'replicas:\s+\d+'
+    replace: "replicas: {{ rag_replicas | default(1) }}"
+  when: rag_retrieval_deployment_path is defined
 
 - name: Generate PostgreSQL deployment with proper security context
   template:
@@ -174,6 +246,8 @@
       - "Backend image: {{ backend_full_image }}"
       - "Frontend image: {{ frontend_full_image }}"
       - "PostgreSQL image: {{ postgres_full_image }}"
+      - "RAG Accelerator image: {{ rag_full_image | default('Not configured') }}"
+      - "RAG Retrieval image: {{ rag_retrieval_full_image | default('Not configured') }}"
       - "Storage class: {{ storage_class }}"
       - "PostgreSQL PVC size: {{ postgres_pvc_size }}"
 
