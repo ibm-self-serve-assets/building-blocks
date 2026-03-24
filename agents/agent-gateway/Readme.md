@@ -58,7 +58,7 @@ Set up model gateway and ContextForge for your use case:
 
 Download and install Bob modes for AI Gateway development:
 
-- **[Agent Model Gateway Base Mode](./bob-modes/base-modes/agent-model-gateway-bob-mode.zip)** ⬇️ - Comprehensive mode for integrating third-party LLM models into watsonx Orchestrate via the AI Gateway
+- **[Agent Model Gateway Base Mode](./bob-modes/base-modes/agent-model-gateway-bob-mode/agent-model-gateway-bob-mode.zip)** ⬇️ - Comprehensive mode for integrating third-party LLM models into watsonx Orchestrate via the AI Gateway
 
 📖 See the [bob-modes README](./bob-modes/README.md) for installation instructions.
 
