@@ -41,7 +41,7 @@ db_host: "retail-postgres"
 db_port: "5432"
 
 # Storage Configuration
-storage_class: "ocs-storagecluster-ceph-rbd"
+storage_class: "ocs-external-storagecluster-ceph-rbd"
 postgres_pvc_size: "5Gi"
 
 # Application Settings
