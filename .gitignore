@@ -2,3 +2,15 @@
 .env
 **/__pycache__/
 
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/.dockerignore
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/.env.rishit
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/app/src/utils/elastic_search/elastic_search_ELSER_BM25_hybrid_template.json
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/app/test.py
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/downloads/test1/analyzing.pdf
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/downloads/test1/demo.docx
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/downloads/test1/T1_DOC_001_Security_Policy.docx
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/downloads/test2/analyzing.pdf
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/downloads/test2/demo.docx
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/milvus_conn.cert
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/open_search_conn.cert
+data-for-ai/question-and-answer/rag/assets/rag-accelerator/milvus_conn.cert

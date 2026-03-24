@@ -1,0 +1,53 @@
+---
+# Workshop Environment Configuration Defaults
+# These values will be used to generate the .workshopenv file
+
+# =============================================================================
+# Server Configuration
+# =============================================================================
+workshop_host: "0.0.0.0"
+workshop_port: "8080"
+workshop_server_name: "rag-retrieval-api"
+workshop_server_version: "1.0.0"
+workshop_server_description: "FastAPI RAG Retrieval Server for semantic and keyword search"
+workshop_environment: "development"
+workshop_allowed_origins: "*"
+workshop_app_bearer_token: ""
+
+# =============================================================================
+# IBM Watsonx Embeddings Configuration
+# =============================================================================
+workshop_watsonx_url: "https://us-south.ml.cloud.ibm.com"
+workshop_watsonx_api_key: "{{ lookup('env', 'WATSONX_API_KEY') | default('your_watsonx_api_key_here', true) }}"
+workshop_watsonx_project_id: "{{ lookup('env', 'WATSONX_PROJECT_ID') | default('your_watsonx_project_id_here', true) }}"
+workshop_embedding_model_id: "intfloat/multilingual-e5-large"
+
+# =============================================================================
+# Vector Database Configuration
+# =============================================================================
+workshop_vector_db_type: "milvus"
+
+# =============================================================================
+# Milvus Configuration
+# =============================================================================
+workshop_milvus_host: "localhost"
+workshop_milvus_port: "30098"
+workshop_milvus_user: "root"
+workshop_milvus_password: "Milvus"
+workshop_milvus_secure: "true"
+workshop_milvus_collection: "rag_collection"
+
+# =============================================================================
+# Milvus Field Configuration
+# =============================================================================
+workshop_milvus_dense_field: "vector"
+workshop_milvus_text_field: "text"
+
+# =============================================================================
+# File Paths
+# =============================================================================
+workshopenv_file_path: "{{ app_source_dir }}/.workshopenv"
+rag_deployment_yaml_path: "{{ app_source_dir }}/k8s/rag-deployment.yaml"
+rag_secrets_yaml_path: "{{ app_source_dir }}/k8s/rag-secrets.yaml"
+
+# Made with Bob

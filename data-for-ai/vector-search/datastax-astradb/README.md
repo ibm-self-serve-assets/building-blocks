@@ -16,6 +16,4 @@ Cloud-native serverless vector database built on Apache Cassandra with global di
 
 Coming soon: AI assistant configuration for Astra DB development will be available in future releases.
 
-## Quick Start
 
-1. **For setup guides**: Explore the [`assets`](./assets/) directory for configuration examples
