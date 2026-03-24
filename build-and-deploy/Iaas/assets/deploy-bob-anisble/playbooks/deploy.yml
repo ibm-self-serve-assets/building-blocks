@@ -49,6 +49,9 @@
     - role: k8s_manifests
       tags: ['manifests', 'config']
       
+    - role: workshop_env
+      tags: ['workshop', 'config', 'rag']
+      
     - role: app_deployment
       tags: ['deploy', 'application']
       

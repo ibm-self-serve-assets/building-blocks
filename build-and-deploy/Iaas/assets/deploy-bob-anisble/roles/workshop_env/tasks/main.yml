@@ -1,0 +1,160 @@
+---
+# Workshop Environment Configuration Tasks
+
+- name: Display workshop environment configuration
+  debug:
+    msg:
+      - "=========================================="
+      - "Workshop Environment Configuration"
+      - "=========================================="
+      - "Environment file: {{ workshopenv_file_path }}"
+      - "RAG Deployment: {{ rag_deployment_yaml_path }}"
+      - "RAG Secrets: {{ rag_secrets_yaml_path }}"
+      - "=========================================="
+
+- name: Ensure k8s directory exists in app source
+  file:
+    path: "{{ app_source_dir }}/k8s"
+    state: directory
+    mode: '0755'
+
+- name: Generate .workshopenv file from template
+  template:
+    src: workshopenv.j2
+    dest: "{{ workshopenv_file_path }}"
+    mode: '0644'
+  register: workshopenv_created
+
+- name: Display .workshopenv file creation status
+  debug:
+    msg: ".workshopenv file created at {{ workshopenv_file_path }}"
+  when: workshopenv_created.changed
+
+- name: Verify .workshopenv file exists
+  stat:
+    path: "{{ workshopenv_file_path }}"
+  register: workshopenv_stat
+
+- name: Assert .workshopenv file was created
+  assert:
+    that:
+      - workshopenv_stat.stat.exists
+    fail_msg: ".workshopenv file was not created successfully"
+    success_msg: ".workshopenv file exists and is ready"
+
+- name: Check if rag-deployment.yaml exists in k8s directory
+  stat:
+    path: "{{ rag_deployment_yaml_path }}"
+  register: rag_deployment_check
+
+- name: Check if rag-secrets.yaml exists in k8s directory
+  stat:
+    path: "{{ rag_secrets_yaml_path }}"
+  register: rag_secrets_check
+
+- name: Display status of existing RAG manifests
+  debug:
+    msg:
+      - "rag-deployment.yaml exists: {{ rag_deployment_check.stat.exists }}"
+      - "rag-secrets.yaml exists: {{ rag_secrets_check.stat.exists }}"
+
+- name: Backup original rag-deployment.yaml
+  copy:
+    src: "{{ rag_deployment_yaml_path }}"
+    dest: "{{ rag_deployment_yaml_path }}.backup"
+    remote_src: yes
+  when: rag_deployment_check.stat.exists
+
+- name: Backup original rag-secrets.yaml
+  copy:
+    src: "{{ rag_secrets_yaml_path }}"
+    dest: "{{ rag_secrets_yaml_path }}.backup"
+    remote_src: yes
+  when: rag_secrets_check.stat.exists
+
+- name: Source .workshopenv and substitute variables in rag-deployment.yaml
+  shell: |
+    set -a
+    source {{ workshopenv_file_path }}
+    export NAMESPACE={{ namespace }}
+    export RAG_RETRIEVAL_IMAGE={{ rag_retrieval_full_image | default('docker.io/your-registry/rag-retrieval:latest') }}
+    set +a
+    envsubst < {{ rag_deployment_yaml_path }}.backup > {{ rag_deployment_yaml_path }}
+  args:
+    executable: /bin/bash
+  register: rag_deployment_substituted
+  changed_when: true
+  when: rag_deployment_check.stat.exists
+
+- name: Display rag-deployment.yaml substitution status
+  debug:
+    msg: "Environment variables substituted in rag-deployment.yaml"
+  when: rag_deployment_check.stat.exists
+
+- name: Source .workshopenv and substitute variables in rag-secrets.yaml
+  shell: |
+    set -a
+    source {{ workshopenv_file_path }}
+    export NAMESPACE={{ namespace }}
+    set +a
+    envsubst < {{ rag_secrets_yaml_path }}.backup > {{ rag_secrets_yaml_path }}
+  args:
+    executable: /bin/bash
+  register: rag_secrets_substituted
+  changed_when: true
+  when: rag_secrets_check.stat.exists
+
+- name: Display rag-secrets.yaml substitution status
+  debug:
+    msg: "Environment variables substituted in rag-secrets.yaml"
+
+- name: Replace hardcoded MILVUS_COLLECTION value in rag-deployment.yaml
+  replace:
+    path: "{{ rag_deployment_yaml_path }}"
+    regexp: 'value:\s+"product_insights"(\s+#.*MILVUS_COLLECTION)?'
+    replace: 'value: "{{ workshop_milvus_collection }}"'
+  when: rag_deployment_check.stat.exists
+
+- name: Display MILVUS_COLLECTION update status
+  debug:
+    msg: "Updated MILVUS_COLLECTION to {{ workshop_milvus_collection }}"
+  when: rag_deployment_check.stat.exists
+  when: rag_secrets_check.stat.exists
+
+- name: Verify rag-deployment.yaml was updated
+  stat:
+    path: "{{ rag_deployment_yaml_path }}"
+  register: rag_deployment_stat
+
+- name: Verify rag-secrets.yaml was updated
+  stat:
+    path: "{{ rag_secrets_yaml_path }}"
+  register: rag_secrets_stat
+
+- name: Display RAG manifest update status
+  debug:
+    msg:
+      - "rag-deployment.yaml updated: {{ rag_deployment_check.stat.exists }}"
+      - "rag-secrets.yaml updated: {{ rag_secrets_check.stat.exists }}"
+      - "Backup files created with .backup extension"
+
+- name: Set workshop environment facts
+  set_fact:
+    workshop_env_configured: true
+    workshop_env_file: "{{ workshopenv_file_path }}"
+    rag_deployment_file: "{{ rag_deployment_yaml_path }}"
+    rag_secrets_file: "{{ rag_secrets_yaml_path }}"
+
+- name: Display workshop environment summary
+  debug:
+    msg:
+      - "Workshop environment configuration completed"
+      - "Environment file: {{ workshop_env_file }}"
+      - "RAG Deployment manifest: {{ rag_deployment_file }} (updated with envsubst)"
+      - "RAG Secrets manifest: {{ rag_secrets_file }} (updated with envsubst)"
+      - "Backup files: *.backup"
+      - "Namespace: {{ namespace }}"
+      - "Vector DB Type: {{ workshop_vector_db_type }}"
+      - "Milvus Collection: {{ workshop_milvus_collection }}"
+
+# Made with Bob
