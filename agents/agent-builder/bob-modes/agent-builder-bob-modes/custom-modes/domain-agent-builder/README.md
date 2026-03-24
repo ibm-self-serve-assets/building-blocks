@@ -8,10 +8,10 @@ You describe a domain (healthcare, retail, education, etc.) and Bob:
 1. Interviews you to gather requirements
 2. Designs the agent architecture
 3. Generates all project files (config, tools, data, knowledge base, scripts)
-4. Asks for your WXO API key
+4. Asks for your WXO API key and instance URL
 5. Deploys the agent to watsonx Orchestrate
 
-No manual setup required — just tell Bob what agent to build and paste your API key when asked.
+No manual setup required — just tell Bob what agent to build and provide your credentials when asked.
 
 ## Getting Started
 
@@ -19,6 +19,7 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 - **Bob** — IBM Bob (Sign up here if you do't have access yet: https://www.ibm.com/products/bob).
 - **uv** — Python package manager by Astral ([install](https://docs.astral.sh/uv/)). Includes `uvx`, which downloads and runs the WXO ADK on the fly — no manual pip install needed
 - **WXO API key** — obtain it from WXO: click your profile (top right) → Settings → API details → Generate API key. Save it for later.
+- **WXO instance URL** — your instance URL (e.g., `https://api.us-south.watson-orchestrate.cloud.ibm.com/instances/<instance-id>`). Find it in your WXO instance details.
 
 ### Step-by-step
 
@@ -44,7 +45,7 @@ No manual setup required — just tell Bob what agent to build and paste your AP
 
 6. **Start building the agent.** Bob will create a ToDo list and ask you to run some commands — click **Run** when prompted.
 
-7. **Provide your API key.** When Bob asks, choose the option that says you have your API key ready. When prompted to enter it, **click the pencil icon on the right** and then paste your API key in the text area (repalce the bracket with your API key). **Important Note"** **Do not select the paste your API key option. Click the pencil icon on the right** and then paste your API key in the text area.
+7. **Provide your API key and instance URL.** When Bob asks, provide your WXO API key and instance URL. When prompted to enter them, **click the pencil icon on the right** and then paste your values in the text area. **Important Note:** **Do not select the default option. Click the pencil icon on the right** and then paste your values in the text area.
 
 8. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
 
@@ -149,7 +150,7 @@ The LLM (`groq/openai/gpt-oss-120b`) sits on top and routes:
 - **Tool isolation**: Each tool is self-contained. Tools cannot call other tools. The agent LLM orchestrates multi-tool workflows.
 - **5 tools recommended**: 5 or fewer tools is recommended for optimal performance (typically 3 entity + 1 communication + 1 domain-specific), though agents can use more if needed.
 - **uvx for CLI**: All orchestrate commands use `uvx --from ibm-watsonx-orchestrate` for isolated execution without manual venv activation.
-- **Piped auth**: API key is piped to env activate (`echo "KEY" | uvx ... orchestrate env activate wxo-uv-env`) to avoid interactive prompts that hang in non-interactive contexts.
+- **Dynamic env setup**: Before each deployment, Bob recreates the CLI environment with the user's instance URL (`env remove → env add -u URL → env activate`) to avoid stale cached instance URLs. The API key is piped to env activate to avoid interactive prompts.
 
 ## Rule Files
 
