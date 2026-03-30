@@ -1,4 +1,4 @@
-# WXO Agent Evaluator
+# Build-time AgentOps Evaluator
 
 A [Bob](https://bob.ibm.com) custom mode for **build-time evaluation** of watsonx Orchestrate (WXO) agents. Bob is IBM's AI code assistant. This mode guides you through benchmarks, metrics analysis, cost/latency tracking, and adversarial red-teaming — tailored to what you need.
 
@@ -40,7 +40,7 @@ Copy the `.bob/` folder and `.mcp.json` into your agent project root. Bob will d
 2. Copy the `.bob/` folder to your project root.
 3. Copy `.mcp.json` to your project root.
 
-Then switch to the **WXO Agent Evaluator** mode in Bob's mode selector.
+Then switch to the **Build-time AgentOps Evaluator** mode in Bob's mode selector.
 
 ## How It Works
 
@@ -86,7 +86,7 @@ agent-build-time-eval/
 ├── .bob/
 │   ├── custom_modes.yaml                    # Mode definition with 16 mandatory rules
 │   ├── workflow.md                          # 6-phase workflow + 3 appendices
-│   ├── rules-agent-evaluator/
+│   ├── rules-build-time-agentops-evals/
 │   │   ├── 1_evaluation_workflow.xml        # Phase-by-phase steps with user context
 │   │   ├── 2_benchmark_authoring.xml        # JSON schema, DAG patterns, quality checklist, dry-run
 │   │   ├── 3_metrics_and_diagnosis.xml      # Metric definitions, thresholds, diagnosis table
