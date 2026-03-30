@@ -216,4 +216,36 @@ class MilvusOperations:
             description="Hybrid dense + sparse collection",
         )
     
+    def list_collections(self) -> list:
+        """
+        List all collections in Milvus.
+        
+        Returns:
+            List of collection names
+        """
+        try:
+            collections = self.client.list_collections()
+            logger.info(f"Found {len(collections)} Milvus collections")
+            return collections
+        except Exception as e:
+            logger.exception(f"Error while listing collections: {e}")
+            raise
+    
+    def delete_collection(self, index_name: str) -> None:
+        """
+        Delete a Milvus collection.
+        
+        Args:
+            index_name: Name of the collection to delete
+        """
+        try:
+            if self.client.has_collection(index_name):
+                self.client.drop_collection(index_name)
+                logger.info(f"Successfully deleted Milvus collection: {index_name}")
+            else:
+                logger.warning(f"Milvus collection '{index_name}' does not exist. Cannot delete.")
+                raise ValueError(f"Collection '{index_name}' does not exist")
+        except Exception as e:
+            logger.exception(f"Error while deleting collection '{index_name}': {e}")
+            raise
     

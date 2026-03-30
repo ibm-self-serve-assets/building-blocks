@@ -162,3 +162,38 @@ class OpenSearchOperations:
         except Exception as e:
             logger.exception(f"Error checking if index '{index_name}' exists: {e}")
             return False
+    
+    def list_indices(self) -> list:
+        """
+        List all indices in OpenSearch.
+        
+        Returns:
+            List of index names
+        """
+        try:
+            # Get all indices
+            indices = self.client.indices.get_alias(index="*")
+            index_names = list(indices.keys())
+            logger.info(f"Found {len(index_names)} OpenSearch indices")
+            return index_names
+        except Exception as e:
+            logger.exception(f"Error while listing indices: {e}")
+            raise
+    
+    def delete_index(self, index_name: str) -> None:
+        """
+        Delete an OpenSearch index.
+        
+        Args:
+            index_name: Name of the index to delete
+        """
+        try:
+            if self.client.indices.exists(index=index_name):
+                self.client.indices.delete(index=index_name)
+                logger.info(f"Successfully deleted OpenSearch index: {index_name}")
+            else:
+                logger.warning(f"OpenSearch index '{index_name}' does not exist. Cannot delete.")
+                raise ValueError(f"Index '{index_name}' does not exist")
+        except Exception as e:
+            logger.exception(f"Error while deleting index '{index_name}': {e}")
+            raise
