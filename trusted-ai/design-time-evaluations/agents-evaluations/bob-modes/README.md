@@ -27,18 +27,23 @@ A [Bob](https://bob.ibm.com) custom mode for **build-time evaluation** of watson
 
 ## Installation
 
-**Option A: Project-level mode (recommended for testing)**
+**Option A: Project-level mode (recommended)**
 
-Copy the `.bob/` folder and `.mcp.json` into your agent project root. Bob will detect the mode automatically.
+1. Download `build-time-agentops-evals-mode.zip` from this repo
+2. Unzip it into your agent project root:
+   ```bash
+   unzip build-time-agentops-evals-mode.zip -d /path/to/your/agent/project
+   ```
+   This places the `.bob/` folder and `.mcp.json` in your project. Bob will detect the mode automatically.
 
 **Option B: Global mode**
 
-1. Append the contents of `.bob/custom_modes.yaml` to Bob's global config:
+1. Download and unzip `build-time-agentops-evals-mode.zip`
+2. Append the contents of `.bob/custom_modes.yaml` to Bob's global config:
    ```
    ~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml
    ```
-2. Copy the `.bob/` folder to your project root.
-3. Copy `.mcp.json` to your project root.
+3. Copy the `.bob/` folder and `.mcp.json` from the unzipped folder to your project root.
 
 Then switch to the **Build-time AgentOps Evaluator** mode in Bob's mode selector.
 
