@@ -1,13 +1,11 @@
 import logging
 from dotenv import load_dotenv
 
-from ibm_watsonx_ai import Credentials
-from ibm_watsonx_ai.foundation_models import Embeddings
-
 from app.src.utils import rag_helper_functions
 from app.src.utils import config
 from app.src.utils.milvus_connection import MilvusConnection
 from app.src.utils.connection_factory import ConnectionFactory
+from app.src.utils.embeddings.factory import EmbeddingFactory
 from langchain.vectorstores import Milvus
 import os
 
@@ -54,43 +52,24 @@ milvus_connection_args = None
 opensearch_client = None
 opensearch_connection_args = None
 
-### embedding from watsonx.ai
+### embedding using EmbeddingFactory
 def get_embedding():
-    logger.debug("Initializing embedding model for QueryService")
-    if environment != "cloud":
-        raise ValueError("Only cloud environment supported")
-
-    credentials = Credentials(
-        api_key=parameters["watsonx_ai_api_key"],
-        url=parameters["watsonx_url"],
-    )
-
-    model_id = parameters["embedding_model_id"]
-
-    embedding = Embeddings(
-        model_id=model_id,
-        credentials=credentials,
-        project_id=project_id,
-        verify=True,
-    )
-
-    model_id_lower = model_id.lower()
-
-    if "e5" in model_id_lower:
-        model_config = {
-            "max_tokens": 512,
-            "prefix": "passage: ",
-        }
-    else:
-        model_config = {
-            "max_tokens": 8000,
-            "prefix": "",
-        }
-
-    logger.debug("Embedding model_id: %s", model_id)
-    test_vector = embedding.embed_documents(["test"])[0]
-    embedding_dim = len(test_vector)
-
+    logger.debug("Initializing embedding model for QueryService using EmbeddingFactory")
+    
+    # Get embedding provider from parameters
+    embedding_provider = parameters.get("embedding_provider", "watsonx")
+    
+    # Add device and local model path for non-watsonx providers
+    if embedding_provider in ["huggingface", "local"]:
+        parameters["device"] = parameters.get("device", "cpu")
+        parameters["local_model_path"] = parameters.get("local_model_path", "")
+        parameters["cache_folder"] = parameters.get("cache_folder", "")
+    
+    # Create embedding instance using factory
+    embedding = EmbeddingFactory.create_embedding(embedding_provider, parameters)
+    
+    logger.debug("Embedding model initialized with provider: %s", embedding_provider)
+    
     return embedding
 
 

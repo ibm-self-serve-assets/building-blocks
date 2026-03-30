@@ -12,7 +12,8 @@ PARAMETERS = {
         "ibm_iam_url": os.getenv("IBM_IAM_URL"),
         "server_url": os.getenv("SERVER_URL"),
         "astradb_scb_zip_filename":os.getenv("ASTRADB_SCB_ZIP_FILENAME"),
-        "connection_name":os.getenv("CONNECTION_NAME")
+        "connection_name":os.getenv("CONNECTION_NAME"),
+        "embedding_provider": os.getenv("EMBEDDING_PROVIDER", "watsonx")
     },
     "RAG_parameter_set" : {
         "vectorsearch_top_n_results" : os.getenv("RAG_VECTORSEARCH_TOP_N_RESULTS"),
@@ -51,6 +52,9 @@ PARAMETERS = {
         "elastic_search_vector_type" :  os.getenv("RAG_ADV_ELASTIC_SEARCH_VECTOR_TYPE"),
         "chunk_size" :  os.getenv("RAG_ADV_CHUNK_SIZE"),
         "chunk_overlap" :  os.getenv("RAG_ADV_CHUNK_OVERLAP"),
-        "index_chunk_size" :  os.getenv("RAG_ADV_INDEX_CHUNK_SIZE")
+        "index_chunk_size" :  os.getenv("RAG_ADV_INDEX_CHUNK_SIZE"),
+        "device": os.getenv("EMBEDDING_DEVICE", "cpu"),
+        "local_model_path": os.getenv("EMBEDDING_LOCAL_MODEL_PATH", ""),
+        "cache_folder": os.getenv("EMBEDDING_CACHE_FOLDER", "")
     }
 }
