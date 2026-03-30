@@ -111,7 +111,7 @@ pyclipper==1.3.0.post6
 pydantic==2.11.9
 pydantic-settings==2.10.1
 pydantic_core==2.33.2
-Pygments==2.19.2
+Pygments==2.20.0
 pylatexenc==2.10
 pymilvus==2.6.2
 pymilvus.model==0.3.2
