@@ -20,7 +20,7 @@ debugpy==1.8.17
 decorator==5.2.1
 dill==0.4.0
 docling==2.54.0
-docling-core==2.48.2
+docling-core==2.48.4
 docling-ibm-models==3.9.1
 docling-parse==4.5.0
 dotenv==0.9.9
