@@ -183,6 +183,8 @@
 - name: Wait for PostgreSQL build to complete
   async_status:
     jid: "{{ postgres_build.ansible_job_id }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_build_result
   until: postgres_build_result.finished
   retries: 60
@@ -191,6 +193,8 @@
 - name: Wait for backend build to complete
   async_status:
     jid: "{{ backend_build.ansible_job_id }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_build_result
   until: backend_build_result.finished
   retries: 60
@@ -199,6 +203,8 @@
 - name: Wait for frontend build to complete
   async_status:
     jid: "{{ frontend_build.ansible_job_id }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_build_result
   until: frontend_build_result.finished
   retries: 60
@@ -207,6 +213,8 @@
 - name: Wait for RAG build to complete
   async_status:
     jid: "{{ rag_build.ansible_job_id }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_build_result
   until: rag_build_result.finished
   retries: 60
@@ -216,6 +224,8 @@
 - name: Wait for RAG retrieval build to complete
   async_status:
     jid: "{{ rag_retrieval_build.ansible_job_id }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_retrieval_build_result
   until: rag_retrieval_build_result.finished
   retries: 60
