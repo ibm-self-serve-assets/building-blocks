@@ -35,16 +35,22 @@
 
 - name: Ensure we're in the correct namespace
   command: oc project {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   changed_when: false
 
 - name: Deploy namespace (if using separate namespace manifest)
   command: oc apply -f {{ k8s_dir }}/namespace.yaml
+  become: yes
+  become_user: "{{ actual_user }}"
   register: namespace_deploy
   failed_when: false
   changed_when: "'created' in namespace_deploy.stdout or 'configured' in namespace_deploy.stdout"
 
 - name: Deploy PostgreSQL PVC
   command: oc apply -f {{ k8s_dir }}/postgres-pvc.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: pvc_deploy
   changed_when: "'created' in pvc_deploy.stdout or 'configured' in pvc_deploy.stdout"
 
@@ -54,6 +60,8 @@
 
 - name: Deploy PostgreSQL deployment
   command: oc apply -f {{ k8s_dir }}/postgres-deployment.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_deploy
   changed_when: "'created' in postgres_deploy.stdout or 'configured' in postgres_deploy.stdout"
 
@@ -63,6 +71,8 @@
 
 - name: Deploy PostgreSQL service
   command: oc apply -f {{ k8s_dir }}/postgres-service.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_svc_deploy
   changed_when: "'created' in postgres_svc_deploy.stdout or 'configured' in postgres_svc_deploy.stdout"
 
@@ -76,6 +86,8 @@
     -l app=retail-postgres
     -n {{ namespace }}
     --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_ready
   changed_when: false
   retries: 2
@@ -84,6 +96,8 @@
 
 - name: Get PostgreSQL pod status details
   command: oc get pods -l app=retail-postgres -n {{ namespace }} -o wide
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_pod_details
   changed_when: false
 
@@ -95,12 +109,16 @@
 
 - name: Save current backend deployment state for rollback
   command: oc get deployment retail-backend -n {{ namespace }} -o yaml
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_previous_state
   changed_when: false
   failed_when: false
 
 - name: Deploy backend deployment
   command: oc apply -f {{ k8s_dir }}/backend-deployment.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_deploy
   changed_when: "'created' in backend_deploy.stdout or 'configured' in backend_deploy.stdout"
 
@@ -110,6 +128,8 @@
 
 - name: Deploy backend service
   command: oc apply -f {{ k8s_dir }}/backend-service.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_svc_deploy
   changed_when: "'created' in backend_svc_deploy.stdout or 'configured' in backend_svc_deploy.stdout"
 
@@ -119,6 +139,8 @@
 
 - name: Deploy backend route
   command: oc apply -f {{ k8s_dir }}/backend-route.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_route_deploy
   changed_when: "'created' in backend_route_deploy.stdout or 'configured' in backend_route_deploy.stdout"
 
@@ -128,6 +150,8 @@
 
 - name: Deploy backend HPA
   command: oc apply -f {{ k8s_dir }}/retail-backend-hpa.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_hpa_deploy
   changed_when: "'created' in backend_hpa_deploy.stdout or 'configured' in backend_hpa_deploy.stdout"
 
@@ -141,6 +165,8 @@
     -l app=retail-backend
     -n {{ namespace }}
     --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_ready
   changed_when: false
   retries: 2
@@ -149,6 +175,8 @@
 
 - name: Get backend pod status details
   command: oc get pods -l app=retail-backend -n {{ namespace }} -o wide
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_pod_details
   changed_when: false
 
@@ -160,6 +188,8 @@
 
 - name: Get backend route URL
   command: oc get route retail-backend -n {{ namespace }} -o jsonpath='{.spec.host}'
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_route_url
   changed_when: false
 
@@ -189,6 +219,8 @@
 
 - name: Deploy frontend deployment
   command: oc apply -f {{ k8s_dir }}/frontend-deployment.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_deploy
   changed_when: "'created' in frontend_deploy.stdout or 'configured' in frontend_deploy.stdout"
 
@@ -198,6 +230,8 @@
 
 - name: Deploy frontend service
   command: oc apply -f {{ k8s_dir }}/frontend-service.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_svc_deploy
   changed_when: "'created' in frontend_svc_deploy.stdout or 'configured' in frontend_svc_deploy.stdout"
 
@@ -207,6 +241,8 @@
 
 - name: Deploy frontend route
   command: oc apply -f {{ k8s_dir }}/frontend-route.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_route_deploy
   changed_when: "'created' in frontend_route_deploy.stdout or 'configured' in frontend_route_deploy.stdout"
 
@@ -216,6 +252,8 @@
 
 - name: Deploy frontend HPA
   command: oc apply -f {{ k8s_dir }}/retail-frontend-hpa.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_hpa_deploy
   changed_when: "'created' in frontend_hpa_deploy.stdout or 'configured' in frontend_hpa_deploy.stdout"
 
@@ -229,6 +267,8 @@
     -l app=retail-frontend
     -n {{ namespace }}
     --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_ready
   changed_when: false
   retries: 2
@@ -237,6 +277,8 @@
 
 - name: Get frontend pod status details
   command: oc get pods -l app=retail-frontend -n {{ namespace }} -o wide
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_pod_details
   changed_when: false
 
@@ -248,6 +290,8 @@
 
 - name: Get frontend route URL
   command: oc get route retail-frontend -n {{ namespace }} -o jsonpath='{.spec.host}'
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_route_url
   changed_when: false
 
@@ -257,6 +301,8 @@
 
 - name: Get all pods status
   command: oc get pods -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: pods_status
   changed_when: false
 
@@ -266,6 +312,8 @@
 
 - name: Get all services
   command: oc get svc -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: services_status
   changed_when: false
 
@@ -275,6 +323,8 @@
 
 - name: Get all routes
   command: oc get routes -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: routes_status
   changed_when: false
 
@@ -289,6 +339,8 @@
 
 - name: Deploy RAG secrets
   command: oc apply -f {{ app_source_dir }}/k8s/rag-secrets.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_secrets_deploy
   changed_when: "'created' in rag_secrets_deploy.stdout or 'configured' in rag_secrets_deploy.stdout"
   when: rag_secrets_check.stat.exists
@@ -305,6 +357,8 @@
 
 - name: Deploy RAG Retrieval deployment
   command: oc apply -f {{ app_source_dir }}/k8s/rag-deployment.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_retrieval_deploy
   changed_when: "'created' in rag_retrieval_deploy.stdout or 'configured' in rag_retrieval_deploy.stdout"
   when: rag_retrieval_deployment_check.stat.exists
@@ -321,6 +375,8 @@
 
 - name: Deploy RAG Accelerator deployment
   command: oc apply -f {{ k8s_dir }}/rag-deployment.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_deploy
   changed_when: "'created' in rag_deploy.stdout or 'configured' in rag_deploy.stdout"
   when: rag_deployment_check.stat.exists
@@ -337,6 +393,8 @@
 
 - name: Deploy RAG service
   command: oc apply -f {{ k8s_dir }}/rag-service.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_svc_deploy
   changed_when: "'created' in rag_svc_deploy.stdout or 'configured' in rag_svc_deploy.stdout"
   when: rag_service_check.stat.exists
@@ -353,6 +411,8 @@
 
 - name: Deploy RAG route
   command: oc apply -f {{ k8s_dir }}/rag-route.yaml -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_route_deploy
   changed_when: "'created' in rag_route_deploy.stdout or 'configured' in rag_route_deploy.stdout"
   when: rag_route_check.stat.exists
@@ -368,6 +428,8 @@
     -l app=rag-retrieval-api
     -n {{ namespace }}
     --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_retrieval_ready
   changed_when: false
   retries: 2
@@ -378,6 +440,8 @@
 
 - name: Get RAG Retrieval pod status details
   command: oc get pods -l app=rag-retrieval-api -n {{ namespace }} -o wide
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_retrieval_pod_details
   changed_when: false
   when: rag_retrieval_deployment_check.stat.exists
@@ -398,6 +462,8 @@
     -l app=rag
     -n {{ namespace }}
     --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_ready
   changed_when: false
   retries: 2
@@ -408,6 +474,8 @@
 
 - name: Get RAG Accelerator pod status details
   command: oc get pods -l app=rag -n {{ namespace }} -o wide
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_pod_details
   changed_when: false
   when: rag_deployment_check.stat.exists
@@ -424,6 +492,8 @@
 
 - name: Get RAG route URL
   command: oc get route rag -n {{ namespace }} -o jsonpath='{.spec.host}'
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_route_url
   changed_when: false
   when: rag_route_check.stat.exists

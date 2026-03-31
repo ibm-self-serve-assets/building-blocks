@@ -56,6 +56,8 @@
     oc get pods -n {{ namespace }}
     -l app=retail-postgres
     -o jsonpath='{.items[0].metadata.name}'
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_pod
   changed_when: false
 
@@ -67,6 +69,8 @@
   command: >
     oc get pod {{ postgres_pod.stdout }} -n {{ namespace }}
     -o jsonpath='{.status.phase}'
+  become: yes
+  become_user: "{{ actual_user }}"
   register: pod_status
   changed_when: false
 
@@ -82,6 +86,8 @@
     oc exec {{ postgres_pod.stdout }} -n {{ namespace }} --
     psql -U {{ db_user }} -d {{ db_name }}
     -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: table_count
   changed_when: false
   failed_when: false
@@ -101,6 +107,8 @@
   shell: |
     cat {{ db_seed_path }} | oc exec -i {{ postgres_pod.stdout }} -n {{ namespace }} -- \
     psql -U {{ db_user }} -d {{ db_name }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: seed_load
   changed_when: true
   no_log: false
@@ -119,6 +127,8 @@
     oc exec {{ postgres_pod.stdout }} -n {{ namespace }} --
     psql -U {{ db_user }} -d {{ db_name }}
     -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: final_table_count
   changed_when: false
 
@@ -132,11 +142,15 @@
 
 - name: Restart backend deployment to refresh database connections
   command: oc rollout restart deployment/retail-backend -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_restart
   changed_when: true
 
 - name: Wait for backend rollout to complete
   command: oc rollout status deployment/retail-backend -n {{ namespace }} --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_rollout
   changed_when: false
   retries: 2
