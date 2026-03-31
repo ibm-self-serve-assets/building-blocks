@@ -52,9 +52,23 @@
     --insecure-skip-tls-verify=true
   become: yes
   become_user: "{{ actual_user }}"
-  no_log: true
+  no_log: false
   register: oc_login
   changed_when: "'Logged into' in oc_login.stdout"
+  failed_when: false
+
+- name: Display login error if failed
+  debug:
+    msg:
+      - "Login failed with return code: {{ oc_login.rc }}"
+      - "Error: {{ oc_login.stderr }}"
+      - "Output: {{ oc_login.stdout }}"
+  when: oc_login.rc != 0
+
+- name: Fail if login unsuccessful
+  fail:
+    msg: "OpenShift login failed. Please check credentials and server URL."
+  when: oc_login.rc != 0
 
 - name: Display OpenShift login status
   debug:
@@ -124,11 +138,14 @@
 - name: Create ServiceAccount manifest from template
   template:
     src: serviceaccount.yaml.j2
-    dest: /tmp/serviceaccount.yaml
-  delegate_to: localhost
+    dest: "{{ actual_user_home }}/.kube/serviceaccount.yaml"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    mode: '0644'
+  become: yes
 
 - name: Apply ServiceAccount
-  command: oc apply -f /tmp/serviceaccount.yaml
+  command: oc apply -f {{ actual_user_home }}/.kube/serviceaccount.yaml
   become: yes
   become_user: "{{ actual_user }}"
   register: serviceaccount_created
@@ -141,11 +158,14 @@
 - name: Create ClusterRole manifest from template
   template:
     src: clusterrole.yaml.j2
-    dest: /tmp/clusterrole.yaml
-  delegate_to: localhost
+    dest: "{{ actual_user_home }}/.kube/clusterrole.yaml"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    mode: '0644'
+  become: yes
 
 - name: Apply ClusterRole
-  command: oc apply -f /tmp/clusterrole.yaml
+  command: oc apply -f {{ actual_user_home }}/.kube/clusterrole.yaml
   become: yes
   become_user: "{{ actual_user }}"
   register: clusterrole_created
@@ -158,11 +178,14 @@
 - name: Create ClusterRoleBinding manifest from template
   template:
     src: clusterrolebinding.yaml.j2
-    dest: /tmp/clusterrolebinding.yaml
-  delegate_to: localhost
+    dest: "{{ actual_user_home }}/.kube/clusterrolebinding.yaml"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    mode: '0644'
+  become: yes
 
 - name: Apply ClusterRoleBinding
-  command: oc apply -f /tmp/clusterrolebinding.yaml
+  command: oc apply -f {{ actual_user_home }}/.kube/clusterrolebinding.yaml
   become: yes
   become_user: "{{ actual_user }}"
   register: clusterrolebinding_created
