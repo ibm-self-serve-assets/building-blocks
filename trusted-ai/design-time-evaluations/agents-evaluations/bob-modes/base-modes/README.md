@@ -1,13 +1,15 @@
 # Build-time AgentOps Evaluator
 
-A [Bob](https://bob.ibm.com) custom mode for **build-time evaluation** of watsonx Orchestrate (WXO) agents. Bob is IBM's AI code assistant. This mode guides you through benchmarks, metrics analysis, cost/latency tracking, and adversarial red-teaming — tailored to what you need.
+Your agent passes unit tests — but will it call the right tools with the right arguments when a real user asks an ambiguous question? Will it hallucinate tool calls that don't exist? Will it leak its system prompt under adversarial pressure? Will a single multi-turn conversation burn through your token budget?
+
+**Build-time AgentOps answers these questions before deployment.** This [Bob](https://bob.ibm.com) custom mode (IBM's AI code assistant) puts your watsonx Orchestrate (WXO) agent through rigorous, automated evaluation — LLM-simulated user conversations, tool-calling precision/recall metrics, RAG faithfulness scoring, per-turn token and cost analysis via Langfuse, and adversarial red-teaming across 15 attack vectors. Every failure is traced to its root cause — whether that's the agent, the benchmark, or the infrastructure — with concrete fixes, not generic advice.
 
 ## What You Need
 
 **Required:**
 - [Bob](https://bob.ibm.com) (IBM's AI code assistant — VSCode extension)
 - WXO Developer Edition (local server on port 8080)
-- IBM watsonx Orchestrate ADK (2.5.1 or 2.6.x — **not** 2.7.0, which has breaking issues):
+- IBM watsonx Orchestrate ADK (2.5.1 or 2.6.x — **not** 2.7.0):
   ```bash
   pip install "ibm-watsonx-orchestrate[agentops]>=2.5.1,<2.7.0"
   pip install "ibm-watsonx-orchestrate-evaluation-framework==1.2.7"
@@ -29,16 +31,16 @@ A [Bob](https://bob.ibm.com) custom mode for **build-time evaluation** of watson
 
 **Option A: Project-level mode (recommended)**
 
-1. Download `build-time-agentops-evals-mode.zip` from this repo
+1. Download `build-time-agentops.zip` from this repo
 2. Unzip it into your agent project root:
    ```bash
-   unzip build-time-agentops-evals-mode.zip -d /path/to/your/agent/project
+   unzip build-time-agentops.zip -d /path/to/your/agent/project
    ```
-   This places the `.bob/` folder and `.mcp.json` in your project. Bob will detect the mode automatically.
+   This places the `.bob/` folder and `.mcp.json` in your project, next to your agent. Bob will detect the mode automatically.
 
 **Option B: Global mode**
 
-1. Download and unzip `build-time-agentops-evals-mode.zip`
+1. Download and unzip `build-time-agentops.zip`
 2. Append the contents of `.bob/custom_modes.yaml` to Bob's global config:
    ```
    ~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml
@@ -87,11 +89,11 @@ When you choose option (c), Bob produces a deep cost/latency report by querying 
 ## Mode Contents
 
 ```
-agent-build-time-eval/
+build-time-agentops/
 ├── .bob/
 │   ├── custom_modes.yaml                    # Mode definition with 16 mandatory rules
 │   ├── workflow.md                          # 6-phase workflow + 3 appendices
-│   ├── rules-build-time-agentops-evals/
+│   ├── rules-build-time-agentops/
 │   │   ├── 1_evaluation_workflow.xml        # Phase-by-phase steps with user context
 │   │   ├── 2_benchmark_authoring.xml        # JSON schema, DAG patterns, quality checklist, dry-run
 │   │   ├── 3_metrics_and_diagnosis.xml      # Metric definitions, thresholds, diagnosis table
@@ -99,8 +101,7 @@ agent-build-time-eval/
 │   └── reference-benchmarks/
 │       ├── portfolio_advisor_benchmarks/     # 8 working scenario JSONs
 │       └── stories_sample.csv               # Sample stories CSV for generate command
-├── .mcp.json                                # WXO ADK docs MCP server
-└── README.md
+└── .mcp.json                                # WXO ADK docs MCP server
 ```
 
 ## MCP: ADK Docs Search
