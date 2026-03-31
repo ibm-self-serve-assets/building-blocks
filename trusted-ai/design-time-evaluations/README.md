@@ -1,20 +1,20 @@
-# Design Time Evaluations
+# Design-Time Evaluations
 
-This repository contains Design Time Evaluations for **Generative AI** and **Agentic AI** applications using IBM watsonx governance Python SDK.
+Evaluate your **Generative AI** and **Agentic AI** applications before deployment — using [Bob](https://bob.ibm.com) custom modes and IBM watsonx governance.
 
-## Technology Stack
+## What's Here
 
-- **Python 3.10+**
-- **IBM watsonx.governance SDK**
-- **Jupyter Notebooks** for interactive development
-- **python-dotenv** for environment configuration
-- **IBM Cloud SDK** for authentication
+| Directory | What it covers |
+|-----------|---------------|
+| [**agents-evaluations/**](agents-evaluations/) | WXO agent evaluation — automated benchmarks, tool-calling metrics, cost/latency analysis via Langfuse, and adversarial red-teaming |
+| [**gen-ai-evaluations/**](gen-ai-evaluations/) | GenAI app evaluation — RAG quality, content safety, readability, agentic tool-call accuracy, and operational metrics via IBM watsonx governance |
+
+Each directory contains **Bob modes** (custom modes for IBM's AI code assistant) that guide you through the evaluation workflow, plus any supporting tools (MCP servers, reference benchmarks).
 
 ## Prerequisites
 
-1. **IBM watsonx.governance Service Instance**
-   - Create an instance at [IBM Cloud Catalog](https://cloud.ibm.com/catalog/services/watsonxgovernance)
+- [Bob](https://bob.ibm.com) (IBM's AI code assistant — VSCode extension)
+- IBM Cloud API key with access to the relevant services
+- Python 3.12
 
-2. **IBM Cloud API Key**
-   - Generate at [IBM Cloud API Keys](https://cloud.ibm.com/iam/apikeys)
-   - Requires access to watsonx.governance service
+See each directory's README for specific setup instructions.
