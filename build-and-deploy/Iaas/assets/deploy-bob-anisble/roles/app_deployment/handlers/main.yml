@@ -1,28 +1,34 @@
 ---
 # Handlers for Application Deployment
 
-- name: restart backend
+- name: restart backend deployment
   command: oc rollout restart deployment/retail-backend -n {{ namespace }}
-  listen: "restart backend deployment"
+  become: yes
+  become_user: "{{ actual_user | default(ansible_user_id) }}"
 
-- name: restart frontend
+- name: restart frontend deployment
   command: oc rollout restart deployment/retail-frontend -n {{ namespace }}
-  listen: "restart frontend deployment"
+  become: yes
+  become_user: "{{ actual_user | default(ansible_user_id) }}"
 
-- name: restart postgres
+- name: restart postgres deployment
   command: oc rollout restart deployment/retail-postgres -n {{ namespace }}
-  listen: "restart postgres deployment"
+  become: yes
+  become_user: "{{ actual_user | default(ansible_user_id) }}"
 
-- name: wait for backend rollout
+- name: wait backend ready
   command: oc rollout status deployment/retail-backend -n {{ namespace }} --timeout=300s
-  listen: "wait backend ready"
+  become: yes
+  become_user: "{{ actual_user | default(ansible_user_id) }}"
 
-- name: wait for frontend rollout
+- name: wait frontend ready
   command: oc rollout status deployment/retail-frontend -n {{ namespace }} --timeout=300s
-  listen: "wait frontend ready"
+  become: yes
+  become_user: "{{ actual_user | default(ansible_user_id) }}"
 
-- name: wait for postgres rollout
+- name: wait postgres ready
   command: oc rollout status deployment/retail-postgres -n {{ namespace }} --timeout=300s
-  listen: "wait postgres ready"
+  become: yes
+  become_user: "{{ actual_user | default(ansible_user_id) }}"
 
 # Made with Bob

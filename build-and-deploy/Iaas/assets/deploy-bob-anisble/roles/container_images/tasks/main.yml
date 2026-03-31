@@ -387,9 +387,14 @@
 
 - name: Clean up dangling images
   command: podman image prune -f
+  become: yes
+  become_user: "{{ actual_user }}"
   when: cleanup_images | default(true)
   register: image_cleanup
   changed_when: true
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display cleanup status
   debug:

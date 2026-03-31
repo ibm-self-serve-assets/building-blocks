@@ -95,6 +95,9 @@
   become_user: "{{ actual_user }}"
   register: frontend_rebuild
   changed_when: true
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display frontend rebuild status
   debug:
@@ -107,6 +110,9 @@
   become_user: "{{ actual_user }}"
   register: frontend_repush
   changed_when: true
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display frontend push status
   debug:
@@ -117,6 +123,8 @@
     oc set image deployment/retail-frontend
     frontend={{ docker_registry }}/{{ docker_username }}/{{ frontend_image_name }}:{{ frontend_image_tag }}
     -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_image_update
   changed_when: true
 
@@ -126,6 +134,8 @@
 
 - name: Restart frontend deployment
   command: oc rollout restart deployment/retail-frontend -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_restart
   changed_when: true
 
@@ -135,6 +145,8 @@
 
 - name: Wait for frontend rollout to complete
   command: oc rollout status deployment/retail-frontend -n {{ namespace }} --timeout=300s
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_rollout
   changed_when: false
 
