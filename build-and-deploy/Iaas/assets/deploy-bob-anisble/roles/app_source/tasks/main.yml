@@ -51,6 +51,7 @@
   file:
     path: "{{ app_source_dir }}"
     state: absent
+  become: yes
   when: app_dir_check.stat.exists
 
 - name: Clone application repository
@@ -59,7 +60,18 @@
     dest: "{{ app_source_dir }}"
     version: "{{ app_repo_branch }}"
     force: yes
+  become: yes
+  become_user: "{{ actual_user }}"
   register: git_clone_result
+
+- name: Ensure correct ownership of cloned repository
+  file:
+    path: "{{ app_source_dir }}"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    recurse: yes
+    state: directory
+  become: yes
 
 - name: Display clone result
   debug:
