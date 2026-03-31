@@ -56,19 +56,53 @@
   debug:
     msg: "Disk usage: {{ disk_usage.stdout }}%"
 
-- name: Login to Docker Hub
-  command: >
-    podman login {{ docker_registry }}
-    --username {{ docker_username }}
-    --password {{ docker_password }}
+- name: Check if user namespaces are enabled
+  shell: cat /proc/sys/user/max_user_namespaces
+  register: user_namespaces_check
+  changed_when: false
+  failed_when: false
+
+- name: Enable user namespaces if needed
+  shell: echo 15000 > /proc/sys/user/max_user_namespaces
+  become: yes
+  when: user_namespaces_check.stdout | int < 1
+  ignore_errors: yes
+
+- name: Ensure subuid and subgid are configured for user
+  shell: |
+    if ! grep -q "^{{ actual_user }}:" /etc/subuid; then
+      echo "{{ actual_user }}:100000:65536" >> /etc/subuid
+    fi
+    if ! grep -q "^{{ actual_user }}:" /etc/subgid; then
+      echo "{{ actual_user }}:100000:65536" >> /etc/subgid
+    fi
+  become: yes
+  changed_when: false
+  ignore_errors: yes
+
+- name: Create XDG_RUNTIME_DIR for user if it doesn't exist
+  file:
+    path: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    state: directory
+    owner: "{{ actual_user }}"
+    mode: '0700'
+  become: yes
+  ignore_errors: yes
+
+- name: Login to Docker Hub as actual user
+  shell: |
+    echo "{{ docker_password }}" | podman login {{ docker_registry }} --username {{ docker_username }} --password-stdin
   become: yes
   become_user: "{{ actual_user }}"
   no_log: true
   register: docker_login
-  changed_when: "'Login Succeeded' in docker_login.stdout"
+  changed_when: "'Login Succeeded' in docker_login.stdout or docker_login.rc == 0"
   retries: 3
   delay: 5
   until: docker_login.rc == 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display Docker Hub login status
   debug:
@@ -91,6 +125,9 @@
   changed_when: true
   async: 600
   poll: 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Build backend container image
   command: >
@@ -105,6 +142,9 @@
   changed_when: true
   async: 600
   poll: 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Build frontend container image (initial build)
   command: >
@@ -119,6 +159,9 @@
   changed_when: true
   async: 600
   poll: 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display RAG source directory path
   debug:
@@ -149,6 +192,9 @@
   async: 600
   poll: 0
   when: rag_dir_check.stat.exists
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display RAG retrieval source directory path
   debug:
@@ -179,6 +225,9 @@
   async: 600
   poll: 0
   when: rag_retrieval_dir_check.stat.exists
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Wait for PostgreSQL build to complete
   async_status:
@@ -252,6 +301,9 @@
   retries: 3
   delay: 10
   until: postgres_push.rc == 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display PostgreSQL push status
   debug:
@@ -267,6 +319,9 @@
   retries: 3
   delay: 10
   until: backend_push.rc == 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display backend push status
   debug:
@@ -282,6 +337,9 @@
   retries: 3
   delay: 10
   until: frontend_push.rc == 0
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display frontend push status
   debug:
@@ -298,6 +356,9 @@
   delay: 10
   until: rag_push.rc == 0
   when: rag_dir_check.stat.exists
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display RAG push status
   debug:
@@ -315,6 +376,9 @@
   delay: 10
   until: rag_retrieval_push.rc == 0
   when: rag_retrieval_dir_check.stat.exists
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ lookup('pipe', 'id -u ' + actual_user) }}"
+    HOME: "{{ actual_user_home }}"
 
 - name: Display RAG retrieval push status
   debug:
