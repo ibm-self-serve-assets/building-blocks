@@ -1,17 +1,33 @@
 ---
 # Kubernetes Manifests Update Tasks
 
-- name: Get the actual user running the playbook
+- name: Get the actual user running the playbook (when using sudo)
   set_fact:
-    actual_user: "{{ lookup('env', 'SUDO_USER') | default(ansible_user_id, true) }}"
-    actual_user_home: "{{ lookup('env', 'SUDO_USER') | default(ansible_user_id, true) | regex_replace('^(.*)$', '/home/\\1') }}"
-  when: ansible_user_id == 'root'
+    actual_user: "{{ lookup('env', 'SUDO_USER') }}"
+  when:
+    - ansible_user_id == 'root'
+    - lookup('env', 'SUDO_USER') | length > 0
+
+- name: Get the actual user running the playbook (when root without sudo)
+  set_fact:
+    actual_user: "{{ lookup('env', 'USER') | default('root', true) }}"
+  when:
+    - ansible_user_id == 'root'
+    - lookup('env', 'SUDO_USER') | length == 0
 
 - name: Set user facts for non-root execution
   set_fact:
     actual_user: "{{ ansible_user_id }}"
-    actual_user_home: "{{ ansible_env.HOME }}"
   when: ansible_user_id != 'root'
+
+- name: Get home directory for the actual user
+  shell: "getent passwd {{ actual_user }} | cut -d: -f6"
+  register: user_home_result
+  changed_when: false
+
+- name: Set actual user home directory
+  set_fact:
+    actual_user_home: "{{ user_home_result.stdout }}"
 
 - name: Override app_source_dir with actual user's home directory
   set_fact:
