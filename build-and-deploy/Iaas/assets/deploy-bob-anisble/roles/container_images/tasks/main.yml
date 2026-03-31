@@ -61,6 +61,8 @@
     podman login {{ docker_registry }}
     --username {{ docker_username }}
     --password {{ docker_password }}
+  become: yes
+  become_user: "{{ actual_user }}"
   no_log: true
   register: docker_login
   changed_when: "'Login Succeeded' in docker_login.stdout"
@@ -83,6 +85,8 @@
     {{ postgres_dir }}
   args:
     chdir: "{{ postgres_dir }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_build
   changed_when: true
   async: 600
@@ -95,6 +99,8 @@
     {{ backend_dir }}
   args:
     chdir: "{{ backend_dir }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_build
   changed_when: true
   async: 600
@@ -107,6 +113,8 @@
     {{ frontend_dir }}
   args:
     chdir: "{{ frontend_dir }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_build
   changed_when: true
   async: 600
@@ -134,6 +142,8 @@
     {{ rag_source_dir }}
   args:
     chdir: "{{ rag_source_dir }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_build
   changed_when: true
   async: 600
@@ -162,6 +172,8 @@
     {{ rag_retrieval_source_dir }}
   args:
     chdir: "{{ rag_retrieval_source_dir }}"
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_retrieval_build
   changed_when: true
   async: 600
@@ -223,6 +235,8 @@
 - name: Push PostgreSQL image to Docker Hub
   command: >
     podman push {{ docker_registry }}/{{ docker_username }}/{{ postgres_image_name }}:{{ postgres_image_tag }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: postgres_push
   changed_when: true
   retries: 3
@@ -236,6 +250,8 @@
 - name: Push backend image to Docker Hub
   command: >
     podman push {{ docker_registry }}/{{ docker_username }}/{{ backend_image_name }}:{{ backend_image_tag }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: backend_push
   changed_when: true
   retries: 3
@@ -249,6 +265,8 @@
 - name: Push frontend image to Docker Hub
   command: >
     podman push {{ docker_registry }}/{{ docker_username }}/{{ frontend_image_name }}:{{ frontend_image_tag }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: frontend_push
   changed_when: true
   retries: 3
@@ -262,6 +280,8 @@
 - name: Push RAG image to Docker Hub
   command: >
     podman push {{ docker_registry }}/{{ docker_username }}/{{ rag_image_name }}:{{ rag_image_tag }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_push
   changed_when: true
   retries: 3
@@ -277,6 +297,8 @@
 - name: Push RAG retrieval image to Docker Hub
   command: >
     podman push {{ docker_registry }}/{{ docker_username }}/{{ rag_retrieval_image_name }}:{{ rag_retrieval_image_tag }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: rag_retrieval_push
   changed_when: true
   retries: 3
