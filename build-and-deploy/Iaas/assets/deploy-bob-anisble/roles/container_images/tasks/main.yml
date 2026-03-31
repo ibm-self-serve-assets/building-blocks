@@ -1,6 +1,24 @@
 ---
 # Container Image Building and Pushing Tasks
 
+- name: Get the actual user running the playbook
+  set_fact:
+    actual_user: "{{ lookup('env', 'SUDO_USER') | default(ansible_user_id, true) }}"
+    actual_user_home: "{{ lookup('env', 'SUDO_USER') | default(ansible_user_id, true) | regex_replace('^(.*)$', '/home/\\1') }}"
+  when: ansible_user_id == 'root'
+
+- name: Set user facts for non-root execution
+  set_fact:
+    actual_user: "{{ ansible_user_id }}"
+    actual_user_home: "{{ ansible_env.HOME }}"
+  when: ansible_user_id != 'root'
+
+- name: Override paths with actual user's home directory
+  set_fact:
+    app_source_dir: "{{ actual_user_home }}/retailapp"
+    rag_source_dir: "{{ actual_user_home }}/retailapp/data-for-ai/rag-accelerator"
+    rag_retrieval_source_dir: "{{ actual_user_home }}/retailapp/data-for-ai/rag-retrieval-fastapi-server"
+
 - name: Validate required variables
   assert:
     that:

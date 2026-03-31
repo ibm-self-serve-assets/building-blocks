@@ -1,6 +1,22 @@
 ---
 # Database Seed Data Loading Tasks
 
+- name: Get the actual user running the playbook
+  set_fact:
+    actual_user: "{{ lookup('env', 'SUDO_USER') | default(ansible_user_id, true) }}"
+    actual_user_home: "{{ lookup('env', 'SUDO_USER') | default(ansible_user_id, true) | regex_replace('^(.*)$', '/home/\\1') }}"
+  when: ansible_user_id == 'root'
+
+- name: Set user facts for non-root execution
+  set_fact:
+    actual_user: "{{ ansible_user_id }}"
+    actual_user_home: "{{ ansible_env.HOME }}"
+  when: ansible_user_id != 'root'
+
+- name: Override db_seed_path with actual user's home directory
+  set_fact:
+    db_seed_path: "{{ actual_user_home }}/retailapp/postgresql/full_dump.sql"
+
 - name: Verify database seed file exists
   stat:
     path: "{{ db_seed_path }}"
