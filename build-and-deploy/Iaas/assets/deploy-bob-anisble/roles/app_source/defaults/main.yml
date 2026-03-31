@@ -3,6 +3,6 @@
 
 app_repo_url: "https://github.com/SunilManika/retailapp.git"
 app_repo_branch: "main"
-app_source_dir: "~/retailapp"
+app_source_dir: "/tmp/{{ ansible_user_id }}/retailapp"
 
 # Made with Bob

@@ -1,6 +1,34 @@
 ---
 # OpenShift Authentication and Namespace Setup Tasks
 
+- name: Get the actual user running the playbook (when using sudo)
+  set_fact:
+    actual_user: "{{ lookup('env', 'SUDO_USER') }}"
+  when:
+    - ansible_user_id == 'root'
+    - lookup('env', 'SUDO_USER') | length > 0
+
+- name: Get the actual user running the playbook (when root without sudo)
+  set_fact:
+    actual_user: "{{ lookup('env', 'USER') | default('root', true) }}"
+  when:
+    - ansible_user_id == 'root'
+    - lookup('env', 'SUDO_USER') | length == 0
+
+- name: Set user facts for non-root execution
+  set_fact:
+    actual_user: "{{ ansible_user_id }}"
+  when: ansible_user_id != 'root'
+
+- name: Get home directory for the actual user
+  shell: "getent passwd {{ actual_user }} | cut -d: -f6"
+  register: user_home_result
+  changed_when: false
+
+- name: Set actual user home directory
+  set_fact:
+    actual_user_home: "{{ user_home_result.stdout }}"
+
 - name: Verify OpenShift token is provided
   assert:
     that:
@@ -22,9 +50,25 @@
     oc login {{ openshift_server }}
     --token={{ openshift_token }}
     --insecure-skip-tls-verify=true
-  no_log: true
+  become: yes
+  become_user: "{{ actual_user }}"
+  no_log: false
   register: oc_login
   changed_when: "'Logged into' in oc_login.stdout"
+  failed_when: false
+
+- name: Display login error if failed
+  debug:
+    msg:
+      - "Login failed with return code: {{ oc_login.rc }}"
+      - "Error: {{ oc_login.stderr }}"
+      - "Output: {{ oc_login.stdout }}"
+  when: oc_login.rc != 0
+
+- name: Fail if login unsuccessful
+  fail:
+    msg: "OpenShift login failed. Please check credentials and server URL."
+  when: oc_login.rc != 0
 
 - name: Display OpenShift login status
   debug:
@@ -32,6 +76,8 @@
 
 - name: Get current OpenShift user
   command: oc whoami
+  become: yes
+  become_user: "{{ actual_user }}"
   register: oc_user
   changed_when: false
 
@@ -41,12 +87,16 @@
 
 - name: Check if namespace exists
   command: oc get namespace {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: namespace_check
   failed_when: false
   changed_when: false
 
 - name: Create namespace using oc adm new-project if it doesn't exist
   command: oc adm new-project {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: namespace_created
   when: namespace_check.rc != 0
   failed_when: false
@@ -60,6 +110,8 @@
     oc adm policy add-scc-to-user anyuid
     -z default
     -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: anyuid_scc_added
   changed_when: "'added' in anyuid_scc_added.stdout or 'already' not in anyuid_scc_added.stdout"
   failed_when: false
@@ -73,6 +125,8 @@
     oc adm policy add-scc-to-user privileged
     -z default
     -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: privileged_scc_added
   changed_when: "'added' in privileged_scc_added.stdout or 'already' not in privileged_scc_added.stdout"
   failed_when: false
@@ -84,11 +138,16 @@
 - name: Create ServiceAccount manifest from template
   template:
     src: serviceaccount.yaml.j2
-    dest: /tmp/serviceaccount.yaml
-  delegate_to: localhost
+    dest: "{{ actual_user_home }}/.kube/serviceaccount.yaml"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    mode: '0644'
+  become: yes
 
 - name: Apply ServiceAccount
-  command: oc apply -f /tmp/serviceaccount.yaml
+  command: oc apply -f {{ actual_user_home }}/.kube/serviceaccount.yaml
+  become: yes
+  become_user: "{{ actual_user }}"
   register: serviceaccount_created
   changed_when: "'created' in serviceaccount_created.stdout or 'configured' in serviceaccount_created.stdout"
 
@@ -99,11 +158,16 @@
 - name: Create ClusterRole manifest from template
   template:
     src: clusterrole.yaml.j2
-    dest: /tmp/clusterrole.yaml
-  delegate_to: localhost
+    dest: "{{ actual_user_home }}/.kube/clusterrole.yaml"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    mode: '0644'
+  become: yes
 
 - name: Apply ClusterRole
-  command: oc apply -f /tmp/clusterrole.yaml
+  command: oc apply -f {{ actual_user_home }}/.kube/clusterrole.yaml
+  become: yes
+  become_user: "{{ actual_user }}"
   register: clusterrole_created
   changed_when: "'created' in clusterrole_created.stdout or 'configured' in clusterrole_created.stdout"
 
@@ -114,11 +178,16 @@
 - name: Create ClusterRoleBinding manifest from template
   template:
     src: clusterrolebinding.yaml.j2
-    dest: /tmp/clusterrolebinding.yaml
-  delegate_to: localhost
+    dest: "{{ actual_user_home }}/.kube/clusterrolebinding.yaml"
+    owner: "{{ actual_user }}"
+    group: "{{ actual_user }}"
+    mode: '0644'
+  become: yes
 
 - name: Apply ClusterRoleBinding
-  command: oc apply -f /tmp/clusterrolebinding.yaml
+  command: oc apply -f {{ actual_user_home }}/.kube/clusterrolebinding.yaml
+  become: yes
+  become_user: "{{ actual_user }}"
   register: clusterrolebinding_created
   changed_when: "'created' in clusterrolebinding_created.stdout or 'configured' in clusterrolebinding_created.stdout"
 
@@ -131,6 +200,8 @@
     oc adm policy add-scc-to-user anyuid
     -z retail
     -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: retail_anyuid_scc_added
   changed_when: "'added' in retail_anyuid_scc_added.stdout or 'already' not in retail_anyuid_scc_added.stdout"
   failed_when: false
@@ -144,6 +215,8 @@
     oc adm policy add-scc-to-user privileged
     -z retail
     -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: retail_privileged_scc_added
   changed_when: "'added' in retail_privileged_scc_added.stdout or 'already' not in retail_privileged_scc_added.stdout"
   failed_when: false
@@ -154,6 +227,8 @@
 
 - name: Switch to target namespace
   command: oc project {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: oc_project
   changed_when: true
 
@@ -169,6 +244,8 @@
     --docker-password={{ docker_password }}
     --docker-email={{ docker_username }}@example.com
     -n {{ namespace }}
+  become: yes
+  become_user: "{{ actual_user }}"
   register: secret_create
   failed_when: false
   changed_when: "'created' in secret_create.stdout"
@@ -182,6 +259,8 @@
   block:
     - name: Delete existing Docker Hub secret
       command: oc delete secret dockerhub-secret -n {{ namespace }}
+      become: yes
+      become_user: "{{ actual_user }}"
       when: "'AlreadyExists' in secret_create.stderr"
       
     - name: Recreate Docker Hub secret
@@ -192,12 +271,16 @@
         --docker-password={{ docker_password }}
         --docker-email={{ docker_username }}@example.com
         -n {{ namespace }}
+      become: yes
+      become_user: "{{ actual_user }}"
       when: "'AlreadyExists' in secret_create.stderr"
       no_log: true
   when: secret_create.rc != 0 and 'AlreadyExists' in secret_create.stderr
 
 - name: Verify namespace is ready
   command: oc get namespace {{ namespace }} -o jsonpath='{.status.phase}'
+  become: yes
+  become_user: "{{ actual_user }}"
   register: namespace_status
   changed_when: false
 

@@ -8,9 +8,6 @@ from tqdm import tqdm
 from dotenv import load_dotenv
 from pymilvus import MilvusClient
 
-from ibm_watsonx_ai import Credentials
-from ibm_watsonx_ai.foundation_models import Embeddings
-
 from app.src.utils import rag_helper_functions
 from app.src.utils.cos_ops import COSOperations
 from app.src.utils import config
@@ -19,6 +16,7 @@ from app.src.utils.milvus_ops import MilvusOperations
 from app.src.utils.opensearch_ops import OpenSearchOperations
 from app.src.utils.milvus_connection import MilvusConnection
 from app.src.utils.connection_factory import ConnectionFactory
+from app.src.utils.embeddings.factory import EmbeddingFactory
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -70,16 +68,6 @@ opensearch_client = None
 opensearch_connection_args = None
 
 
-def ensure_token_limit(text: str, max_tokens: int) -> str:
-    """
-    Lightweight token limiter using whitespace split.
-    Keeps ingestion safe from model max token violations.
-    """
-    words = text.split()
-    if len(words) > max_tokens:
-        return " ".join(words[:max_tokens])
-    return text
-
 def get_embedding(environment: str, parameters: dict, project_id: str):
     """
     Returns:
@@ -87,40 +75,25 @@ def get_embedding(environment: str, parameters: dict, project_id: str):
         model_config dict (max_tokens, prefix)
         embedding_dimension
     """
-    logger.debug("Initializing embedding model")
-    if environment != "cloud":
-        raise ValueError("Only cloud environment is supported")
-
-    credentials = Credentials(
-        api_key=parameters["watsonx_ai_api_key"],
-        url=parameters["watsonx_url"],
-    )
-
-    model_id = parameters["embedding_model_id"]
+    logger.debug("Initializing embedding model using EmbeddingFactory")
     
-    embedding = Embeddings(
-        model_id=model_id,
-        credentials=credentials,
-        project_id=project_id,
-        verify=True,
-    )
-
-    model_id_lower = model_id.lower()
-
-    if "e5" in model_id_lower:
-        model_config = {
-            "max_tokens": 512,
-            "prefix": "passage: ",
-        }
-    else:
-        model_config = {
-            "max_tokens": 8000,
-            "prefix": "",
-        }
-
+    # Get embedding provider from parameters
+    embedding_provider = parameters.get("embedding_provider", "watsonx")
+    
+    # Add device and local model path for non-watsonx providers
+    if embedding_provider in ["huggingface", "local"]:
+        parameters["device"] = parameters.get("device", "cpu")
+        parameters["local_model_path"] = parameters.get("local_model_path", "")
+        parameters["cache_folder"] = parameters.get("cache_folder", "")
+    
+    # Create embedding instance using factory
+    embedding = EmbeddingFactory.create_embedding(embedding_provider, parameters)
+    
+    # Get model configuration and dimension
+    model_config = embedding.get_model_config()
+    embedding_dim = embedding.get_embedding_dimension()
+    
     logger.debug("Embedding model config: %s", model_config)
-    test_vector = embedding.embed_documents(["test"])[0]
-    embedding_dim = len(test_vector)
     logger.info("Embedding dimension detected: %s", embedding_dim)
 
     return embedding, model_config, embedding_dim
@@ -130,9 +103,6 @@ def generate_hash(content):
 
 def insert_docs_to_milvus(client, collection_name, split_docs, embedding, model_config):
     """Insert documents into Milvus collection."""
-    max_tokens = model_config["max_tokens"]
-    prefix = model_config["prefix"]
-
     with tqdm(total=len(split_docs), desc="Inserting Documents into Milvus", unit="docs") as pbar:
 
         try:
@@ -146,13 +116,8 @@ def insert_docs_to_milvus(client, collection_name, split_docs, embedding, model_
                 valid_docs = []
 
                 for doc in chunk:
-                    safe_text = ensure_token_limit(
-                        doc.page_content,
-                        max_tokens - 20  # safety margin
-                    )
-
-                    formatted_text = f"{prefix}{safe_text}"
-
+                    # Use embedding's format_text method
+                    formatted_text = embedding.format_text(doc.page_content)
                     texts.append(formatted_text)
                     valid_docs.append(doc)
 
@@ -203,9 +168,6 @@ def insert_docs_to_milvus(client, collection_name, split_docs, embedding, model_
 
 def insert_docs_to_opensearch(client, index_name, split_docs, embedding, model_config):
     """Insert documents into OpenSearch index."""
-    max_tokens = model_config["max_tokens"]
-    prefix = model_config["prefix"]
-
     with tqdm(total=len(split_docs), desc="Inserting Documents into OpenSearch", unit="docs") as pbar:
 
         try:
@@ -219,13 +181,8 @@ def insert_docs_to_opensearch(client, index_name, split_docs, embedding, model_c
                 valid_docs = []
 
                 for doc in chunk:
-                    safe_text = ensure_token_limit(
-                        doc.page_content,
-                        max_tokens - 20  # safety margin
-                    )
-
-                    formatted_text = f"{prefix}{safe_text}"
-
+                    # Use embedding's format_text method
+                    formatted_text = embedding.format_text(doc.page_content)
                     texts.append(formatted_text)
                     valid_docs.append(doc)
 
@@ -290,6 +247,7 @@ def ingest_files(payload):
     bucket_name = payload["bucket_name"]
     directory = payload["directory"]
     index_name = payload["index_name"]
+    local_directory = None  # Initialize to track for cleanup
 
     try:
 
@@ -369,6 +327,11 @@ def ingest_files(payload):
             insert_docs_to_milvus(client=client, collection_name=index_name, split_docs=split_docs,
                 embedding=embedding, model_config=model_config)
 
+            # Cleanup: Remove local directory after successful ingestion
+            if os.path.exists(local_directory):
+                shutil.rmtree(local_directory)
+                logger.info(f"Cleaned up local directory: {local_directory}")
+
             return doc_length
 
         elif connection_name == "opensearch_connect":
@@ -383,6 +346,11 @@ def ingest_files(payload):
             insert_docs_to_opensearch(client=client, index_name=index_name, split_docs=split_docs,
                 embedding=embedding, model_config=model_config)
 
+            # Cleanup: Remove local directory after successful ingestion
+            if os.path.exists(local_directory):
+                shutil.rmtree(local_directory)
+                logger.info(f"Cleaned up local directory: {local_directory}")
+
             return doc_length
 
         else:
@@ -393,4 +361,11 @@ def ingest_files(payload):
         logger.exception(
             f"Failed to ingest data in vector database. Please check logs {e}"
         )
+        # Cleanup: Remove local directory even on failure to avoid leaving orphaned files
+        if local_directory and os.path.exists(local_directory):
+            try:
+                shutil.rmtree(local_directory)
+                logger.info(f"Cleaned up local directory after error: {local_directory}")
+            except Exception as cleanup_error:
+                logger.warning(f"Failed to cleanup local directory: {cleanup_error}")
         raise

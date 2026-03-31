@@ -8,5 +8,9 @@ frontend_image_name: "retail-frontend"
 frontend_image_tag: "1.0.0"
 postgres_image_name: "retail-postgres"
 postgres_image_tag: "1.0.0"
+rag_image_name: "retail-rag"
+rag_image_tag: "1.0.0"
+rag_retrieval_image_name: "retail-rag-retrieval"
+rag_retrieval_image_tag: "1.0.0"
 
 # Made with Bob

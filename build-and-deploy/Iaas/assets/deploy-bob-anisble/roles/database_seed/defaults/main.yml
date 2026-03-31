@@ -4,6 +4,6 @@
 db_name: "retaildb"
 db_user: "retail_user"
 db_password: "retail_password"
-db_seed_path: "~/retailapp/postgresql/full_dump.sql"
+db_seed_path: "/tmp/{{ ansible_user_id }}/retailapp/postgresql/full_dump.sql"
 
 # Made with Bob
