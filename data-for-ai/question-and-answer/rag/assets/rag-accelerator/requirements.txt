@@ -40,7 +40,7 @@ beautifulsoup4==4.14.3
 lxml==6.0.2
 
 # HTTP & Async
-aiohttp==3.13.2
+aiohttp==3.13.4
 httpx==0.28.1
 httpx-sse==0.4.3
 requests==2.32.5
