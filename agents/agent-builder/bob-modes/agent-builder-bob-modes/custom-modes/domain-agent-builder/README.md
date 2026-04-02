@@ -23,9 +23,9 @@ No manual setup required — just tell Bob what agent to build and provide your 
 
 ### Step-by-step
 
-1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
+1. **Get the project** — Download the `domain-agent-builder.zip` folder into your project directory, and unzip it.
 
-2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
+2. **Open Bob** and open the project folder (the one containing `domain-agent-builder` folder) in Bob.
 
 3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
 
