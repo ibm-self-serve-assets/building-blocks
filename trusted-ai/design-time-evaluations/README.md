@@ -1,6 +1,6 @@
 # Design-Time Evaluations
 
-Evaluate your **Generative AI** and **Agentic AI** applications before deployment — using [Bob](https://bob.ibm.com) custom modes and IBM watsonx governance.
+Evaluate your **Generative AI** and **Agentic AI** applications before deployment — using [Bob](https://bob.ibm.com) custom modes, IBM watsonx Orchestrate ADK, and IBM watsonx governance SDK.
 
 ## What's Here
 
