@@ -1,6 +1,6 @@
 # WXO Domain Agent Builder using Bob
 
-A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents for your desired domain through an interactive workflow - from start to finish.
+A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents end-to-end through an interactive workflow.
 
 ## What It Does
 
@@ -25,35 +25,23 @@ No manual setup required — just tell Bob what agent to build and provide your 
 
 1. **Get the project** — clone this repo or download the `.bob` folder into your project directory.
 
-💡 **Tip: Download Only This Folder**
-
-    If you don’t want to download the entire repository, you can download just this folder.
-
-    - Copy the URL of this folder (https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/agent-builder/bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder).
-    - Go to: https://download-directory.github.io/.
-    - Paste the folder URL there and press **Return/Enter**.
-
-    This will download only the contents of the selected folder as a ZIP file.
-
 2. **Open Bob** and open the project folder (the one containing `.bob/`) in Bob.
-   
+
 3. **Auto-approve.** On the bottom right, above the text area, click on the sliding button to enable all auto-approve actions except "Questions". 
 
 4. **Ask Bob to build an agent.** For example: *"Build a financial advisor agent"*
 
 5. **Answer Bob's questions.** Bob will ask multiple-choice questions to understand your requirements. Select an option, or click the pencil icon to edit and customize your answer.
 
-6. **Start building the agent.** Bob will create a ToDo list and ask you to run some commands — click **Run** when prompted.
+6. **Provide your API key and instance URL.** When Bob asks, provide your WXO API key and instance URL. When prompted to enter them, **click the pencil icon on the right** and then paste your values in the text area. **Important Note:** **Do not select the default option. Click the pencil icon on the right** and then paste your values in the text area.
 
-7. **Provide your API key and instance URL.** When Bob asks, provide your WXO API key and instance URL. When prompted to enter them, **click the pencil icon on the right** and then paste your values in the text area. **Important Note:** **Do not select the default option. Click the pencil icon on the right** and then paste your values in the text area.
+7. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
 
-8. **Approve commands.** Bob will ask to run a few deployment commands — click **Run** when prompted.
+8. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
 
-9. **Done!** Bob will confirm when deployment is complete. Check your WXO instance to see your new agent deployed and live.
+9. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
 
-10. **Check the business use case.** Open `BUSINESS_USE_CASE.md` in your agent's directory for sample queries. Copy and paste some into the "Quick start prompts" section for your agent in WXO.
-
-11. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
+10. 🎉 Congrats! You’ve successfully built and deployed a tool-augmented agent with RAG capabilities in your custom domain. Enjoy! ✨
 
 ## How It Works: uvx and the WXO ADK
 
@@ -76,6 +64,7 @@ domain-agent-builder/
 ├── README.md                              # This file
 └── .bob/                                  # Bob mode config, rules, and templates
     ├── custom_modes.yaml                  # Bob mode configuration
+    ├── .mcp.json                          # MCP server config (copied to project root during setup)
     ├── rules-domain-agent-builder/        # Rule files Bob reads during the workflow
     │   ├── 1_agent_building_workflow.xml  # 7-phase workflow
     │   ├── 2_domain_examples.xml         # Domain examples
@@ -86,24 +75,20 @@ domain-agent-builder/
         ├── BUSINESS_USE_CASE.md
         ├── README.md
         ├── TROUBLESHOOTING.md
-        ├── agent_original_issues.md
         ├── tools/
         │   ├── account_holder_tools.py
         │   └── communication_tools.py
         ├── data/
         │   ├── account_holders.csv
-        │   ├── compliance_guidelines.md
         │   ├── compliance_guidelines.txt
-        │   ├── investment_policies.md
         │   └── investment_policies.txt
         ├── knowledge_bases/
         │   └── finance_portfolio_kb.yaml
-        ├── scripts/
-        │   ├── deploy_all.sh
-        │   ├── import_tools.sh
-        │   ├── import_kb.sh
-        │   └── deploy_agent.sh
-        └── tests/
+        └── scripts/
+            ├── deploy_all.sh
+            ├── import_tools.sh
+            ├── import_kb.sh
+            └── deploy_agent.sh
 ```
 
 ## Agent Architecture
@@ -147,10 +132,22 @@ The LLM (`groq/openai/gpt-oss-120b`) sits on top and routes:
 
 ## Key Design Decisions
 
+- **Embedded data in tools**: WXO tools run in isolated cloud environments and cannot access local files. Data is embedded as Python dicts directly in tool code.
 - **Tool isolation**: Each tool is self-contained. Tools cannot call other tools. The agent LLM orchestrates multi-tool workflows.
 - **5 tools recommended**: 5 or fewer tools is recommended for optimal performance (typically 3 entity + 1 communication + 1 domain-specific), though agents can use more if needed.
 - **uvx for CLI**: All orchestrate commands use `uvx --from ibm-watsonx-orchestrate` for isolated execution without manual venv activation.
-- **Dynamic env setup**: Before each deployment, Bob recreates the CLI environment with the user's instance URL (`env remove → env add -u URL → env activate`) to avoid stale cached instance URLs. The API key is piped to env activate to avoid interactive prompts.
+- **Dynamic env setup**: Before each deployment, Bob recreates the CLI environment with the user's instance URL (`env remove` → `env add -u URL` → `env activate`) to avoid stale cached instance URLs. The API key is piped to env activate to avoid interactive prompts.
+
+## MCP Servers
+
+The `.bob/.mcp.json` file configures two MCP servers that Bob can leverage during the workflow:
+
+| Server | Purpose |
+|--------|---------|
+| `wxo-docs` | Searches WXO ADK documentation via `SearchIbmWatsonxOrchestrateAdk` |
+| `orchestrate-adk` | Inspects the WXO instance — `list_tools`, `list_agents`, `list_knowledge_bases`, etc. |
+
+During Phase 3 (Project Setup), Bob copies `.bob/.mcp.json` to the project root so the MCP servers become available.
 
 ## Rule Files
 
