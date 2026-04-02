@@ -90,7 +90,7 @@
   when: oc_check.rc != 0
 
 - name: Verify OpenShift CLI installation
-  command: oc version --client
+  command: /usr/local/bin/oc version --client
   register: oc_version
   changed_when: false
 
