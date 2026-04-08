@@ -18,27 +18,27 @@ class COSOperations:
     def __init__(self, bucket_name: str):
         self.bucket_name = bucket_name
         self.cos_service = COSService(bucket_name=bucket_name)
-
-    def get_filtered_keys(self, prefix: str) -> List[str]:
+    
+    def get_filtered_keys(self, prefix: str = "") -> List[str]:
         """
         Fetch all keys and filter by prefix.
+        If prefix is empty, returns all keys.
         """
-
-        logger.info(f"Fetching object keys from bucket: {self.bucket_name}")
-
+        logger.info(f"Fetching object keys from bucket: {self.bucket_name}") 
         all_keys = self.cos_service.get_all_objects_from_cos(download_files=False)
-
         logger.info(f"Total objects in bucket: {len(all_keys)}")
-
+        # If no prefix, return all keys
+        if not prefix or prefix == "":
+            logger.info("No prefix specified, returning all objects")
+            return all_keys
+        
+        # Normalize prefix to end with /
         prefix = prefix.rstrip("/") + "/"
-
         filtered_keys = [
             key for key in all_keys
             if key.startswith(prefix)
         ]
-
         logger.info(f"Objects under prefix '{prefix}': {len(filtered_keys)}")
-
         return filtered_keys
 
     def download_files(

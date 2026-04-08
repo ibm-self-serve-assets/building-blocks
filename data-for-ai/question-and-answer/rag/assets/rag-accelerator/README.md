@@ -144,7 +144,7 @@ class ConnectionFactory:
 
 ## Prerequisites
 
-1. **Python 3.10+** installed locally
+1. **Python 3.12+** installed locally
 2. **Vector Database**: Either Milvus or OpenSearch instance with credentials
 3. **IBM watsonx.ai**: Project with API access
 4. **IBM Cloud Object Storage**: Bucket with documents
@@ -358,16 +358,26 @@ milvus_host = parameters["milvus_host"]
 
 **Headers**:
 ```
-REST_API_KEY: <your-secret-key>
 Content-Type: application/json
 ```
 
-**Request Body**:
+**Request Body Examples**:
+
+**Example 1: Ingest from specific directory**
 ```json
 {
     "bucket_name": "my-documents-bucket",
     "directory": "documents/pdfs/",
-    "index_name": "my_index",
+    "index_name": "pdf_docs_index",
+    "connection_name": "opensearch_connect"
+}
+```
+**Example 1:  Ingest all files from bucket root**
+```json
+{
+    "bucket_name": "my-documents-bucket",
+    "directory": "",
+    "index_name": "all_docs_index",
     "connection_name": "opensearch_connect"
 }
 ```
