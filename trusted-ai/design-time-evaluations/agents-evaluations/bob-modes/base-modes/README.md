@@ -149,8 +149,7 @@ Requires `uvx` — install with `pip install uv`.
 
 ## Troubleshooting
 
-<details>
-<summary><strong>Troubleshooting Error:</strong> 'meta-llama/llama-3-405b-instruct' was not found</summary>
+**Troubleshooting Error:</strong> 'meta-llama/llama-3-405b-instruct' was not found**
 If you encounter this error then:
     
 1. create the following `config.yaml` at `lab-4-agent-ops/assets/config.yaml`:
@@ -176,7 +175,6 @@ orchestrate evaluations evaluate \
   --config ../config.yaml
 ```
 
-</details>
 
 
 
