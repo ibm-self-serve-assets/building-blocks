@@ -149,7 +149,7 @@ Requires `uvx` — install with `pip install uv`.
 
 ## Troubleshooting
 
-**Troubleshooting Error:</strong> 'meta-llama/llama-3-405b-instruct' was not found**
+**Troubleshooting Error: 'meta-llama/llama-3-405b-instruct' was not found**
 
 
 If you encounter this error then:
