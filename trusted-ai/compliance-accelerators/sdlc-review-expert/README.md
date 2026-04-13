@@ -95,6 +95,8 @@ The **🏛️ Architecture Review** mode is the primary orchestrator that conduc
 
 Each specialized mode focuses on a specific aspect of architecture review. See the [Detailed Skills Documentation](#detailed-skills-documentation) section for complete information about each skill.
 
+![](./images/architecture-review.png)
+
 ### 🔒 Security & Threat Modeling
 - OWASP Top 10, STRIDE threat modeling
 - Authentication, authorization, encryption
@@ -151,6 +153,8 @@ The **🔍 Configuration Gap Detector** identifies when current configuration is
 ---
 
 ## Detailed Skills Documentation
+
+![](./images/skills-review.png)
 
 ### Skill 1: Business Alignment Review
 
