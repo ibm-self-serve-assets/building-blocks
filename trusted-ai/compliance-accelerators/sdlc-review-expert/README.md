@@ -138,6 +138,8 @@ Each specialized mode focuses on a specific aspect of architecture review. See t
 
 The **🔍 Configuration Gap Detector** identifies when current configuration is insufficient and proposes new capabilities based on research from authoritative sources.
 
+![](./images/configuration-gap-detector.png)
+
 ### Key Capabilities
 - Gap detection in domain knowledge or workflows
 - Research-backed proposals using browser capabilities
