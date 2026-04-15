@@ -1,44 +1,35 @@
-# Vector Search
+# Vector Search Capability
 
-Vector-based retrieval services for GenAI pipelines, enabling semantic similarity search for RAG applications.
+## Building Blocks
 
-## What's Included
+### 1. Milvus
+**Location**: `milvus/`  
+**IBM Products**: Milvus, watsonx.data  
+**Description**: Vector database for semantic search
 
-### Milvus
+**Quick Start**:
+```bash
+cd milvus/data-ingestion-asset
+cp .env.example .env
+# Edit .env with your credentials
+pip install -r requirements.txt
+python main.py
+```
 
-High-performance vector database optimized for billion-scale vector search.
+### 2. OpenSearch
+**Location**: `opensearch/`  
+**IBM Products**: watsonx.data OpenSearch  
+**Description**: OpenSearch with vector search capabilities
 
-- **[Data Ingestion Asset](./milvus/assets/data-ingestion-asset/)**: FastAPI service for document ingestion
+**Status**: See individual asset README
 
-### OpenSearch
+### 3. DataStax Astra DB
+**Location**: `datastax-astradb/`  
+**IBM Products**: DataStax Astra DB  
+**Description**: Cloud-native NoSQL with vector search
 
-Open-source search and analytics engine with vector search capabilities.
+**Status**: See individual asset README
 
-- **[Assets](./opensearch/assets/)**: Integration examples and configurations
+---
 
-### Datastax Astra DB
-
-Cloud-native serverless vector database built on Apache Cassandra.
-
-- **[Assets](./datastax-astradb/assets/)**: Configuration and setup guides
-
-## Quick Start
-
-1. **Choose your vector database**:
-   - **Milvus**: For high-performance, large-scale deployments
-   - **OpenSearch**: For hybrid search and analytics
-   - **Datastax Astra DB**: For serverless, globally distributed applications
-
-2. **Navigate to the specific directory**:
-   ```bash
-   # For Milvus
-   cd milvus/assets/data-ingestion-asset/
-   
-   # For OpenSearch
-   cd opensearch/
-   
-   # For Astra DB
-   cd datastax-astradb/
-   ```
-
-3. **Follow the detailed README** in each directory for setup instructions
+For detailed setup, see individual component READMEs.

@@ -1,0 +1,59 @@
+          env:
+            - name: APP_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: APP_API_KEY
+            - name: IBM_CLOUD_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: IBM_CLOUD_API_KEY
+            - name: TEXT_TO_SQL_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: TEXT_TO_SQL_ENDPOINT
+            - name: WXD_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key:  WXD_PROJECT_ID
+            - name: PRESTO_HOSTNAME
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_HOSTNAME
+            - name: PRESTO_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_PORT
+            - name: PRESTO_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_USERNAME
+            - name: PRESTO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_PASSWORD
+            - name: PRESTO_CATALOG
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_CATALOG
+            - name: PRESTO_SCHEMA
+              valueFrom:
+                secretKeyRef:
+                  name: <secret-name>
+                  key: PRESTO_SCHEMA
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault

@@ -1,0 +1,281 @@
+<rag_builder_workflow>
+  <overview>
+    This workflow guides you through designing and implementing Retrieval-Augmented Generation (RAG)
+    systems using IBM Watsonx and other vector database technologies.
+  </overview>
+
+  <initialization>
+    <step number="1">
+      <title>Understand RAG Requirements</title>
+      <actions>
+        <action>Identify document sources and formats</action>
+        <action>Determine embedding model requirements</action>
+        <action>Define retrieval accuracy and latency targets</action>
+        <action>Understand query patterns and use cases</action>
+        <action>Assess scale requirements (document count, query volume)</action>
+      </actions>
+    </step>
+
+    <step number="2">
+      <title>Review Existing RAG Infrastructure</title>
+      <tools>
+        <tool>read_file - Review existing RAG implementations</tool>
+        <tool>list_code_definition_names - Understand current components</tool>
+        <tool>search_files - Find RAG-related code patterns</tool>
+      </tools>
+      <what_to_look_for>
+        <item>Document processing pipelines</item>
+        <item>Embedding generation logic</item>
+        <item>Vector database configurations</item>
+        <item>Retrieval and reranking strategies</item>
+        <item>LLM integration patterns</item>
+      </what_to_look_for>
+    </step>
+  </initialization>
+
+  <main_workflow>
+    <phase name="architecture_design">
+      <title>Design RAG Architecture</title>
+      <steps>
+        <step>Select appropriate RAG architecture pattern</step>
+        <step>Choose vector database technology</step>
+        <step>Select embedding model</step>
+        <step>Design document processing pipeline</step>
+        <step>Plan retrieval and reranking strategy</step>
+      </steps>
+      <architecture_patterns>
+        <pattern name="naive_rag">
+          <description>Simple retrieval and generation</description>
+          <use_case>Basic Q&A, simple knowledge bases</use_case>
+          <components>Document loader → Chunker → Embeddings → Vector DB → Retriever → LLM</components>
+        </pattern>
+        <pattern name="advanced_rag">
+          <description>Enhanced with preprocessing and postprocessing</description>
+          <use_case>Production systems requiring better accuracy</use_case>
+          <enhancements>Query rewriting, reranking, context compression</enhancements>
+        </pattern>
+        <pattern name="modular_rag">
+          <description>Flexible pipeline with interchangeable components</description>
+          <use_case>Complex systems with multiple data sources</use_case>
+          <features>Multiple retrievers, fusion strategies, adaptive retrieval</features>
+        </pattern>
+        <pattern name="agentic_rag">
+          <description>Agent-based with tool use and reasoning</description>
+          <use_case>Complex queries requiring multi-step reasoning</use_case>
+          <capabilities>Tool selection, iterative refinement, self-correction</capabilities>
+        </pattern>
+      </architecture_patterns>
+    </phase>
+
+    <phase name="document_processing">
+      <title>Implement Document Processing Pipeline</title>
+      <steps>
+        <step>Configure document loaders for source formats</step>
+        <step>Implement text extraction and cleaning</step>
+        <step>Design chunking strategy</step>
+        <step>Extract and preserve metadata</step>
+        <step>Generate embeddings with IBM Watsonx</step>
+        <step>Store vectors in database</step>
+      </steps>
+      <chunking_strategies>
+        <strategy name="fixed_size">
+          <description>Fixed character/token count with overlap</description>
+          <pros>Simple, predictable chunk sizes</pros>
+          <cons>May split semantic units</cons>
+          <best_for>General purpose, uniform documents</best_for>
+        </strategy>
+        <strategy name="recursive">
+          <description>Split on multiple delimiters hierarchically</description>
+          <pros>Respects document structure</pros>
+          <cons>Variable chunk sizes</cons>
+          <best_for>Structured documents (markdown, code)</best_for>
+        </strategy>
+        <strategy name="semantic">
+          <description>Split based on semantic boundaries</description>
+          <pros>Preserves meaning, better retrieval</pros>
+          <cons>More complex, slower</cons>
+          <best_for>High-quality retrieval requirements</best_for>
+        </strategy>
+        <strategy name="token_based">
+          <description>Split based on token count</description>
+          <pros>Matches LLM token limits</pros>
+          <cons>Requires tokenizer</cons>
+          <best_for>LLM context window optimization</best_for>
+        </strategy>
+      </chunking_strategies>
+    </phase>
+
+    <phase name="embedding_generation">
+      <title>Configure Embedding Generation</title>
+      <steps>
+        <step>Select embedding model from IBM Watsonx</step>
+        <step>Configure batch processing for efficiency</step>
+        <step>Implement error handling and retries</step>
+        <step>Monitor embedding costs and performance</step>
+        <step>Cache embeddings when appropriate</step>
+      </steps>
+      <ibm_watsonx_models>
+        <model name="ibm/slate-125m-english-rtrvr">
+          <dimensions>768</dimensions>
+          <use_case>General English text retrieval</use_case>
+          <performance>Fast, cost-effective</performance>
+        </model>
+        <model name="ibm/slate-30m-english-rtrvr">
+          <dimensions>384</dimensions>
+          <use_case>Lightweight retrieval</use_case>
+          <performance>Very fast, lower cost</performance>
+        </model>
+      </ibm_watsonx_models>
+    </phase>
+
+    <phase name="vector_database_setup">
+      <title>Configure Vector Database</title>
+      <steps>
+        <step>Create collection/index with appropriate schema</step>
+        <step>Configure vector dimensions to match embeddings</step>
+        <step>Select distance metric (cosine, L2, dot product)</step>
+        <step>Configure indexing algorithm</step>
+        <step>Set up metadata filtering capabilities</step>
+      </steps>
+      <database_selection>
+        <option name="opensearch">
+          <pros>Hybrid search (BM25 + vectors), mature ecosystem</pros>
+          <cons>More complex setup</cons>
+          <best_for>Production systems needing hybrid search</best_for>
+        </option>
+        <option name="milvus">
+          <pros>High performance, scalable, purpose-built</pros>
+          <cons>Separate deployment required</cons>
+          <best_for>Large-scale vector search</best_for>
+        </option>
+        <option name="chroma">
+          <pros>Simple, embedded, good for development</pros>
+          <cons>Limited scalability</cons>
+          <best_for>Prototyping, small-scale applications</best_for>
+        </option>
+      </database_selection>
+    </phase>
+
+    <phase name="retrieval_optimization">
+      <title>Optimize Retrieval Quality</title>
+      <steps>
+        <step>Implement semantic search with vector similarity</step>
+        <step>Add metadata filtering for precision</step>
+        <step>Configure hybrid search if available</step>
+        <step>Implement reranking for better results</step>
+        <step>Tune retrieval parameters (top_k, similarity threshold)</step>
+      </steps>
+      <optimization_techniques>
+        <technique name="query_expansion">
+          <description>Expand query with synonyms or related terms</description>
+          <implementation>Use LLM to generate query variations</implementation>
+        </technique>
+        <technique name="hypothetical_documents">
+          <description>Generate hypothetical answer, embed and search</description>
+          <implementation>HyDE (Hypothetical Document Embeddings)</implementation>
+        </technique>
+        <technique name="reranking">
+          <description>Reorder retrieved results using cross-encoder</description>
+          <implementation>Use reranking model after initial retrieval</implementation>
+        </technique>
+        <technique name="context_compression">
+          <description>Compress retrieved context to fit LLM window</description>
+          <implementation>Extract most relevant sentences/passages</implementation>
+        </technique>
+      </optimization_techniques>
+    </phase>
+
+    <phase name="llm_integration">
+      <title>Integrate with LLM</title>
+      <steps>
+        <step>Configure IBM Watsonx LLM connection</step>
+        <step>Design prompt template with retrieved context</step>
+        <step>Implement context window management</step>
+        <step>Add citation and source tracking</step>
+        <step>Handle edge cases (no results, low confidence)</step>
+      </steps>
+      <prompt_engineering>
+        <best_practice>Include clear instructions for using context</best_practice>
+        <best_practice>Request citations to retrieved sources</best_practice>
+        <best_practice>Handle cases where context doesn't answer question</best_practice>
+        <best_practice>Optimize prompt length for token efficiency</best_practice>
+      </prompt_engineering>
+    </phase>
+
+    <phase name="evaluation">
+      <title>Evaluate RAG System</title>
+      <steps>
+        <step>Create evaluation dataset with ground truth</step>
+        <step>Measure retrieval metrics</step>
+        <step>Measure generation quality</step>
+        <step>Conduct end-to-end testing</step>
+        <step>Iterate based on results</step>
+      </steps>
+      <evaluation_metrics>
+        <retrieval_metrics>
+          <metric name="precision_at_k">Relevant docs in top-k results</metric>
+          <metric name="recall_at_k">Proportion of relevant docs retrieved</metric>
+          <metric name="mrr">Mean Reciprocal Rank</metric>
+          <metric name="ndcg">Normalized Discounted Cumulative Gain</metric>
+        </retrieval_metrics>
+        <generation_metrics>
+          <metric name="faithfulness">Answer grounded in retrieved context</metric>
+          <metric name="relevance">Answer addresses the question</metric>
+          <metric name="coherence">Answer is well-formed and logical</metric>
+          <metric name="citation_accuracy">Citations match sources</metric>
+        </generation_metrics>
+      </evaluation_metrics>
+    </phase>
+
+    <phase name="mcp_server_development">
+      <title>Build MCP Server for RAG Tools</title>
+      <steps>
+        <step>Design MCP tool interfaces</step>
+        <step>Implement ingestion tools</step>
+        <step>Implement retrieval tools</step>
+        <step>Add configuration management</step>
+        <step>Implement error handling and logging</step>
+        <step>Deploy as SSE or stdio server</step>
+      </steps>
+      <mcp_tools>
+        <tool name="ingest_documents">
+          <purpose>Ingest documents into RAG system</purpose>
+          <parameters>source_path, chunk_size, metadata</parameters>
+        </tool>
+        <tool name="search_knowledge_base">
+          <purpose>Search vector database</purpose>
+          <parameters>query, top_k, filters</parameters>
+        </tool>
+        <tool name="ask_question">
+          <purpose>End-to-end RAG query</purpose>
+          <parameters>question, context_size, include_sources</parameters>
+        </tool>
+      </mcp_tools>
+    </phase>
+  </main_workflow>
+
+  <ibm_cloud_integration>
+    <component name="ibm_cos">
+      <purpose>Store source documents</purpose>
+      <usage>Document ingestion pipeline source</usage>
+    </component>
+    <component name="ibm_watsonx_embeddings">
+      <purpose>Generate vector embeddings</purpose>
+      <usage>Convert text to vectors for similarity search</usage>
+    </component>
+    <component name="ibm_watsonx_llm">
+      <purpose>Generate answers from context</purpose>
+      <usage>Final answer generation in RAG pipeline</usage>
+    </component>
+  </ibm_cloud_integration>
+
+  <completion_criteria>
+    <criterion>Documents are successfully ingested and chunked</criterion>
+    <criterion>Embeddings are generated and stored in vector database</criterion>
+    <criterion>Retrieval returns relevant results</criterion>
+    <criterion>LLM generates accurate answers with citations</criterion>
+    <criterion>System meets performance requirements</criterion>
+    <criterion>Evaluation metrics meet targets</criterion>
+    <criterion>MCP server (if applicable) is functional</criterion>
+  </completion_criteria>
+</rag_builder_workflow>
