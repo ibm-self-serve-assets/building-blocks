@@ -1,24 +1,24 @@
 # 🚀 Multi-Agent Orchestration Bob Modes - Setup Guide
 
-This directory contains custom Bob modes for building multi-agent orchestration systems with watsonx Orchestrate and MCP (Model Context Protocol) servers. Follow the instructions below to import and use these modes in your Bob projects.
+This directory contains custom Bob modes for building multi-agent orchestration systems with watsonx Orchestrate. Follow the instructions below to import and use these modes in your Bob projects.
 
 ## 📦 Available Modes
 
 ### Base Mode
-- **[multi-agent-orchestration-base-mode](./bob-modes/base-modes/multiagent-orchestration-bob-modes/base-modes/multi-agent-orchestration-base-mode.zip)** - Foundation mode for building production-grade AI agents, MCP servers, and multi-agent workflows
+- **multi-agent-orchestration-base-mode** - Foundation mode for building production-grade AI agents, MCP servers, and multi-agent workflows
 
 ### Custom Modes
-- **[agent-model-gateway-bob-mode](./bob-modes/base-modes/multiagent-orchestration-bob-modes/custom-modes/agent-model-gateway-bob-mode.zip)** - Comprehensive mode for integrating third-party LLM models into watsonx Orchestrate via the AI Gateway
+- **agent-model-gateway-bob-mode** - Comprehensive mode for integrating third-party LLM models into watsonx Orchestrate via the AI Gateway
 
 ---
 
 ## 🆕 For New Projects
 
-When working with a **new project**, there are no existing custom modes. You can directly add the multi-agent orchestration mode.
+When working with a **new project**, there are no existing custom modes. You can directly add any multi-agent orchestration mode.
 
 ### 📁 Add Mode Configuration
 
-1. **Download and extract** the mode's `.zip` file from the `base-modes/` folder
+1. **Download and extract** the desired mode's `.zip` file from the `base-modes/` or `custom-modes/` folder
 2. **Open your project** in Bob UI
 3. **Navigate** to the project workspace (file explorer)
 4. **Copy the `.bob` folder** from the extracted mode:
@@ -27,7 +27,7 @@ When working with a **new project**, there are no existing custom modes. You can
 .bob/
 ├── custom_modes.yaml
 └── rules/
-    └── multi-agent-orchestration/
+    └── [mode-name]/
         └── [mode rules files]
 ```
 
@@ -39,7 +39,7 @@ your-project/
 ├── .bob/
 │   ├── custom_modes.yaml
 │   └── rules/
-│       └── multi-agent-orchestration/
+│       └── [mode-name]/
 └── [your project files]
 ```
 
@@ -69,9 +69,9 @@ If your project already has custom modes configured, follow these steps carefull
 
 ### ✏️ Append New Mode Configuration
 
-1. **Download and extract** the mode's `.zip` file
+1. **Download and extract** the desired mode's `.zip` file
 2. **Open** `.bob/custom_modes.yaml` in the Bob UI editor
-3. **Add** the multi-agent orchestration mode at the end of the file
+3. **Add** the new multi-agent orchestration mode at the end of the file
 
 #### Example:
 
@@ -85,7 +85,7 @@ If your project already has custom modes configured, follow these steps carefull
   name: Existing Mode 2
   # ... existing configuration ...
 
-# Add multi-agent orchestration mode
+# Add new multi-agent orchestration mode
 - slug: multi-agent-orchestration
   name: 🤖 Multi-Agent Orchestration
   # ... new mode configuration ...
@@ -105,7 +105,7 @@ If your project already has custom modes configured, follow these steps carefull
 └── rules/
     ├── existing-mode-1/
     ├── existing-mode-2/
-    └── multi-agent-orchestration/
+    └── [new-multi-agent-mode]/
 ```
 
 👉 Do **not modify or delete existing rule folders**
@@ -119,7 +119,7 @@ After completing the setup:
 - Go to **Modes / Custom Modes**
 - Confirm:
   - Existing modes are still available
-  - Multi-agent orchestration mode appears
+  - New multi-agent orchestration mode appears
 - Open the mode and ensure no configuration errors are shown
 
 ---
@@ -130,103 +130,23 @@ After completing the setup:
 - Keep each mode isolated under its own rules folder
 - Validate YAML formatting carefully (indentation matters)
 - Reload the UI if changes are not reflected immediately
-- Review the mode-specific README for prerequisites and usage instructions
+- Review each mode's specific README for prerequisites and usage instructions
 
 ---
 
 ## 📚 Mode-Specific Documentation
 
-The base mode has detailed documentation:
+Each mode has its own detailed README with specific instructions:
 
-- **Multi-Agent Orchestration Base Mode**: See `multiagent-orchestration-bob-modes/base-modes/multi-agent-orchestration-base-mode/README.md`
+- **Multi-Agent Orchestration Base Mode**: See `multiagent-orchestration-bob-modes/base-modes/README.md`
   - Prerequisites: watsonx Orchestrate ADK, Python 3.10+, MCP SDK
   - Builds production-grade AI agents and MCP servers
   - Supports watsonx Orchestrate agent development
   - Includes MCP server development capabilities
-
----
-
-## 🔧 Prerequisites
-
-Before using this mode, ensure you have:
-
-### Required
-- **IBM Bob** - Latest version
-- **watsonx Orchestrate ADK**: `pip install ibm-watsonx-orchestrate`
-- **Python 3.10+**
-- **watsonx Orchestrate environment** with API access
-
-### For MCP Server Development
-- **MCP SDK**: `pip install mcp` (Python) or `npm install @modelcontextprotocol/sdk` (TypeScript)
-- **Node.js 18+** (for TypeScript/Node.js MCP servers)
-
-### MCP Servers Configuration
-Follow the MCP server installation instructions in the base mode README to configure:
-1. **watsonx Orchestrate ADK Documentation Server** - Queries ADK documentation
-2. **watsonx Orchestrate ADK Execution Server** - Direct access to ADK commands
-
----
-
-## 🎯 What You Can Build
-
-With this mode, you can:
-
-### watsonx Orchestrate Agents
-- Build production-grade AI agents
-- Create custom tools and integrations
-- Configure knowledge bases and RAG capabilities
-- Set up voice configurations and channels
-- Deploy and manage agents in watsonx Orchestrate
-
-### MCP Servers
-- Build Python MCP servers
-- Build TypeScript/Node.js MCP servers
-- Implement file system operations
-- Create API integrations (GitHub, databases, etc.)
-- Convert between stdio and SSE transports
-- Add resource support for documentation
-
-### Multi-Agent Systems
-- Orchestrate multiple agents working together
-- Design agent communication patterns
-- Implement workflow coordination
-- Build complex agent hierarchies
-
----
-
-## 💡 Quick Start Tips
-
-1. **Install prerequisites first** - Ensure ADK and MCP SDK are installed
-2. **Configure MCP servers** - Follow the base mode README for MCP setup
-3. **Start with simple agents** - Build basic agents before complex orchestration
-4. **Use ADK documentation** - The mode has access to full ADK documentation
-5. **Enable auto-approve** - In Bob UI for smoother workflows (except for questions)
-
----
-
-## 📖 Usage Examples
-
-### Building watsonx Orchestrate Agents
-```
-"Create a customer service agent with order tracking tools"
-"Build an agent with RAG capabilities for product documentation"
-"Add a voice configuration for phone channel integration"
-```
-
-### Building MCP Servers
-```
-"Create a Python MCP server for file system operations"
-"Build a TypeScript MCP server that integrates with GitHub API"
-"Add a tool to query PostgreSQL database with proper security"
-"Convert my stdio server to use SSE transport for remote access"
-```
-
-### Multi-Agent Orchestration
-```
-"Design a multi-agent system for customer support workflow"
-"Create an orchestration pattern for research and analysis agents"
-"Build a supervisor agent that coordinates specialist agents"
-```
+  
+- **Agent Model Gateway Mode**: See `multiagent-orchestration-bob-modes/custom-modes/agent-model-gateway-bob-mode/README.md`
+  - Prerequisites: Bob, watsonx Orchestrate access, third-party LLM API keys
+  - Integrates external models (OpenAI, Anthropic, Google) into watsonx Orchestrate
 
 ---
 
@@ -234,17 +154,27 @@ With this mode, you can:
 
 After completing these steps:
 
-- Multi-agent orchestration mode will be available in Bob UI
+- Your chosen multi-agent orchestration mode will be available in Bob UI
 - Existing modes (if any) will continue to function without disruption
-- You can start building agents, MCP servers, and orchestration systems
-- Bob will have access to watsonx Orchestrate ADK documentation and commands
+- You can start building agents, MCP servers, and orchestration systems using the imported mode
+- Follow the mode-specific README for detailed usage instructions
+
+---
+
+## 💡 Quick Start Tips
+
+1. **Start with base mode** if you're new to multi-agent orchestration
+2. **Choose agent-model-gateway-bob-mode** for integrating third-party LLM models
+3. **Read mode-specific READMEs** before starting your first project
+4. **Install prerequisites** (ADK, MCP SDK) before using the modes
+5. **Enable auto-approve** in Bob UI for smoother workflows (except for questions)
 
 ---
 
 ## 🆘 Need Help?
 
-- Check the base mode README for detailed instructions and MCP server setup
-- Review the ADK documentation at https://developer.watson-orchestrate.ibm.com/
+- Check the mode-specific README files for detailed instructions
+- Review the example projects included in each mode
 - Ensure all prerequisites are installed before starting
-- Verify your watsonx Orchestrate API credentials are correctly configured
-- Test MCP server connections in Bob's MCP settings
+- Verify your API keys and credentials are correctly configured
+- Visit the watsonx Orchestrate documentation at https://developer.watson-orchestrate.ibm.com/
