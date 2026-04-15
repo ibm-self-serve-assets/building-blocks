@@ -5,7 +5,7 @@ starlette==0.50.0
 pydantic==2.12.5
 pydantic-settings==2.12.0
 pydantic_core==2.41.5
-python-multipart==0.0.20
+python-multipart==0.0.26
 ipywidgets==8.1.8
 
 # IBM Cloud Services
