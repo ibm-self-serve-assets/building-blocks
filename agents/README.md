@@ -12,7 +12,7 @@ Review the accelerators inside the repo:
 
 - [agent-builder](./agent-builder)
 - [multi-agent-orchestration](./multi-agent-orchestration)
-- [agent-gateway](./agent-gateway)
+- [agent-harness](./agent-harness)
 
 
 Follow the documentation in each folder to integrate the accelerator into your application.

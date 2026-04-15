@@ -52,4 +52,4 @@ Download and install Bob modes for guided agent development:
 ## Related Building Blocks
 
 - [Multi-Agent Orchestration](../multi-agent-orchestration/)
-- [Agent Gateway](../agent-gateway/)
+- [Agent Harness](../agent-harness/)

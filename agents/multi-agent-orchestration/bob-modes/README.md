@@ -5,7 +5,10 @@ This directory contains custom Bob modes for building multi-agent orchestration 
 ## 📦 Available Modes
 
 ### Base Mode
-- **multi-agent-orchestration-base-mode** - Foundation mode for building production-grade AI agents, MCP servers, and multi-agent workflows
+- **[multi-agent-orchestration-base-mode](./bob-modes/base-modes/multiagent-orchestration-bob-modes/base-modes/multi-agent-orchestration-base-mode.zip)** - Foundation mode for building production-grade AI agents, MCP servers, and multi-agent workflows
+
+### Custom Modes
+- **[agent-model-gateway-bob-mode](./bob-modes/base-modes/multiagent-orchestration-bob-modes/custom-modes/agent-model-gateway-bob-mode.zip)** - Comprehensive mode for integrating third-party LLM models into watsonx Orchestrate via the AI Gateway
 
 ---
 
