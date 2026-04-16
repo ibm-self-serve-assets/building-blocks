@@ -2,6 +2,20 @@
 
 **AI-powered analysis and comprehension of legacy codebases using IBM Bob custom modes to accelerate modernization initiatives.**
 
+---
+
+## 🔗 Navigation
+
+**Modernize Building Blocks:**
+- [← Back to Modernize](../README.md)
+- [Middleware Modernization →](../middleware/README.md)
+
+**Other Categories:**
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
+- [Optimize](../../optimize/finops/README.md)
+
+---
+
 ## Overview
 
 Legacy Code Understanding provides AI-assisted capabilities to analyze, document, and comprehend complex legacy codebases. By leveraging IBM Bob custom modes, development teams can rapidly understand legacy systems, identify modernization opportunities, and reduce technical debt.
@@ -261,14 +275,23 @@ Deploy analysis tools and results to IBM Cloud.
 ## Resources
 
 ### Documentation
-- [IBM Bob Custom Modes Guide](../../agents/multi-agent-orchestration/bob-modes/README.md)
 - [Modernization Best Practices](#)
 - [Legacy Code Patterns](#)
 
 ### Related Building Blocks
-- [Infrastructure as Code](../../build-and-deploy/Iaas/README.md)
-- [Code Assistant](../../build/automation-core/build/code-assistant.md)
-- [Application Observability](../../build/automation-core/observe/application-observability.md)
+
+**Build & Deploy:**
+- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
+- [Non-Human Identity](../../build-and-deploy/non-human-identity/README.md) - IBM Security Verify
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
+- [Quantum-Safe](../../build-and-deploy/quantum-safe/README.md) - IBM Guardium Crypto Manager
+
+**Modernize:**
+- [Middleware Modernization](../middleware/README.md) - Java middleware transformation
+
+**Optimize:**
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic/Apptio
+- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
 
 ## Support and Contribution
 

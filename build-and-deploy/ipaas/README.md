@@ -17,15 +17,15 @@
 
 ## 🔗 Navigation
 
-**Building Blocks:**
-- [← IaaS Building Blocks](../Iaas/README.md)
+**Build & Deploy Building Blocks:**
 - [← Back to Build & Deploy](../README.md)
-- [Authentication Management](../authentication-mgmt/README.md)
-- [Code Assistant](../code-assistant/README.md)
+- [← IaaS](../Iaas/README.md)
+- [Non-Human Identity →](../non-human-identity/README.md)
+- [Quantum-Safe →](../quantum-safe/README.md)
 
 **Other Categories:**
-- [Observe Building Blocks](../../observe/application-observability/README.md)
-- [Optimize Building Blocks](../../optimize/finops/README.md)
+- [Modernize](../../modernize/legacy-code-understanding/README.md)
+- [Optimize](../../optimize/finops/README.md)
 
 ---
 
@@ -160,20 +160,20 @@ ibm-ipaas-demo/
 ## 📚 Related Resources
 
 ### Build & Deploy Building Blocks
-- [Authentication Management](../authentication-mgmt/README.md) - IBM Security Verify integration
-- [Code Assistant](../code-assistant/README.md) - AI-powered code assistance
-- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Terraform-based infrastructure
+- [Non-Human Identity](../non-human-identity/README.md) - IBM Security Verify integration
+- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Ansible and Terraform automation
   - [Ansible Deployment](../Iaas/assets/deploy-bob-anisble/README.md)
   - [Retail Application](../Iaas/assets/retailapp/README.md)
+- [Quantum-Safe](../quantum-safe/README.md) - IBM Guardium Crypto Manager
 
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
-  - [Dashboard Application](../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+### Modernize Building Blocks
+- [Legacy Code Understanding](../../modernize/legacy-code-understanding/README.md) - AI-powered code analysis
+- [Middleware Modernization](../../modernize/middleware/README.md) - Java middleware transformation
 
 ### Optimize Building Blocks
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
-- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic/Apptio
+  - [IBM Bob Apptio Mode](../../optimize/finops/ibm-bob-apptio-mode.md)
+- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
 
 ---
 

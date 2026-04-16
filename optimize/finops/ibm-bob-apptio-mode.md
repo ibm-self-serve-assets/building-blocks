@@ -18,13 +18,14 @@
 
 ## 🔗 Navigation
 
-**FinOps Building Blocks:**
+**Optimize Building Blocks:**
 - [← Back to FinOps](./README.md)
+- [← Back to Optimize](../README.md)
 - [Automated Resource Management →](../automated-resource-mgmt/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
-- [Observe](../../observe/application-observability/README.md)
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
+- [Modernize](../../modernize/legacy-code-understanding/README.md)
 
 ---
 

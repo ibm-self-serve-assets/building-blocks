@@ -2,6 +2,20 @@
 
 **AI-powered Java middleware modernization using IBM Bob custom modes to accelerate transformation from legacy application servers to modern cloud-native platforms.**
 
+---
+
+## 🔗 Navigation
+
+**Modernize Building Blocks:**
+- [← Back to Modernize](../README.md)
+- [← Legacy Code Understanding](../legacy-code-understanding/README.md)
+
+**Other Categories:**
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
+- [Optimize](../../optimize/finops/README.md)
+
+---
+
 ## Overview
 
 Middleware Modernization provides AI-assisted capabilities to analyze, refactor, and migrate legacy Java middleware applications to modern architectures. By leveraging IBM Bob custom modes, development teams can efficiently modernize WebSphere, WebLogic, JBoss, and other Java EE applications to cloud-native platforms like Liberty, Open Liberty, and containerized environments.
@@ -441,7 +455,6 @@ Step 4: Cloud-Native Enablement
 ## Resources
 
 ### Documentation
-- [IBM Bob Custom Modes Guide](../../agents/multi-agent-orchestration/bob-modes/README.md)
 - [IBM WebSphere Liberty Documentation](https://www.ibm.com/docs/en/was-liberty)
 - [Jakarta EE Specifications](https://jakarta.ee/specifications/)
 - [MicroProfile Specifications](https://microprofile.io/)
@@ -452,10 +465,19 @@ Step 4: Cloud-Native Enablement
 - [Eclipse Migration Toolkit for Java](https://projects.eclipse.org/projects/technology.transformer)
 
 ### Related Building Blocks
-- [Legacy Code Understanding](../legacy-code-understanding/README.md)
-- [Infrastructure as Code](../../build-and-deploy/Iaas/README.md)
-- [Application Observability](../../build/automation-core/observe/application-observability.md)
-- [Code Assistant](../../build/automation-core/build/code-assistant.md)
+
+**Modernize:**
+- [Legacy Code Understanding](../legacy-code-understanding/README.md) - AI-powered code analysis
+
+**Build & Deploy:**
+- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
+- [Non-Human Identity](../../build-and-deploy/non-human-identity/README.md) - IBM Security Verify
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
+- [Quantum-Safe](../../build-and-deploy/quantum-safe/README.md) - IBM Guardium Crypto Manager
+
+**Optimize:**
+- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic/Apptio
+- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
 
 ## Support and Contribution
 

@@ -20,12 +20,13 @@
 
 **Build & Deploy Building Blocks:**
 - [← Back to Build & Deploy](../README.md)
-- [Non-Human Identity →](../non-human-identity/README.md)
-- [IaaS →](../Iaas/README.md)
+- [← Non-Human Identity](../non-human-identity/README.md)
+- [← IaaS](../Iaas/README.md)
+- [← iPaaS](../ipaas/README.md)
 
 **Other Categories:**
+- [Modernize](../../modernize/legacy-code-understanding/README.md)
 - [Optimize](../../optimize/finops/README.md)
-- [Observe](../../observe/application-observability/README.md)
 
 ---
 
