@@ -15,6 +15,9 @@ systems.
 access control, and security enforcement.
 - **Infrastructure as Code** Powered by tools such as Terraform and Ansible,
 ensures consistent, automated environment provisioning.
+- **Quantum-Safe Cryptography** Delivered through IBM Guardium Crypto Manager,
+provides post-quantum cryptographic protection and centralized key lifecycle
+management.
 
 ## Github Repository
 Code for these accelerators can be found in the [Build - Automation Building Blocks repo.](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build)
@@ -49,6 +52,12 @@ Common use cases involve automated infrastructure provisioning,
 environment standardization, configuration management, deployment
 automation, drift prevention, multi-cloud orchestration, and repeatable
 DevOps pipelines.
+
+**Quantum-Safe Cryptography (IBM Guardium Crypto Manager)**
+Key scenarios include quantum-safe migration, multi-cloud key management,
+cryptographic compliance automation, certificate lifecycle management,
+post-quantum algorithm implementation, and DevSecOps integration for
+secure credential management.
 
 ------------------------------------------------------------------------
 
