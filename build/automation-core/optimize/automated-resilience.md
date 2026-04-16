@@ -1,3 +1,14 @@
+## 🔗 Implementation Resources
+
+For detailed implementation guides and optimization strategies, see:
+- **[Optimize Building Blocks](../../../optimize/)** - Cost optimization, resource management, and resilience automation
+
+**📂 Browse all:** [Optimize Building Blocks](../../../optimize/)
+
+**Note:** Automated resilience and compliance capabilities using IBM Concert are being developed and will be added to the optimize folder in future releases. These capabilities will provide continuous monitoring of CVE exposure, compliance drift detection, and certificate lifecycle management.
+
+---
+
 ## **Automated Resilience & Compliance**
 Automated Resilience & Compliance focuses on continuously safeguarding
 application stability, security posture, and regulatory alignment across
