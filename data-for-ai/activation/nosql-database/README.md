@@ -1,10 +1,18 @@
 ﻿# NoSQL Database Capability
 
+**Core Capability**: Activation
+**IBM Products**: AstraDB
+**Product Components**: Apache Cassandra-based serverless database; vector collections; Data API / CQL
+
+## Overview
+
+nosql - huge scale, Cassandra. Provides large-scale NoSQL storage with Cassandra compatibility and optional vector capabilities for AI and application workloads.
+
 ## Building Blocks
 
 ### DataStax Astra DB
-**Location**: `astradb/`  
-**IBM Products**: DataStax Astra DB  
+**Location**: `astradb/`
+**IBM Products**: DataStax Astra DB
 **Description**: Cloud-native NoSQL database with vector search
 
 **Quick Start**:

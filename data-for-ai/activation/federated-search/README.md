@@ -1,10 +1,18 @@
 # Federated Search Capability
 
+**Core Capability**: Activation
+**IBM Products**: watsonx.data
+**Product Components**: Open lakehouse (Apache Iceberg + Presto)
+
+## Overview
+
+Federated analytics without copying data. Query data across distributed sources with open lakehouse architecture and federated access without copying all source data into a single repository.
+
 ## Building Blocks
 
 ### Zero-Copy Lakehouse
-**Location**: `zero-copy-lakehouse/`  
-**IBM Products**: watsonx.data (Apache Iceberg + Presto)  
+**Location**: `zero-copy-lakehouse/`
+**IBM Products**: watsonx.data (Apache Iceberg + Presto)
 **Description**: Zero-copy lakehouse with federated analytics
 
 **Quick Start**:

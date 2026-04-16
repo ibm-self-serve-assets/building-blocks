@@ -1,10 +1,18 @@
 # Search Capability
 
+**Core Capability**: Activation
+**IBM Products**: watsonx.data
+**Product Components**: RAG accelerator
+
+## Overview
+
+Build grounded enterprise Q&A over documents and data using retrieval-augmented generation with configurable retrieval and response pipelines.
+
 ## Building Blocks
 
 ### 1. QnA RAG
-**Location**: `qna-rag/`  
-**IBM Products**: watsonx.data, RAG accelerator, Milvus/OpenSearch  
+**Location**: `qna-rag/`
+**IBM Products**: watsonx.data, RAG accelerator, Milvus/OpenSearch
 **Description**: Question & Answer with Retrieval Augmented Generation
 
 **Quick Start**:
