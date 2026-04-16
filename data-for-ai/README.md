@@ -53,11 +53,3 @@ Based on IBM's Data for AI framework:
 This repository follows IBM's Data for AI framework:
 - **Enrichment**: Prepare and enhance data for AI workloads
 - **Activation**: Enable AI applications to access and utilize data effectively
-
-## Migration Note
-
-The repository has been reorganized to align with IBM's Data for AI capability framework. See [`MIGRATION_GUIDE.md`](MIGRATION_GUIDE.md) for details on the new structure and how to update your references.
-
----
-
-**Last Updated**: April 2026
