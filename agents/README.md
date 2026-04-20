@@ -27,7 +27,7 @@ We welcome contributions! Please fork this repo, create a feature branch, and op
 
 ## License
 
-This project is licensed under the [Apache 2.0 License](LICENSE).
+This project is licensed under the [Apache 2.0 License](https://github.com/ibm-self-serve-assets/building-blocks/tree/main?tab=Apache-2.0-1-ov-file#readme).
 
 
 
