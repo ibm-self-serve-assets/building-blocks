@@ -29,7 +29,7 @@ et_xmlfile==2.0.0
 executing==2.2.1
 Faker==37.8.0
 fastapi==0.117.1
-filelock==3.19.1
+filelock==3.20.3
 filetype==1.2.0
 FlagEmbedding==1.3.5
 flatbuffers==25.2.10
