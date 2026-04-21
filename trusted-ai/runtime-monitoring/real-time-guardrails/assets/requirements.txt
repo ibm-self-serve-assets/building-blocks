@@ -154,7 +154,7 @@ Pygments==2.19.2
 PyJWT==2.10.1
 pyphen==0.17.2
 python-dateutil==2.9.0.post0
-python-dotenv==1.2.1
+python-dotenv==1.2.2
 python-json-logger==4.0.0
 pytz==2025.2
 PyYAML==6.0.3
