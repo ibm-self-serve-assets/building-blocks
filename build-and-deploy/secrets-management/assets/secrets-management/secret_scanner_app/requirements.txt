@@ -8,7 +8,7 @@ dash-bootstrap-components==1.6.0
 hvac==2.3.0
 
 # Environment configuration
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 
 # Additional utilities
 requests==2.31.0
