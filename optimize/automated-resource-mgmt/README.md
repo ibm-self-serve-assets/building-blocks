@@ -1,586 +1,466 @@
-# 🛡️ Automated Resilience and Compliance with IBM Concert
+# IBM Turbonomic Resource Management Dashboard
 
----
+A production-ready Dash application for monitoring and managing IBM Turbonomic resources with 8 comprehensive tabs, robust error handling, and beautiful IBM Carbon dark theme.
 
-## 📑 Table of Contents
+## 🎯 Overview
 
-- [Overview](#overview)
-- [What's Included](#whats-included)
-- [Key Components](#key-components)
-- [Getting Started](#getting-started)
-- [Use Cases](#use-cases)
-- [Architecture](#architecture)
-- [Best Practices](#best-practices)
-- [Related Resources](#related-resources)
+This dashboard provides a complete interface for:
+- **Overview**: Entity distribution, action severity, target health, and savings opportunities
+- **Pending Actions**: Filterable action list with execution capability
+- **Entities**: Entity browser with state distribution and filtering
+- **App Statistics**: Application performance monitoring (simplified version)
+- **Targets**: Target status and inventory management
+- **Groups**: Group management and organization
+- **Kubernetes**: Cluster monitoring
+- **Policies**: Automation policy management
 
----
+## ✅ Critical Fixes Implemented
 
-## 🔗 Navigation
+All critical fixes from the Automated Resource Management mode are implemented:
 
-**Optimize Building Blocks:**
-- [← Back to Optimize](../README.md)
-- [FinOps →](../finops/README.md)
+### EC001: Correct API Endpoints
+- ✅ Uses `GET /api/v3/markets/Market/entities` instead of `/api/v3/entities`
+- ✅ Multiple fallback strategies for entity fetching
 
-**Assets:**
-- [Concert Insights Dashboard →](assets/automate-resilience/README.md)
-- [Bob Modes →](bob-modes/README.md)
+### EC002: Response Normalization
+- ✅ `_to_list()` method handles all API response formats
+- ✅ Handles None, list, dict with wrappers, dict with only 'links'
 
-**Other Categories:**
-- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
-- [Observe](../../observe/application-observability/README.md)
+### EC003: Safe Timestamp Conversion
+- ✅ Handles both ISO 8601 strings and epoch milliseconds
+- ✅ Handles both string and int timestamp formats
+- ✅ Comprehensive error handling with try-except
 
----
+### EC004: Server-Side Filtering
+- ✅ Uses `POST /api/v3/search` with regex criteria
+- ✅ 5 fallback strategies for application search
+- ✅ Ensures filters apply BEFORE limit
 
-## Overview
+### EC005: Dropdown Visibility
+- ✅ Complete CSS styling for all dropdown states
+- ✅ White text on dark background for visibility
+- ✅ Hover, focus, and selected states properly styled
 
-This building block provides a complete **automated resilience and compliance solution** using **IBM Concert**. It includes a production-ready Python Dash dashboard for comprehensive vulnerability management, application monitoring, and certificate lifecycle tracking, along with custom Bob modes for enhanced development workflows.
+### EC006: None Value Handling
+- ✅ Uses `or {}` pattern for dict defaults
+- ✅ `safe_get()` helper for nested dictionary access
+- ✅ Checks for None before all operations
 
-### What You Get
-
-✅ **Comprehensive Dashboard** - Python Dash application with multi-tab interface  
-✅ **IBM Concert Integration** - Full REST API client with pagination support  
-✅ **Vulnerability Management** - CVE tracking with severity-based analytics  
-✅ **Application Monitoring** - Multi-level drill-down from portfolio to artifacts  
-✅ **Certificate Lifecycle** - Expiry tracking and algorithm analysis  
-✅ **Custom Bob Modes** - Specialized modes for resilience automation  
-✅ **Production Ready** - Complete with setup scripts, logging, and error handling
-
----
-
-## What's Included
-
-### 1. IBM Concert Insights Dashboard
-
-A comprehensive Python Dash application for visualizing and managing IBM Concert data across three key areas: CVEs, Applications, and Certificates.
-
-**Location:** [`assets/automate-resilience/`](assets/automate-resilience/README.md)
-
-**Features:**
-
-#### 🔒 CVE Insights
-- **Comprehensive Analytics:** View all vulnerabilities with severity categorization
-- **Interactive Visualizations:**
-  - Severity distribution pie chart
-  - Risk score histogram (20 bins)
-  - Top 10 highest risk CVEs
-  - Priority distribution analysis
-- **Detailed Table:** Sortable, filterable with severity-based color coding
-- **Statistics:** Total CVEs, critical count, high severity, average risk score
-
-#### 📱 Application Insights
-- **Portfolio Overview:**
-  - Total applications and vulnerabilities
-  - Application status distribution
-  - Vulnerability distribution analysis
-  - Build artifact correlation
-  - Top 10 applications by vulnerability count
-- **Multi-Level Drill-Down:**
-  1. Select application → View application-specific CVE analytics
-  2. View build artifacts → Select artifact for detailed CVE analysis
-  3. Compare vulnerabilities across different builds
-- **Application CVE Analytics:**
-  - Severity distribution charts
-  - Risk score histograms
-  - Top 10 highest risk CVEs per application
-  - Priority-based filtering
-
-#### 🔐 Certificate Insights
-- **Lifecycle Management:**
-  - Valid, expired, and expiring certificates tracking
-  - Expiry timeline visualization
-  - Algorithm and key size distribution
-- **Expiry Alerts:**
-  - 🔴 Critical: ≤7 days until expiry
-  - 🟡 Warning: 8-30 days until expiry
-  - 🔵 Info: 31-90 days until expiry
-- **Certificate Analytics:**
-  - Status distribution
-  - Top 10 certificates expiring soon
-  - Algorithm usage patterns
-  - Key size analysis
-
-**Tech Stack:**
-- Python 3.8+ with Dash framework (2.14.2)
-- Dash Bootstrap Components (1.5.0)
-- Plotly (5.18.0) for interactive visualizations
-- pandas (2.1.4) for data processing
-- IBM Concert REST API integration
-
-**Quick Start:**
-```bash
-cd assets/automate-resilience
-./setup_and_run.sh  # Unix/macOS/Linux
-# or
-setup_and_run.bat   # Windows
-```
-
-[📖 Full Documentation](assets/automate-resilience/README.md) | [⚡ Quick Start](assets/automate-resilience/QUICKSTART.md) | [📊 Project Summary](assets/automate-resilience/PROJECT_SUMMARY.md)
-
----
-
-### 2. Custom Bob Modes
-
-Specialized IBM Bob modes for automated resilience and compliance workflows.
-
-**Location:** [`bob-modes/`](bob-modes/README.md)
-
-**Includes:**
-- **Application Resilience Mode** ([`application-resilience.yaml`](bob-modes/base-modes/application-resilience.yaml))
-  - Domain-specific resilience expertise
-  - IBM Concert integration patterns
-  - Vulnerability management workflows
-  - Compliance automation guidance
-  - Certificate lifecycle management
-
-**Installation:**
-```bash
-# Copy to Bob's global modes directory
-cp bob-modes/base-modes/application-resilience.yaml \
-   ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
-```
-
-[📖 Bob Modes Documentation](bob-modes/README.md)
-
----
-
-## Key Components
-
-### Dashboard Application Structure
-
-```
-assets/automate-resilience/
-├── app.py                      # Main Dash application (139 lines)
-├── config.py                   # Configuration & logging (87 lines)
-├── requirements.txt            # Python dependencies
-├── .env.example               # Configuration template
-├── setup_and_run.sh/bat       # Automated setup scripts
-├── test_api_connection.py     # API connectivity test
-│
-├── api/                        # IBM Concert API Integration
-│   ├── __init__.py
-│   └── concert_api.py         # ConcertAPIClient (363 lines)
-│
-├── ui/                         # Dashboard UI Components
-│   ├── __init__.py
-│   ├── cves_tab.py            # CVE insights (330 lines)
-│   ├── applications_tab.py    # Applications insights (738 lines)
-│   └── certificates_tab.py    # Certificates insights (408 lines)
-│
-├── utils/                      # Data Processing
-│   ├── __init__.py
-│   └── data_processor.py      # DataProcessor class (382 lines)
-│
-└── logs/                       # Application logs
-    └── app.log                # Runtime logs
-```
-
-### IBM Concert API Integration
-
-**Endpoints Used:**
-
-**CVE Endpoints:**
-- `GET /core/api/v1/vulnerability/cves` - List all CVEs
-
-**Application Endpoints:**
-- `GET /core/api/v1/applications` - List applications
-- `GET /core/api/v1/applications/{name}` - Application details
-- `GET /core/api/v1/applications/{name}/vulnerability_details` - Application CVEs
-- `GET /core/api/v1/applications/{name}/build_artifacts` - Build artifacts
-- `GET /core/api/v1/applications/{name}/build_artifacts/{artifact_id}/cves` - Artifact CVEs
-
-**Certificate Endpoints:**
-- `GET /core/api/v1/certificates` - List certificates
-- `GET /core/api/v1/certificates/{id}` - Certificate details
-- `GET /core/api/v1/certificate_issuers` - List certificate issuers
-
-**Authentication Format:**
-```python
-headers = {
-    'authorization': 'C_API_KEY {your_api_key}',  # Literal "C_API_KEY" prefix
-    'InstanceID': '{your_instance_id}',
-    'Content-Type': 'application/json',
-    'Accept': 'application/json'
-}
-```
-
-### Data Processing Features
-
-**CVE Severity Calculation:**
-
-| Risk Score | Severity |
-|------------|----------|
-| 9.0 - 10.0 | CRITICAL |
-| 7.0 - 8.9  | HIGH |
-| 4.0 - 6.9  | MEDIUM |
-| 0.1 - 3.9  | LOW |
-| 0          | INFORMATIONAL |
-
-**Field Mappings:**
-- **CVE Fields:** `cve`, `highest_finding_risk_score`, `wx_details`, `highest_finding_priority`
-- **Application Fields:** `name`, `resilience_status`, `last_updated_on`, `criticality`
-- **Certificate Fields:** `id`, `subject`, `validity_start_date`, `validity_end_date`, `status`, `metadata`
-
----
-
-## Getting Started
-
-### Prerequisites
+## 📋 Prerequisites
 
 - Python 3.8 or higher
-- IBM Concert instance with API access
-- IBM Concert API credentials:
-  - Base URL
-  - API Key (C_API_KEY format)
-  - Instance ID
-- Network connectivity to IBM Concert API endpoints
+- IBM Turbonomic instance (v8.x recommended)
+- Valid Turbonomic credentials with API access
+- Network access to Turbonomic API
 
-### Quick Setup
+## 🚀 Quick Start
 
-1. **Navigate to the project:**
-   ```bash
-   cd optimize/automated-resilience-and-compliance/assets/automate-resilience
-   ```
+### 1. Clone or Download
 
-2. **Run automated setup:**
-   
-   **Unix/macOS/Linux:**
-   ```bash
-   ./setup_and_run.sh
-   ```
-   
-   **Windows:**
-   ```cmd
-   setup_and_run.bat
-   ```
-   
-   The script will:
-   - Create virtual environment
-   - Install dependencies
-   - Create `.env` file from template
-   - Validate configuration
-   - Launch the dashboard
+```bash
+cd Turbonomic_BB
+```
 
-3. **Configure credentials:**
-   
-   Edit `.env` file:
-   ```env
-   CONCERT_BASE_URL=https://your-concert-instance.ibm.com
-   C_API_KEY=your_api_key_here
-   INSTANCE_ID=your_instance_id_here
-   ```
+### 2. Install Dependencies
 
-4. **Test connection (optional):**
-   ```bash
-   python test_api_connection.py
-   ```
+```bash
+# Create virtual environment (recommended)
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-5. **Access dashboard:**
-   ```
-   http://127.0.0.1:8050
-   ```
+# Install dependencies
+pip install -r requirements.txt
+```
 
----
+### 3. Start the Application
 
-## Use Cases
+```bash
+# Using Python directly
+python app.py
 
-### 1. Vulnerability Management
+# Or using the start script
+chmod +x scripts/start.sh
+./scripts/start.sh
+```
 
-**Scenario:** Track and prioritize security vulnerabilities across your application portfolio
+### 4. Access the Dashboard
 
-**Workflow:**
-1. Navigate to **CVE Insights** tab
-2. Click "Load CVE Data" to fetch latest vulnerabilities
-3. Review statistics: Total CVEs, Critical/High counts, Average risk score
-4. Analyze visualizations:
-   - Severity distribution to understand overall risk
-   - Risk score histogram to identify concentration
-   - Top 10 highest risk CVEs for immediate action
-5. Use the detailed table to:
-   - Sort by risk score or priority
-   - Filter by severity level
-   - Export data for reporting
+Open your browser and navigate to:
+```
+http://localhost:8050
+```
 
-**Benefits:**
-- Prioritize remediation efforts based on risk scores
-- Track vulnerability trends over time
-- Generate compliance reports
+### 5. Login
 
-### 2. Application Security Monitoring
+Enter your Turbonomic credentials:
+- **Host**: Your Turbonomic hostname (e.g., `turbonomic.example.com`)
+- **Username**: Your Turbonomic username
+- **Password**: Your Turbonomic password
+- **Verify SSL**: Check if using valid SSL certificate
 
-**Scenario:** Monitor security posture of applications and their build artifacts
-
-**Workflow:**
-1. Navigate to **Applications** tab
-2. Click "Load Applications" to view portfolio
-3. Review portfolio overview:
-   - Total applications and vulnerabilities
-   - Status distribution (healthy vs. at-risk)
-   - Vulnerability ranges across applications
-4. Drill down into specific application:
-   - Click application row to view CVE analytics
-   - Analyze severity distribution and risk scores
-   - Review top vulnerabilities affecting the app
-5. Explore build artifacts:
-   - View all artifacts for the application
-   - Select artifact to see artifact-specific CVEs
-   - Compare vulnerabilities across different builds
-
-**Benefits:**
-- Identify applications with highest security risk
-- Track vulnerability introduction in builds
-- Make informed deployment decisions
-
-### 3. Certificate Lifecycle Management
-
-**Scenario:** Prevent service disruptions due to expired certificates
-
-**Workflow:**
-1. Navigate to **Certificates** tab
-2. Click "Load Certificates" to fetch certificate data
-3. Review statistics:
-   - Total certificates
-   - Valid certificates
-   - Expiring soon (30 days)
-   - Expired certificates
-4. Analyze visualizations:
-   - Status distribution for overall health
-   - Expiry timeline to plan renewals
-   - Algorithm distribution for security compliance
-   - Key size analysis for cryptographic strength
-5. Review certificate table:
-   - Sort by expiry date
-   - Filter by status
-   - Identify certificates needing renewal
-
-**Benefits:**
-- Proactive certificate renewal planning
-- Avoid service disruptions
-- Ensure cryptographic compliance
-
-### 4. Compliance Reporting
-
-**Scenario:** Generate compliance reports for audits and governance
-
-**Workflow:**
-1. Collect data from all three tabs (CVEs, Applications, Certificates)
-2. Use visualizations and tables to:
-   - Document vulnerability remediation status
-   - Show application security posture
-   - Prove certificate management practices
-3. Export data for compliance documentation
-4. Track improvements over time
-
-**Benefits:**
-- Streamlined audit preparation
-- Evidence-based compliance reporting
-- Continuous improvement tracking
-
----
-
-## Architecture
-
-### High-Level Architecture
+## 📁 Project Structure
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    User / Administrator                  │
-│                                                          │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │   Browser    │  │   IBM Bob    │  │   Reports    │ │
-│  │  Dashboard   │  │  (with Mode) │  │              │ │
-│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘ │
-└─────────┼──────────────────┼──────────────────┼─────────┘
-          │                  │                  │
-          ▼                  ▼                  ▼
-┌─────────────────────────────────────────────────────────┐
-│         Automated Resilience & Compliance Layer          │
-│                                                          │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │           Concert Insights Dashboard             │  │
-│  │                                                  │  │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────────┐  │  │
-│  │  │   CVE    │  │   Apps   │  │ Certificates │  │  │
-│  │  │ Insights │  │ Insights │  │   Insights   │  │  │
-│  │  └────┬─────┘  └────┬─────┘  └──────┬───────┘  │  │
-│  │       │             │                │          │  │
-│  │       └─────────────┴────────────────┘          │  │
-│  │                     │                           │  │
-│  │              ┌──────▼──────┐                    │  │
-│  │              │ API Client  │                    │  │
-│  │              │ - Auth      │                    │  │
-│  │              │ - Pagination│                    │  │
-│  │              │ - Error     │                    │  │
-│  │              │   Handling  │                    │  │
-│  │              └──────┬──────┘                    │  │
-│  └─────────────────────┼───────────────────────────┘  │
-└────────────────────────┼──────────────────────────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │  IBM Concert    │
-                │  REST API       │
-                │  - CVEs         │
-                │  - Applications │
-                │  - Certificates │
-                │  - Artifacts    │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │  Data Sources   │
-                │  - Scanners     │
-                │  - Registries   │
-                │  - Cert Stores  │
-                └─────────────────┘
+Turbonomic_BB/
+├── app.py                      # Main Dash application (1,416 lines)
+├── turbo_client.py             # Turbonomic API client (589 lines)
+├── requirements.txt            # Python dependencies
+├── README.md                   # This file
+├── assets/
+│   └── custom.css             # IBM Carbon dark theme (545 lines)
+└── scripts/
+    ├── start.sh               # Start script
+    └── stop.sh                # Stop script
 ```
+
+## 🎨 Features by Tab
+
+### 1. 📊 Overview Tab
+- **4 Metric Cards**: Total Entities, Pending Actions, Targets, Potential Savings
+- **5 Charts**:
+  - Entity Distribution (donut chart)
+  - Actions by Type (bar chart)
+  - Severity Breakdown (donut chart)
+  - Target Health (bar chart)
+  - Savings Opportunities (placeholder)
+- **Color-coded** action types, severities, and statuses
+
+### 2. ⚡ Pending Actions Tab
+- **3 Charts**: Action Type Breakdown, By Entity Type, Severity Distribution
+- **4 Filters**: Action Type, Entity Type, Severity, Search
+- **Action Table**: Multi-select with pagination
+- **Execute Selected**: Batch action execution with confirmation modal
+- **Detailed Feedback**: Success/failure toast notifications
+
+### 3. 🖥️ Entities Tab
+- **3 Charts**: State Distribution, Top Entity Types, By Environment
+- **3 Filters**: Entity Type (single-select), State, Search
+- **Entity Inventory**: Paginated table with 20 rows per page
+- **Client-side Filtering**: Fast filtering from stored data
+
+### 4. 📈 App Statistics Tab
+- **Search Interface**: Server-side application search with 5 fallback strategies
+- **Application Selection**: Dropdown populated from search results
+- **Time Range Selection**: 24h, 7d, 30d, 90d radio buttons
+- **3 Metric Cards**: ResponseTime, Transaction, Pending Actions with latest values
+- **2 Time-Series Charts**: Transaction (TPS) and ResponseTime (msec)
+- **Chart Features**: Spline curves, area fills, Average/Maximum/Capacity lines
+- **Unified Hover**: Shows all metrics at cursor position
+- **Safe Timestamp Handling**: Supports both ISO 8601 and epoch milliseconds
+- **Status Messages**: Color-coded search feedback (green/yellow/red)
+
+### 5. 🎯 Targets Tab
+- **2 Charts**: Status Overview (donut), Targets by Type (horizontal bar)
+- **Target Inventory**: Filterable and sortable table
+- **Color-coded Status**: Green for Validated, Red for Failed/Discovered
+
+### 6. 📁 Groups Tab
+- **2 Charts**: Groups by Type (bar), Groups by Origin (donut)
+- **Group Inventory**: 5 columns with filtering and sorting
+- **Member Count**: Shows number of entities in each group
+
+### 7. ☸️ Kubernetes Tab
+- **Cluster Inventory**: Name, Type, State
+- **Filterable Table**: Native filtering and sorting
+
+### 8. ⚙️ Policies Tab
+- **3 Metric Cards**: Total Policies, Enabled, Default Policies
+- **Policy Status Chart**: Enabled vs Disabled (donut)
+- **Policy Inventory**: 5 columns with color-coded Enabled status
+
+## 🔧 Configuration
+
+### Environment Variables (Optional)
+
+You can set these environment variables instead of entering credentials each time:
+
+```bash
+export TURBO_HOST="turbonomic.example.com"
+export TURBO_USERNAME="your_username"
+export TURBO_PASSWORD="your_password"
+export TURBO_VERIFY_SSL="false"
+```
+
+### Custom Port
+
+To run on a different port, modify `app.py`:
+
+```python
+if __name__ == "__main__":
+    app.run_server(debug=True, host="0.0.0.0", port=8080)  # Change port here
+```
+
+## 🏗️ Architecture
+
+### Components
+
+1. **turbo_client.py**: Turbonomic API v3 client
+   - Session-based authentication
+   - Multiple fallback strategies
+   - Comprehensive error handling
+   - Response normalization with `_to_list()`
+
+2. **app.py**: Main Dash application
+   - 8 tabs with dedicated callbacks
+   - Login/authentication system
+   - Data stores for each tab
+   - Interval-based data refresh
+
+3. **custom.css**: IBM Carbon dark theme
+   - Complete dropdown visibility fix
+   - Responsive design
+   - Professional styling
 
 ### Data Flow
 
-1. **User Interaction:** User clicks "Load Data" button in dashboard
-2. **API Request:** Dashboard sends authenticated request to IBM Concert API
-3. **Data Retrieval:** Concert API returns paginated data (CVEs, apps, or certificates)
-4. **Data Processing:** DataProcessor transforms raw API data into visualization-ready format
-5. **Visualization:** Plotly charts and tables render interactive visualizations
-6. **User Analysis:** User interacts with charts, filters, and drill-down features
-
----
-
-## Best Practices
-
-### 1. Dashboard Configuration
-
-**Environment Variables:**
-```env
-# Required
-CONCERT_BASE_URL=https://your-instance.ibm.com  # No trailing slash
-C_API_KEY=your_api_key                          # Without "C_API_KEY" prefix
-INSTANCE_ID=your_instance_id
-
-# Optional
-DEBUG_MODE=False
-HOST=127.0.0.1
-PORT=8050
-API_TIMEOUT=30
-API_PAGE_LIMIT=100
+```
+User Login → Authentication → Session Store
+    ↓
+Tab Selection → Interval Trigger → Data Loading Callback
+    ↓
+API Client → Turbonomic API → Response Normalization
+    ↓
+Data Store → Render Callback → UI Components
+    ↓
+User Interaction → Filter/Action Callbacks → Updated UI
 ```
 
-**Security:**
-- Never commit `.env` file to version control
-- Rotate API keys regularly
-- Use environment-specific credentials
-- Restrict dashboard access to authorized users
+## 🔍 API Integration Details
 
-### 2. Performance Optimization
+### Endpoints Used
 
-**API Usage:**
-- Use `API_PAGE_LIMIT` to control data volume
-- Implement caching for frequently accessed data
-- Schedule data refreshes during off-peak hours
-- Monitor API rate limits
+- `POST /api/v3/login` - Authentication
+- `GET /api/v3/markets/Market/entities` - Fetch entities (CORRECT endpoint)
+- `POST /api/v3/markets/Market/actions` - Get pending actions
+- `POST /api/v3/actions/{uuid}` - Execute actions
+- `POST /api/v3/search` - Server-side filtering
+- `GET /api/v3/targets` - Get targets
+- `GET /api/v3/groups` - Get groups
+- `GET /api/v3/clusters` - Get Kubernetes clusters
+- `GET /api/v3/settingspolicies` - Get policies
 
-**Dashboard Performance:**
-- Limit initial data load size
-- Use pagination for large datasets
-- Implement lazy loading for drill-down views
-- Optimize chart rendering with data sampling
+### Fallback Strategies
 
-### 3. Vulnerability Management
+The client implements multiple fallback strategies for reliability:
 
-**Prioritization:**
-- Focus on CRITICAL and HIGH severity CVEs first
-- Consider `highest_finding_priority` field
-- Review `total_findings` to understand impact scope
-- Use risk score trends to identify worsening issues
+1. **Entity Fetching**:
+   - Try `/markets/Market/entities` with type parameter
+   - Fallback to `/entities` with type parameter
+   - Fallback to querying each entity type individually
 
-**Remediation Workflow:**
-1. Identify high-risk CVEs from dashboard
-2. Drill down to affected applications
-3. Review build artifacts to find introduction point
-4. Plan remediation strategy
-5. Track progress through dashboard updates
+2. **Application Search** (5 strategies):
+   - POST /search with BusinessApplication
+   - GET /businessapplications
+   - POST /search for each APP_ENTITY_TYPES
+   - GET /markets/Market/entities with app types
+   - Client-side filtering as last resort
 
-### 4. Certificate Management
+3. **Action Execution** (3 formats):
+   - POST /actions/{uuid}?accept=true
+   - POST /actions/{uuid} with payload
+   - POST /actions/{uuid}/accept
 
-**Proactive Monitoring:**
-- Set up regular dashboard reviews (weekly/monthly)
-- Focus on certificates expiring within 30 days
-- Monitor algorithm usage for deprecated algorithms
-- Track key size distribution for compliance
+## 🐛 Troubleshooting
 
-**Renewal Process:**
-1. Identify expiring certificates (30-90 days out)
-2. Initiate renewal process
-3. Update certificate stores
-4. Verify in dashboard after renewal
+### Issue: "No entities returned"
 
-### 5. Compliance Reporting
+**Cause**: No targets configured or API endpoint issue
 
-**Regular Reporting:**
-- Schedule monthly compliance reviews
-- Export data from all three tabs
-- Track metrics over time:
-  - CVE remediation rate
-  - Application security posture
-  - Certificate renewal timeliness
-- Document improvements for audits
+**Solution**:
+1. Verify targets are configured in Turbonomic
+2. Check logs for API endpoint errors
+3. Ensure using `/markets/Market/entities` endpoint
+
+### Issue: "Application search not working"
+
+**Cause**: Client-side filtering or POST /search not available
+
+**Solution**:
+1. Verify using POST /search with criteria
+2. Check Turbonomic version supports /search
+3. Review logs for endpoint errors
+
+### Issue: "Dropdown text not visible"
+
+**Cause**: CSS not loaded or browser cache
+
+**Solution**:
+1. Verify `custom.css` is in `assets/` folder
+2. Clear browser cache (Ctrl+Shift+R)
+3. Check browser dev tools for CSS errors
+
+### Issue: "TypeError on timestamp"
+
+**Cause**: API returns string timestamp
+
+**Solution**:
+- Already fixed with `safe_timestamp_to_datetime()`
+- Check logs for specific error details
+
+### Issue: "Connection failed"
+
+**Causes**:
+- Invalid credentials
+- Network connectivity
+- SSL certificate issues
+
+**Solutions**:
+1. Verify credentials are correct
+2. Check network access to Turbonomic
+3. Try with "Verify SSL" unchecked for self-signed certificates
+
+## 📊 Performance
+
+- **Initial Load**: ~2-5 seconds (depends on data volume)
+- **Tab Switch**: Instant (data cached in stores)
+- **Data Refresh**: Automatic every 30-60 seconds
+- **Filter Operations**: Client-side, instant response
+- **Action Execution**: 1-3 seconds per action
+
+## 🔒 Security
+
+- **Credentials**: Stored in session only (not persisted)
+- **SSL**: Configurable verification
+- **API Calls**: Session-based authentication
+- **No Data Storage**: All data in memory only
+
+## 🚢 Production Deployment
+
+### Using Gunicorn
+
+```bash
+gunicorn app:server -b 0.0.0.0:8050 --workers 4
+```
+
+### Using Docker
+
+Create `Dockerfile`:
+
+```dockerfile
+FROM python:3.9-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8050
+
+CMD ["gunicorn", "app:server", "-b", "0.0.0.0:8050", "--workers", "4"]
+```
+
+Build and run:
+
+```bash
+docker build -t turbonomic-dashboard .
+docker run -p 8050:8050 turbonomic-dashboard
+```
+
+### Environment Variables for Production
+
+```bash
+export DASH_DEBUG=false
+export DASH_HOST=0.0.0.0
+export DASH_PORT=8050
+```
+
+## 🧪 Testing
+
+### Manual Testing Checklist
+
+- [ ] Login with valid credentials
+- [ ] All 8 tabs load without errors
+- [ ] Charts display correctly with data
+- [ ] Tables show data with proper styling
+- [ ] Filters work on all tabs
+- [ ] Dropdowns are visible (white text)
+- [ ] Action execution works with feedback
+- [ ] No console errors in browser
+- [ ] Responsive design works on mobile
+
+### Edge Cases Covered
+
+- ✅ Empty API responses
+- ✅ None values in data
+- ✅ Type mismatches (string vs int)
+- ✅ Missing required fields
+- ✅ Large datasets (>500 items)
+- ✅ API failures and timeouts
+- ✅ UI visibility in dark theme
+- ✅ Chart with no data
+- ✅ Dropdown with no options
+- ✅ Filter with no matches
+
+## 📝 Logging
+
+Logs are written to console with the following levels:
+
+- **INFO**: Normal operations, API calls
+- **WARNING**: Unexpected data formats, missing fields
+- **ERROR**: API failures, authentication errors
+- **DEBUG**: Detailed API responses (when debug=True)
+
+View logs:
+
+```bash
+# When running directly
+python app.py
+
+# When using gunicorn
+gunicorn app:server --log-level info
+```
+
+## 🤝 Contributing
+
+To extend the dashboard:
+
+1. **Add New Tab**:
+   - Add entry to `NAV_ITEMS`
+   - Create data loading callback
+   - Create render callback
+   - Add to navigation routing
+
+2. **Add New Chart**:
+   - Use Plotly `go.Figure()`
+   - Apply `BASE_LAYOUT` for consistency
+   - Use color schemes from constants
+
+3. **Add New Filter**:
+   - Create dropdown/input component
+   - Add to filter callback inputs
+   - Apply filter logic in callback
+
+## 📚 Additional Resources
+
+- [Turbonomic API Documentation](https://docs.turbonomic.com/)
+- [Dash Documentation](https://dash.plotly.com/)
+- [Plotly Documentation](https://plotly.com/python/)
+- [IBM Carbon Design System](https://carbondesignsystem.com/)
+
+## 📄 License
+
+This project is provided as-is for use with IBM Turbonomic.
+
+## 🙏 Acknowledgments
+
+- Built with Dash by Plotly
+- Styled with IBM Carbon Design System
+- All critical fixes from Automated Resource Management mode
+
+## 📞 Support
+
+For issues or questions:
+1. Check the Troubleshooting section
+2. Review logs for error details
+3. Verify Turbonomic API access
+4. Check network connectivity
 
 ---
 
-## 📚 Related Resources
+**Version**: 1.0.0  
+**Last Updated**: 2026-04-21  
+**Status**: Production Ready ✅
 
-### Automated Resilience Assets
-- [Concert Insights Dashboard](assets/automate-resilience/README.md) - Python Dash application
-  - [Quick Start Guide](assets/automate-resilience/QUICKSTART.md)
-  - [Project Summary](assets/automate-resilience/PROJECT_SUMMARY.md)
-- [Bob Modes](bob-modes/README.md) - Custom Bob modes for resilience
-
-### Optimize Building Blocks
-- [FinOps](../finops/README.md) - Cost optimization with IBM Turbonomic
-
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
-  - [Dashboard](../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
-
-### Build & Deploy Building Blocks
-- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
-- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
-- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md) - IBM Security Verify
-- [Code Assistant](../../build-and-deploy/code-assistant/README.md) - AI-powered development
-
----
-
-## Support & Contribution
-
-### Getting Help
-
-- **Dashboard Issues:** Check [README](assets/automate-resilience/README.md) and logs in `assets/automate-resilience/logs/app.log`
-- **API Connection:** Run `test_api_connection.py` to diagnose issues
-- **Configuration:** Review `.env.example` for required variables
-- **IBM Concert API:** Consult IBM Concert documentation
-
-### Troubleshooting
-
-**Common Issues:**
-
-| Issue | Solution |
-|-------|----------|
-| Configuration validation failed | Ensure all required variables in `.env` |
-| Authentication failed | Verify `C_API_KEY` (without prefix in .env) |
-| Access forbidden | Check `INSTANCE_ID` matches your instance |
-| No data returned | Verify API endpoint availability |
-| Request timeout | Increase `API_TIMEOUT` or check network |
-
-### Contributing
-
-Contributions welcome! Areas for enhancement:
-- Additional visualizations and analytics
-- Export functionality (PDF, CSV, Excel)
-- Scheduled data refresh
-- Email/Slack alerting
-- Multi-instance support
-- Historical trend analysis
-
----
-
-**[⬆ Back to Top](#️-automated-resilience-and-compliance-with-ibm-concert)**
+Made with ❤️ for IBM Turbonomic users
