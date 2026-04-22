@@ -1,4 +1,4 @@
-# ⚙️ Automated Resource Management with IBM Turbonomic
+# 🛡️ Automated Resilience and Compliance with IBM Concert
 
 ---
 
@@ -6,10 +6,9 @@
 
 - [Overview](#overview)
 - [What's Included](#whats-included)
-- [Key Features](#key-features)
+- [Key Components](#key-components)
 - [Getting Started](#getting-started)
 - [Use Cases](#use-cases)
-- [IBM Bob Custom Mode](#ibm-bob-custom-mode)
 - [Architecture](#architecture)
 - [Best Practices](#best-practices)
 - [Related Resources](#related-resources)
@@ -20,124 +19,206 @@
 
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
-- [← FinOps](../finops/README.md)
+- [FinOps →](../finops/README.md)
+
+**Assets:**
+- [Concert Insights Dashboard →](assets/automate-resilience/README.md)
+- [Bob Modes →](bob-modes/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Modernize](../../modernize/legacy-code-understanding/README.md)
+- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
+- [Observe](../../observe/application-observability/README.md)
 
 ---
 
 ## Overview
 
-This building block provides **automated resource management** capabilities using **IBM Turbonomic** integrated with **IBM Bob Custom Mode**. It enables intelligent, AI-driven resource optimization across hybrid cloud environments through natural language interactions and automated decision-making.
+This building block provides a complete **automated resilience and compliance solution** using **IBM Concert**. It includes a production-ready Python Dash dashboard for comprehensive vulnerability management, application monitoring, and certificate lifecycle tracking, along with custom Bob modes for enhanced development workflows.
 
 ### What You Get
 
-✅ **IBM Bob Custom Mode** - Specialized mode for Turbonomic resource management  
-✅ **Natural Language Interface** - Interact with Turbonomic using conversational AI  
-✅ **Automated Optimization** - AI-driven resource rightsizing and placement  
-✅ **Multi-Cloud Support** - Manage resources across IBM Cloud, AWS, Azure, GCP  
-✅ **Real-Time Insights** - Monitor resource utilization and optimization opportunities  
-✅ **Action Automation** - Execute Turbonomic actions through Bob commands  
-✅ **Cost Optimization** - Identify and implement cost-saving opportunities
+✅ **Comprehensive Dashboard** - Python Dash application with multi-tab interface  
+✅ **IBM Concert Integration** - Full REST API client with pagination support  
+✅ **Vulnerability Management** - CVE tracking with severity-based analytics  
+✅ **Application Monitoring** - Multi-level drill-down from portfolio to artifacts  
+✅ **Certificate Lifecycle** - Expiry tracking and algorithm analysis  
+✅ **Custom Bob Modes** - Specialized modes for resilience automation  
+✅ **Production Ready** - Complete with setup scripts, logging, and error handling
 
 ---
 
 ## What's Included
 
-### 1. IBM Bob Custom Mode for Turbonomic
+### 1. IBM Concert Insights Dashboard
 
-A specialized IBM Bob mode that provides domain-specific expertise for IBM Turbonomic resource management, enabling developers and operators to interact with Turbonomic through natural language.
+A comprehensive Python Dash application for visualizing and managing IBM Concert data across three key areas: CVEs, Applications, and Certificates.
 
-**Key Capabilities:**
+**Location:** [`assets/automate-resilience/`](assets/automate-resilience/README.md)
 
-#### 🎯 Resource Optimization
-- **Intelligent Rightsizing:** Analyze and recommend optimal resource configurations
-- **Workload Placement:** Determine best placement for workloads across infrastructure
-- **Scaling Decisions:** Automate scale-up/down decisions based on real-time demand
-- **Resource Allocation:** Optimize CPU, memory, and storage allocation
+**Features:**
 
-#### 💰 Cost Management
-- **Cost Analysis:** Identify cost optimization opportunities
-- **Budget Tracking:** Monitor spending against budgets
-- **Waste Elimination:** Detect and eliminate idle or underutilized resources
-- **Reserved Instance Optimization:** Recommend RI purchases and modifications
+#### 🔒 CVE Insights
+- **Comprehensive Analytics:** View all vulnerabilities with severity categorization
+- **Interactive Visualizations:**
+  - Severity distribution pie chart
+  - Risk score histogram (20 bins)
+  - Top 10 highest risk CVEs
+  - Priority distribution analysis
+- **Detailed Table:** Sortable, filterable with severity-based color coding
+- **Statistics:** Total CVEs, critical count, high severity, average risk score
 
-#### 📊 Performance Assurance
-- **SLA Compliance:** Ensure applications meet performance SLAs
-- **Bottleneck Detection:** Identify and resolve performance bottlenecks
-- **Capacity Planning:** Forecast future resource needs
-- **Risk Assessment:** Evaluate risks of optimization actions
+#### 📱 Application Insights
+- **Portfolio Overview:**
+  - Total applications and vulnerabilities
+  - Application status distribution
+  - Vulnerability distribution analysis
+  - Build artifact correlation
+  - Top 10 applications by vulnerability count
+- **Multi-Level Drill-Down:**
+  1. Select application → View application-specific CVE analytics
+  2. View build artifacts → Select artifact for detailed CVE analysis
+  3. Compare vulnerabilities across different builds
+- **Application CVE Analytics:**
+  - Severity distribution charts
+  - Risk score histograms
+  - Top 10 highest risk CVEs per application
+  - Priority-based filtering
 
-#### 🤖 Automation & Integration
-- **Action Execution:** Execute Turbonomic actions through Bob
-- **Policy Management:** Create and manage optimization policies
-- **Workflow Automation:** Automate common resource management tasks
-- **API Integration:** Seamless integration with Turbonomic REST API
+#### 🔐 Certificate Insights
+- **Lifecycle Management:**
+  - Valid, expired, and expiring certificates tracking
+  - Expiry timeline visualization
+  - Algorithm and key size distribution
+- **Expiry Alerts:**
+  - 🔴 Critical: ≤7 days until expiry
+  - 🟡 Warning: 8-30 days until expiry
+  - 🔵 Info: 31-90 days until expiry
+- **Certificate Analytics:**
+  - Status distribution
+  - Top 10 certificates expiring soon
+  - Algorithm usage patterns
+  - Key size analysis
+
+**Tech Stack:**
+- Python 3.8+ with Dash framework (2.14.2)
+- Dash Bootstrap Components (1.5.0)
+- Plotly (5.18.0) for interactive visualizations
+- pandas (2.1.4) for data processing
+- IBM Concert REST API integration
+
+**Quick Start:**
+```bash
+cd assets/automate-resilience
+./setup_and_run.sh  # Unix/macOS/Linux
+# or
+setup_and_run.bat   # Windows
+```
+
+[📖 Full Documentation](assets/automate-resilience/README.md) | [⚡ Quick Start](assets/automate-resilience/QUICKSTART.md) | [📊 Project Summary](assets/automate-resilience/PROJECT_SUMMARY.md)
 
 ---
 
-## Key Features
+### 2. Custom Bob Modes
 
-### Natural Language Resource Management
+Specialized IBM Bob modes for automated resilience and compliance workflows.
 
-Interact with Turbonomic using natural language commands through IBM Bob:
+**Location:** [`bob-modes/`](bob-modes/README.md)
+
+**Includes:**
+- **Application Resilience Mode** ([`application-resilience.yaml`](bob-modes/base-modes/application-resilience.yaml))
+  - Domain-specific resilience expertise
+  - IBM Concert integration patterns
+  - Vulnerability management workflows
+  - Compliance automation guidance
+  - Certificate lifecycle management
+
+**Installation:**
+```bash
+# Copy to Bob's global modes directory
+cp bob-modes/base-modes/application-resilience.yaml \
+   ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+```
+
+[📖 Bob Modes Documentation](bob-modes/README.md)
+
+---
+
+## Key Components
+
+### Dashboard Application Structure
 
 ```
-"Show me all pending actions for production environment"
-"What are the top 5 cost optimization opportunities?"
-"Execute all approved rightsizing actions for dev cluster"
-"Analyze resource utilization for application XYZ"
-"Create a policy to automatically scale pods when CPU > 80%"
+assets/automate-resilience/
+├── app.py                      # Main Dash application (139 lines)
+├── config.py                   # Configuration & logging (87 lines)
+├── requirements.txt            # Python dependencies
+├── .env.example               # Configuration template
+├── setup_and_run.sh/bat       # Automated setup scripts
+├── test_api_connection.py     # API connectivity test
+│
+├── api/                        # IBM Concert API Integration
+│   ├── __init__.py
+│   └── concert_api.py         # ConcertAPIClient (363 lines)
+│
+├── ui/                         # Dashboard UI Components
+│   ├── __init__.py
+│   ├── cves_tab.py            # CVE insights (330 lines)
+│   ├── applications_tab.py    # Applications insights (738 lines)
+│   └── certificates_tab.py    # Certificates insights (408 lines)
+│
+├── utils/                      # Data Processing
+│   ├── __init__.py
+│   └── data_processor.py      # DataProcessor class (382 lines)
+│
+└── logs/                       # Application logs
+    └── app.log                # Runtime logs
 ```
 
-### Intelligent Decision Support
+### IBM Concert API Integration
 
-Bob provides context-aware recommendations:
+**Endpoints Used:**
 
-- **Risk Analysis:** Evaluate impact before executing actions
-- **Cost-Benefit Analysis:** Compare costs vs. performance improvements
-- **Dependency Mapping:** Understand resource dependencies
-- **Historical Trends:** Analyze past optimization results
+**CVE Endpoints:**
+- `GET /core/api/v1/vulnerability/cves` - List all CVEs
 
-### Multi-Cloud Resource Management
+**Application Endpoints:**
+- `GET /core/api/v1/applications` - List applications
+- `GET /core/api/v1/applications/{name}` - Application details
+- `GET /core/api/v1/applications/{name}/vulnerability_details` - Application CVEs
+- `GET /core/api/v1/applications/{name}/build_artifacts` - Build artifacts
+- `GET /core/api/v1/applications/{name}/build_artifacts/{artifact_id}/cves` - Artifact CVEs
 
-Unified management across cloud providers:
+**Certificate Endpoints:**
+- `GET /core/api/v1/certificates` - List certificates
+- `GET /core/api/v1/certificates/{id}` - Certificate details
+- `GET /core/api/v1/certificate_issuers` - List certificate issuers
 
-- **IBM Cloud:** VMs, Kubernetes, Cloud Foundry
-- **AWS:** EC2, EKS, Lambda, RDS
-- **Azure:** VMs, AKS, App Services
-- **GCP:** Compute Engine, GKE, Cloud Functions
-- **On-Premises:** VMware, OpenStack, Hyper-V
+**Authentication Format:**
+```python
+headers = {
+    'authorization': 'C_API_KEY {your_api_key}',  # Literal "C_API_KEY" prefix
+    'InstanceID': '{your_instance_id}',
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+}
+```
 
-### Automated Workflows
+### Data Processing Features
 
-Pre-built workflows for common tasks:
+**CVE Severity Calculation:**
 
-1. **Daily Optimization Review**
-   - Fetch pending actions
-   - Analyze recommendations
-   - Execute approved actions
-   - Generate summary report
+| Risk Score | Severity |
+|------------|----------|
+| 9.0 - 10.0 | CRITICAL |
+| 7.0 - 8.9  | HIGH |
+| 4.0 - 6.9  | MEDIUM |
+| 0.1 - 3.9  | LOW |
+| 0          | INFORMATIONAL |
 
-2. **Cost Optimization Sprint**
-   - Identify cost-saving opportunities
-   - Prioritize by impact
-   - Execute quick wins
-   - Track savings
-
-3. **Performance Troubleshooting**
-   - Detect performance issues
-   - Analyze root causes
-   - Recommend remediation
-   - Implement fixes
-
-4. **Capacity Planning**
-   - Forecast resource needs
-   - Identify growth trends
-   - Plan infrastructure expansion
-   - Budget estimation
+**Field Mappings:**
+- **CVE Fields:** `cve`, `highest_finding_risk_score`, `wx_details`, `highest_finding_priority`
+- **Application Fields:** `name`, `resilience_status`, `last_updated_on`, `criticality`
+- **Certificate Fields:** `id`, `subject`, `validity_start_date`, `validity_end_date`, `status`, `metadata`
 
 ---
 
@@ -145,338 +226,154 @@ Pre-built workflows for common tasks:
 
 ### Prerequisites
 
-- IBM Turbonomic instance (SaaS or on-premises)
-- IBM Bob installed and configured
-- Turbonomic API credentials:
+- Python 3.8 or higher
+- IBM Concert instance with API access
+- IBM Concert API credentials:
   - Base URL
-  - Username/Password or API Token
-- Network connectivity to Turbonomic API endpoints
+  - API Key (C_API_KEY format)
+  - Instance ID
+- Network connectivity to IBM Concert API endpoints
 
 ### Quick Setup
 
-#### 1. Install IBM Bob Custom Mode
+1. **Navigate to the project:**
+   ```bash
+   cd optimize/automated-resilience-and-compliance/assets/automate-resilience
+   ```
 
-```bash
-# Download the Turbonomic mode for Bob
-# (Mode file will be provided in bob-modes/ directory)
+2. **Run automated setup:**
+   
+   **Unix/macOS/Linux:**
+   ```bash
+   ./setup_and_run.sh
+   ```
+   
+   **Windows:**
+   ```cmd
+   setup_and_run.bat
+   ```
+   
+   The script will:
+   - Create virtual environment
+   - Install dependencies
+   - Create `.env` file from template
+   - Validate configuration
+   - Launch the dashboard
 
-# Copy to Bob's global modes directory
-cp bob-modes/base-modes/turbonomic-resource-mgmt.yaml \
-   ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
+3. **Configure credentials:**
+   
+   Edit `.env` file:
+   ```env
+   CONCERT_BASE_URL=https://your-concert-instance.ibm.com
+   C_API_KEY=your_api_key_here
+   INSTANCE_ID=your_instance_id_here
+   ```
 
-# Restart IBM Bob to load the new mode
-```
+4. **Test connection (optional):**
+   ```bash
+   python test_api_connection.py
+   ```
 
-#### 2. Configure Turbonomic Connection
-
-Create a configuration file for Turbonomic credentials:
-
-```yaml
-# ~/.config/turbonomic/config.yaml
-turbonomic:
-  base_url: "https://your-turbonomic-instance.com"
-  username: "your-username"
-  password: "your-password"
-  # OR use API token
-  api_token: "your-api-token"
-  
-  # Optional settings
-  verify_ssl: true
-  timeout: 30
-  default_scope: "production"
-```
-
-#### 3. Activate the Mode in Bob
-
-1. Open IBM Bob
-2. Access mode selector (Cmd/Ctrl + Shift + P)
-3. Select "Turbonomic Resource Management" mode
-4. Verify connection: "Test Turbonomic connection"
-
-#### 4. Start Managing Resources
-
-```
-# Example commands to try:
-"Show me current resource utilization"
-"List all pending optimization actions"
-"What are the top cost-saving opportunities?"
-"Analyze performance of my Kubernetes clusters"
-```
+5. **Access dashboard:**
+   ```
+   http://127.0.0.1:8050
+   ```
 
 ---
 
 ## Use Cases
 
-### 1. Daily Resource Optimization
+### 1. Vulnerability Management
 
-**Scenario:** Review and execute daily optimization recommendations
+**Scenario:** Track and prioritize security vulnerabilities across your application portfolio
 
-**Workflow with Bob:**
-
-```
-User: "Show me today's optimization recommendations"
-Bob: [Displays pending actions with risk levels and savings]
-
-User: "Execute all low-risk actions with savings > $100/month"
-Bob: [Executes actions and provides summary]
-
-User: "Generate a report of actions taken"
-Bob: [Creates detailed report with before/after metrics]
-```
-
-**Benefits:**
-- Continuous optimization without manual intervention
-- Risk-aware action execution
-- Automated reporting and tracking
-
-### 2. Cost Optimization Sprint
-
-**Scenario:** Identify and implement cost-saving opportunities across the environment
-
-**Workflow with Bob:**
-
-```
-User: "Find all cost optimization opportunities"
-Bob: [Analyzes environment and lists opportunities by impact]
-
-User: "Show me details for the top 10 opportunities"
-Bob: [Provides detailed analysis with cost savings and risks]
-
-User: "Create an action plan to save $50k/month"
-Bob: [Generates prioritized action plan with timeline]
-
-User: "Execute phase 1 of the plan"
-Bob: [Implements approved actions and tracks progress]
-```
+**Workflow:**
+1. Navigate to **CVE Insights** tab
+2. Click "Load CVE Data" to fetch latest vulnerabilities
+3. Review statistics: Total CVEs, Critical/High counts, Average risk score
+4. Analyze visualizations:
+   - Severity distribution to understand overall risk
+   - Risk score histogram to identify concentration
+   - Top 10 highest risk CVEs for immediate action
+5. Use the detailed table to:
+   - Sort by risk score or priority
+   - Filter by severity level
+   - Export data for reporting
 
 **Benefits:**
-- Data-driven cost reduction
-- Prioritized implementation
-- Measurable savings tracking
+- Prioritize remediation efforts based on risk scores
+- Track vulnerability trends over time
+- Generate compliance reports
 
-### 3. Performance Troubleshooting
+### 2. Application Security Monitoring
 
-**Scenario:** Diagnose and resolve application performance issues
+**Scenario:** Monitor security posture of applications and their build artifacts
 
-**Workflow with Bob:**
-
-```
-User: "Analyze performance issues for app 'checkout-service'"
-Bob: [Identifies bottlenecks and resource constraints]
-
-User: "What's causing the high response time?"
-Bob: [Explains root cause: insufficient memory allocation]
-
-User: "Recommend a solution"
-Bob: [Suggests memory increase with impact analysis]
-
-User: "Implement the recommendation"
-Bob: [Executes action and monitors results]
-```
-
-**Benefits:**
-- Rapid issue diagnosis
-- Root cause analysis
-- Automated remediation
-
-### 4. Capacity Planning
-
-**Scenario:** Plan infrastructure capacity for upcoming growth
-
-**Workflow with Bob:**
-
-```
-User: "Forecast resource needs for next 6 months"
-Bob: [Analyzes trends and provides capacity forecast]
-
-User: "What if we expect 50% user growth?"
-Bob: [Adjusts forecast based on growth scenario]
-
-User: "Estimate budget for the additional capacity"
-Bob: [Provides cost estimates by resource type]
-
-User: "Create a capacity expansion plan"
-Bob: [Generates detailed plan with timeline and costs]
-```
+**Workflow:**
+1. Navigate to **Applications** tab
+2. Click "Load Applications" to view portfolio
+3. Review portfolio overview:
+   - Total applications and vulnerabilities
+   - Status distribution (healthy vs. at-risk)
+   - Vulnerability ranges across applications
+4. Drill down into specific application:
+   - Click application row to view CVE analytics
+   - Analyze severity distribution and risk scores
+   - Review top vulnerabilities affecting the app
+5. Explore build artifacts:
+   - View all artifacts for the application
+   - Select artifact to see artifact-specific CVEs
+   - Compare vulnerabilities across different builds
 
 **Benefits:**
-- Proactive capacity planning
-- Budget forecasting
-- Growth scenario modeling
+- Identify applications with highest security risk
+- Track vulnerability introduction in builds
+- Make informed deployment decisions
 
-### 5. Multi-Cloud Resource Management
+### 3. Certificate Lifecycle Management
 
-**Scenario:** Optimize resources across multiple cloud providers
+**Scenario:** Prevent service disruptions due to expired certificates
 
-**Workflow with Bob:**
-
-```
-User: "Compare resource costs across AWS and Azure"
-Bob: [Analyzes costs and provides comparison]
-
-User: "Recommend workload placement for new application"
-Bob: [Suggests optimal cloud provider based on requirements]
-
-User: "Show me opportunities to move workloads for cost savings"
-Bob: [Identifies workloads that could be moved to save costs]
-
-User: "Create a migration plan for the top 5 workloads"
-Bob: [Generates detailed migration plan with risks and savings]
-```
+**Workflow:**
+1. Navigate to **Certificates** tab
+2. Click "Load Certificates" to fetch certificate data
+3. Review statistics:
+   - Total certificates
+   - Valid certificates
+   - Expiring soon (30 days)
+   - Expired certificates
+4. Analyze visualizations:
+   - Status distribution for overall health
+   - Expiry timeline to plan renewals
+   - Algorithm distribution for security compliance
+   - Key size analysis for cryptographic strength
+5. Review certificate table:
+   - Sort by expiry date
+   - Filter by status
+   - Identify certificates needing renewal
 
 **Benefits:**
-- Cloud-agnostic optimization
-- Cost-effective workload placement
-- Simplified multi-cloud management
+- Proactive certificate renewal planning
+- Avoid service disruptions
+- Ensure cryptographic compliance
 
----
+### 4. Compliance Reporting
 
-## IBM Bob Custom Mode
+**Scenario:** Generate compliance reports for audits and governance
 
-### Mode Capabilities
+**Workflow:**
+1. Collect data from all three tabs (CVEs, Applications, Certificates)
+2. Use visualizations and tables to:
+   - Document vulnerability remediation status
+   - Show application security posture
+   - Prove certificate management practices
+3. Export data for compliance documentation
+4. Track improvements over time
 
-The Turbonomic Resource Management mode provides specialized capabilities:
-
-#### 1. Turbonomic API Integration
-- **Authentication:** Secure API authentication with token management
-- **Data Retrieval:** Fetch actions, entities, metrics, and policies
-- **Action Execution:** Execute optimization actions programmatically
-- **Policy Management:** Create, update, and delete policies
-
-#### 2. Natural Language Understanding
-- **Intent Recognition:** Understand user requests in natural language
-- **Context Awareness:** Maintain conversation context
-- **Entity Extraction:** Identify resources, metrics, and actions from queries
-- **Clarification:** Ask for clarification when needed
-
-#### 3. Data Analysis & Visualization
-- **Metric Analysis:** Analyze resource utilization and performance metrics
-- **Trend Detection:** Identify patterns and anomalies
-- **Cost Analysis:** Calculate costs and savings
-- **Risk Assessment:** Evaluate risks of optimization actions
-
-#### 4. Automation & Orchestration
-- **Workflow Execution:** Run predefined optimization workflows
-- **Action Batching:** Execute multiple actions efficiently
-- **Scheduling:** Schedule optimization tasks
-- **Monitoring:** Track action execution and results
-
-### Mode Configuration
-
-The mode can be customized through configuration:
-
-```yaml
-# Mode configuration options
-turbonomic_mode:
-  # API settings
-  api:
-    timeout: 30
-    retry_attempts: 3
-    page_size: 100
-  
-  # Action execution settings
-  actions:
-    auto_approve_threshold: "low"  # low, medium, high
-    require_confirmation: true
-    dry_run_default: false
-  
-  # Reporting settings
-  reports:
-    format: "markdown"  # markdown, json, html
-    include_charts: true
-    detail_level: "summary"  # summary, detailed
-  
-  # Scope settings
-  scope:
-    default_environment: "production"
-    include_clusters: ["prod-cluster-1", "prod-cluster-2"]
-    exclude_namespaces: ["kube-system", "monitoring"]
-```
-
-### Example Interactions
-
-#### Resource Analysis
-```
-User: "Analyze CPU utilization for production Kubernetes clusters"
-
-Bob: I'll analyze CPU utilization across your production clusters.
-
-📊 CPU Utilization Analysis - Production Clusters
-
-Cluster: prod-cluster-1
-├─ Average CPU: 68%
-├─ Peak CPU: 92% (occurred 3 times in last 24h)
-├─ Nodes: 15
-└─ Pods: 247
-
-Cluster: prod-cluster-2
-├─ Average CPU: 45%
-├─ Peak CPU: 71%
-├─ Nodes: 12
-└─ Pods: 189
-
-🎯 Recommendations:
-1. prod-cluster-1 is experiencing CPU pressure
-   - Consider adding 2-3 nodes
-   - Estimated cost: $450/month
-   - Risk: Low
-
-2. prod-cluster-2 has capacity for growth
-   - Can handle 40% more workload
-   - Consider consolidating workloads
-
-Would you like me to create an action plan?
-```
-
-#### Action Execution
-```
-User: "Execute all approved memory optimization actions"
-
-Bob: I found 12 approved memory optimization actions. Let me execute them:
-
-⚙️ Executing Actions:
-
-✅ Resize VM 'web-server-01' memory: 16GB → 12GB (Savings: $45/mo)
-✅ Resize VM 'api-server-03' memory: 32GB → 24GB (Savings: $90/mo)
-✅ Resize Pod 'checkout-svc' memory: 4GB → 3GB (Savings: $12/mo)
-... (9 more actions)
-
-📊 Summary:
-- Actions executed: 12/12
-- Total monthly savings: $487
-- Estimated annual savings: $5,844
-- Execution time: 3m 42s
-
-All actions completed successfully. Monitoring for 24 hours to ensure stability.
-```
-
-#### Policy Creation
-```
-User: "Create a policy to automatically scale pods when CPU exceeds 80%"
-
-Bob: I'll create an auto-scaling policy for you.
-
-📋 Policy Configuration:
-
-Name: Auto-scale on High CPU
-Type: Horizontal Pod Autoscaler
-Scope: All production namespaces
-
-Conditions:
-├─ Trigger: CPU utilization > 80%
-├─ Duration: 5 minutes
-└─ Cooldown: 10 minutes
-
-Actions:
-├─ Scale up: Add 1-3 pods
-├─ Max pods: 10
-└─ Min pods: 2
-
-Would you like me to:
-1. Create this policy
-2. Modify the configuration
-3. Test with a specific namespace first
-```
+**Benefits:**
+- Streamlined audit preparation
+- Evidence-based compliance reporting
+- Continuous improvement tracking
 
 ---
 
@@ -486,24 +383,24 @@ Would you like me to:
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                  User / Administrator                    │
+│                    User / Administrator                  │
 │                                                          │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐ │
-│  │   IBM Bob    │  │   VS Code    │  │   CLI Tool   │ │
-│  │  (with Mode) │  │              │  │              │ │
+│  │   Browser    │  │   IBM Bob    │  │   Reports    │ │
+│  │  Dashboard   │  │  (with Mode) │  │              │ │
 │  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘ │
 └─────────┼──────────────────┼──────────────────┼─────────┘
           │                  │                  │
           ▼                  ▼                  ▼
 ┌─────────────────────────────────────────────────────────┐
-│         Turbonomic Resource Management Layer             │
+│         Automated Resilience & Compliance Layer          │
 │                                                          │
 │  ┌──────────────────────────────────────────────────┐  │
-│  │           IBM Bob Custom Mode                    │  │
+│  │           Concert Insights Dashboard             │  │
 │  │                                                  │  │
 │  │  ┌──────────┐  ┌──────────┐  ┌──────────────┐  │  │
-│  │  │   NLP    │  │  Action  │  │   Policy     │  │  │
-│  │  │ Engine   │  │ Executor │  │   Manager    │  │  │
+│  │  │   CVE    │  │   Apps   │  │ Certificates │  │  │
+│  │  │ Insights │  │ Insights │  │   Insights   │  │  │
 │  │  └────┬─────┘  └────┬─────┘  └──────┬───────┘  │  │
 │  │       │             │                │          │  │
 │  │       └─────────────┴────────────────┘          │  │
@@ -511,152 +408,145 @@ Would you like me to:
 │  │              ┌──────▼──────┐                    │  │
 │  │              │ API Client  │                    │  │
 │  │              │ - Auth      │                    │  │
-│  │              │ - REST API  │                    │  │
-│  │              │ - WebSocket │                    │  │
+│  │              │ - Pagination│                    │  │
+│  │              │ - Error     │                    │  │
+│  │              │   Handling  │                    │  │
 │  │              └──────┬──────┘                    │  │
 │  └─────────────────────┼───────────────────────────┘  │
 └────────────────────────┼──────────────────────────────┘
                          │
                          ▼
                 ┌─────────────────┐
-                │ IBM Turbonomic  │
-                │                 │
-                │  ┌───────────┐  │
-                │  │ Analytics │  │
-                │  │  Engine   │  │
-                │  └─────┬─────┘  │
-                │        │        │
-                │  ┌─────▼─────┐  │
-                │  │  Actions  │  │
-                │  │  Policies │  │
-                │  └─────┬─────┘  │
-                └────────┼────────┘
+                │  IBM Concert    │
+                │  REST API       │
+                │  - CVEs         │
+                │  - Applications │
+                │  - Certificates │
+                │  - Artifacts    │
+                └────────┬────────┘
                          │
                          ▼
-        ┌────────────────────────────────┐
-        │      Infrastructure Layer       │
-        │                                 │
-        │  ┌──────┐  ┌──────┐  ┌──────┐ │
-        │  │ IBM  │  │ AWS  │  │Azure │ │
-        │  │Cloud │  │      │  │      │ │
-        │  └──────┘  └──────┘  └──────┘ │
-        │                                 │
-        │  ┌──────┐  ┌──────┐  ┌──────┐ │
-        │  │ GCP  │  │K8s   │  │VMware│ │
-        │  │      │  │      │  │      │ │
-        │  └──────┘  └──────┘  └──────┘ │
-        └─────────────────────────────────┘
+                ┌─────────────────┐
+                │  Data Sources   │
+                │  - Scanners     │
+                │  - Registries   │
+                │  - Cert Stores  │
+                └─────────────────┘
 ```
 
 ### Data Flow
 
-1. **User Request:** User issues command through IBM Bob
-2. **Intent Processing:** Bob's NLP engine interprets the request
-3. **API Communication:** Bob mode communicates with Turbonomic API
-4. **Data Analysis:** Turbonomic analyzes infrastructure and provides recommendations
-5. **Action Execution:** Bob executes approved actions through Turbonomic
-6. **Result Monitoring:** Bob monitors action results and provides feedback
-7. **Reporting:** Bob generates reports and visualizations
+1. **User Interaction:** User clicks "Load Data" button in dashboard
+2. **API Request:** Dashboard sends authenticated request to IBM Concert API
+3. **Data Retrieval:** Concert API returns paginated data (CVEs, apps, or certificates)
+4. **Data Processing:** DataProcessor transforms raw API data into visualization-ready format
+5. **Visualization:** Plotly charts and tables render interactive visualizations
+6. **User Analysis:** User interacts with charts, filters, and drill-down features
 
 ---
 
 ## Best Practices
 
-### 1. Mode Configuration
+### 1. Dashboard Configuration
+
+**Environment Variables:**
+```env
+# Required
+CONCERT_BASE_URL=https://your-instance.ibm.com  # No trailing slash
+C_API_KEY=your_api_key                          # Without "C_API_KEY" prefix
+INSTANCE_ID=your_instance_id
+
+# Optional
+DEBUG_MODE=False
+HOST=127.0.0.1
+PORT=8050
+API_TIMEOUT=30
+API_PAGE_LIMIT=100
+```
 
 **Security:**
-- Store credentials securely (use environment variables or secure vaults)
-- Rotate API tokens regularly
-- Use role-based access control (RBAC)
-- Enable audit logging for all actions
+- Never commit `.env` file to version control
+- Rotate API keys regularly
+- Use environment-specific credentials
+- Restrict dashboard access to authorized users
 
-**Performance:**
-- Configure appropriate API timeouts
+### 2. Performance Optimization
+
+**API Usage:**
+- Use `API_PAGE_LIMIT` to control data volume
+- Implement caching for frequently accessed data
+- Schedule data refreshes during off-peak hours
+- Monitor API rate limits
+
+**Dashboard Performance:**
+- Limit initial data load size
 - Use pagination for large datasets
-- Cache frequently accessed data
-- Batch similar actions together
+- Implement lazy loading for drill-down views
+- Optimize chart rendering with data sampling
 
-### 2. Resource Optimization
+### 3. Vulnerability Management
 
-**Action Execution:**
-- Start with low-risk actions
-- Enable dry-run mode for testing
-- Monitor actions for 24-48 hours
-- Implement gradual rollout for large changes
+**Prioritization:**
+- Focus on CRITICAL and HIGH severity CVEs first
+- Consider `highest_finding_priority` field
+- Review `total_findings` to understand impact scope
+- Use risk score trends to identify worsening issues
 
-**Risk Management:**
-- Review high-risk actions manually
-- Test in non-production first
-- Maintain rollback procedures
-- Document all changes
+**Remediation Workflow:**
+1. Identify high-risk CVEs from dashboard
+2. Drill down to affected applications
+3. Review build artifacts to find introduction point
+4. Plan remediation strategy
+5. Track progress through dashboard updates
 
-### 3. Cost Optimization
+### 4. Certificate Management
 
-**Continuous Optimization:**
-- Schedule daily optimization reviews
-- Set cost reduction targets
-- Track savings over time
-- Celebrate wins with stakeholders
+**Proactive Monitoring:**
+- Set up regular dashboard reviews (weekly/monthly)
+- Focus on certificates expiring within 30 days
+- Monitor algorithm usage for deprecated algorithms
+- Track key size distribution for compliance
 
-**Budget Management:**
-- Set budget alerts
-- Monitor spending trends
-- Identify cost anomalies
-- Plan for seasonal variations
+**Renewal Process:**
+1. Identify expiring certificates (30-90 days out)
+2. Initiate renewal process
+3. Update certificate stores
+4. Verify in dashboard after renewal
 
-### 4. Performance Management
+### 5. Compliance Reporting
 
-**SLA Compliance:**
-- Define clear performance SLAs
-- Monitor SLA compliance continuously
-- Address violations promptly
-- Balance cost vs. performance
-
-**Capacity Planning:**
-- Review capacity monthly
-- Plan for growth scenarios
-- Maintain headroom for spikes
-- Document capacity decisions
-
-### 5. Multi-Cloud Management
-
-**Cloud Strategy:**
-- Define workload placement criteria
-- Standardize tagging across clouds
-- Monitor cross-cloud costs
-- Optimize data transfer costs
-
-**Governance:**
-- Implement consistent policies
-- Enforce compliance requirements
-- Audit resource usage
-- Maintain cloud inventory
+**Regular Reporting:**
+- Schedule monthly compliance reviews
+- Export data from all three tabs
+- Track metrics over time:
+  - CVE remediation rate
+  - Application security posture
+  - Certificate renewal timeliness
+- Document improvements for audits
 
 ---
 
 ## 📚 Related Resources
 
+### Automated Resilience Assets
+- [Concert Insights Dashboard](assets/automate-resilience/README.md) - Python Dash application
+  - [Quick Start Guide](assets/automate-resilience/QUICKSTART.md)
+  - [Project Summary](assets/automate-resilience/PROJECT_SUMMARY.md)
+- [Bob Modes](bob-modes/README.md) - Custom Bob modes for resilience
+
 ### Optimize Building Blocks
-- [FinOps](../finops/README.md) - Cost optimization with IBM Turbonomic/Apptio
-  - [IBM Bob Apptio Mode](../finops/ibm-bob-apptio-mode.md)
+- [FinOps](../finops/README.md) - Cost optimization with IBM Turbonomic
+
+### Observe Building Blocks
+- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
+  - [Dashboard](../../observe/application-observability/assets/application-observability/README.md)
+- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
 
 ### Build & Deploy Building Blocks
-- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
-  - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
-  - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md)
-- [Non-Human Identity](../../build-and-deploy/non-human-identity/README.md) - IBM Security Verify
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
-- [Quantum-Safe](../../build-and-deploy/quantum-safe/README.md) - IBM Guardium Crypto Manager
-
-### Modernize Building Blocks
-- [Legacy Code Understanding](../../modernize/legacy-code-understanding/README.md) - AI-powered code analysis
-- [Middleware Modernization](../../modernize/middleware/README.md) - Java middleware transformation
-
-### External Resources
-- [IBM Turbonomic Documentation](https://www.ibm.com/docs/en/tarm)
-- [IBM Turbonomic API Reference](https://www.ibm.com/docs/en/tarm/latest?topic=turbonomic-rest-api)
-- [IBM Bob Documentation](https://www.ibm.com/products/ibm-bob)
-- [Turbonomic Community](https://community.ibm.com/community/user/aiops/communities/community-home?CommunityKey=turbonomic)
+- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
+- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
+- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md) - IBM Security Verify
+- [Code Assistant](../../build-and-deploy/code-assistant/README.md) - AI-powered development
 
 ---
 
@@ -664,10 +554,10 @@ Would you like me to:
 
 ### Getting Help
 
-- **Mode Issues:** Check Bob logs and mode configuration
-- **API Connection:** Verify Turbonomic credentials and network connectivity
-- **Action Failures:** Review Turbonomic action logs and error messages
-- **Performance:** Check API timeout settings and data volume
+- **Dashboard Issues:** Check [README](assets/automate-resilience/README.md) and logs in `assets/automate-resilience/logs/app.log`
+- **API Connection:** Run `test_api_connection.py` to diagnose issues
+- **Configuration:** Review `.env.example` for required variables
+- **IBM Concert API:** Consult IBM Concert documentation
 
 ### Troubleshooting
 
@@ -675,46 +565,22 @@ Would you like me to:
 
 | Issue | Solution |
 |-------|----------|
-| Mode not loading | Verify mode file location and restart Bob |
-| Authentication failed | Check credentials and API token validity |
-| Actions not executing | Verify user permissions in Turbonomic |
-| Slow response | Increase API timeout or reduce data volume |
-| Connection timeout | Check network connectivity and firewall rules |
+| Configuration validation failed | Ensure all required variables in `.env` |
+| Authentication failed | Verify `C_API_KEY` (without prefix in .env) |
+| Access forbidden | Check `INSTANCE_ID` matches your instance |
+| No data returned | Verify API endpoint availability |
+| Request timeout | Increase `API_TIMEOUT` or check network |
 
 ### Contributing
 
 Contributions welcome! Areas for enhancement:
-- Additional automation workflows
-- Enhanced visualization capabilities
-- Integration with other IBM products
-- Custom policy templates
-- Advanced analytics features
-- Multi-tenancy support
+- Additional visualizations and analytics
+- Export functionality (PDF, CSV, Excel)
+- Scheduled data refresh
+- Email/Slack alerting
+- Multi-instance support
+- Historical trend analysis
 
 ---
 
-## Roadmap
-
-### Planned Features
-
-**Q2 2026:**
-- Enhanced natural language understanding
-- Advanced cost forecasting
-- Integration with IBM Apptio
-- Custom dashboard creation
-
-**Q3 2026:**
-- Machine learning-based recommendations
-- Automated policy optimization
-- Multi-region support
-- Enhanced reporting capabilities
-
-**Q4 2026:**
-- Integration with IBM watsonx
-- Predictive capacity planning
-- Advanced anomaly detection
-- Self-healing automation
-
----
-
-**[⬆ Back to Top](#️-automated-resource-management-with-ibm-turbonomic)**
+**[⬆ Back to Top](#️-automated-resilience-and-compliance-with-ibm-concert)**
