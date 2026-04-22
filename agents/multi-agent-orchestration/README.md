@@ -61,4 +61,4 @@ Download and install Bob modes for multi-agent development:
 ## Related Building Blocks
 
 - [Agent Builder](../agent-builder/)
-- [Agent Harness](../agent-harness/)
+- [Agentic SDLC](../agentic-sdlc/)
