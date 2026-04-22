@@ -11,6 +11,17 @@ The Building Block of Optimize includes:
 ## Github Repository
 Code for these accelerators can be found in the [Optimize building blocks repo](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize)
 
+## 🔗 Implementation Resources
+
+Detailed implementation guides, code samples, and deployment assets are available in the **Optimize** folder:
+
+- **[FinOps](../../../optimize/finops/README.md)** - IBM Apptio for financial operations and cost optimization
+- **[Automated Resource Management](../../../optimize/automated-resource-mgmt/README.md)** - IBM Turbonomic for intelligent resource optimization
+
+**📂 Browse all:** [Optimize Building Blocks](../../../optimize/)
+
+**Note:** Automated resilience and compliance capabilities are being developed and will be added to the optimize folder in future releases.
+
 ## Use Cases
 
 - **Automated Resilience & Compliance (IBM Concert)** → Organizations leverage this capability to continuously monitor CVE exposure, detect compliance drift, manage certificate lifecycles, assess security posture, map dependency risks, and identify systemic resilience weaknesses before they affect business-critical workloads.  

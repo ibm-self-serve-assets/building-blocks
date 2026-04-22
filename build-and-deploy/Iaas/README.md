@@ -17,18 +17,19 @@
 
 ## 🔗 Navigation
 
-**Building Blocks:**
-- [← Code Assistant](../code-assistant/README.md)
+**Build & Deploy Building Blocks:**
 - [← Back to Build & Deploy](../README.md)
-- [iPaaS Building Blocks →](../ipaas/README.md)
+- [Non-Human Identity →](../non-human-identity/README.md)
+- [iPaaS →](../ipaas/README.md)
+- [Quantum-Safe →](../quantum-safe/README.md)
 
 **IaaS Assets:**
 - [Ansible Deployment Guide →](assets/deploy-bob-anisble/README.md)
 - [Retail Application →](assets/retailapp/README.md)
 
 **Other Categories:**
-- [Observe Building Blocks](../../observe/application-observability/README.md)
-- [Optimize Building Blocks](../../optimize/finops/README.md)
+- [Modernize](../../modernize/legacy-code-understanding/README.md)
+- [Optimize](../../optimize/finops/README.md)
 
 ---
 
