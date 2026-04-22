@@ -1,6 +1,9 @@
 .DS_Store
 .env
 **/__pycache__/
+**/*-venv/
+*.log
+**/cache.db
 
 data-for-ai/question-and-answer/rag/assets/rag-accelerator/.dockerignore
 data-for-ai/question-and-answer/rag/assets/rag-accelerator/.env.rishit
