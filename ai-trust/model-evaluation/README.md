@@ -4,6 +4,21 @@ Evaluate your AI and ML models for a range of key metrics such as performance qu
 
 ---
 
+## Key Highlights
+
+- Evaluate models for **performance quality, fairness, drift, bias**, and other key metrics for GenAI and ML models
+- Observe and optimize models before taking them to production
+- Deep **explainability** for predictive ML outputs
+
+## Solves For
+
+- Inaccurate output
+- Undesired GenAI behaviour
+- Lack of transparency in AI decision-making
+- Complexity of model selection and prompt approach (zero-shot, 1-shot, etc.)
+
+---
+
 ## What's Inside
 
 ### [Gen AI Evaluations](gen-ai-evaluations/)

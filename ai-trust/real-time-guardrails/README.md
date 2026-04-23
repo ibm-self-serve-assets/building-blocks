@@ -4,6 +4,22 @@ Enforce safety boundaries and operational constraints to keep your AI applicatio
 
 ---
 
+## Key Highlights
+
+- Enables real-time detection of a wide range of categories in prompt input and/or output
+- Handling of potential harmful content based on user-defined rules or policies
+- Capture and act on real-time risks with guardrails
+- Remove, block, or redact harmful content
+- API-based validation of user queries and model responses
+
+## Solves For
+
+- Lack of risk management for AI
+- Lack of real-time protections against adversarial attacks
+- Identifying potentially harmful content in prompts and outputs
+
+---
+
 ## What's Inside
 
 ### [Assets](assets/)
