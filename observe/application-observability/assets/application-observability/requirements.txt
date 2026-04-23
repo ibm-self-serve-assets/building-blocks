@@ -1,5 +1,5 @@
 # Core Framework
-dash==2.14.2
+dash==2.15.0
 dash-bootstrap-components==1.5.0
 
 # Data Processing
