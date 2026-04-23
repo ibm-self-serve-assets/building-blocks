@@ -1,4 +1,0 @@
-.env
-**/__pycache__/
-ce_create_secret_from_env.sh
-run_create.sh
