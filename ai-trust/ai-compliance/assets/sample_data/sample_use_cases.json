@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Customer Credit Risk Scoring",
+    "description": "Predictive ML model that assesses credit risk for loan applicants based on financial and personal data.",
+    "risk_level": "high",
+    "model_type": "predictive_ml",
+    "regulations": ["EU AI Act - High Risk", "NIST AI RMF", "ECOA / Reg B"],
+    "region": "EU, US",
+    "owner": "Risk Analytics Team",
+    "status": "production"
+  },
+  {
+    "name": "Customer Service Chatbot",
+    "description": "GenAI-powered chatbot that handles customer inquiries about products, orders, and returns.",
+    "risk_level": "medium",
+    "model_type": "generative_ai",
+    "regulations": ["EU AI Act - Limited Risk", "NIST AI RMF"],
+    "region": "Global",
+    "owner": "Customer Experience Team",
+    "status": "development"
+  },
+  {
+    "name": "Resume Screening Agent",
+    "description": "AI agent that pre-screens job applications and ranks candidates based on qualifications.",
+    "risk_level": "high",
+    "model_type": "generative_ai",
+    "regulations": ["EU AI Act - High Risk", "NIST AI RMF", "NYC Local Law 144", "EEOC Guidelines"],
+    "region": "US, EU",
+    "owner": "HR Technology Team",
+    "status": "validation"
+  },
+  {
+    "name": "Internal Knowledge Search",
+    "description": "RAG-based search over internal documentation for employee self-service.",
+    "risk_level": "low",
+    "model_type": "generative_ai",
+    "regulations": ["NIST AI RMF"],
+    "region": "Internal",
+    "owner": "IT Services Team",
+    "status": "production"
+  }
+]
