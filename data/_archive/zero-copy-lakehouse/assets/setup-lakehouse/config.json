@@ -1,0 +1,47 @@
+{
+  "region": "us-south",
+  "auth_instance_id": "crn:v1:bluemix:public:lakehouse:us-south:a/XXXXXXXXXXXXXXXXXXXXX:5ddd9647-XXXXXXXXXXXXXXXXXXXXXc::",
+  "cos_config": {
+    "bucket_display_name": "cos_bucket",
+    "bucket_type": "ibm_cos",
+    "description": "",
+    "managed_by": "customer",
+    "region": "us-south",
+    "bucket_details": {
+      "bucket_name": "watsonxdata-demo",
+      "endpoint": "https://s3.us-south.cloud-object-storage.appdomain.cloud",
+      "access_key": "XXXXXXXXX",
+      "secret_key": "XXXXXXXXX"
+    },
+    "associated_catalog": {
+      "catalog_name": "cos_catalog",
+      "catalog_type": "hive-hadoop2"
+    }
+  },
+  "s3_config": {
+    "bucket_display_name": "amazon_S3",
+    "bucket_type": "aws_s3",
+    "description": "",
+    "managed_by": "customer",
+    "region": "us-east-2",
+    "bucket_details": {
+      "bucket_name": "watsonxdata",
+      "endpoint": "https://s3.us-east-2.amazonaws.com",
+      "access_key": "XXXXXXXXXXXXXXXXXX",
+      "secret_key": "XXXXXXXXXXXXXXXXXX"
+    },
+    "associated_catalog": {
+      "catalog_name": "s3_catalog",
+      "catalog_type": "hive-hadoop2"
+    }
+  },
+  "db2_oltp": {
+    "database_name": "bludb",
+    "hostname": "87612426-7efe-4c41-8c0c-e734b912eecd-ussouth.bt1ibm.db2.ibmappdomain.cloud",
+    "port": 31687,
+    "username": "XXXXXXXXX",
+    "password": "XXXXXXXXX",
+    "display_name": "db2_oltp_database",
+    "catalog_name": "db2_catalog"
+  }
+}

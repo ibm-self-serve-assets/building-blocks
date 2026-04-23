@@ -1,0 +1,1129 @@
+<rag_common_patterns>
+  <overview>
+    Reusable code patterns and implementations for RAG systems using IBM Watsonx
+    and various vector database technologies.
+  </overview>
+
+  <document_loaders>
+    <pattern name="multi_format_loader">
+      <description>Load documents from multiple formats</description>
+      <code>
+        <![CDATA[
+from langchain.document_loaders import (
+    PyPDFLoader,
+    TextLoader,
+    UnstructuredMarkdownLoader,
+    UnstructuredHTMLLoader,
+    CSVLoader
+)
+import os
+
+def load_documents(directory: str) -> list:
+    """Load documents from directory supporting multiple formats"""
+    documents = []
+    
+    loaders = {
+        '.pdf': PyPDFLoader,
+        '.txt': TextLoader,
+        '.md': UnstructuredMarkdownLoader,
+        '.html': UnstructuredHTMLLoader,
+        '.csv': CSVLoader
+    }
+    
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            ext = os.path.splitext(file)[1].lower()
+            
+            if ext in loaders:
+                try:
+                    loader = loaders[ext](file_path)
+                    docs = loader.load()
+                    
+                    # Enrich metadata
+                    for doc in docs:
+                        doc.metadata.update({
+                            'source': file_path,
+                            'file_type': ext,
+                            'file_name': file
+                        })
+                    
+                    documents.extend(docs)
+                except Exception as e:
+                    print(f"Error loading {file_path}: {e}")
+    
+    return documents
+        ]]>
+      </code>
+    </pattern>
+
+    <pattern name="ibm_cos_loader">
+      <description>Load documents from IBM Cloud Object Storage</description>
+      <code>
+        <![CDATA[
+import ibm_boto3
+from ibm_botocore.client import Config
+from langchain.document_loaders import PyPDFLoader
+import tempfile
+
+def load_from_ibm_cos(
+    bucket_name: str,
+    prefix: str = "",
+    cos_credentials: dict = None
+) -> list:
+    """Load documents from IBM COS bucket"""
+    
+    # Initialize IBM COS client
+    cos_client = ibm_boto3.client(
+        's3',
+        ibm_api_key_id=cos_credentials['apikey'],
+        ibm_service_instance_id=cos_credentials['resource_instance_id'],
+        config=Config(signature_version='oauth'),
+        endpoint_url=cos_credentials['endpoint_url']
+    )
+    
+    documents = []
+    
+    # List objects in bucket
+    response = cos_client.list_objects_v2(
+        Bucket=bucket_name,
+        Prefix=prefix
+    )
+    
+    for obj in response.get('Contents', []):
+        key = obj['Key']
+        
+        # Download to temp file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=os.path.splitext(key)[1]) as tmp:
+            cos_client.download_fileobj(bucket_name, key, tmp)
+            tmp_path = tmp.name
+        
+        try:
+            # Load based on file type
+            if key.endswith('.pdf'):
+                loader = PyPDFLoader(tmp_path)
+            elif key.endswith('.txt'):
+                loader = TextLoader(tmp_path)
+            else:
+                continue
+            
+            docs = loader.load()
+            
+            # Add COS metadata
+            for doc in docs:
+                doc.metadata.update({
+                    'source': f"cos://{bucket_name}/{key}",
+                    'bucket': bucket_name,
+                    'key': key
+                })
+            
+            documents.extend(docs)
+        finally:
+            os.unlink(tmp_path)
+    
+    return documents
+        ]]>
+      </code>
+    </pattern>
+  </document_loaders>
+
+  <chunking_strategies>
+    <pattern name="semantic_chunking">
+      <description>Chunk documents based on semantic boundaries</description>
+      <code>
+        <![CDATA[
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+def semantic_chunk_documents(documents: list, chunk_size: int = 400) -> list:
+    """Chunk documents preserving semantic boundaries"""
+    
+    # Define separators in order of preference
+    separators = [
+        "\n\n\n",  # Multiple blank lines (section breaks)
+        "\n\n",    # Paragraph breaks
+        "\n",      # Line breaks
+        ". ",      # Sentence endings
+        "! ",      # Exclamation sentences
+        "? ",      # Question sentences
+        "; ",      # Semicolons
+        ", ",      # Commas
+        " ",       # Spaces
+        ""         # Characters
+    ]
+    
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=int(chunk_size * 0.15),  # 15% overlap
+        separators=separators,
+        length_function=len,
+        is_separator_regex=False
+    )
+    
+    chunks = splitter.split_documents(documents)
+    
+    # Add chunk metadata
+    for i, chunk in enumerate(chunks):
+        chunk.metadata['chunk_id'] = i
+        chunk.metadata['chunk_size'] = len(chunk.page_content)
+    
+    return chunks
+        ]]>
+      </code>
+    </pattern>
+
+    <pattern name="code_aware_chunking">
+      <description>Chunk code files preserving function/class boundaries</description>
+      <code>
+        <![CDATA[
+from langchain.text_splitter import Language, RecursiveCharacterTextSplitter
+
+def chunk_code_documents(documents: list, language: str = "python") -> list:
+    """Chunk code documents preserving structure"""
+    
+    # Map language to splitter
+    language_map = {
+        "python": Language.PYTHON,
+        "javascript": Language.JS,
+        "typescript": Language.TS,
+        "java": Language.JAVA,
+        "cpp": Language.CPP
+    }
+    
+    splitter = RecursiveCharacterTextSplitter.from_language(
+        language=language_map.get(language, Language.PYTHON),
+        chunk_size=1000,  # Larger for code
+        chunk_overlap=100
+    )
+    
+    chunks = splitter.split_documents(documents)
+    
+    # Add code-specific metadata
+    for chunk in chunks:
+        chunk.metadata['content_type'] = 'code'
+        chunk.metadata['language'] = language
+        
+        # Extract function/class names
+        if language == "python":
+            chunk.metadata['functions'] = extract_python_functions(chunk.page_content)
+            chunk.metadata['classes'] = extract_python_classes(chunk.page_content)
+    
+    return chunks
+
+def extract_python_functions(code: str) -> list:
+    """Extract function names from Python code"""
+    import re
+    pattern = r'def\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\('
+    return re.findall(pattern, code)
+
+def extract_python_classes(code: str) -> list:
+    """Extract class names from Python code"""
+    import re
+    pattern = r'class\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*[:\(]'
+    return re.findall(pattern, code)
+        ]]>
+      </code>
+    </pattern>
+  </chunking_strategies>
+
+  <vector_database_patterns>
+    <pattern name="milvus_collection_setup">
+      <description>Complete Milvus collection setup with IBM Watsonx embeddings</description>
+      <code>
+        <![CDATA[
+from pymilvus import connections, Collection, CollectionSchema, FieldSchema, DataType
+from ibm_watsonx_ai import Embeddings
+from ibm_watsonx_ai.foundation_models.utils.enums import EmbeddingTypes
+
+class MilvusRAGStore:
+    def __init__(self, collection_name: str, embedding_dim: int = 768):
+        self.collection_name = collection_name
+        self.embedding_dim = embedding_dim
+        
+        # Connect to Milvus
+        connections.connect(
+            alias="default",
+            host=os.getenv("MILVUS_HOST"),
+            port=os.getenv("MILVUS_PORT"),
+            user=os.getenv("MILVUS_USER"),
+            password=os.getenv("MILVUS_PASSWORD"),
+            secure=True
+        )
+        
+        # Initialize IBM Watsonx embeddings
+        self.embeddings = Embeddings(
+            model_id=EmbeddingTypes.IBM_SLATE_125M_ENG,
+            credentials={
+                "url": os.getenv("WATSONX_URL"),
+                "apikey": os.getenv("WATSONX_API_KEY")
+            },
+            project_id=os.getenv("WATSONX_PROJECT_ID")
+        )
+        
+        # Create or get collection
+        self.collection = self._create_collection()
+    
+    def _create_collection(self):
+        """Create Milvus collection with schema"""
+        fields = [
+            FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+            FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=self.embedding_dim),
+            FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=65535),
+            FieldSchema(name="source", dtype=DataType.VARCHAR, max_length=1000),
+            FieldSchema(name="metadata", dtype=DataType.JSON)
+        ]
+        
+        schema = CollectionSchema(fields, description="RAG knowledge base")
+        
+        # Create collection if not exists
+        if not Collection.exists(self.collection_name):
+            collection = Collection(self.collection_name, schema)
+            
+            # Create HNSW index
+            index_params = {
+                "metric_type": "COSINE",
+                "index_type": "HNSW",
+                "params": {"M": 16, "efConstruction": 256}
+            }
+            collection.create_index("embedding", index_params)
+        else:
+            collection = Collection(self.collection_name)
+        
+        collection.load()
+        return collection
+    
+    def add_documents(self, documents: list):
+        """Add documents to collection"""
+        texts = [doc.page_content for doc in documents]
+        
+        # Generate embeddings with IBM Watsonx
+        vectors = self.embeddings.embed_documents(texts, batch_size=100)
+        
+        # Prepare data
+        data = [
+            vectors,
+            texts,
+            [doc.metadata.get('source', '') for doc in documents],
+            [doc.metadata for doc in documents]
+        ]
+        
+        # Insert into Milvus
+        self.collection.insert(data)
+        self.collection.flush()
+    
+    def search(self, query: str, top_k: int = 5, filter_expr: str = None):
+        """Search collection"""
+        query_vector = self.embeddings.embed_query(query)
+        
+        search_params = {
+            "metric_type": "COSINE",
+            "params": {"ef": 100}
+        }
+        
+        results = self.collection.search(
+            data=[query_vector],
+            anns_field="embedding",
+            param=search_params,
+            limit=top_k,
+            expr=filter_expr,
+            output_fields=["text", "source", "metadata"]
+        )
+        
+        return results[0]
+        ]]>
+      </code>
+    </pattern>
+
+    <pattern name="opensearch_hybrid_search">
+      <description>OpenSearch setup with hybrid search capabilities</description>
+      <code>
+        <![CDATA[
+from opensearchpy import OpenSearch
+from ibm_watsonx_ai import Embeddings
+from ibm_watsonx_ai.foundation_models.utils.enums import EmbeddingTypes
+
+class OpenSearchRAGStore:
+    def __init__(self, index_name: str):
+        self.index_name = index_name
+        
+        # Connect to OpenSearch
+        self.client = OpenSearch(
+            hosts=[{
+                'host': os.getenv('OPENSEARCH_HOST'),
+                'port': int(os.getenv('OPENSEARCH_PORT', 9200))
+            }],
+            http_auth=(
+                os.getenv('OPENSEARCH_USER'),
+                os.getenv('OPENSEARCH_PASSWORD')
+            ),
+            use_ssl=True,
+            verify_certs=True
+        )
+        
+        # Initialize IBM Watsonx embeddings
+        self.embeddings = Embeddings(
+            model_id=EmbeddingTypes.IBM_SLATE_125M_ENG,
+            credentials={
+                "url": os.getenv("WATSONX_URL"),
+                "apikey": os.getenv("WATSONX_API_KEY")
+            },
+            project_id=os.getenv("WATSONX_PROJECT_ID")
+        )
+        
+        # Create index
+        self._create_index()
+    
+    def _create_index(self):
+        """Create OpenSearch index with k-NN"""
+        index_body = {
+            "settings": {
+                "index": {
+                    "knn": True,
+                    "knn.algo_param.ef_search": 100
+                }
+            },
+            "mappings": {
+                "properties": {
+                    "embedding": {
+                        "type": "knn_vector",
+                        "dimension": 768,
+                        "method": {
+                            "name": "hnsw",
+                            "space_type": "cosinesimil",
+                            "engine": "nmslib",
+                            "parameters": {
+                                "ef_construction": 128,
+                                "m": 16
+                            }
+                        }
+                    },
+                    "text": {"type": "text"},
+                    "source": {"type": "keyword"},
+                    "metadata": {"type": "object", "enabled": True}
+                }
+            }
+        }
+        
+        if not self.client.indices.exists(self.index_name):
+            self.client.indices.create(self.index_name, body=index_body)
+    
+    def add_documents(self, documents: list):
+        """Add documents to index"""
+        texts = [doc.page_content for doc in documents]
+        
+        # Generate embeddings with IBM Watsonx
+        vectors = self.embeddings.embed_documents(texts, batch_size=100)
+        
+        # Bulk index
+        bulk_data = []
+        for doc, vector in zip(documents, vectors):
+            bulk_data.append({
+                "index": {"_index": self.index_name}
+            })
+            bulk_data.append({
+                "embedding": vector,
+                "text": doc.page_content,
+                "source": doc.metadata.get('source', ''),
+                "metadata": doc.metadata
+            })
+        
+        self.client.bulk(body=bulk_data)
+        self.client.indices.refresh(index=self.index_name)
+    
+    def hybrid_search(self, query: str, top_k: int = 10, keyword_weight: float = 0.3):
+        """Hybrid search combining k-NN and BM25"""
+        query_vector = self.embeddings.embed_query(query)
+        
+        search_body = {
+            "size": top_k,
+            "query": {
+                "bool": {
+                    "should": [
+                        {
+                            "knn": {
+                                "embedding": {
+                                    "vector": query_vector,
+                                    "k": top_k
+                                }
+                            }
+                        },
+                        {
+                            "match": {
+                                "text": {
+                                    "query": query,
+                                    "boost": keyword_weight
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        
+        results = self.client.search(index=self.index_name, body=search_body)
+        
+        return [
+            {
+                "text": hit['_source']['text'],
+                "source": hit['_source']['source'],
+                "metadata": hit['_source']['metadata'],
+                "score": hit['_score']
+            }
+            for hit in results['hits']['hits']
+        ]
+        ]]>
+      </code>
+    </pattern>
+  </vector_database_patterns>
+
+  <rag_pipeline_patterns>
+    <pattern name="complete_rag_pipeline">
+      <description>End-to-end RAG pipeline with IBM Watsonx</description>
+      <code>
+        <![CDATA[
+from ibm_watsonx_ai.foundation_models import Model
+from ibm_watsonx_ai import Embeddings
+from ibm_watsonx_ai.foundation_models.utils.enums import EmbeddingTypes, ModelTypes
+
+class RAGPipeline:
+    def __init__(self, vector_store, model_id: str = ModelTypes.GRANITE_13B_CHAT_V2):
+        self.vector_store = vector_store
+        
+        # Initialize IBM Watsonx credentials
+        credentials = {
+            "url": os.getenv("WATSONX_URL"),
+            "apikey": os.getenv("WATSONX_API_KEY")
+        }
+        project_id = os.getenv("WATSONX_PROJECT_ID")
+        
+        # Initialize LLM
+        self.llm = Model(
+            model_id=model_id,
+            credentials=credentials,
+            project_id=project_id,
+            params={
+                "decoding_method": "greedy",
+                "max_new_tokens": 500,
+                "temperature": 0.7,
+                "top_p": 0.9
+            }
+        )
+    
+    def ingest(self, documents: list):
+        """Ingest documents into RAG system"""
+        # Chunk documents
+        chunks = semantic_chunk_documents(documents)
+        
+        # Add to vector store
+        self.vector_store.add_documents(chunks)
+        
+        return f"Ingested {len(chunks)} chunks from {len(documents)} documents"
+    
+    def query(self, question: str, top_k: int = 5, include_sources: bool = True):
+        """Query RAG system"""
+        # Retrieve relevant documents
+        results = self.vector_store.search(question, top_k=top_k)
+        
+        # Format context
+        context = "\n\n".join([
+            f"[Source: {doc['source']}]\n{doc['text']}"
+            for doc in results
+        ])
+        
+        # Generate answer
+        prompt = f"""
+You are a helpful assistant that answers questions based on the provided context.
+
+Context:
+{context}
+
+Question: {question}
+
+Instructions:
+1. Answer using ONLY information from the context
+2. If insufficient information, say "I don't have enough information"
+3. Cite sources using [Source: filename]
+4. Be concise but complete
+
+Answer:
+"""
+        
+        answer = self.llm.generate_text(prompt)
+        
+        response = {"answer": answer}
+        
+        if include_sources:
+            response["sources"] = [
+                {
+                    "text": doc["text"][:200] + "...",
+                    "source": doc["source"],
+                    "score": doc["score"]
+                }
+                for doc in results
+            ]
+        
+        return response
+    
+    def evaluate(self, test_questions: list, ground_truths: list):
+        """Evaluate RAG system performance"""
+        from ragas import evaluate
+        from ragas.metrics import faithfulness, answer_relevancy
+        
+        results = []
+        for question, truth in zip(test_questions, ground_truths):
+            response = self.query(question, include_sources=False)
+            results.append({
+                "question": question,
+                "answer": response["answer"],
+                "ground_truth": truth
+            })
+        
+        # Run RAGAS evaluation
+        eval_results = evaluate(
+            results,
+            metrics=[faithfulness, answer_relevancy]
+        )
+        
+        return eval_results
+        ]]>
+      </code>
+    </pattern>
+
+    <pattern name="conversational_rag">
+      <description>RAG with conversation history support</description>
+      <code>
+        <![CDATA[
+class ConversationalRAG:
+    def __init__(self, vector_store, llm):
+        self.vector_store = vector_store
+        self.llm = llm
+        self.conversation_history = []
+    
+    def chat(self, user_message: str, top_k: int = 5):
+        """Chat with conversation history"""
+        # Rewrite query considering history
+        rewritten_query = self._rewrite_query(user_message)
+        
+        # Retrieve relevant documents
+        results = self.vector_store.search(rewritten_query, top_k=top_k)
+        
+        # Format context
+        context = "\n\n".join([doc['text'] for doc in results])
+        
+        # Build prompt with history
+        history_text = "\n".join([
+            f"User: {turn['user']}\nAssistant: {turn['assistant']}"
+            for turn in self.conversation_history[-3:]  # Last 3 turns
+        ])
+        
+        prompt = f"""
+Previous conversation:
+{history_text}
+
+Context:
+{context}
+
+Current question: {user_message}
+
+Answer the current question using the context and conversation history.
+
+Answer:
+"""
+        
+        answer = self.llm.generate_text(prompt)
+        
+        # Update history
+        self.conversation_history.append({
+            "user": user_message,
+            "assistant": answer
+        })
+        
+        return {
+            "answer": answer,
+            "sources": [doc['source'] for doc in results]
+        }
+    
+    def _rewrite_query(self, query: str) -> str:
+        """Rewrite query considering conversation history"""
+        if not self.conversation_history:
+            return query
+        
+        history_text = "\n".join([
+            f"User: {turn['user']}\nAssistant: {turn['assistant']}"
+            for turn in self.conversation_history[-2:]
+        ])
+        
+        rewrite_prompt = f"""
+Given the conversation history, rewrite the current query to be standalone.
+
+Conversation history:
+{history_text}
+
+Current query: {query}
+
+Rewritten standalone query:
+"""
+        
+        rewritten = self.llm.generate_text(rewrite_prompt, max_new_tokens=100)
+        return rewritten.strip()
+    
+    def clear_history(self):
+        """Clear conversation history"""
+        self.conversation_history = []
+        ]]>
+      </code>
+    </pattern>
+  </rag_pipeline_patterns>
+
+  <mcp_server_patterns>
+    <pattern name="rag_ingestion_mcp_server">
+      <description>FastMCP server for RAG document ingestion</description>
+      <code>
+        <![CDATA[
+from fastmcp import FastMCP
+from typing import Optional
+import os
+
+mcp = FastMCP("RAG Ingestion Server")
+
+# Global RAG pipeline instance
+rag_pipeline = None
+
+def get_rag_pipeline():
+    """Get or create RAG pipeline instance"""
+    global rag_pipeline
+    if rag_pipeline is None:
+        # Initialize vector store
+        vector_store = MilvusRAGStore(
+            collection_name=os.getenv("COLLECTION_NAME", "knowledge_base")
+        )
+        rag_pipeline = RAGPipeline(vector_store)
+    return rag_pipeline
+
+@mcp.tool()
+def ingest_directory(
+    directory_path: str,
+    chunk_size: int = 400,
+    chunk_overlap: int = 50
+) -> str:
+    """
+    Ingest all documents from a directory into the RAG knowledge base.
+    
+    Args:
+        directory_path: Path to directory containing documents
+        chunk_size: Size of text chunks (default: 400)
+        chunk_overlap: Overlap between chunks (default: 50)
+    
+    Returns:
+        Status message with ingestion statistics
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        
+        # Load documents
+        documents = load_documents(directory_path)
+        
+        if not documents:
+            return f"No documents found in {directory_path}"
+        
+        # Ingest
+        result = pipeline.ingest(documents)
+        
+        return result
+    except Exception as e:
+        return f"Error ingesting documents: {str(e)}"
+
+@mcp.tool()
+def ingest_from_ibm_cos(
+    bucket_name: str,
+    prefix: str = "",
+    chunk_size: int = 400
+) -> str:
+    """
+    Ingest documents from IBM Cloud Object Storage bucket.
+    
+    Args:
+        bucket_name: Name of IBM COS bucket
+        prefix: Optional prefix to filter objects
+        chunk_size: Size of text chunks (default: 400)
+    
+    Returns:
+        Status message with ingestion statistics
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        
+        # Load from IBM COS
+        cos_credentials = {
+            'apikey': os.getenv('IBM_COS_API_KEY'),
+            'resource_instance_id': os.getenv('IBM_COS_RESOURCE_INSTANCE_ID'),
+            'endpoint_url': os.getenv('IBM_COS_ENDPOINT')
+        }
+        
+        documents = load_from_ibm_cos(bucket_name, prefix, cos_credentials)
+        
+        if not documents:
+            return f"No documents found in bucket {bucket_name}"
+        
+        # Ingest
+        result = pipeline.ingest(documents)
+        
+        return result
+    except Exception as e:
+        return f"Error ingesting from IBM COS: {str(e)}"
+
+@mcp.tool()
+def get_ingestion_status() -> dict:
+    """
+    Get current status of the RAG knowledge base.
+    
+    Returns:
+        Dictionary with collection statistics
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        
+        # Get collection stats
+        stats = pipeline.vector_store.collection.num_entities
+        
+        return {
+            "total_documents": stats,
+            "collection_name": pipeline.vector_store.collection_name,
+            "status": "ready"
+        }
+    except Exception as e:
+        return {"error": str(e)}
+        ]]>
+      </code>
+    </pattern>
+
+    <pattern name="rag_retrieval_mcp_server">
+      <description>FastMCP server for RAG retrieval and Q&A</description>
+      <code>
+        <![CDATA[
+from fastmcp import FastMCP
+from typing import Optional, List
+
+mcp = FastMCP("RAG Retrieval Server")
+
+# Global RAG pipeline instance
+rag_pipeline = None
+
+def get_rag_pipeline():
+    """Get or create RAG pipeline instance"""
+    global rag_pipeline
+    if rag_pipeline is None:
+        vector_store = MilvusRAGStore(
+            collection_name=os.getenv("COLLECTION_NAME", "knowledge_base")
+        )
+        rag_pipeline = RAGPipeline(vector_store)
+    return rag_pipeline
+
+@mcp.tool()
+def search_knowledge_base(
+    query: str,
+    top_k: int = 5,
+    filters: Optional[dict] = None
+) -> List[dict]:
+    """
+    Search the RAG knowledge base for relevant documents.
+    
+    Args:
+        query: Search query
+        top_k: Number of results to return (default: 5)
+        filters: Optional metadata filters
+    
+    Returns:
+        List of relevant documents with scores
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        
+        # Build filter expression
+        filter_expr = None
+        if filters:
+            filter_expr = " AND ".join([
+                f"{key} == '{value}'" for key, value in filters.items()
+            ])
+        
+        results = pipeline.vector_store.search(
+            query,
+            top_k=top_k,
+            filter_expr=filter_expr
+        )
+        
+        return [
+            {
+                "text": hit.entity.get('text'),
+                "source": hit.entity.get('source'),
+                "metadata": hit.entity.get('metadata'),
+                "score": hit.score
+            }
+            for hit in results
+        ]
+    except Exception as e:
+        return [{"error": str(e)}]
+
+@mcp.tool()
+def ask_question(
+    question: str,
+    top_k: int = 5,
+    include_sources: bool = True
+) -> dict:
+    """
+    Ask a question using RAG with IBM Watsonx.
+    
+    Args:
+        question: Question to answer
+        top_k: Number of documents to retrieve (default: 5)
+        include_sources: Whether to include source citations (default: True)
+    
+    Returns:
+        Dictionary with answer and optional sources
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        response = pipeline.query(question, top_k, include_sources)
+        return response
+    except Exception as e:
+        return {"error": str(e)}
+
+@mcp.tool()
+def start_conversation() -> dict:
+    """
+    Start a new conversational RAG session.
+    
+    Returns:
+        Session information
+    """
+    try:
+        pipeline = get_rag_pipeline()
+        
+        # Create conversational RAG
+        conv_rag = ConversationalRAG(
+            pipeline.vector_store,
+            pipeline.llm
+        )
+        
+        # Store in session (simplified - use proper session management)
+        return {
+            "session_id": "new_session",
+            "status": "ready",
+            "message": "Conversational RAG session started"
+        }
+    except Exception as e:
+        return {"error": str(e)}
+
+@mcp.tool()
+def chat(
+    message: str,
+    session_id: str = "default",
+    top_k: int = 5
+) -> dict:
+    """
+    Chat with the RAG system maintaining conversation history.
+    
+    Args:
+        message: User message
+        session_id: Conversation session ID
+        top_k: Number of documents to retrieve
+    
+    Returns:
+        Response with answer and sources
+    """
+    try:
+        # Get conversational RAG (simplified - use proper session management)
+        pipeline = get_rag_pipeline()
+        conv_rag = ConversationalRAG(pipeline.vector_store, pipeline.llm)
+        
+        response = conv_rag.chat(message, top_k)
+        return response
+    except Exception as e:
+        return {"error": str(e)}
+        ]]>
+      </code>
+    </pattern>
+  </mcp_server_patterns>
+
+  <advanced_patterns>
+    <pattern name="multi_query_retrieval">
+      <description>Generate multiple query variations for better retrieval</description>
+      <code>
+        <![CDATA[
+def multi_query_retrieval(query: str, vector_store, llm, top_k: int = 5):
+    """Retrieve using multiple query variations"""
+    
+    # Generate query variations
+    variation_prompt = f"""
+Generate 3 different versions of this question that could help find relevant information:
+
+Original question: {query}
+
+Variations:
+1.
+2.
+3.
+"""
+    
+    variations_text = llm.generate_text(variation_prompt, max_new_tokens=200)
+    
+    # Parse variations
+    variations = [query]  # Include original
+    for line in variations_text.split('\n'):
+        if line.strip() and not line.startswith('Variations:'):
+            clean_line = line.strip().lstrip('123.').strip()
+            if clean_line:
+                variations.append(clean_line)
+    
+    # Search with all variations
+    all_results = []
+    seen_ids = set()
+    
+    for var in variations:
+        results = vector_store.search(var, top_k=top_k)
+        
+        for doc in results:
+            doc_id = doc.get('metadata', {}).get('chunk_id')
+            if doc_id not in seen_ids:
+                all_results.append(doc)
+                seen_ids.add(doc_id)
+    
+    # Sort by score and return top_k
+    all_results.sort(key=lambda x: x.get('score', 0), reverse=True)
+    return all_results[:top_k]
+        ]]>
+      </code>
+    </pattern>
+
+    <pattern name="self_query_retrieval">
+      <description>Extract metadata filters from natural language queries</description>
+      <code>
+        <![CDATA[
+def self_query_retrieval(query: str, vector_store, llm, top_k: int = 5):
+    """Extract filters from query and search"""
+    
+    # Extract metadata filters
+    filter_prompt = f"""
+Extract metadata filters from this query. Return as JSON.
+
+Query: {query}
+
+Available metadata fields:
+- doc_type: (policy, guide, faq, technical)
+- language: (en, es, fr, de)
+- date_range: (YYYY-MM-DD to YYYY-MM-DD)
+- author: (string)
+
+Extracted filters (JSON):
+"""
+    
+    filters_json = llm.generate_text(filter_prompt, max_new_tokens=100)
+    
+    try:
+        import json
+        filters = json.loads(filters_json)
+    except:
+        filters = {}
+    
+    # Build filter expression
+    filter_expr = None
+    if filters:
+        filter_expr = " AND ".join([
+            f"{key} == '{value}'" for key, value in filters.items()
+        ])
+    
+    # Search with filters
+    results = vector_store.search(
+        query,
+        top_k=top_k,
+        filter_expr=filter_expr
+    )
+    
+    return results
+        ]]>
+      </code>
+    </pattern>
+  </advanced_patterns>
+
+  <quality_checklist>
+    <category name="document_processing">
+      <item>Documents loaded from all supported formats</item>
+      <item>Metadata preserved and enriched</item>
+      <item>Appropriate chunk size for use case</item>
+      <item>Chunk overlap configured (10-20%)</item>
+      <item>Semantic boundaries respected</item>
+    </category>
+
+    <category name="embedding_generation">
+      <item>IBM Watsonx embeddings configured</item>
+      <item>Batch processing for efficiency</item>
+      <item>Embedding dimensions match vector DB</item>
+      <item>Error handling for API failures</item>
+      <item>Embedding caching implemented</item>
+    </category>
+
+    <category name="vector_storage">
+      <item>Appropriate index type selected</item>
+      <item>Index parameters tuned for use case</item>
+      <item>Metadata fields properly indexed</item>
+      <item>Hybrid search capability enabled</item>
+      <item>Connection pooling configured</item>
+    </category>
+
+    <category name="retrieval">
+      <item>Query preprocessing implemented</item>
+      <item>Reranking for precision</item>
+      <item>Metadata filtering available</item>
+      <item>Top-k parameter tunable</item>
+      <item>Retrieval metrics tracked</item>
+    </category>
+
+    <category name="generation">
+      <item>IBM Watsonx LLM configured</item>
+      <item>Prompt template optimized</item>
+      <item>Context window managed</item>
+      <item>Source citations included</item>
+      <item>Hallucination mitigation in place</item>
+    </category>
+
+    <category name="evaluation">
+      <item>Test dataset prepared</item>
+      <item>Retrieval metrics measured</item>
+      <item>Generation quality evaluated</item>
+      <item>End-to-end performance tested</item>
+      <item>Continuous monitoring enabled</item>
+    </category>
+  </quality_checklist>
+
+  <performance_optimization>
+    <optimization name="batch_processing">
+      <description>Process documents in batches for efficiency</description>
+      <guideline>Embed documents in batches of 50-100</guideline>
+      <guideline>Insert into vector DB in batches</guideline>
+      <guideline>Use async operations where possible</guideline>
+    </optimization>
+
+    <optimization name="caching">
+      <description>Cache embeddings and search results</description>
+      <guideline>Cache document embeddings to avoid regeneration</guideline>
+      <guideline>Cache frequent queries with TTL</guideline>
+      <guideline>Use Redis or similar for distributed caching</guideline>
+    </optimization>
+
+    <optimization name="index_tuning">
+      <description>Tune vector index parameters</description>
+      <guideline>Increase ef_construction for better recall</guideline>
+      <guideline>Increase M for better accuracy (higher memory)</guideline>
+      <guideline>Tune ef_search based on latency requirements</guideline>
+    </optimization>
+  </performance_optimization>
+
+  <security_practices>
+    <practice>Store credentials in environment variables or IBM Key Protect</practice>
+    <practice>Use IBM Guardium for data access monitoring</practice>
+    <practice>Implement role-based access control for knowledge bases</practice>
+    <practice>Encrypt data at rest in vector databases</practice>
+    <practice>Use TLS for all network communications</practice>
+    <practice>Audit all document access and queries</practice>
+    <practice>Implement rate limiting on API endpoints</practice>
+  </security_practices>
+</rag_common_patterns>

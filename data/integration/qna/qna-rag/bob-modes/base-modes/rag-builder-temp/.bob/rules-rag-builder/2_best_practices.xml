@@ -1,0 +1,583 @@
+<rag_builder_best_practices>
+  <overview>
+    Best practices for building production-ready RAG systems using IBM Watsonx
+    and vector database technologies.
+  </overview>
+
+  <document_processing_practices>
+    <principle priority="high">
+      <name>Optimal Chunk Size Selection</name>
+      <description>Choose chunk size based on use case and model context window</description>
+      <guidelines>
+        <guideline>For Q&A: 200-500 tokens per chunk</guideline>
+        <guideline>For summarization: 500-1000 tokens per chunk</guideline>
+        <guideline>For code: Use semantic chunking by function/class</guideline>
+        <guideline>Always include overlap (10-20%) to preserve context</guideline>
+      </guidelines>
+      <example>
+        <![CDATA[
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# Optimal chunking for Q&A
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=400,  # ~300 tokens
+    chunk_overlap=50,  # 12.5% overlap
+    separators=["\n\n", "\n", ". ", " ", ""],
+    length_function=len
+)
+
+chunks = splitter.split_documents(documents)
+        ]]>
+      </example>
+    </principle>
+
+    <principle priority="high">
+      <name>Metadata Preservation</name>
+      <description>Maintain rich metadata for filtering and citation</description>
+      <metadata_fields>
+        <field>source_file</field>
+        <field>document_title</field>
+        <field>author</field>
+        <field>creation_date</field>
+        <field>page_number</field>
+        <field>section_heading</field>
+        <field>document_type</field>
+        <field>language</field>
+      </metadata_fields>
+      <example>
+        <![CDATA[
+# Enrich chunks with metadata
+for chunk in chunks:
+    chunk.metadata.update({
+        "source": document.source,
+        "title": document.metadata.get("title"),
+        "page": chunk.metadata.get("page"),
+        "section": extract_section_heading(chunk),
+        "doc_type": document.metadata.get("type"),
+        "ingestion_date": datetime.utcnow().isoformat(),
+        "chunk_id": generate_chunk_id(document, chunk)
+    })
+        ]]>
+      </example>
+    </principle>
+  </document_processing_practices>
+
+  <embedding_practices>
+    <principle priority="critical">
+      <name>Use IBM Watsonx Embeddings</name>
+      <description>Leverage IBM Watsonx embedding models for optimal performance</description>
+      <implementation>
+        <practice>Use slate models for English text retrieval</practice>
+        <practice>Batch embed documents for efficiency</practice>
+        <practice>Cache embeddings to reduce costs</practice>
+        <practice>Monitor embedding API usage and costs</practice>
+      </implementation>
+      <example>
+        <![CDATA[
+from ibm_watsonx_ai import Embeddings
+from ibm_watsonx_ai.foundation_models.utils.enums import EmbeddingTypes
+
+# Configure IBM Watsonx embeddings
+embeddings = Embeddings(
+    model_id=EmbeddingTypes.IBM_SLATE_125M_ENG,
+    credentials={
+        "url": os.getenv("WATSONX_URL"),
+        "apikey": os.getenv("WATSONX_API_KEY")
+    },
+    project_id=os.getenv("WATSONX_PROJECT_ID")
+)
+
+# Batch embed for efficiency
+texts = [chunk.page_content for chunk in chunks]
+vectors = embeddings.embed_documents(texts, batch_size=100)
+
+# Cache embeddings
+cache_embeddings(chunks, vectors)
+        ]]>
+      </example>
+    </principle>
+
+    <principle priority="high">
+      <name>Embedding Dimension Consistency</name>
+      <description>Ensure embedding dimensions match vector database schema</description>
+      <validation>
+        <check>Verify model output dimensions</check>
+        <check>Match vector database index dimensions</check>
+        <check>Test with sample embeddings before bulk ingestion</check>
+      </validation>
+    </principle>
+  </embedding_practices>
+
+  <vector_database_practices>
+    <principle priority="high">
+      <name>Index Selection and Configuration</name>
+      <description>Choose appropriate index type for use case</description>
+      <opensearch_configuration>
+        <![CDATA[
+# OpenSearch k-NN index configuration
+index_settings = {
+    "settings": {
+        "index": {
+            "knn": True,
+            "knn.algo_param.ef_search": 100
+        }
+    },
+    "mappings": {
+        "properties": {
+            "embedding": {
+                "type": "knn_vector",
+                "dimension": 768,
+                "method": {
+                    "name": "hnsw",
+                    "space_type": "cosinesimil",
+                    "engine": "nmslib",
+                    "parameters": {
+                        "ef_construction": 128,
+                        "m": 16
+                    }
+                }
+            },
+            "text": {"type": "text"},
+            "metadata": {"type": "object"}
+        }
+    }
+}
+        ]]>
+      </opensearch_configuration>
+      <milvus_configuration>
+        <![CDATA[
+# Milvus collection configuration
+from pymilvus import Collection, CollectionSchema, FieldSchema, DataType
+
+fields = [
+    FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
+    FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=768),
+    FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=65535),
+    FieldSchema(name="metadata", dtype=DataType.JSON)
+]
+
+schema = CollectionSchema(fields, description="RAG knowledge base")
+collection = Collection("knowledge_base", schema)
+
+# Create HNSW index
+index_params = {
+    "metric_type": "COSINE",
+    "index_type": "HNSW",
+    "params": {"M": 16, "efConstruction": 256}
+}
+collection.create_index("embedding", index_params)
+        ]]>
+      </milvus_configuration>
+    </principle>
+
+    <principle priority="high">
+      <name>Hybrid Search Implementation</name>
+      <description>Combine vector search with keyword search for better results</description>
+      <example>
+        <![CDATA[
+# OpenSearch hybrid search
+def hybrid_search(query: str, top_k: int = 10):
+    # Generate query embedding
+    query_vector = embeddings.embed_query(query)
+    
+    # Hybrid query combining k-NN and BM25
+    search_query = {
+        "size": top_k,
+        "query": {
+            "bool": {
+                "should": [
+                    {
+                        "knn": {
+                            "embedding": {
+                                "vector": query_vector,
+                                "k": top_k
+                            }
+                        }
+                    },
+                    {
+                        "match": {
+                            "text": {
+                                "query": query,
+                                "boost": 0.3  # Weight keyword search lower
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+    
+    results = opensearch_client.search(index="knowledge_base", body=search_query)
+    return results['hits']['hits']
+        ]]>
+      </example>
+    </principle>
+  </vector_database_practices>
+
+  <retrieval_optimization_practices>
+    <principle priority="high">
+      <name>Query Preprocessing</name>
+      <description>Enhance queries before retrieval</description>
+      <techniques>
+        <technique name="query_expansion">
+          <![CDATA[
+# Expand query with LLM
+from ibm_watsonx_ai.foundation_models import Model
+
+llm = Model(
+    model_id="ibm/granite-13b-chat-v2",
+    credentials=credentials,
+    project_id=project_id
+)
+
+expansion_prompt = f"""
+Generate 3 alternative phrasings of this question:
+Question: {query}
+
+Alternative phrasings:
+1.
+2.
+3.
+"""
+
+expanded_queries = llm.generate_text(expansion_prompt)
+# Search with all query variations
+          ]]>
+        </technique>
+        <technique name="hypothetical_documents">
+          <![CDATA[
+# HyDE: Generate hypothetical answer, embed and search
+hyde_prompt = f"""
+Write a detailed answer to this question:
+{query}
+
+Answer:
+"""
+
+hypothetical_answer = llm.generate_text(hyde_prompt)
+# Embed hypothetical answer and search
+hyde_vector = embeddings.embed_query(hypothetical_answer)
+results = vector_db.search(hyde_vector, top_k=10)
+          ]]>
+        </technique>
+      </techniques>
+    </principle>
+
+    <principle priority="high">
+      <name>Reranking for Precision</name>
+      <description>Reorder retrieved results using cross-encoder</description>
+      <example>
+        <![CDATA[
+from sentence_transformers import CrossEncoder
+
+# Initialize reranker
+reranker = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+
+def rerank_results(query: str, results: list, top_k: int = 5):
+    # Create query-document pairs
+    pairs = [[query, doc['text']] for doc in results]
+    
+    # Score all pairs
+    scores = reranker.predict(pairs)
+    
+    # Sort by score and return top_k
+    scored_results = list(zip(results, scores))
+    scored_results.sort(key=lambda x: x[1], reverse=True)
+    
+    return [doc for doc, score in scored_results[:top_k]]
+        ]]>
+      </example>
+    </principle>
+
+    <principle priority="medium">
+      <name>Metadata Filtering</name>
+      <description>Use metadata to narrow search scope</description>
+      <example>
+        <![CDATA[
+# Filter by metadata
+def search_with_filters(query: str, filters: dict, top_k: int = 10):
+    query_vector = embeddings.embed_query(query)
+    
+    # Build filter expression
+    filter_expr = " AND ".join([
+        f"{key} == '{value}'" for key, value in filters.items()
+    ])
+    
+    results = vector_db.search(
+        query_vector,
+        filter=filter_expr,
+        top_k=top_k
+    )
+    
+    return results
+
+# Example: Search only in specific document type
+results = search_with_filters(
+    query="What is the refund policy?",
+    filters={"doc_type": "policy", "language": "en"},
+    top_k=5
+)
+        ]]>
+      </example>
+    </principle>
+  </retrieval_optimization_practices>
+
+  <llm_integration_practices>
+    <principle priority="critical">
+      <name>Prompt Engineering for RAG</name>
+      <description>Design effective prompts that leverage retrieved context</description>
+      <template>
+        <![CDATA[
+RAG_PROMPT_TEMPLATE = """
+You are a helpful assistant that answers questions based on the provided context.
+
+Context:
+{context}
+
+Question: {question}
+
+Instructions:
+1. Answer the question using ONLY information from the context above
+2. If the context doesn't contain enough information, say "I don't have enough information to answer this question"
+3. Cite the source for each piece of information using [Source: filename]
+4. Be concise but complete in your answer
+
+Answer:
+"""
+
+def generate_answer(question: str, retrieved_docs: list):
+    # Format context from retrieved documents
+    context = "\n\n".join([
+        f"[Source: {doc['metadata']['source']}]\n{doc['text']}"
+        for doc in retrieved_docs
+    ])
+    
+    # Generate answer with IBM Watsonx
+    prompt = RAG_PROMPT_TEMPLATE.format(
+        context=context,
+        question=question
+    )
+    
+    answer = llm.generate_text(prompt, max_new_tokens=500)
+    return answer
+        ]]>
+      </template>
+    </principle>
+
+    <principle priority="high">
+      <name>Context Window Management</name>
+      <description>Optimize context to fit within LLM token limits</description>
+      <strategies>
+        <strategy>Prioritize most relevant chunks</strategy>
+        <strategy>Compress context by extracting key sentences</strategy>
+        <strategy>Use sliding window for long documents</strategy>
+        <strategy>Implement context truncation with warnings</strategy>
+      </strategies>
+      <example>
+        <![CDATA[
+def manage_context_window(docs: list, max_tokens: int = 3000):
+    """Fit retrieved docs within token limit"""
+    from tiktoken import encoding_for_model
+    
+    enc = encoding_for_model("gpt-3.5-turbo")
+    
+    context_parts = []
+    total_tokens = 0
+    
+    for doc in docs:
+        doc_tokens = len(enc.encode(doc['text']))
+        
+        if total_tokens + doc_tokens <= max_tokens:
+            context_parts.append(doc['text'])
+            total_tokens += doc_tokens
+        else:
+            # Truncate last document to fit
+            remaining_tokens = max_tokens - total_tokens
+            if remaining_tokens > 100:  # Only add if meaningful
+                truncated = enc.decode(
+                    enc.encode(doc['text'])[:remaining_tokens]
+                )
+                context_parts.append(truncated + "...")
+            break
+    
+    return "\n\n".join(context_parts)
+        ]]>
+      </example>
+    </principle>
+  </llm_integration_practices>
+
+  <evaluation_practices>
+    <principle priority="high">
+      <name>Comprehensive RAG Evaluation</name>
+      <description>Measure both retrieval and generation quality</description>
+      <example>
+        <![CDATA[
+from ragas import evaluate
+from ragas.metrics import (
+    faithfulness,
+    answer_relevancy,
+    context_precision,
+    context_recall
+)
+
+# Prepare evaluation dataset
+eval_dataset = {
+    "question": questions,
+    "answer": generated_answers,
+    "contexts": retrieved_contexts,
+    "ground_truths": reference_answers
+}
+
+# Run evaluation
+results = evaluate(
+    eval_dataset,
+    metrics=[
+        faithfulness,
+        answer_relevancy,
+        context_precision,
+        context_recall
+    ]
+)
+
+print(f"Faithfulness: {results['faithfulness']}")
+print(f"Answer Relevancy: {results['answer_relevancy']}")
+print(f"Context Precision: {results['context_precision']}")
+print(f"Context Recall: {results['context_recall']}")
+        ]]>
+      </example>
+    </principle>
+  </evaluation_practices>
+
+  <mcp_server_practices>
+    <principle priority="high">
+      <name>FastMCP Server Implementation</name>
+      <description>Build MCP servers for RAG tools using FastMCP</description>
+      <example>
+        <![CDATA[
+from fastmcp import FastMCP
+
+mcp = FastMCP("RAG Knowledge Base")
+
+@mcp.tool()
+def ingest_documents(
+    source_path: str,
+    chunk_size: int = 400,
+    chunk_overlap: int = 50
+) -> str:
+    """Ingest documents into the RAG knowledge base"""
+    try:
+        # Load documents
+        loader = DirectoryLoader(source_path)
+        documents = loader.load()
+        
+        # Chunk documents
+        splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            chunk_overlap=chunk_overlap
+        )
+        chunks = splitter.split_documents(documents)
+        
+        # Generate embeddings
+        vectors = embeddings.embed_documents([c.page_content for c in chunks])
+        
+        # Store in vector database
+        vector_db.add_documents(chunks, vectors)
+        
+        return f"Successfully ingested {len(chunks)} chunks from {len(documents)} documents"
+    except Exception as e:
+        return f"Error ingesting documents: {str(e)}"
+
+@mcp.tool()
+def search_knowledge_base(
+    query: str,
+    top_k: int = 5,
+    filters: dict = None
+) -> list:
+    """Search the RAG knowledge base"""
+    try:
+        # Generate query embedding
+        query_vector = embeddings.embed_query(query)
+        
+        # Search vector database
+        results = vector_db.search(
+            query_vector,
+            top_k=top_k,
+            filter=filters
+        )
+        
+        return [
+            {
+                "text": doc.page_content,
+                "metadata": doc.metadata,
+                "score": score
+            }
+            for doc, score in results
+        ]
+    except Exception as e:
+        return [{"error": str(e)}]
+
+@mcp.tool()
+def ask_question(
+    question: str,
+    top_k: int = 5,
+    include_sources: bool = True
+) -> dict:
+    """Ask a question using RAG"""
+    try:
+        # Retrieve relevant documents
+        docs = search_knowledge_base(question, top_k)
+        
+        # Generate answer
+        answer = generate_answer(question, docs)
+        
+        result = {"answer": answer}
+        if include_sources:
+            result["sources"] = [
+                {
+                    "text": doc["text"][:200] + "...",
+                    "source": doc["metadata"].get("source"),
+                    "score": doc["score"]
+                }
+                for doc in docs
+            ]
+        
+        return result
+    except Exception as e:
+        return {"error": str(e)}
+        ]]>
+      </example>
+    </principle>
+  </mcp_server_practices>
+
+  <common_pitfalls>
+    <pitfall>
+      <mistake>Chunks too large or too small</mistake>
+      <consequence>Poor retrieval quality or loss of context</consequence>
+      <solution>Test different chunk sizes, aim for 200-500 tokens for Q&A</solution>
+    </pitfall>
+
+    <pitfall>
+      <mistake>Not preserving metadata</mistake>
+      <consequence>Cannot filter or cite sources</consequence>
+      <solution>Maintain rich metadata throughout pipeline</solution>
+    </pitfall>
+
+    <pitfall>
+      <mistake>Ignoring embedding costs</mistake>
+      <consequence>Unexpected high costs in production</consequence>
+      <solution>Cache embeddings, batch process, monitor usage</solution>
+    </pitfall>
+
+    <pitfall>
+      <mistake>No reranking or filtering</mistake>
+      <consequence>Irrelevant results passed to LLM</consequence>
+      <solution>Implement reranking and metadata filtering</solution>
+    </pitfall>
+
+    <pitfall>
+      <mistake>Exceeding LLM context window</mistake>
+      <consequence>Truncated context or errors</consequence>
+      <solution>Implement context window management</solution>
+    </pitfall>
+  </common_pitfalls>
+</rag_builder_best_practices>
