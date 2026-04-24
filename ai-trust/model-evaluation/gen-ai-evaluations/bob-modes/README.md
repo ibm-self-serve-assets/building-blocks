@@ -32,7 +32,7 @@ Community and experimental modes.
 ## Prerequisites
 
 All modes in this directory require:
-- [Bob](https://bob.ibm.com) (IBM's AI code assistant — VSCode extension)
+- [Bob](https://bob.ibm.com) (IBM's AI code assistant)
 - `watsonx-gov` MCP server — bridges Bob to IBM watsonx governance APIs
 - IBM Cloud API key with a provisioned watsonx.governance service instance
 

@@ -29,7 +29,7 @@ Depending on what you're evaluating, bring the following data:
 ## What You Need
 
 **Required:**
-- [Bob](https://bob.ibm.com) (IBM's AI code assistant — VSCode extension)
+- [Bob](https://bob.ibm.com) (IBM's AI code assistant)
 - `watsonx-gov` MCP server installed and running (included in the zip download)
 - [`uv`](https://docs.astral.sh/uv/) package manager (`pip install uv`) — needed to install and run the MCP server
 - IBM Cloud API key with a provisioned watsonx.governance service instance

@@ -7,7 +7,7 @@ Your agent passes unit tests — but will it call the right tools with the right
 ## What You Need
 
 **Required:**
-- [Bob](https://bob.ibm.com) (IBM's AI code assistant — VSCode extension)
+- [Bob](https://bob.ibm.com) (IBM's AI code assistant)
 - WXO Developer Edition (local server on port 8080)
 - IBM watsonx Orchestrate ADK (2.5.1 or 2.6.x — **not** 2.7.0):
   ```bash
