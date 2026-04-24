@@ -11,7 +11,7 @@ Building trust in AI requires a holistic approach across the full AI lifecycle â
 
 The content is organized into 4 main categories:  
 
-![AI Trust Building Blocks](model-evaluation/assets/images/ai-trust-mapping.png)
+![AI Trust Building Blocks](model-evaluation/gen-ai-evaluations/assets/evaluation-scripts/images/ai-trust-mapping.png)
 
 ### 1. **[Model Evaluation](model-evaluation/)**  
 Evaluate your AI and ML models for a range of key metrics such as performance quality, fairness, reliability, and more.

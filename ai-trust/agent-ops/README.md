@@ -4,7 +4,7 @@ AI agents don't behave like traditional software — they can respond differentl
 
 **Agent Ops** is a framework for testing, monitoring, and improving AI agents, from development through production.
 
-![Evaluate, observe, and optimize your agents using the Agent Ops Building Block](assets/images/Agent%20Ops%20Evaluation-2026-04-21-220937_150.png)
+![Evaluate, observe, and optimize your agents using the Agent Ops Building Block](../model-evaluation/gen-ai-evaluations/assets/evaluation-scripts/images/Agent%20Ops%20Evaluation-2026-04-21-220937_150.png)
 
 ---
 
