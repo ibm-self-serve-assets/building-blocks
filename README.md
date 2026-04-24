@@ -24,3 +24,9 @@ Embeddable capabilities across key domains:
 - **Observe** – Observability capabilities including dependency mapping, anomaly detection, and application monitoring.
 - **Optimize** – AI-driven solutions for cost optimization, risk detection, and automated remediation across application environments. 
 <img width="1685" height="883" alt="Screenshot 2026-03-04 at 8 02 23 AM" src="https://github.com/user-attachments/assets/de78dc1f-87ab-41c2-9db6-b14ebcf3dbc9" />
+
+---
+
+## License
+
+This project is licensed under the [Apache 2.0 License](LICENSE).

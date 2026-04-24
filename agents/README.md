@@ -23,11 +23,7 @@ Follow the documentation in each folder to integrate the accelerator into your a
 
 We welcome contributions! Please fork this repo, create a feature branch, and open a pull request with your changes.
 
----
 
-## License
-
-This project is licensed under the [Apache 2.0 License](LICENSE).
 
 
 
