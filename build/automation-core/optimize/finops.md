@@ -1,3 +1,13 @@
+## 🔗 Implementation Resources
+
+For detailed implementation guides, code samples, and IBM Bob Custom Mode for IBM Apptio, see:
+- **[FinOps](../../../optimize/finops/README.md)** - Complete IBM Apptio integration guide with IBM Bob Custom Mode for natural language financial operations
+- **[IBM Bob Custom Mode for IBM Apptio](../../../optimize/finops/ibm-bob-apptio-mode.md)** - Detailed guide for conversational FinOps management
+
+**📂 Browse all:** [Optimize Building Blocks](../../../optimize/)
+
+---
+
 ## **FinOps**
 FinOps (Financial Operations) establishes a data-driven discipline that
 enables organizations to manage, govern, and optimize cloud investments.
