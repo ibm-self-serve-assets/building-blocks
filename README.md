@@ -1,4 +1,3 @@
-<img width="1046" height="945" alt="Screenshot 2026-04-28 at 11 25 18 AM" src="https://github.com/user-attachments/assets/5c963e5c-b957-4ca8-8c0f-2071952a18cf" /># Technology Building Blocks – Embeddable AI & Automation 
 
 ## Introduction
 The **Technology Building Block** is a curated set of IBM capabilities developed by the Build Engineering team to accelerate solution delivery and demonstrate the value of the IBM technology stack, with a focus on Embeddable AI and Automation.
