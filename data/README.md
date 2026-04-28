@@ -7,20 +7,19 @@ IBM's data-for-AI building blocks organized by Core Capabilities, providing comp
 ## Building Blocks
 
 ```
-├── integration/                           # Data Integration Capabilities
-│   ├── ai-generated-data-pipeline/        # Automated Data Pipelines
-│   └── unstructured-data-pipelines/       # Unstructured Data Processing
-│       └── qna/                           # Q&A Systems (RAG, Text-to-SQL)
+├── integration/                                          # Data Integration Capabilities
+│   ├── ai-generated-data-pipeline/                       # AI-generated data pipeline
+│   └── data-streaming/                                   # Data streaming
 │
-├── intelligence/                          # Data Intelligence Capabilities
-│   ├── data-enrichment-quality/           # Data Quality & Governance
-│   └── data-streaming/                    # Real-time Data Streaming
+├── intelligence/                                         # Data Intelligence Capabilities
+│   ├── data-enrichment/                                  # Data Enrichment
+│   └── quality-and-lineage/                              # Quality & Lineage
 │
-└── query/                                 # Data Query Capabilities
-    ├── text-to-sql/                       # Natural Language to SQL
-    ├── vector-search/                     # Vector Search & Similarity
-    ├── nosql-database/                    # NoSQL Database Solutions
-    └── federated-search/                  # Zero-Copy Lakehouse
+└── query/                                                # Data Query Capabilities
+    ├── natural-language-to-structured-data-query/        # Natural Language to structured data query
+    ├── vector-search/                                    # Vector Search
+    ├── nosql-database/                                   # No SQL database
+    └── federated-search/                                 # Federated search
 ```
 
 ## Capability Matrix
@@ -32,23 +31,23 @@ Based on IBM's Data for AI framework:
 | Core Capability | Building Block | IBM Product(s) | Product Components | Description |
 |----------------|----------------|----------------|-------------------|-------------|
 | **Integration** | AI-generated data pipeline | Bob + Docling + RAG accelerator + watsonx.data | DataStage; StreamSets; Data Replication; Unstructured Data Integration; Data Observability | Build and run batch, real-time, replication, and unstructured data pipelines with observability and hybrid integration support |
-| **Integration** | Unstructured data pipelines | Bob + Docling + watsonx.data | RAG accelerator; Text-to-SQL; Document processing | Process unstructured data for Q&A systems, RAG applications, and text-to-SQL query generation |
+| **Integration** | Data streaming | Confluent | IBM integration with Apache Kafka topics, connectors, and Apache Flink | Supports real-time event ingestion, streaming pipelines, and stream processing for operational and analytical use cases |
 
 ### Intelligence Capabilities
 
 | Core Capability | Building Block | IBM Product(s) | Product Components | Description |
 |----------------|----------------|----------------|-------------------|-------------|
-| **Intelligence** | Data enrichment & quality | watsonx.data Intelligence | Governance and Catalog; Data Quality; Data Lineage; Metadata enrichment; Intelligent search; Data product sharing | Improves trust and usability of enterprise data through cataloging, governance, quality controls, lineage, metadata enrichment, and discovery |
-| **Intelligence** | Data Streaming | Confluent | IBM integration with Apache Kafka topics, connectors, and Apache Flink | Supports real-time event ingestion, streaming pipelines, and stream processing for operational and analytical use cases |
+| **Intelligence** | Data Enrichment | watsonx.data Intelligence | Governance and Catalog; Data Quality; Data Lineage; Metadata enrichment; Intelligent search; Data product sharing | Improves trust and usability of enterprise data through cataloging, governance, quality controls, lineage, metadata enrichment, and discovery |
+| **Intelligence** | Quality & Lineage | watsonx.data Intelligence | Text to SQL; Data Quality; Data Lineage | Build grounded enterprise Q&A over documents and data using retrieval-augmented generation with configurable retrieval and response pipelines |
 
 ### Query Capabilities
 
 | Core Capability | Building Block | IBM Product(s) | Product Components | Description |
 |----------------|----------------|----------------|-------------------|-------------|
-| **Query** | Text-to-SQL | watsonx.data Intelligence | Metadata enrichment; Natural language processing | Convert natural language questions into SQL queries with metadata-enriched context |
-| **Query** | Vector Search | watsonx.data OpenSearch | Vector index via Milvus integration | Vector ingestion, embedding, retrieval; semantic search and similarity matching |
-| **Query** | NoSQL database | AstraDB | Apache Cassandra-based serverless database; vector collections; Data API / CQL | Provides large-scale NoSQL storage with Cassandra compatibility and optional vector capabilities for AI and application workloads |
-| **Query** | Federated search | watsonx.data | Open lakehouse (Apache Iceberg + Presto) | Federated analytics without copying data. Query data across distributed sources with open lakehouse architecture |
+| **Query** | Natural Language to structured data query | watsonx.data Intelligence | Text to SQL | Build grounded enterprise Q&A over documents and data using retrieval-augmented generation with configurable retrieval and response pipelines |
+| **Query** | Vector Search | watsonx.data (OpenSearch), Open RAG, RAG Accelerator (Asset) | Vector ingestion, embedding, retrieval; smaller scale, elastic search | Vector ingestion, embedding, retrieval; semantic search and similarity matching |
+| **Query** | No SQL database | AstraDB, HCD (Hyper-converged DB) | Apache Cassandra-based serverless database; vector collections; Data API / CQL | Provides large-scale NoSQL storage with Cassandra compatibility and optional vector capabilities for AI and application workloads |
+| **Query** | Federated search | watsonx.data | Zero-Copy Lakehouse | Federated analytics without copying data. Query data across distributed sources with open lakehouse architecture and federated access without copying all source data into a single repository |
 
 ## Quick Start
 
@@ -70,15 +69,15 @@ This repository follows IBM's Data for AI framework:
 
 ### Integration
 - Automated data ingestion from multiple sources
-- Unstructured document processing with Docling
-- RAG-based Q&A systems
-- Text-to-SQL query generation
+- Real-time event streaming and processing
+- Batch and real-time data pipelines
+- Hybrid integration support
 
 ### Intelligence
 - Data quality assessment and validation
-- Real-time event streaming and processing
 - Metadata enrichment and cataloging
 - Data governance and lineage tracking
+- RAG-based Q&A systems with quality controls
 
 ### Query
 - Natural language database queries
