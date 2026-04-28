@@ -1,8 +1,8 @@
 # Federated Search Capability
 
-**Core Capability**: Activation
+**Core Capability**: Query
 **IBM Products**: watsonx.data
-**Product Components**: Open lakehouse (Apache Iceberg + Presto)
+**Product Components**: Zero-Copy Lakehouse
 
 ## Overview
 

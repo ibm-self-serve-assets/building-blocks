@@ -1,8 +1,8 @@
 # Vector Search Capability
 
-**Core Capability**: Activation  
-**IBM Products**: watsonx.data OpenSearch  
-**Product Components**: Vector index via Milvus integration
+**Core Capability**: Query
+**IBM Products**: watsonx.data (OpenSearch), Open RAG, RAG Accelerator (Asset)
+**Product Components**: Vector ingestion, embedding, retrieval; smaller scale, elastic search
 
 ## Overview
 

@@ -1,7 +1,7 @@
 ﻿# NoSQL Database Capability
 
-**Core Capability**: Activation
-**IBM Products**: AstraDB
+**Core Capability**: Query
+**IBM Products**: AstraDB, HCD (Hyper-converged DB)
 **Product Components**: Apache Cassandra-based serverless database; vector collections; Data API / CQL
 
 ## Overview
