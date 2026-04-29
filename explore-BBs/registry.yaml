@@ -1,0 +1,208 @@
+# IBM Building Blocks — curated catalog
+#
+# This file is consumed by the Building Blocks MCP server to organize blocks
+# into capabilities and groups, and to expose curated metadata (products, tags,
+# docs links) that isn't derivable from the directory structure alone.
+#
+# To add a new block: append an entry to `blocks:` keyed by its `repo_path`.
+
+# ---- Capabilities (top-level organization) ----
+capabilities:
+  - id: ai
+    name: "AI"
+    description: "AI agents and AI trust capabilities"
+  - id: data
+    name: "Data"
+    description: "Data integration, intelligence, and retrieval"
+  - id: automation
+    name: "Automation"
+    description: "Build & deploy, optimize, and secure"
+
+# ---- Groups within each capability ----
+groups:
+  - id: agents
+    name: "Agents"
+    capability: ai
+  - id: ai-trust
+    name: "AI Trust"
+    capability: ai
+  - id: integration
+    name: "Integration"
+    capability: data
+  - id: intelligence
+    name: "Intelligence"
+    capability: data
+  - id: retrieval
+    name: "Retrieval"
+    capability: data
+  - id: build
+    name: "Build & Deploy"
+    capability: automation
+  - id: optimize
+    name: "Optimize"
+    capability: automation
+  - id: secure
+    name: "Secure"
+    capability: automation
+
+# ---- Per-block metadata (keyed by repo_path) ----
+# Required: repo_path. Optional: name, group, docs_path, products, tags.
+blocks:
+  # ===== AI > Agents =====
+  - repo_path: agents/agent-builder
+    name: "Agent Builder"
+    group: agents
+    docs_path: ai-core/agents/agent-builder.md
+    products: ["watsonx Orchestrate"]
+    tags: [agents, adk, orchestration, bob-modes]
+
+  - repo_path: agents/multi-agent-orchestration
+    name: "Multi-Agent Orchestration"
+    group: agents
+    docs_path: ai-core/agents/multi-agent-orchestration.md
+    products: ["watsonx Orchestrate"]
+    tags: [agents, multi-agent, orchestration, mcp, a2a]
+
+  - repo_path: agents/agentic-sdlc
+    name: "Agentic SDLC"
+    group: agents
+    docs_path: ai-core/agents/agentic-sdlc.md
+    products: ["watsonx Orchestrate"]
+    tags: [agents, sdlc, development, agentic]
+
+  # ===== AI > AI Trust =====
+  - repo_path: ai-trust/model-evaluation
+    name: "Model Evaluation"
+    group: ai-trust
+    docs_path: ai-core/ai-trust/model-evaluation.md
+    products: ["watsonx.governance"]
+    tags: [trust, evaluation, metrics, safety, quality]
+
+  - repo_path: ai-trust/agent-ops
+    name: "Agent Ops"
+    group: ai-trust
+    docs_path: ai-core/ai-trust/agent-ops.md
+    products: ["watsonx.governance"]
+    tags: [trust, monitoring, agents, operations, production]
+
+  - repo_path: ai-trust/real-time-guardrails
+    name: "Real-Time Guardrails"
+    group: ai-trust
+    docs_path: ai-core/ai-trust/real-time-guardrails.md
+    products: ["watsonx.governance"]
+    tags: [trust, guardrails, real-time, safety, runtime]
+
+  - repo_path: ai-trust/ai-compliance
+    name: "AI Compliance"
+    group: ai-trust
+    docs_path: ai-core/ai-trust/ai-compliance.md
+    products: ["watsonx.governance"]
+    tags: [trust, compliance, regulation, governance]
+
+  # ===== Data > Integration =====
+  - repo_path: data/integration/ai-generated-data-pipeline
+    name: "Data Pipeline (AI-Generated)"
+    group: integration
+    docs_path: data-core/integration/ai-generated-data-pipeline/index.md
+    products: ["watsonx.data"]
+    tags: [data, ingestion, pipeline, etl, ai-generated]
+
+  - repo_path: data/integration/data-streaming
+    name: "Data Streaming"
+    group: integration
+    docs_path: data-core/integration/data-streaming/index.md
+    products: ["watsonx.data"]
+    tags: [data, streaming, real-time, events]
+
+  # ===== Data > Intelligence =====
+  - repo_path: data/intelligence/quality-and-lineage
+    name: "Quality & Lineage"
+    group: intelligence
+    docs_path: data-core/intelligence/quality-and-lineage/index.md
+    products: ["watsonx.data"]
+    tags: [data, quality, lineage, governance]
+
+  - repo_path: data/query/natural-language-to-structured-data-query
+    name: "Text2SQL"
+    group: intelligence
+    docs_path: data-core/query/natural-language-to-structured-data-query/index.md
+    products: ["watsonx.ai", "watsonx.data"]
+    tags: [data, text-to-sql, natural-language]
+
+  # ===== Data > Retrieval =====
+  - repo_path: data/query/vector-search
+    name: "Vector Search"
+    group: retrieval
+    docs_path: data-core/query/vector-search/index.md
+    products: ["watsonx.ai"]
+    tags: [data, vector, search, retrieval, embeddings, rag]
+
+  - repo_path: data/query/nosql-database
+    name: "NoSQL Database"
+    group: retrieval
+    docs_path: data-core/query/nosql-database/index.md
+    tags: [data, nosql, database, retrieval]
+
+  - repo_path: data/query/federated-search
+    name: "Zero Copy"
+    group: retrieval
+    docs_path: data-core/query/federated-search/index.md
+    products: ["watsonx.data"]
+    tags: [data, federated, zero-copy, lakehouse, iceberg]
+
+  # ===== Automation > Build =====
+  - repo_path: build-and-deploy/ipaas
+    name: "iPaaS"
+    group: build
+    docs_path: automation-core/build/ipaas.md
+    products: ["IBM webMethods"]
+    tags: [integration, ipaas, api, connectors]
+
+  - repo_path: build-and-deploy/Iaas
+    name: "Infrastructure as Code"
+    group: build
+    docs_path: automation-core/build/infrastructure-as-code.md
+    products: ["Terraform", "Ansible"]
+    tags: [iac, terraform, ansible, deployment, infrastructure]
+
+  - repo_path: optimize/code-modernisation
+    name: "Code Modernization"
+    group: build
+    docs_path: automation-core/modernize/middleware-modernization.md
+    tags: [modernize, middleware, migration, cloud-native]
+
+  # ===== Automation > Optimize =====
+  - repo_path: optimize/automated-resource-mgmt
+    name: "Automated Resource Management"
+    group: optimize
+    docs_path: automation-core/optimize/automated-resource-management.md
+    products: ["IBM Turbonomic"]
+    tags: [resources, scaling, turbonomic, workload, optimization]
+
+  - repo_path: optimize/finops
+    name: "FinOps"
+    group: optimize
+    docs_path: automation-core/optimize/finops.md
+    products: ["Aptio"]
+    tags: [finops, cost, budget, optimization, aptio]
+
+  - repo_path: optimize/automated-resilience-and-compliance
+    name: "Automated Resilience"
+    group: optimize
+    docs_path: automation-core/optimize/automated-resilience.md
+    products: ["IBM Concert"]
+    tags: [resilience, compliance, cve, security, concert]
+
+  # ===== Automation > Secure =====
+  - repo_path: secure/non-human-identity
+    name: "Non-Human Identity"
+    group: secure
+    docs_path: automation-core/build/authentication-management.md
+    products: ["IBM Verify"]
+    tags: [identity, auth, non-human, security, machine-identity]
+
+  - repo_path: secure/quantum-safe
+    name: "Quantum-Safe Cryptography"
+    group: secure
+    docs_path: automation-core/build/quantum-safe.md
+    tags: [quantum, cryptography, security, post-quantum]
