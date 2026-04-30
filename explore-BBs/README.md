@@ -1,6 +1,6 @@
 # Building Blocks Explorer - Bob Mode
 
-A Bob mode that **guides you to the right IBM Technology Building Blocks for your use case**. Describe what you want to build, and it'll point you to the relevant building blocks, fetch their documentation, and recommend the builder Bob mode that fits. It doesn't build your project itself — it's a discovery and recommendation guide that hands off to a builder mode for the actual implementation.
+A Bob mode that **guides you through IBM Technology Building Blocks**. Use this mode to explore available building blocks and identify the ones that best fit your use case. It provides directional guidance for next steps and helps you get started with the right approach. This is a discovery and recommendation experience that connects you to the appropriate path for actual implementation.
 
 ## How to install
 
@@ -11,9 +11,11 @@ A Bob mode that **guides you to the right IBM Technology Building Blocks for you
    unzip building-blocks-explorer.zip
    ```
 
-3. **Open the unzipped folder** in your editor (VS Code or any IDE with the Bob extension). Bob will detect the `.bob/` configuration.
+3. **Open the unzipped folder** in Bob. Bob will automatically detect the `.bob/` configuration.
 
-4. **Select `🧱 IBM Building Blocks Explorer`** in Bob's mode picker.
+4. **Select `🧱 IBM Building Blocks Explorer`** in Bob's mode selector.
+
+5. **Have fun!**
 
 ## Sample queries
 
