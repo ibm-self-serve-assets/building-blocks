@@ -154,7 +154,7 @@ tifffile==2025.9.20
 tokenizers==0.22.1
 torch==2.8.0
 torchvision==0.23.0
-tornado==6.5.2
+tornado==6.5.5
 tqdm==4.67.1
 traitlets==5.14.3
 transformers==4.56.2
