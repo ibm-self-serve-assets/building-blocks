@@ -1,6 +1,6 @@
-﻿# Data Streaming Capability
+﻿# Data streaming
 
-**Core Capability**: Enrichment
+**Core Capability**: Integration
 **IBM Products**: Confluent
 **Product Components**: IBM integration with Apache Kafka topics, connectors, and Apache Flink
 

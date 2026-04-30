@@ -1,13 +1,13 @@
 # Integration Capabilities
 
-This directory contains building blocks for data integration - enabling data pipelines and streaming for AI applications.
+This directory contains building blocks for data integration - enabling data pipelines, streaming, and observability for AI applications.
 
 ## Building Blocks
 
-### 1. AI-generated data pipeline
-**Location**: [`ai-generated-data-pipeline/`](ai-generated-data-pipeline/)  
-**IBM Products**: Bob + Docling + RAG accelerator + watsonx.data integration  
-**Product Components**: DataStage; StreamSets; Data Replication; Unstructured Data Integration; Data Observability
+### 1. Data pipeline (AI Generated)
+**Location**: [`data-pipeline-ai-generated/`](data-pipeline-ai-generated/)
+**IBM Products**: Bob + Docling + RAG accelerator + watsonx.data integration
+**Product Components**: DataStage; StreamSets; Data Replication; Unstructured Data Integration(UDI)
 
 Build and run batch, real-time, replication, and unstructured data pipelines with observability and hybrid integration support.
 
@@ -18,14 +18,14 @@ Build and run batch, real-time, replication, and unstructured data pipelines wit
 - Unstructured data processing with Docling
 - Pipeline observability and monitoring
 
-[View Details →](ai-generated-data-pipeline/)
+[View Details →](data-pipeline-ai-generated/)
 
 ---
 
 ### 2. Data streaming
 **Location**: [`data-streaming/`](data-streaming/)  
 **IBM Products**: Confluent  
-**Product Components**: IBM integration with Apache Kafka topics, connectors, and Apache Flink
+**Product Components**: Kafka topics; Connectors; Apache Flink; Stream Governance; Confluent Hub
 
 Supports real-time event ingestion, streaming pipelines, and stream processing for operational and analytical use cases.
 
@@ -33,12 +33,33 @@ Supports real-time event ingestion, streaming pipelines, and stream processing f
 - Real-time event ingestion
 - Apache Kafka integration
 - Apache Flink stream processing
+- Stream governance
 - Operational and analytical use cases
 - Continuous data flow
 
 **Status**: Coming Soon
 
 [View Details →](data-streaming/)
+
+---
+
+### 3. Data Observability
+**Location**: [`data-observability/`](data-observability/)  
+**IBM Products**: Databand  
+**Product Components**: Databand
+
+Monitor and ensure data pipeline quality and reliability.
+
+**Key Features**:
+- Pipeline monitoring
+- Data quality tracking
+- Anomaly detection
+- Performance metrics
+- Alert management
+
+**Status**: Coming Soon
+
+[View Details →](data-observability/)
 
 ---
 
@@ -53,4 +74,5 @@ Supports real-time event ingestion, streaming pipelines, and stream processing f
 - **Data Pipeline Automation**: Automate data ingestion and transformation
 - **Real-time Processing**: Process streaming data for immediate insights
 - **Batch Processing**: Handle large-scale data ingestion
+- **Pipeline Monitoring**: Track pipeline health and performance
 - **Hybrid Integration**: Connect on-premises and cloud data sources
