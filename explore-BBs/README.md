@@ -2,7 +2,12 @@
 
 A Bob mode that **guides you through IBM Technology Building Blocks**. Use this mode to explore available building blocks and identify the ones that best fit your use case. It provides directional guidance for next steps and helps you get started with the right approach. This is a discovery and recommendation experience that connects you to the appropriate path for actual implementation.
 
-## How to install
+## Getting Started
+
+### Prerequisites
+- **Bob** — IBM Bob (dowload and install Bob from here: https://bob.ibm.com).
+
+### How to install
 
 1. **Download** [`building-blocks-explorer.zip`](building-blocks-explorer.zip) from this folder.
 
