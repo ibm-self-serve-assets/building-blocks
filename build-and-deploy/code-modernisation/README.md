@@ -6,12 +6,12 @@
 
 ## 🔗 Navigation
 
-**Modernize Building Blocks:**
-- [← Back to Modernize](../README.md)
-- [← Legacy Code Understanding](../legacy-code-understanding/README.md)
+**Build & Deploy Building Blocks:**
+- [← Back to Build & Deploy](../README.md)
+- [Infrastructure as a Service (IaaS)](../Iaas/README.md)
+- [iPaaS](../ipaas/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
 - [Optimize](../../optimize/finops/README.md)
 
 ---
@@ -466,14 +466,9 @@ Step 4: Cloud-Native Enablement
 
 ### Related Building Blocks
 
-**Modernize:**
-- [Legacy Code Understanding](../legacy-code-understanding/README.md) - AI-powered code analysis
-
 **Build & Deploy:**
-- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
-- [Non-Human Identity](../../build-and-deploy/non-human-identity/README.md) - IBM Security Verify
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
-- [Quantum-Safe](../../build-and-deploy/quantum-safe/README.md) - IBM Guardium Crypto Manager
+- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Ansible and Terraform automation
+- [iPaaS](../ipaas/README.md) - Integration workflows
 
 **Optimize:**
 - [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic/Apptio

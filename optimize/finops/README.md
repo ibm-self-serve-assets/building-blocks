@@ -17,10 +17,11 @@
 - [← Back to Optimize](../README.md)
 - [IBM Bob Apptio Mode →](./ibm-bob-apptio-mode.md)
 - [Automated Resource Management →](../automated-resource-mgmt/README.md)
+- [Automated Resilience →](../automated-resilience-and-compliance/README.md)
 
 **Other Categories:**
 - [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Modernize](../../modernize/legacy-code-understanding/README.md)
+- [Secure](../../secure/quantum-safe/README.md)
 
 ---
 
@@ -134,18 +135,18 @@ finops-turbonomic-building block/
 ### Optimize Building Blocks
 - [IBM Bob Apptio Mode](./ibm-bob-apptio-mode.md) - AI-powered FinOps with IBM Apptio
 - [Automated Resource Management](../automated-resource-mgmt/README.md) - IBM Turbonomic resource optimization
+- [Automated Resilience](../automated-resilience-and-compliance/README.md) - IBM Concert insights
 
 ### Build & Deploy Building Blocks
 - [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
   - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
   - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md)
-- [Non-Human Identity](../../build-and-deploy/non-human-identity/README.md) - IBM Security Verify
 - [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
-- [Quantum-Safe](../../build-and-deploy/quantum-safe/README.md) - IBM Guardium Crypto Manager
+- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
 
-### Modernize Building Blocks
-- [Legacy Code Understanding](../../modernize/legacy-code-understanding/README.md) - AI-powered code analysis
-- [Middleware Modernization](../../modernize/middleware/README.md) - Java middleware transformation
+### Secure Building Blocks
+- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
+- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
 
 ---
 

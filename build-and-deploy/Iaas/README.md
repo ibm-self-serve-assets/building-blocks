@@ -19,17 +19,16 @@
 
 **Build & Deploy Building Blocks:**
 - [← Back to Build & Deploy](../README.md)
-- [Non-Human Identity →](../non-human-identity/README.md)
 - [iPaaS →](../ipaas/README.md)
-- [Quantum-Safe →](../quantum-safe/README.md)
+- [Code Modernisation →](../code-modernisation/README.md)
 
 **IaaS Assets:**
 - [Ansible Deployment Guide →](assets/deploy-bob-anisble/README.md)
 - [Retail Application →](assets/retailapp/README.md)
 
 **Other Categories:**
-- [Modernize](../../modernize/legacy-code-understanding/README.md)
 - [Optimize](../../optimize/finops/README.md)
+- [Secure](../../secure/quantum-safe/README.md)
 
 ---
 
@@ -431,7 +430,7 @@ cd assets/retailapp/jmeter
    cd assets/retailapp/jmeter
    ./run_spike.sh <backend-route>
    ```
-3. Monitor with [Instana](../../observe/application-observability/README.md)
+3. Monitor application performance
 4. Analyze results and optimize:
    - Adjust HPA settings
    - Tune resource limits
@@ -587,7 +586,7 @@ ansible-playbook playbooks/deploy-development.yml --skip-tags seed
 ### 5. Monitoring and Observability
 
 **Integration:**
-- Deploy [Instana agent](../../observe/application-observability/README.md) for monitoring
+- Deploy monitoring agents for application observability
 - Configure health checks (readiness/liveness)
 - Set up logging aggregation
 - Implement distributed tracing
@@ -617,19 +616,18 @@ ansible-playbook playbooks/deploy-development.yml --skip-tags seed
   - [JMeter Load Testing](assets/retailapp/jmeter/README.md)
 
 ### Build & Deploy Building Blocks
-- [Authentication Management](../authentication-mgmt/README.md) - IBM Security Verify integration
-- [Code Assistant](../code-assistant/README.md) - AI-powered code assistance
 - [Integration Platform as a Service (iPaaS)](../ipaas/README.md) - Integration workflows
-
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
-  - [Dashboard Application](../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+- [Code Modernisation](../code-modernisation/README.md) - Middleware modernization
 
 ### Optimize Building Blocks
 - [Automated Resilience](../../optimize/automated-resilience-and-compliance/README.md) - IBM Concert insights
   - [Dashboard](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
 - [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
+
+### Secure Building Blocks
+- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
+- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
 
 ---
 
