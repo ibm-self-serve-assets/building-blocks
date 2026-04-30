@@ -7,7 +7,7 @@ A Bob mode that **guides you through IBM Technology Building Blocks**. Use this 
 ### Prerequisites
 - **Bob** — IBM Bob (dowload and install Bob from here: https://bob.ibm.com).
 
-### How to install
+### Get Started with Building Blocks Explorer Bob Mode
 
 1. **Download** [`building-blocks-explorer.zip`](building-blocks-explorer.zip) from this folder.
 
