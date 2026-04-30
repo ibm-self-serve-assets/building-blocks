@@ -16,15 +16,14 @@
 
 ## 🔗 Navigation
 
-**Building Blocks:**
-- [← Authentication Management](../authentication-mgmt/README.md)
-- [← Back to Build & Deploy](../README.md)
-- [IaaS Building Blocks →](../Iaas/README.md)
-- [iPaaS Building Blocks →](../ipaas/README.md)
+**Secure Building Blocks:**
+- [← Back to Non-Human Identity](../README.md)
+- [← Back to Secure](../../README.md)
+- [Quantum-Safe →](../../quantum-safe/README.md)
 
 **Other Categories:**
-- [Observe Building Blocks](../../observe/application-observability/README.md)
-- [Optimize Building Blocks](../../optimize/finops/README.md)
+- [Build & Deploy](../../../build-and-deploy/Iaas/README.md)
+- [Optimize](../../../optimize/finops/README.md)
 
 ---
 
@@ -161,21 +160,21 @@ watsonx-code-assistant-demo/
 
 ## 📚 Related Resources
 
-### Build & Deploy Building Blocks
-- [Authentication Management](../authentication-mgmt/README.md) - IBM Security Verify integration
-- [Infrastructure as a Service (IaaS)](../Iaas/README.md) - Terraform-based infrastructure
-  - [Ansible Deployment](../Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment with Ansible
-  - [Retail Application](../Iaas/assets/retailapp/README.md) - Sample retail app deployment
-- [Integration Platform as a Service (iPaaS)](../ipaas/README.md) - Integration workflows
+### Secure Building Blocks
+- [Non-Human Identity](../README.md) - IBM Security Verify integration
+- [Quantum-Safe](../../quantum-safe/README.md) - IBM Guardium Crypto Manager
 
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
-  - [Dashboard Application](../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+### Build & Deploy Building Blocks
+- [Infrastructure as a Service (IaaS)](../../../build-and-deploy/Iaas/README.md) - Terraform-based infrastructure
+  - [Ansible Deployment](../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment with Ansible
+  - [Retail Application](../../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample retail app deployment
+- [iPaaS](../../../build-and-deploy/ipaas/README.md) - Integration workflows
+- [Code Modernisation](../../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
 
 ### Optimize Building Blocks
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
-- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+- [Automated Resilience](../../../optimize/automated-resilience-and-compliance/README.md) - IBM Concert insights
+- [FinOps](../../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
+- [Automated Resource Management](../../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
 
 ---
 

@@ -18,14 +18,12 @@
 
 ## 🔗 Navigation
 
-**Build & Deploy Building Blocks:**
-- [← Back to Build & Deploy](../README.md)
+**Secure Building Blocks:**
+- [← Back to Secure](../README.md)
 - [← Non-Human Identity](../non-human-identity/README.md)
-- [← IaaS](../Iaas/README.md)
-- [← iPaaS](../ipaas/README.md)
 
 **Other Categories:**
-- [Modernize](../../modernize/legacy-code-understanding/README.md)
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
 - [Optimize](../../optimize/finops/README.md)
 
 ---
@@ -1133,18 +1131,19 @@ guardium_crypto_mode:
 
 ## 📚 Related Resources
 
-### Build & Deploy Building Blocks
+### Secure Building Blocks
 - [Non-Human Identity](../non-human-identity/README.md) - Identity and access management
-- [IaaS](../Iaas/README.md) - Infrastructure deployment
-- [iPaaS](../ipaas/README.md) - Integration platform
+  - [Secrets Management](../non-human-identity/secrets-management/README.md)
+
+### Build & Deploy Building Blocks
+- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Infrastructure deployment
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration platform
+- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
 
 ### Optimize Building Blocks
 - [FinOps](../../optimize/finops/README.md) - Cost optimization
 - [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - Resource optimization
-
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - IBM Instana
-- [Network Performance](../../observe/network-performance/README.md) - IBM SevOne
+- [Automated Resilience](../../optimize/automated-resilience-and-compliance/README.md) - IBM Concert
 
 ### External Resources
 - [IBM Guardium Crypto Manager Documentation](https://www.ibm.com/docs/en/sgklm)
@@ -1187,28 +1186,6 @@ Contributions welcome! Areas for enhancement:
 - Multi-region key replication
 
 ---
-
-## Roadmap
-
-### Planned Features
-
-**Q2 2026:**
-- Enhanced PQC algorithm support
-- Automated quantum risk assessment
-- Integration with more cloud KMS services
-- Advanced certificate automation
-
-**Q3 2026:**
-- Machine learning-based anomaly detection
-- Predictive key rotation
-- Enhanced DevSecOps integration
-- Multi-tenancy support
-
-**Q4 2026:**
-- Integration with IBM watsonx for AI-driven crypto management
-- Automated compliance reporting
-- Advanced quantum-safe migration tools
-- Self-healing key management
 
 ---
 

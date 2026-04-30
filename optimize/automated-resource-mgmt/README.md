@@ -1,5 +1,22 @@
 # IBM Turbonomic Resource Management Dashboard
 
+---
+
+## 🔗 Navigation
+
+**Optimize Building Blocks:**
+- [← Back to Optimize](../README.md)
+- [← FinOps](../finops/README.md)
+- [Automated Resilience →](../automated-resilience-and-compliance/README.md)
+
+**Other Categories:**
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
+- [Secure](../../secure/quantum-safe/README.md)
+
+---
+
+# IBM Turbonomic Resource Management Dashboard
+
 A production-ready Dash application for monitoring and managing IBM Turbonomic resources with 8 comprehensive tabs, robust error handling, and beautiful IBM Carbon dark theme.
 
 ## 🎯 Overview

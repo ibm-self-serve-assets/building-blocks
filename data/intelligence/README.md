@@ -1,46 +1,61 @@
 # Intelligence Capabilities
 
-This directory contains building blocks for data intelligence - preparing and enhancing data quality and governance for AI workloads.
+This directory contains building blocks for data intelligence - preparing and enhancing data quality, governance, and intelligent operations for AI workloads.
 
 ## Building Blocks
 
-### 1. Data Enrichment
-**Location**: [`data-enrichment/`](data-enrichment/)  
+### 1. Data Quality
+**Location**: [`data-quality/`](data-quality/)  
 **IBM Products**: watsonx.data Intelligence  
-**Product Components**: Governance and Catalog; Data Quality; Data Lineage; Metadata enrichment; Intelligent search; Data product sharing
+**Product Components**: Data quality rules
 
-Text-to-SQL, NLQ-to-SQL, governed RAG/Q&A, Open RAG. Improves trust and usability of enterprise data through cataloging, governance, quality controls, lineage, metadata enrichment, and discovery.
+Ensure data quality through validation rules and quality checks.
 
 **Key Features**:
-- Data governance and cataloging
 - Quality assessment and validation
-- Data lineage tracking
-- Metadata enrichment
-- Intelligent search capabilities
-- Data product sharing
+- Data quality rules
+- Quality metrics and reporting
+- Automated quality checks
 
 **Status**: Coming Soon
 
-[View Details →](data-enrichment/)
+[View Details →](data-quality/)
 
 ---
 
-### 2. Quality & Lineage
-**Location**: [`quality-and-lineage/`](quality-and-lineage/)  
+### 2. Data Lineage
+**Location**: [`data-lineage/`](data-lineage/)  
 **IBM Products**: watsonx.data Intelligence  
-**Product Components**: Text to SQL; Data Quality; Data Lineage
+**Product Components**: Manta data lineage
 
-Build grounded enterprise Q&A over documents and data using retrieval-augmented generation with configurable retrieval and response pipelines.
+Track data transformations using OpenLineage spec.
 
 **Key Features**:
-- Retrieval-augmented generation (RAG)
-- Question answering over documents
-- Text-to-SQL query generation
-- Configurable retrieval pipelines
-- Enterprise-grade Q&A systems
-- Data quality controls
+- Data lineage tracking
+- Transformation history
+- Impact analysis
+- OpenLineage specification support
 
-[View Details →](quality-and-lineage/)
+**Status**: Coming Soon
+
+[View Details →](data-lineage/)
+
+---
+
+### 3. Text2SQL
+**Location**: [`text2sql/`](text2sql/)  
+**IBM Products**: watsonx.data Intelligence  
+**Product Components**: Text2SQL
+
+Convert natural language questions to SQL.
+
+**Key Features**:
+- Natural language to SQL conversion
+- Metadata-enriched query generation
+- Enterprise Q&A capabilities
+- Configurable query pipelines
+
+[View Details →](text2sql/)
 
 ---
 
@@ -53,7 +68,5 @@ Build grounded enterprise Q&A over documents and data using retrieval-augmented 
 ## Use Cases
 
 - **Data Quality Management**: Ensure data quality and governance
-- **Metadata Management**: Enrich and manage data metadata
-- **Data Discovery**: Enable intelligent data discovery and search
-- **RAG-based Q&A**: Build intelligent question-answering systems
+- **Natural Language Queries**: Convert questions to SQL queries
 - **Data Lineage**: Track data flow and transformations
