@@ -25,5 +25,6 @@ A Bob mode that **guides you through IBM Technology Building Blocks**. Use this 
 ## Sample queries
 
 - *"What are building blocks?"*
+- *"I need to build an agent with voice capabilities. Can you help me with that?"*
 - *"I have a use case for application observability. Which building blocks are relevant for me?"*
-- *"Can you help me use Agent Builder building block?"*
+- *"What capabilities are proivded by Data building blocks?"*
