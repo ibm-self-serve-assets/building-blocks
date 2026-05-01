@@ -19,7 +19,7 @@ Production-ready modes maintained by the team.
 
 | Mode | Description |
 |------|-------------|
-| [Build-time AgentOps Evaluator](base-modes/) | Evaluate WXO agents before deployment — automated benchmarks, metrics analysis, cost/latency tracking via Langfuse, and adversarial red-teaming across 15 attack vectors |
+| [Agent Ops](base-modes/) | Evaluate WXO agents before deployment — automated benchmarks, metrics analysis, cost/latency tracking via Langfuse, and adversarial red-teaming. Includes built-in safeguards for the WXO ADK 2.6 eval-framework auth landmines (ancestor `.env` pollution, explicit-token requirement, deprecated default judge model). |
 
 ### Custom Modes
 
@@ -33,7 +33,7 @@ Community and experimental modes.
 
 All modes in this directory require:
 - [Bob](https://bob.ibm.com) (IBM's AI code assistant)
-- WXO Developer Edition (local server on port 8080)
+- WXO Developer Edition (local server on port 4321 for ADK 2.6+, or 8080 on older builds)
 - IBM watsonx Orchestrate ADK (2.5.1 or 2.6.x — **not** 2.7.0):
   ```bash
   pip install "ibm-watsonx-orchestrate[agentops]>=2.5.1,<2.7.0"
