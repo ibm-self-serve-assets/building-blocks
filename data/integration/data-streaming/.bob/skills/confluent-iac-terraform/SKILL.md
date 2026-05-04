@@ -276,7 +276,7 @@ resource "time_sleep" "wait_for_rbac" {
 -- 2. Use DISTRIBUTED BY for tables without PRIMARY KEY
 DISTRIBUTED BY (key_column) INTO 4 BUCKETS
 
--- 3. Key columns FIRST in schema when using DISTRIBUTED BY
+-- 3. Key columns FIRST in schema in SAME ORDER (applies to DISTRIBUTED BY and PRIMARY KEY)
 CREATE TABLE example (
   key_col STRING,        -- Distribution key FIRST
   other_col STRING,
@@ -307,8 +307,8 @@ WITH (
 **Destination Table Example:**
 ```sql
 CREATE TABLE inventory_availability (
-  sku STRING,
-  branch STRING,
+  sku STRING,                    -- PRIMARY KEY columns must be first
+  branch STRING,                 -- in same order as PRIMARY KEY definition
   available_quantity BIGINT,
   PRIMARY KEY (sku, branch) NOT ENFORCED
 ) WITH (
@@ -489,7 +489,7 @@ output "cluster_id" {
 resource "local_file" "env_file" {
   filename = "${path.module}/../python/.env"
   content  = <<-EOT
-KAFKA_BOOTSTRAP_SERVERS=${confluent_kafka_cluster.main.bootstrap_endpoint}
+KAFKA_BOOTSTRAP_SERVERS=${replace(confluent_kafka_cluster.main.bootstrap_endpoint, "SASL_SSL://", "")}
 KAFKA_API_KEY=${confluent_api_key.kafka_producer.id}
 KAFKA_API_SECRET=${confluent_api_key.kafka_producer.secret}
 SCHEMA_REGISTRY_URL=${data.confluent_schema_registry_cluster.main.rest_endpoint}
@@ -498,6 +498,8 @@ SCHEMA_REGISTRY_API_SECRET=${confluent_api_key.schema_registry.secret}
 EOT
 }
 ```
+
+**CRITICAL:** The `bootstrap_endpoint` from Confluent provider may include the `SASL_SSL://` prefix. Use `replace()` to strip it, as the Python producer's `security.protocol` setting handles the protocol separately.
 
 ### 4. Python Producer Development
 
@@ -569,9 +571,11 @@ sr_client = SchemaRegistryClient({
     'basic.auth.user.info': f"{os.getenv('SCHEMA_REGISTRY_API_KEY')}:{os.getenv('SCHEMA_REGISTRY_API_SECRET')}"
 })
 
-# Retrieve schemas
-key_schema = sr_client.get_latest_version('inventory_transactions-key').schema
-value_schema = sr_client.get_latest_version('inventory_transactions-value').schema
+# Retrieve schemas from Schema Registry
+key_registered_schema = sr_client.get_latest_version('inventory_transactions-key')
+value_registered_schema = sr_client.get_latest_version('inventory_transactions-value')
+key_schema = key_registered_schema.schema
+value_schema = value_registered_schema.schema
 
 # Serializers
 key_serializer = JSONSerializer(key_schema.schema_str, sr_client)
