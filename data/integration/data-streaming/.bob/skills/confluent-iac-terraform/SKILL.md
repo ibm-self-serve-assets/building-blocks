@@ -421,9 +421,9 @@ resource "confluent_flink_statement" "create_source_table" {
 ```
 
 **Important Provider Note:**
-- Do **not** rely on partial provider-level Flink environment variables for [`confluent_flink_statement`](terraform/main.tf:205).
-- If you set any of [`flink_api_key`](terraform/providers.tf:15), [`flink_api_secret`](terraform/providers.tf:15), [`flink_rest_endpoint`](terraform/providers.tf:15), [`organization_id`](terraform/main.tf:206), [`environment_id`](terraform/main.tf:209), [`flink_compute_pool_id`](terraform/main.tf:212), or [`flink_principal_id`](terraform/main.tf:215) in the provider, the Confluent provider expects **all seven** to be configured together.
-- The most reliable pattern is to keep the provider configured only with cloud credentials and specify [`rest_endpoint`](terraform/main.tf:235), [`properties`](terraform/main.tf:235), and inline [`credentials`](terraform/main.tf:241) on every [`confluent_flink_statement`](terraform/main.tf:205).
+- Do **not** rely on partial provider-level Flink environment variables for `confluent_flink_statement` resources.
+- If you set any of `flink_api_key`, `flink_api_secret`, `flink_rest_endpoint`, `organization_id`, `environment_id`, `flink_compute_pool_id`, or `flink_principal_id` in the provider, the Confluent provider expects **all seven** to be configured together.
+- The most reliable pattern is to keep the provider configured only with cloud credentials and specify `rest_endpoint`, `properties`, and inline `credentials` on every `confluent_flink_statement` resource.
 
 #### Phase 5: Outputs & .env Generation (`terraform/outputs.tf`)
 
@@ -837,8 +837,8 @@ project-root/
 4. ✅ Generate Flink SQL statements
 5. ✅ Generate Python producer with sample data
 6. ✅ Generate documentation (SETUP, README, TESTING)
-8. ✅ Validate all components
-9. ✅ Present complete system to user
+7. ✅ Validate all components
+8. ✅ Present complete system to user
 
 ---
 
