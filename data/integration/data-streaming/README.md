@@ -2,7 +2,7 @@
 
 **Core Capability**: Integration  
 **IBM Products**: Confluent  
-**Product Components**: IBM integration with Apache Kafka topics, connectors, and Apache Flink 
+**Product Components**: IBM integration with Apache Kafka topics, Connectors, and Apache Flink 
 
 ## Overview
 
