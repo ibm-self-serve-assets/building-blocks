@@ -1,8 +1,8 @@
 ﻿# Data streaming
 
-**Core Capability**: Integration
-**IBM Products**: Confluent
-**Product Components**: IBM integration with Apache Kafka topics, connectors, and Apache Flink
+**Core Capability**: Integration 
+**IBM Products**: Confluent 
+**Product Components**: IBM integration with Apache Kafka topics, connectors, and Apache Flink 
 
 ## Overview
 
