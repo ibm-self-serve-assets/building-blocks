@@ -730,13 +730,14 @@ Before delivering the streaming system, validate:
        timestamp = base_time + timedelta(seconds=i * 37.5)
    # Results: Some events in 10:00-10:05 window, others in 10:05-10:10 window
    
-   # ✅ CORRECT: Align to window boundary
+   # ✅ CORRECT: Align to window boundary (windows: 00-05, 05-10, 10-15, etc.)
    now = datetime.now()
-   minutes = ((now.minute // 5) + 1) * 5  # Round to next 5-min boundary
+   minutes = (now.minute // 5) * 5  # Round down to current boundary
    base_time = now.replace(minute=minutes, second=10, microsecond=0)
-   # All events now fall within the same window
+   for i in range(12):
+       timestamp = base_time + timedelta(seconds=i * 20)  # All within window
    ```
-   **Impact:** Windowed aggregations (TUMBLE, HOP) will split events across windows, causing incorrect counts/sums and failed fraud detection patterns.
+   **Impact:** Windowed aggregations (TUMBLE, HOP) will split events across windows, causing incorrect counts/sums. Windows align to clock boundaries (e.g., 10:50-10:55, 10:55-11:00).
 6. ❌ Missing error handling
 7. ❌ Using "on-failure" restart for one-time jobs
 
