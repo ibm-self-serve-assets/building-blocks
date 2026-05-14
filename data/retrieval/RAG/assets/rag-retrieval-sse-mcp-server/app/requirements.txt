@@ -1,37 +1,15 @@
-# MCP server
-mcp
+﻿# FastAPI and server dependencies
 fastapi
-uvicorn
-starlette
+uvicorn[standard]
 python-dotenv
+pydantic
 
-# Notebook-aligned ingestion libs
-ibm-cos-sdk
-ibm-cos-sdk-core
-ibm-cos-sdk-s3transfer
+# IBM Watsonx AI for embeddings
+ibm-watsonx-ai
 
-langchain
-langchain-community
-langchain-text-splitters
+# Vector databases
+opensearch-py
+pymilvus[bulk_writer]
 
-# Document loaders (notebook)
-pypdf
-unstructured==0.17.2
-docx2txt
-python-docx
-beautifulsoup4
-lxml
-
-# Embeddings (notebook)
-ibm-watsonx-ai==1.4.6
-
-# Vector DBs (notebook)
-opensearch-py==3.0.0
-pymilvus[bulk_writer]==2.5.11
-
-# Avoid source-build issues on Windows
-pandas>=2.2.0,<2.4.0
-
-tqdm
+# Additional dependencies
 requests
-tiktoken

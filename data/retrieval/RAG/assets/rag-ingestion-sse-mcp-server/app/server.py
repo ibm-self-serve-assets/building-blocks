@@ -555,11 +555,30 @@ def _ensure_opensearch_index(os_client: OpenSearch, index_name: str, embedding_d
         return
 
     mapping = {
-        "settings": {"index": {"mapping.total_fields.limit": 1000000, "number_of_shards": 1}},
+        "settings": {
+            "index": {
+                "mapping.total_fields.limit": 1000000,
+                "number_of_shards": 1,
+                "knn": True,
+                "knn.algo_param.ef_search": 100
+            }
+        },
         "mappings": {
             "properties": {
                 "content": {"type": "text"},
-                "content_vector": {"type": "knn_vector", "dimension": embedding_dim},
+                "content_vector": {
+                    "type": "knn_vector",
+                    "dimension": embedding_dim,
+                    "method": {
+                        "name": "hnsw",
+                        "space_type": "l2",
+                        "engine": "lucene",
+                        "parameters": {
+                            "ef_construction": 128,
+                            "m": 24
+                        }
+                    }
+                },
                 "title": {"type": "keyword"},
                 "source": {"type": "keyword"},
                 "document_url": {"type": "keyword"},
@@ -570,7 +589,7 @@ def _ensure_opensearch_index(os_client: OpenSearch, index_name: str, embedding_d
         },
     }
     os_client.indices.create(index=index_name, body=mapping)
-    logger.info("Created OpenSearch index index=%s", index_name)
+    logger.info("Created OpenSearch index index=%s with k-NN enabled", index_name)
 
 
 def _milvus_connect(vdb: VectorDbConfig) -> None:
@@ -1095,71 +1114,134 @@ async def ingest_from_cos(prefix: str = "", bucket: str = "", destination_index:
     )
 
 
-@mcp.tool(description="Verify ingestion by checking document count in Milvus collection")
-async def verify_milvus_collection(collection_name: str = "") -> Dict[str, Any]:
-    logger.info("MCP tool verify_milvus_collection called collection_name=%s", collection_name)
+@mcp.tool(description="Verify ingestion by checking document count in vector database collection/index")
+async def verify_collection(collection_name: str = "") -> Dict[str, Any]:
+    logger.info("MCP tool verify_collection called collection_name=%s", collection_name)
     vdb = load_vector_db_config()
     
-    if vdb.db_type != "milvus":
-        return {
-            "status": "error",
-            "message": f"Vector DB type is {vdb.db_type}, not milvus. This tool only works with Milvus."
-        }
-    
-    coll_name = collection_name.strip() if collection_name else vdb.milvus_collection
-    
-    try:
-        _milvus_connect(vdb)
+    if vdb.db_type == "milvus":
+        coll_name = collection_name.strip() if collection_name else vdb.milvus_collection
         
-        # Check if collection exists
-        if coll_name not in utility.list_collections():
+        try:
+            _milvus_connect(vdb)
+            
+            # Check if collection exists
+            if coll_name not in utility.list_collections():
+                return {
+                    "status": "error",
+                    "vector_db": "milvus",
+                    "collection": coll_name,
+                    "message": f"Collection '{coll_name}' does not exist",
+                    "available_collections": utility.list_collections()
+                }
+            
+            # Get collection and load it
+            coll = Collection(name=coll_name)
+            coll.load()
+            
+            # Get document count
+            num_entities = coll.num_entities
+            
+            # Get a sample document if any exist
+            sample_doc = None
+            if num_entities > 0:
+                results = coll.query(
+                    expr="",
+                    output_fields=["id", "title", "source", "text"],
+                    limit=1
+                )
+                if results:
+                    doc = results[0]
+                    sample_doc = {
+                        "id": doc.get("id", "N/A"),
+                        "title": doc.get("title", "N/A"),
+                        "source": doc.get("source", "N/A"),
+                        "text_preview": doc.get("text", "N/A")[:200] + "..." if doc.get("text") else "N/A"
+                    }
+            
+            logger.info("Milvus collection verification complete collection=%s count=%d", coll_name, num_entities)
+            
+            return {
+                "status": "success",
+                "vector_db": "milvus",
+                "collection": coll_name,
+                "document_count": num_entities,
+                "sample_document": sample_doc,
+                "message": f"Collection has {num_entities} documents"
+            }
+            
+        except Exception as e:
+            logger.error("Error verifying Milvus collection collection=%s error=%s", coll_name, str(e))
             return {
                 "status": "error",
+                "vector_db": "milvus",
                 "collection": coll_name,
-                "message": f"Collection '{coll_name}' does not exist",
-                "available_collections": utility.list_collections()
+                "message": f"Error: {str(e)}"
             }
+    
+    elif vdb.db_type == "opensearch":
+        index_name = collection_name.strip() if collection_name else vdb.opensearch_index
         
-        # Get collection and load it
-        coll = Collection(name=coll_name)
-        coll.load()
-        
-        # Get document count
-        num_entities = coll.num_entities
-        
-        # Get a sample document if any exist
-        sample_doc = None
-        if num_entities > 0:
-            results = coll.query(
-                expr="",
-                output_fields=["id", "title", "source", "text"],
-                limit=1
-            )
-            if results:
-                doc = results[0]
-                sample_doc = {
-                    "id": doc.get("id", "N/A"),
-                    "title": doc.get("title", "N/A"),
-                    "source": doc.get("source", "N/A"),
-                    "text_preview": doc.get("text", "N/A")[:200] + "..." if doc.get("text") else "N/A"
+        try:
+            client = _opensearch_client(vdb)
+            
+            # Check if index exists
+            if not client.indices.exists(index=index_name):
+                return {
+                    "status": "error",
+                    "vector_db": "opensearch",
+                    "index": index_name,
+                    "message": f"Index '{index_name}' does not exist"
                 }
-        
-        logger.info("Milvus collection verification complete collection=%s count=%d", coll_name, num_entities)
-        
-        return {
-            "status": "success",
-            "collection": coll_name,
-            "document_count": num_entities,
-            "sample_document": sample_doc,
-            "message": f"Collection has {num_entities} documents"
-        }
-        
-    except Exception as e:
-        logger.error("Error verifying Milvus collection collection=%s error=%s", coll_name, str(e))
+            
+            # Get document count
+            count_response = client.count(index=index_name)
+            doc_count = count_response["count"]
+            
+            # Get a sample document if any exist
+            sample_doc = None
+            if doc_count > 0:
+                search_response = client.search(
+                    index=index_name,
+                    body={
+                        "size": 1,
+                        "query": {"match_all": {}}
+                    }
+                )
+                if search_response["hits"]["hits"]:
+                    hit = search_response["hits"]["hits"][0]
+                    source = hit["_source"]
+                    sample_doc = {
+                        "id": hit["_id"],
+                        "title": source.get("title", "N/A"),
+                        "source": source.get("source", "N/A"),
+                        "text_preview": source.get("text", "N/A")[:200] + "..." if source.get("text") else "N/A"
+                    }
+            
+            logger.info("OpenSearch index verification complete index=%s count=%d", index_name, doc_count)
+            
+            return {
+                "status": "success",
+                "vector_db": "opensearch",
+                "index": index_name,
+                "document_count": doc_count,
+                "sample_document": sample_doc,
+                "message": f"Index has {doc_count} documents"
+            }
+            
+        except Exception as e:
+            logger.error("Error verifying OpenSearch index index=%s error=%s", index_name, str(e))
+            return {
+                "status": "error",
+                "vector_db": "opensearch",
+                "index": index_name,
+                "message": f"Error: {str(e)}"
+            }
+    
+    else:
         return {
             "status": "error",
-            "collection": coll_name,
-            "message": f"Error: {str(e)}"
+            "message": f"Unsupported vector DB type: {vdb.db_type}"
         }
 
 
