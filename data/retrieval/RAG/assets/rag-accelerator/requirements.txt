@@ -28,7 +28,7 @@ langchain-core==0.3.80
 langchain-elasticsearch==0.3.2
 langchain-ibm==0.3.20
 langchain-milvus==0.2.0
-langchain-text-splitters==0.3.11
+langchain-text-splitters==1.1.2
 langsmith==0.4.56
 
 # Document Processing
