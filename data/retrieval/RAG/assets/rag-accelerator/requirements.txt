@@ -52,7 +52,7 @@ pandas==2.2.3
 nltk==3.9.2
 
 # Utilities
-python-dotenv==1.2.1
+python-dotenv==1.2.2
 tqdm==4.67.1
 PyYAML==6.0.3
 click==8.3.1
