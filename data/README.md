@@ -18,6 +18,7 @@ IBM's data-for-AI building blocks organized by Core Capabilities, providing comp
 │   └── text2sql/                                         # Text2SQL
 │
 └── retrieval/                                            # Data Retrieval Capabilities
+    ├── RAG/                                              # RAG (Retrieval-Augmented Generation)
     ├── vector-search/                                    # Vector Search
     ├── no-sql-database/                                  # No SQL database
     └── zero-copy/                                        # Zero Copy
@@ -47,6 +48,7 @@ Based on IBM's Data for AI framework:
 
 | Core Capability | Building Block | IBM Product(s) | Product Components | Description |
 |----------------|----------------|----------------|-------------------|-------------|
+| **Retrieval** | RAG (Retrieval-Augmented Generation) | watsonx.ai, watsonx.data, IBM COS | RAG Accelerator; Milvus; OpenSearch; Watsonx Embeddings; MCP Servers | Complete RAG pipeline with document ingestion, embedding generation, vector storage, and semantic search. Includes MCP servers for AI assistant integration |
 | **Retrieval** | Vector Search | watsonx.data (OpenSearch), Open RAG, RAG Accelerator (Asset) | Opensearch; Milvus; ElasticSearch | Build RAG solutions using - vector ingestion, embedding, reranking and generative models, retrieval |
 | **Retrieval** | No SQL database | AstraDB, HCD (Hyper-converged DB) | AstraDB(Cassandra) | Provides large-scale NoSQL storage with Cassandra compatibility and optional vector capabilities for AI and application workloads |
 | **Retrieval** | Zero Copy | watsonx.data | Iceberg; Presto; Spark; Data connectors | Federated analytics without copying data. Query data across distributed sources with open lakehouse architecture and federated access without copying all source data into a single repository |
@@ -83,6 +85,8 @@ This repository follows IBM's Data for AI framework:
 - RAG-based Q&A systems with quality controls
 
 ### Retrieval
+- RAG-based question answering systems
+- Document ingestion and semantic search
 - Vector-based semantic search
 - Large-scale NoSQL data storage
 - Federated analytics without data copying

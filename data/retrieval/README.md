@@ -4,7 +4,29 @@ This directory contains building blocks for data retrieval - enabling efficient 
 
 ## Building Blocks
 
-### 1. Vector Search
+### 1. RAG (Retrieval-Augmented Generation)
+**Location**: [`RAG/`](RAG/)
+**IBM Products**: watsonx.ai, watsonx.data, IBM COS
+**Product Components**: RAG Accelerator; Milvus; OpenSearch; Watsonx Embeddings; MCP Servers
+
+Complete RAG pipeline with document ingestion, embedding generation, vector storage, and semantic search. Includes MCP servers for AI assistant integration.
+
+**Key Features**:
+- Complete RAG pipeline implementation
+- Document ingestion from IBM COS
+- Embedding generation with IBM Watsonx
+- Vector storage in Milvus or OpenSearch
+- Semantic and keyword search
+- Hybrid search capabilities
+- MCP server integration for AI assistants
+- Docker deployment ready
+- FastAPI-based architecture
+
+[View Details →](RAG/)
+
+---
+
+### 2. Vector Search
 **Location**: [`vector-search/`](vector-search/)  
 **IBM Products**: watsonx.data (OpenSearch), Open RAG, RAG Accelerator (Asset)  
 **Product Components**: Opensearch; Milvus; ElasticSearch
@@ -23,7 +45,7 @@ Build RAG solutions using - vector ingestion, embedding, reranking and generativ
 
 ---
 
-### 2. No SQL database
+### 3. No SQL database
 **Location**: [`no-sql-database/`](no-sql-database/)  
 **IBM Products**: AstraDB, HCD (Hyper-converged DB)  
 **Product Components**: AstraDB(Cassandra)
@@ -42,7 +64,7 @@ Provides large-scale NoSQL storage with Cassandra compatibility and optional vec
 
 ---
 
-### 3. Zero Copy
+### 4. Zero Copy
 **Location**: [`zero-copy/`](zero-copy/)  
 **IBM Products**: watsonx.data  
 **Product Components**: Iceberg; Presto; Spark; Data connectors
@@ -70,6 +92,8 @@ Federated analytics without copying data. Query data across distributed sources 
 
 ## Use Cases
 
+- **RAG Question Answering**: Build complete RAG systems with document processing and semantic search
+- **AI Assistant Integration**: Connect RAG capabilities to AI assistants via MCP servers
 - **Semantic Search**: Find similar documents based on meaning
 - **RAG Applications**: Build retrieval-augmented generation systems
 - **Scalable Storage**: Store and retrieve massive amounts of data with NoSQL
