@@ -157,7 +157,7 @@ torchvision==0.23.0
 tornado==6.5.2
 tqdm==4.67.1
 traitlets==5.14.3
-transformers==4.56.2
+transformers==5.0.0rc3
 trec-car-tools==2.6
 typer==0.16.1
 typing-inspection==0.4.1
