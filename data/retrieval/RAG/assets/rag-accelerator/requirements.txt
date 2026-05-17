@@ -22,7 +22,7 @@ opensearch-py>=2.7.0
 milvus-lite==2.5.1
 
 # LangChain Ecosystem
-langchain==0.3.27
+langchain==0.3.30
 langchain-community==0.3.31
 langchain-core==0.3.80
 langchain-elasticsearch==0.3.2
