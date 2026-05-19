@@ -1,0 +1,183 @@
+name: Asset Contribution Request
+description: Submit a new Building Blocks asset contribution request
+title: "[Asset Contribution]: "
+labels:
+  - asset-contribution
+  - building-blocks
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Building Blocks Asset Contribution
+        
+        Please provide the required details for the new asset contribution request.
+
+  - type: input
+    id: asset_name
+    attributes:
+      label: Asset Name
+      description: Name of the asset or building block
+      placeholder: Example - AI Powered Data Observability Dashboard
+    validations:
+      required: true
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Building Block Domain
+      description: Select the primary domain for this contribution
+      options:
+        - Agents
+        - AI Trust
+        - Data for AI
+        - Automation
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Select the relevant category
+      options:
+        # Agents
+        - Agent Builder
+        - Multi Agent Orchestration
+        - Agentic SDLC
+
+        # AI Trust
+        - Agent Ops
+        - AI Compliance
+        - Model Evaluation
+        - Real Time Guardrails
+
+        # Data for AI - Data Integration
+        - Data Integration
+        - Data Pipeline (AI Generated)
+        - Data Streaming
+        - Data Observability
+
+        # Data for AI - Data Intelligence
+        - Data Intelligence
+        - Data Quality
+        - Data Lineage
+        - Text2SQL
+
+        # Automation - Build and Deploy
+        - IaaS
+        - Code Modernization
+        - iPaaS
+
+        # Automation - Optimize
+        - Automated Resilience and Compliance
+        - Automated Resource Management
+        - FinOps
+
+        # Automation - Secure
+        - Non-Human Identity
+        - Quantum Safe
+    validations:
+      required: true
+
+  - type: dropdown
+    id: asset_type
+    attributes:
+      label: Asset Type
+      description: Select the type of contribution
+      options:
+        - Architecture Diagram
+        - Terraform Script
+        - Automation Playbook
+        - Integration Flow
+        - Dashboard
+        - Demo Application
+        - Documentation
+        - Reference Implementation
+        - API Integration
+        - AI Agent
+        - Pipeline Template
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a detailed description of the asset
+      placeholder: Describe the functionality, purpose, and expected outcome
+    validations:
+      required: true
+
+  - type: textarea
+    id: business_usecase
+    attributes:
+      label: Business Use Case
+      description: Describe the business problem or use case this asset addresses
+      placeholder: Explain the customer or partner use case
+    validations:
+      required: true
+
+  - type: textarea
+    id: technologies
+    attributes:
+      label: Technologies Used
+      description: List the IBM and partner technologies involved
+      placeholder: Example - watsonx, OpenShift, AWS, Terraform, webMethods
+    validations:
+      required: true
+
+  - type: textarea
+    id: repository_links
+    attributes:
+      label: Repository / Reference Links
+      description: Add GitHub repositories, documentation, or related references
+      placeholder: Paste links here
+
+  - type: textarea
+    id: deployment_requirements
+    attributes:
+      label: Deployment Requirements
+      description: Mention prerequisites, infrastructure, or dependencies
+      placeholder: Example - OpenShift 4.14 cluster, AWS account access
+
+  - type: textarea
+    id: architecture_details
+    attributes:
+      label: Architecture / Design Details
+      description: Provide high-level architecture or implementation details
+      placeholder: Include integration flow, components, or deployment pattern
+
+  - type: textarea
+    id: demo_assets
+    attributes:
+      label: Demo Assets
+      description: Add demo videos, screenshots, presentations, or recordings
+      placeholder: Paste URLs or references
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: Additional Notes
+      description: Any additional information or context
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Contribution Checklist
+      options:
+        - label: I have validated the asset before submission
+          required: true
+
+        - label: Documentation has been included or updated
+          required: true
+
+        - label: Required dependencies and prerequisites are documented
+          required: true
+
+        - label: The asset follows repository contribution guidelines
+          required: true
+
+        - label: Screenshots, architecture diagrams, or demo assets are attached
+          required: false
