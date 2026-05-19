@@ -1,226 +1,147 @@
+"""Tutorial 03: Custom LLM-as-Judge Guardrails with real-time-guardrails
+
+The SDK ships 3 LLM-as-judge metrics out of the box (Answer Completeness,
+Conciseness, Tool Call Relevance). Their prompts are OPINIONATED DEFAULTS —
+we wrote them with reasonable defaults but you may want different rubrics
+for your domain (e.g. strict compliance, brand voice, multi-language).
+
+This tutorial shows two ways to author your own LLM-as-judge metric:
+
+  A. criteria_description + Option  — short rubric (Yes/No, High/Medium/Low).
+                                       The SDK builds the prompt for you.
+                                       Helper: build_criteria_judge()
+
+  B. prompt_template                — full control over the LLM prompt.
+                                       Use when you need examples or careful
+                                       instruction shaping.
+                                       Helper: LLMAsJudgeMetric() directly
+
+You can also use this pattern to REPLACE one of the 3 built-in LLM-judge
+metrics — see the "Replacing built-in LLM-judge prompts" section in the
+bob mode's 6_custom_metric_authoring.xml.
+
+Both styles produce a numeric score 0.0–1.0. You register the metric in
+the evaluator's registry and then call it like any built-in.
+
+Prerequisites
+-------------
+1. `pip install -e ./sdk[all]`
+2. `cp ./sdk/.env.example ./.env` and fill in ALL THREE creds (LLM-as-judge
+   metrics REQUIRE WXG_PROJECT_ID for the watsonx.ai foundation model)
+3. The watsonx.ai project must have a Watson Machine Learning service
+   associated (project → Manage → Services and Integrations)
+4. Run: `python 03_custom_guardrails.py`
 """
-Custom LLM-as-Judge Guardrails with IBM watsonx governance
 
-Define custom guardrail metrics using LLM-as-judge — an LLM evaluates
-AI responses against custom criteria you define. This enables guardrails
-beyond built-in safety metrics:
+from __future__ import annotations
 
-  - Answer Completeness: Does the response address all parts of the question?
-  - Conciseness:         Is the response brief and direct?
-  - Helpfulness:         Is the response accurate, useful, and actionable?
-
-Uses LLMAsJudgeMetric with WxAIFoundationModel as the judge.
-
-Prerequisites:
-  pip install -r requirements.txt
-  export WATSONX_APIKEY="your-ibm-cloud-api-key"
-  export WXG_PROJECT_ID="your-watsonx-governance-project-id"
-
-Usage:
-  python 03_custom_guardrails.py
-"""
-
-import os
 import sys
 
-import pandas as pd
 from dotenv import load_dotenv
-
-load_dotenv()
-
-if not os.environ.get("WATSONX_APIKEY"):
-    print("ERROR: WATSONX_APIKEY environment variable is not set.")
-    sys.exit(1)
-
-if not os.environ.get("WXG_PROJECT_ID"):
-    print("ERROR: WXG_PROJECT_ID environment variable is not set.")
-    print("  This is required for LLM-as-judge metrics.")
-    sys.exit(1)
-
-from ibm_watsonx_gov.evaluators.metrics_evaluator import MetricsEvaluator
-from ibm_watsonx_gov.config import GenAIConfiguration
 from ibm_watsonx_gov.entities.criteria import Option
 from ibm_watsonx_gov.entities.foundation_model import WxAIFoundationModel
 from ibm_watsonx_gov.entities.llm_judge import LLMJudge
 from ibm_watsonx_gov.metrics import LLMAsJudgeMetric
 
+from real_time_guardrails import GuardrailsConfig, GuardrailsEvaluator
+from real_time_guardrails.core.custom_metrics import build_criteria_judge
+from real_time_guardrails.core.registry import MetricEntry
+from real_time_guardrails.core.thresholds import Direction, ThresholdSpec
 
-# ── Set up LLM judge ─────────────────────────────────────────────────
-PROJECT_ID = os.environ["WXG_PROJECT_ID"]
-llm_judge = LLMJudge(
-    model=WxAIFoundationModel(
-        model_id="llama-3-3-70b-instruct",
-        project_id=PROJECT_ID,
-    )
+
+load_dotenv()
+ev = GuardrailsEvaluator()
+cfg = GuardrailsConfig.from_env()
+if not cfg.project_id:
+    print("ERROR: WXG_PROJECT_ID is required for LLM-as-judge metrics.")
+    sys.exit(1)
+
+# Shared LLM judge — built once, reused for both custom metrics.
+judge = LLMJudge(
+    model=WxAIFoundationModel(model_id=cfg.judge_model_id, project_id=cfg.project_id)
 )
 
 
-# ── Define custom guardrail metrics ──────────────────────────────────
+# ── Style A: criteria + Option (short rubric, SDK builds the prompt) ───
 
-# 1. Answer Completeness — uses a detailed prompt template
-completeness_prompt = """You are an expert grader. Evaluate the completeness of an AI-generated response.
-
-**Question:**
-{input_text}
-
-**AI-Generated Response:**
-{generated_text}
-
-Rate the response completeness:
-
-complete - The response thoroughly addresses all parts of the question.
-partial - The response addresses some parts but is missing key information.
-incomplete - The response fails to address the question or ends unexpectedly.
-"""
-
-answer_completeness = LLMAsJudgeMetric(
-    name="answer_completeness",
-    display_name="Answer Completeness",
-    prompt_template=completeness_prompt,
-    options={"complete": 1, "partial": 0.5, "incomplete": 0},
-    llm_judge=llm_judge,
-)
-
-# 2. Conciseness — uses criteria_description + Option objects
-conciseness = LLMAsJudgeMetric(
-    name="conciseness",
-    display_name="Conciseness",
-    criteria_description="Is the {generated_text} concise and to the point?",
-    options=[
-        Option(
-            name="Yes",
-            description="The response is short, succinct and directly addresses the point.",
-            value=1,
-        ),
-        Option(
-            name="No",
-            description="The response lacks brevity and clarity.",
-            value=0,
-        ),
-    ],
-    output_field="generated_text",
-    llm_judge=llm_judge,
-)
-
-# 3. Helpfulness — multi-level scoring
-helpfulness = LLMAsJudgeMetric(
-    name="helpfulness",
-    display_name="Helpfulness",
+brand_voice = build_criteria_judge(
+    name="brand_voice",
+    display_name="Brand Voice",
     criteria_description=(
-        "How helpful is the {generated_text}? Consider whether it provides "
-        "accurate, useful, and actionable information."
+        "Does the {generated_text} match our brand voice "
+        "(professional, concise, warm but not casual)?"
     ),
     options=[
-        Option(
-            name="High",
-            description="Very helpful: accurate, actionable, and directly addresses needs.",
-            value=1,
-        ),
-        Option(
-            name="Medium",
-            description="Somewhat helpful: partially addresses needs but lacks depth.",
-            value=0.5,
-        ),
-        Option(
-            name="Low",
-            description="Not helpful: vague, inaccurate, or fails to provide assistance.",
-            value=0,
-        ),
+        Option(name="Yes", description="On-brand: professional, concise, warm.", value=1.0),
+        Option(name="No", description="Off-brand or unprofessional.", value=0.0),
     ],
-    output_field="generated_text",
-    llm_judge=llm_judge,
+    judge=judge,
 )
 
 
-# ── Quality thresholds for custom guardrails ──────────────────────────
-CUSTOM_THRESHOLDS = {
-    "answer_completeness": 0.5,
-    "conciseness": 0.5,
-    "helpfulness": 0.5,
-}
+# ── Style B: prompt_template (full prompt control) ─────────────────────
+
+step_by_step = LLMAsJudgeMetric(
+    name="step_by_step_clarity",
+    llm_judge=judge,
+    prompt_template=(
+        "You are evaluating whether an AI response provides clear, "
+        "step-by-step instructions.\n\n"
+        "Question: {input_text}\n"
+        "Response: {generated_text}\n\n"
+        "Return one of: clear / partial / unclear"
+    ),
+    input_fields=["input_text", "generated_text"],
+    options={"clear": 1.0, "partial": 0.5, "unclear": 0.0},
+)
 
 
-# ── Test data ─────────────────────────────────────────────────────────
-CUSTOM_GUARDRAIL_RECORDS = [
+# ── Register both custom metrics in the evaluator's registry ───────────
+
+def register(name: str, display: str, metric: object, fields: frozenset[str], desc: str) -> None:
+    entry = MetricEntry(
+        name=display, metric=metric, category="quality",
+        column_name=name + ".llm_as_judge",
+        threshold_spec=ThresholdSpec(value=0.5, direction=Direction.LOW_IS_RISK, flag_value=None),
+        required_fields=fields, description=desc,
+    )
+    ev.registry._by_name[entry.name] = entry
+
+register("brand_voice", "Brand Voice", brand_voice,
+         frozenset({"generated_text"}), "On-brand vs off-brand check (Yes/No).")
+register("step_by_step_clarity", "Step-By-Step Clarity", step_by_step,
+         frozenset({"input_text", "generated_text"}), "Clear/partial/unclear rubric for instructions.")
+ev._threshold_resolver.attach_known_metrics(set(ev.registry.names))
+
+
+# ── Demo: run both custom metrics on real data ─────────────────────────
+
+RECORDS = [
     {
-        "input_text": "What are the three steps to reset my password?",
-        "generated_text": (
-            "To reset your password: 1) Go to the login page and click 'Forgot Password', "
-            "2) Enter your registered email address, 3) Check your email for the reset link "
-            "and create a new password."
-        ),
+        "input_text": "How do I reset my password?",
+        "generated_text": "1) Go to Settings > Security > Reset Password. 2) Enter your current password. 3) Choose a new one.",
     },
     {
-        "input_text": "What are the three steps to reset my password?",
-        "generated_text": (
-            "Password security is a very important topic in today's digital landscape. "
-            "There are many considerations when it comes to managing your credentials "
-            "across different platforms and services. You might want to consider using "
-            "a password manager to help keep track of your various accounts. Additionally, "
-            "it's worth noting that strong passwords typically include a mix of uppercase "
-            "and lowercase letters, numbers, and special characters."
-        ),
-    },
-    {
-        "input_text": "How do I cancel my subscription?",
-        "generated_text": (
-            "Go to Settings > Subscriptions > Click 'Cancel'. "
-            "Your access continues until the end of the billing period."
-        ),
+        "input_text": "How do I reset my password?",
+        "generated_text": "Hey! 😎 So passwords are like, super important, you know? You should probably reset it via the settings or something.",
     },
 ]
 
 
-def evaluate_custom_guardrails(records: list[dict]) -> None:
-    """Run custom LLM-as-judge guardrails on a set of records."""
-    config = GenAIConfiguration(
-        input_fields=["input_text"],
-        output_fields=["generated_text"],
-    )
-
-    custom_metrics = [answer_completeness, conciseness, helpfulness]
-
-    evaluator = MetricsEvaluator(configuration=config)
-    df = pd.DataFrame(records)
-    result = evaluator.evaluate(data=df, metrics=custom_metrics)
-
-    print("\n" + "=" * 60)
-    print("CUSTOM LLM-AS-JUDGE GUARDRAIL RESULTS")
-    print("=" * 60)
-
-    # Aggregate scores
-    for metric in result.metrics_result:
-        threshold = CUSTOM_THRESHOLDS.get(metric.name, 0.5)
-        status = "PASS" if metric.mean >= threshold else "FAIL"
-        print(f"\n  {metric.name}:")
-        print(f"    Mean: {metric.mean:.3f} [{status}] (threshold: {threshold})")
-
-    # Per-record details
-    print("\n" + "-" * 60)
-    print("Per-Record Results:")
-    print("-" * 60)
-    for i, record in enumerate(result.to_dict()):
-        question = records[i]["input_text"]
-        answer_preview = records[i]["generated_text"][:60] + "..."
-        print(f"\n  Record {i + 1}:")
-        print(f"    Q: \"{question}\"")
-        print(f"    A: \"{answer_preview}\"")
-
-        all_pass = True
-        for key, value in record.items():
-            if value is not None:
-                threshold = CUSTOM_THRESHOLDS.get(key, 0.5)
-                status = "PASS" if value >= threshold else "FAIL"
-                if status == "FAIL":
-                    all_pass = False
-                print(f"    {key}: {value:.3f} [{status}]")
-
-        action = "PASS" if all_pass else "FLAG"
-        print(f"    → Action: [{action}]")
+def main() -> None:
+    print(f"Registry size: {len(ev.registry)} metrics (28 catalog + 2 custom)\n")
+    for i, record in enumerate(RECORDS, 1):
+        print(f"─ Record {i} — A={record['generated_text'][:60]}…")
+        bundle = ev.evaluate(
+            input_text=record["input_text"],
+            generated_text=record["generated_text"],
+            metrics=["Brand Voice", "Step-By-Step Clarity"],
+        )
+        for name, r in bundle.results.items():
+            score = f"{r.score:.3f}" if r.score is not None else "n/a"
+            print(f"    {name}: score={score} action={r.action} (threshold={r.threshold})")
+        print()
 
 
-# ── Main ──────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    print("Custom LLM-as-Judge Guardrails")
-    print(f"Evaluating {len(CUSTOM_GUARDRAIL_RECORDS)} records...\n")
-    evaluate_custom_guardrails(CUSTOM_GUARDRAIL_RECORDS)
+    sys.exit(main())

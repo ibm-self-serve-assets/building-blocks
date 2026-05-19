@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules name="auto_trigger_patterns">
+  <overview>
+    Partners often ask: "Is there a way to auto-trigger guardrails on every
+    query without explicit wiring?" Yes — three patterns, depending on the
+    agent's topology:
+
+      1. HTTP middleware       — for polyglot agents behind HTTP
+      2. Python decorator      — for monolithic Python agents
+      3. Framework callback    — for LangChain / LangGraph / similar
+
+    None of these require changes to the SDK. They're consumer patterns
+    built on top of the existing evaluate() API.
+
+    Read this when the partner says: "I want to add guardrails without
+    modifying every endpoint of my agent."
+  </overview>
+
+  <decision_tree>
+    <branch question="What language is the agent's request handler in?">
+      <leaf condition="not Python (Node, Go, Java, etc.)" pattern="middleware"/>
+      <leaf condition="Python, monolithic function" pattern="decorator"/>
+      <leaf condition="Python, built on LangChain / LangGraph" pattern="framework_callback"/>
+      <leaf condition="Python, plain Flask/FastAPI app with N endpoints" pattern="middleware"/>
+      <leaf condition="Mix of services in a mesh" pattern="middleware (at the gateway)"/>
+    </branch>
+  </decision_tree>
+
+  <pre_hook_vs_post_hook critical="true">
+    <overview>
+      Every pattern has TWO attach points. Partners get confused about how
+      output-blocking works with auto-trigger; address this head-on.
+    </overview>
+    <pre_hook>
+      <when>Fires BEFORE the agent runs.</when>
+      <on_block>Skip the agent entirely. Return the fallback message directly.</on_block>
+      <cost>Cheap — 1 guardrail call, no LLM cost incurred.</cost>
+    </pre_hook>
+    <post_hook>
+      <when>Fires AFTER the agent has generated output.</when>
+      <on_block>Replace the agent's output with the fallback message before returning to the caller.</on_block>
+      <cost>Expensive — 1+ guardrail calls PLUS one full LLM call you can't refund. The LLM cost is sunk regardless of the post-check outcome.</cost>
+    </post_hook>
+    <implication>
+      Catch what you can at the input stage. Reserve output-stage checks for
+      things that ONLY the output can reveal — PII leaks from the LLM,
+      hallucinations vs context, profanity in generated text, RAG faithfulness.
+      Don't duplicate input-side safety on output unless there's a specific
+      reason.
+    </implication>
+  </pre_hook_vs_post_hook>
+
+  <pattern name="http_middleware">
+    <suitability>Most universal. Works for any language with HTTP middleware. Drop-in: agent code is unchanged.</suitability>
+    <pre_post_mechanics>
+      Both pre and post live in the SAME middleware function.
+      - Pre  = inspect request body BEFORE call_next(request).
+      - Post = read response body AFTER call_next(request), evaluate, optionally replace with JSONResponse(fallback) on Block.
+    </pre_post_mechanics>
+    <python_examples>
+      <fastapi_skeleton><![CDATA[
+        @app.middleware("http")
+        async def guardrail(request, call_next):
+            body = await request.body()
+            payload = json.loads(body) if body else {}
+            query = payload.get("query", "")
+
+            # === PRE: input check ===
+            if query:
+                in_bundle = ev.evaluate(input_text=query, categories=["safety"])
+                if in_bundle.failed():
+                    msg = in_bundle.failed()[0].fallback_message
+                    return JSONResponse({"action": "Block", "text": msg})
+
+            # === Agent runs here ===
+            response = await call_next(request)
+
+            # === POST: output check ===
+            # Read the response body (note: this consumes the iterator)
+            resp_chunks = [c async for c in response.body_iterator]
+            resp_body = b"".join(resp_chunks)
+            try:
+                resp_json = json.loads(resp_body)
+                out_bundle = ev.evaluate(
+                    input_text=query,
+                    generated_text=resp_json.get("text", ""),
+                    metrics=["PII Detection", "HAP (Hate, Abuse, Profanity)"],
+                )
+                if out_bundle.failed():
+                    msg = out_bundle.failed()[0].fallback_message
+                    return JSONResponse({"action": "Block", "text": msg})
+            except json.JSONDecodeError:
+                pass  # non-JSON response (e.g. streaming) — let it through
+
+            return Response(
+                content=resp_body,
+                status_code=response.status_code,
+                headers=dict(response.headers),
+                media_type=response.media_type,
+            )
+      ]]></fastapi_skeleton>
+      <flask_skeleton><![CDATA[
+        @app.before_request
+        def _input_check():
+            if request.method != "POST":
+                return None
+            payload = request.get_json(silent=True) or {}
+            query = payload.get("query", "")
+            if not query:
+                return None
+            bundle = ev.evaluate(input_text=query, categories=["safety"])
+            if bundle.failed():
+                msg = bundle.failed()[0].fallback_message
+                return jsonify({"action": "Block", "text": msg})
+
+        @app.after_request
+        def _output_check(response):
+            if response.mimetype != "application/json":
+                return response
+            data = response.get_json(silent=True) or {}
+            output_text = data.get("text") or data.get("response", "")
+            if not output_text:
+                return response
+            bundle = ev.evaluate(
+                generated_text=output_text,
+                metrics=["PII Detection", "HAP (Hate, Abuse, Profanity)"],
+            )
+            if bundle.failed():
+                msg = bundle.failed()[0].fallback_message
+                response.set_data(json.dumps({"action": "Block", "text": msg}))
+            return response
+      ]]></flask_skeleton>
+    </python_examples>
+    <reference_files>
+      <file>.bob/reference-payloads/middleware_fastapi.py</file>
+      <file>.bob/reference-payloads/middleware_flask.py</file>
+    </reference_files>
+  </pattern>
+
+  <pattern name="python_decorator">
+    <suitability>Cleanest retrofit for monolithic Python agents. Wraps a single function — agent code is unchanged except for the @guard line.</suitability>
+    <pre_post_mechanics>
+      The decorator wraps the function:
+      - Pre  = run BEFORE the wrapped function call. On Block, return fallback WITHOUT invoking the function.
+      - Post = run AFTER the wrapped function returns. On Block, substitute the fallback for the returned value.
+    </pre_post_mechanics>
+    <signature><![CDATA[
+      @guard(evaluator=ev, input_categories=["safety"], output_metrics=["PII Detection", "HAP (Hate, Abuse, Profanity)"])
+      def handle_user_query(query: str) -> str:
+          return llm.generate(query)
+    ]]></signature>
+    <reference_file>.bob/reference-payloads/decorator_example.py — self-contained ~100 lines partners copy into their codebase.</reference_file>
+    <not_shipped_in_sdk>The decorator is intentionally a bob-mode reference, not an SDK feature. Partners copy + adapt. Revisit shipping in the SDK if 2+ partners request it.</not_shipped_in_sdk>
+  </pattern>
+
+  <pattern name="framework_callback">
+    <suitability>For agents built on LangChain / LangGraph / similar frameworks. Hooks into the framework's existing callback system.</suitability>
+    <pre_post_mechanics_critical_limitation>
+      <pre>
+        on_chain_start callback fires with the chain's inputs. Raising an
+        exception from the callback aborts the chain — partner catches that
+        exception and converts to a Block response. Clean pattern.
+      </pre>
+      <post>
+        STOCK LANGCHAIN CALLBACKS ARE OBSERVATIONAL — they can't replace
+        outputs. Workaround: wrap the chain in a RunnableLambda
+        post-processor that re-evaluates the result and substitutes the
+        fallback. This is the canonical LangChain pattern for output
+        guardrails; document the asymmetry so partners aren't surprised.
+      </post>
+    </pre_post_mechanics_critical_limitation>
+    <example><![CDATA[
+      from langchain_core.callbacks import BaseCallbackHandler
+      from langchain_core.runnables import RunnableLambda
+
+      class GuardrailsInputCallback(BaseCallbackHandler):
+          def __init__(self, evaluator, categories):
+              self.ev = evaluator; self.cats = categories
+          def on_chain_start(self, serialized, inputs, **kwargs):
+              query = inputs.get("query") or inputs.get("input", "")
+              bundle = self.ev.evaluate(input_text=query, categories=self.cats)
+              if bundle.failed():
+                  raise RuntimeError(
+                      f"Guardrails blocked: {bundle.failed()[0].fallback_message}"
+                  )
+
+      def output_guard(evaluator, metrics):
+          def _check(result):
+              # `result` is the chain's output (often a dict or str)
+              text = result["output"] if isinstance(result, dict) else str(result)
+              bundle = evaluator.evaluate(generated_text=text, metrics=metrics)
+              if bundle.failed():
+                  return {"output": bundle.failed()[0].fallback_message, "guardrail_blocked": True}
+              return result
+          return RunnableLambda(_check)
+
+      # Usage:
+      guarded_chain = my_chain | output_guard(ev, ["PII Detection", "HAP (Hate, Abuse, Profanity)"])
+      result = guarded_chain.invoke(
+          {"query": user_q},
+          config={"callbacks": [GuardrailsInputCallback(ev, ["safety"])]},
+      )
+    ]]></example>
+    <reference_file>.bob/reference-payloads/langchain_callback.py — working example with simple LangChain chain.</reference_file>
+  </pattern>
+
+  <four_choke_points_mapped_to_pre_post>
+    <choke_point id="1" name="Input safety" hook="pre" fits_in="all 3 patterns"/>
+    <choke_point id="2" name="Retrieval quality" hook="between retrieve and LLM-call" fits_in="LangChain framework callback (on_retriever_end); middleware can't insert here without code structure cooperation"/>
+    <choke_point id="3" name="Generation faithfulness" hook="post" fits_in="all 3 patterns"/>
+    <choke_point id="4" name="Output safety" hook="post" fits_in="all 3 patterns"/>
+    <note>Auto-trigger can't automatically insert choke point 2 unless the agent's code is split into retrieval + generation phases. LangChain handles this naturally because it has separate Runnables for retrieval and LLM call. Monolithic Python agents need explicit wiring for retrieval-stage checks.</note>
+  </four_choke_points_mapped_to_pre_post>
+
+  <stateless_requirement critical="true">
+    <rule>Build the GuardrailsEvaluator ONCE at app/worker startup. Share across requests. NEVER instantiate per-request.</rule>
+    <reason>Registry build does ~28 SDK object constructions plus an LLMJudge build (network-y on first use). Per-request instantiation adds ~1-3 s of overhead per request — defeats the purpose of auto-trigger.</reason>
+  </stateless_requirement>
+
+  <failure_mode_policy>
+    <description>What happens when the guardrails service is degraded (timeout, 5xx)?</description>
+    <fail_open>
+      <semantics>Allow the request to pass when guardrails fails. Log the failure for ops review.</semantics>
+      <use_when>Availability is more important than safety enforcement (e.g. internal tooling, low-stakes use cases).</use_when>
+    </fail_open>
+    <fail_closed>
+      <semantics>Refuse the request when guardrails fails. Return a generic "service unavailable" message.</semantics>
+      <use_when>Compliance/safety is non-negotiable (regulated industries, customer-facing high-stakes content).</use_when>
+    </fail_closed>
+    <implementation>
+      Wrap the ev.evaluate() call in try/except. On exception, apply the partner's chosen policy. This is consistent across all three trigger patterns.
+    </implementation>
+  </failure_mode_policy>
+
+  <anti_patterns>
+    <anti_pattern>Building an evaluator per request — cold-start cost (registry build is several seconds).</anti_pattern>
+    <anti_pattern>Running LLM-judge metrics on every request without sampling — token cost will blow up.</anti_pattern>
+    <anti_pattern>Putting output-stage RAG metrics in input-stage middleware — impossible (output doesn't exist yet).</anti_pattern>
+    <anti_pattern>Trying to block output via stock LangChain callbacks — won't work. Use RunnableLambda wrapping instead.</anti_pattern>
+    <anti_pattern>Mixing trigger patterns in the same agent — pick ONE (middleware OR decorator OR callback) and stick with it for consistency and debuggability.</anti_pattern>
+  </anti_patterns>
+</rules>

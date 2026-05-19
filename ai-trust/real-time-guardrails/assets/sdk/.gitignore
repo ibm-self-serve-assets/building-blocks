@@ -1,0 +1,32 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+.env
+.env.local
+*.log
+
+# Partner-facing template files (placeholders only, NOT real .env files).
+# Whitelist re-includes them despite the broader `.env.*` rule in the
+# parent ai-trust/.gitignore when this SDK lives inside the BB tree.
+!.env.example
+!examples/.env.thresholds.example
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# unitxt auto-creates this when LLM-judge metrics run; do not publish (machine-local + cached LLM responses)
+inference_engine_cache/

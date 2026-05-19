@@ -1,4 +1,15 @@
-ibm-watsonx-gov[metrics]>=1.4.2,<2.0.0
-ibm-watsonx-ai>=1.3.0
-pandas>=2.1.0
+# Install the SDK (in editable mode for this BB layout):
+#   pip install -e ./sdk[all]
+#
+# Or, once published to PyPI:
+#   pip install real-time-guardrails[all]
+#
+# `[all]` pulls in:
+#   - ibm-watsonx-gov[metrics,llmaj]   (the underlying IBM SDK + extras)
+#   - ibm-watsonx-ai                    (LLM-as-judge metrics)
+#   - flask + flask-cors                (optional REST server)
+#   - mcp                                (optional MCP server)
+#   - pytest, ruff, mypy                (dev tools)
+#   - nest_asyncio, PyYAML, pandas, python-dotenv  (utilities)
+
 python-dotenv>=1.0.0

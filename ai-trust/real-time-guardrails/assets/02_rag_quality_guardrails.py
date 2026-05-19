@@ -1,179 +1,123 @@
+"""Tutorial 02: RAG Quality Guardrails with real-time-guardrails
+
+Two related but distinct checks for RAG agents:
+
+  RAG retrieval — evaluates the *retriever*: did it return relevant docs?
+                  Uses Retrieval Precision, Hit Rate, Reciprocal Rank.
+                  Requires: input_text + context as list[str] of N docs.
+
+  RAG generation — evaluates the *LLM's answer*: faithful + relevant?
+                   Uses Answer Relevance, Context Relevance, Faithfulness.
+                   Requires: input_text + generated_text + context (single string).
+
+Default thresholds: LOW_IS_RISK with block=0.1, flag=0.3 — low scores are risky.
+
+In production you'd run RAG retrieval AFTER vector search and BEFORE the LLM
+call (so you can skip the LLM if HitRate=0), then RAG generation AFTER the
+LLM responds. This tutorial demonstrates both stages on canned data.
+
+Prerequisites
+-------------
+1. `pip install -e ./sdk[all]`
+2. `cp ./sdk/.env.example ./.env` and fill in credentials
+3. Run: `python 02_rag_quality_guardrails.py`
 """
-RAG Quality Guardrails with IBM watsonx governance
 
-Real-time quality checks on RAG pipeline responses before returning
-them to the user. Ensures generated answers are:
-  - Faithful to the retrieved context (not hallucinated)
-  - Relevant to the user's question
-  - Based on relevant context
+from __future__ import annotations
 
-If quality is below threshold, the response is blocked or flagged
-and the user receives a fallback message.
-
-Prerequisites:
-  pip install -r requirements.txt
-  export WATSONX_APIKEY="your-ibm-cloud-api-key"
-
-Usage:
-  python 02_rag_quality_guardrails.py
-"""
-
-import os
 import sys
 
-import pandas as pd
 from dotenv import load_dotenv
 
+from real_time_guardrails import GuardrailsEvaluator
+
+
 load_dotenv()
-
-if not os.environ.get("WATSONX_APIKEY"):
-    print("ERROR: WATSONX_APIKEY environment variable is not set.")
-    sys.exit(1)
-
-from ibm_watsonx_gov.evaluators.metrics_evaluator import MetricsEvaluator
-from ibm_watsonx_gov.config import GenAIConfiguration
-from ibm_watsonx_gov.metrics import (
-    AnswerRelevanceMetric,
-    ContextRelevanceMetric,
-    FaithfulnessMetric,
-)
+ev = GuardrailsEvaluator()
 
 
-# ── Quality thresholds ────────────────────────────────────────────────
-QUALITY_THRESHOLDS = {
-    "answer_relevance":  0.7,
-    "faithfulness":      0.7,
-    "context_relevance": 0.6,
-}
+# ── Stage 1: RAG retrieval — pass a LIST of retrieved docs ─────────────
 
-FALLBACK_MESSAGE = (
-    "I'm not confident in my answer based on the available information. "
-    "Let me connect you with a specialist who can help."
-)
-
-
-# ── Test scenarios ────────────────────────────────────────────────────
-RAG_RESPONSES = [
+RETRIEVAL_SCENARIOS = [
     {
-        "id": "grounded_response",
-        "question": "What is the return policy for electronics?",
-        "context": (
-            "Our return policy for electronics allows returns within 30 days of "
-            "purchase with original receipt. Items must be in original packaging "
-            "and in working condition. A 15% restocking fee applies to opened items."
-        ),
-        "generated_text": (
-            "You can return electronics within 30 days with your original receipt. "
-            "The item needs to be in its original packaging and working condition. "
-            "Note that there's a 15% restocking fee for opened items."
-        ),
+        "id": "good_retrieval",
+        "question": "How do I reset my password?",
+        "docs": [
+            "To reset your password, go to Settings > Security > Reset Password.",
+            "Password complexity rules: 12+ chars, mixed case, symbol.",
+            "Account lockout occurs after 5 failed login attempts.",
+        ],
     },
     {
-        "id": "hallucinated_response",
-        "question": "What is the return policy for electronics?",
-        "context": (
-            "Our return policy for electronics allows returns within 30 days of "
-            "purchase with original receipt."
-        ),
-        "generated_text": (
-            "Electronics can be returned within 90 days with a full refund and "
-            "free return shipping. We also offer a lifetime warranty on all "
-            "electronic purchases and price matching against any competitor."
-        ),
-    },
-    {
-        "id": "irrelevant_context",
-        "question": "How do I set up two-factor authentication?",
-        "context": (
-            "Our catering menu includes a variety of sandwiches, salads, and "
-            "beverages. We offer group discounts for orders over 20 people. "
-            "Delivery is available within a 10-mile radius."
-        ),
-        "generated_text": (
-            "Based on the available information, two-factor authentication "
-            "can be set up by going to your account settings. However, I "
-            "should note that I don't have specific documentation about this."
-        ),
+        "id": "irrelevant_retrieval",
+        "question": "How do I reset my password?",
+        "docs": [
+            "Cats are popular household pets.",
+            "Pizza was invented in Naples.",
+            "Mountains are tall.",
+        ],
     },
 ]
 
 
-def check_rag_quality(record: dict) -> dict:
-    """Evaluate a single RAG response against quality thresholds.
-
-    Returns:
-        dict with action (PASS/BLOCK), metric scores, and the response to serve.
-    """
-    config = GenAIConfiguration(
-        input_fields=["question"],
-        context_fields=["context"],
-        output_fields=["generated_text"],
+def check_retrieval(scenario: dict) -> None:
+    bundle = ev.evaluate(
+        input_text=scenario["question"],
+        context=scenario["docs"],          # LIST = retrieval ranking
+        categories=["rag_retrieval"],
     )
-
-    metrics = [
-        AnswerRelevanceMetric(),
-        FaithfulnessMetric(),
-        ContextRelevanceMetric(),
-    ]
-
-    evaluator = MetricsEvaluator(configuration=config)
-    df = pd.DataFrame([record])
-    result = evaluator.evaluate(data=df, metrics=metrics)
-
-    # result.metrics_result contains AggregateMetricResult objects.
-    # For a single-record DataFrame, .mean equals the single record's score.
-    scores = {}
-    failed_metrics = []
-
-    for metric in result.metrics_result:
-        score = metric.mean
-        scores[metric.name] = score
-        threshold = QUALITY_THRESHOLDS.get(metric.name, 0.5)
-        if score < threshold:
-            failed_metrics.append(f"{metric.name}: {score:.3f} < {threshold}")
-
-    if failed_metrics:
-        return {
-            "action": "BLOCK",
-            "scores": scores,
-            "failed_metrics": failed_metrics,
-            "response": FALLBACK_MESSAGE,
-        }
-    else:
-        return {
-            "action": "PASS",
-            "scores": scores,
-            "failed_metrics": [],
-            "response": record["generated_text"],
-        }
+    print(f"  [{bundle.overall_action().upper()}] {scenario['id']} — Q={scenario['question']!r}")
+    for name, r in bundle.results.items():
+        score = f"{r.score:.3f}" if r.score is not None else "n/a"
+        print(f"    {name}: score={score} action={r.action}")
 
 
-# ── Main ──────────────────────────────────────────────────────────────
+# ── Stage 2: RAG generation — pass a SINGLE context string ─────────────
+
+GENERATION_SCENARIOS = [
+    {
+        "id": "faithful_answer",
+        "question": "What is the return policy?",
+        "context": "Electronics: returns within 30 days with original receipt, 15% restocking fee on opened items.",
+        "answer": "You can return electronics within 30 days with your receipt. Opened items have a 15% restocking fee.",
+    },
+    {
+        "id": "hallucinated_answer",
+        "question": "What is the return policy?",
+        "context": "Electronics: returns within 30 days with original receipt.",
+        "answer": "Electronics can be returned within 90 days with free shipping, lifetime warranty, and price matching against any competitor.",
+    },
+]
+
+
+def check_generation(scenario: dict) -> None:
+    bundle = ev.evaluate(
+        input_text=scenario["question"],
+        generated_text=scenario["answer"],
+        context=scenario["context"],       # STRING = generation faithfulness
+        categories=["rag_generation"],
+    )
+    print(f"  [{bundle.overall_action().upper()}] {scenario['id']} — Q={scenario['question']!r}")
+    for name, r in bundle.results.items():
+        score = f"{r.score:.3f}" if r.score is not None else "n/a"
+        print(f"    {name}: score={score} action={r.action}")
+
+
+def main() -> None:
+    print("=" * 70)
+    print("RAG RETRIEVAL QUALITY (after vector search, before LLM call)")
+    print("=" * 70)
+    for scenario in RETRIEVAL_SCENARIOS:
+        print(f"\n─ Scenario: {scenario['id']}")
+        check_retrieval(scenario)
+
+    print("\n" + "=" * 70)
+    print("RAG GENERATION QUALITY (after LLM call, before serving)")
+    print("=" * 70)
+    for scenario in GENERATION_SCENARIOS:
+        print(f"\n─ Scenario: {scenario['id']}")
+        check_generation(scenario)
+
+
 if __name__ == "__main__":
-    print("=" * 60)
-    print("RAG QUALITY GUARDRAILS")
-    print("=" * 60)
-    print("\nQuality thresholds:")
-    for metric, threshold in QUALITY_THRESHOLDS.items():
-        print(f"  {metric}: >= {threshold}")
-
-    for record in RAG_RESPONSES:
-        print(f"\n{'─' * 60}")
-        print(f"Scenario: {record['id']}")
-        print(f"Question: \"{record['question']}\"")
-
-        result = check_rag_quality(record)
-
-        print(f"\n  Action: [{result['action']}]")
-        print(f"  Scores:")
-        for metric, score in result["scores"].items():
-            threshold = QUALITY_THRESHOLDS.get(metric, 0.5)
-            status = "PASS" if score >= threshold else "FAIL"
-            print(f"    {metric}: {score:.3f} [{status}]")
-
-        if result["failed_metrics"]:
-            print(f"  Failed checks:")
-            for fail in result["failed_metrics"]:
-                print(f"    - {fail}")
-
-        print(f"  Response served: \"{result['response'][:80]}...\"")
+    sys.exit(main())

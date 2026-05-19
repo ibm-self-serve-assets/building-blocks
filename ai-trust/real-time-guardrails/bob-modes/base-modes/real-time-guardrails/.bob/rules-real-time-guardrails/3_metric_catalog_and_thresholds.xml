@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules name="metric_catalog_and_thresholds">
+  <overview>
+    Reference for the full 28-metric catalog, threshold mechanics, and the
+    5-layer override model. Read this when the partner is at Phase 2 (design)
+    or Phase 4 (tuning).
+  </overview>
+
+  <category name="safety" count="12" direction="HIGH_IS_RISK" default_block="0.65" default_flag="0.4">
+    <description>Detect harmful or adversarial content. Score is the model's confidence that the content IS risky — higher = more risky.</description>
+    <metric name="HAP (Hate, Abuse, Profanity)" column="hap" fields="input_text OR generated_text"/>
+    <metric name="PII Detection" column="pii" fields="input_text OR generated_text"/>
+    <metric name="Harm" column="harm.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Social Bias" column="social_bias.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Jailbreak Detection" column="jailbreak.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Violence" column="violence.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Profanity" column="profanity.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Unethical Behavior" column="unethical_behavior.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Sexual Content" column="sexual_content.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Evasiveness" column="evasiveness.granite_guardian" fields="input_text OR generated_text"/>
+    <metric name="Harm Engagement" column="harm_engagement.granite_guardian" fields="input_text ONLY"/>
+    <metric name="Prompt Safety Risk" column="prompt_safety_risk.granite_guardian" fields="input_text + system_prompt"/>
+  </category>
+
+  <category name="rag_generation" count="3" direction="LOW_IS_RISK" default_block="0.1" default_flag="0.3">
+    <description>Score the LLM's generated answer against the user query and retrieved context. Low score = risky (hallucination or off-topic).</description>
+    <metric name="Answer Relevance" column="answer_relevance.granite_guardian" fields="input_text + generated_text + context"/>
+    <metric name="Context Relevance" column="context_relevance.granite_guardian" fields="input_text + generated_text + context"/>
+    <metric name="Faithfulness" column="faithfulness.granite_guardian" fields="input_text + generated_text + context"/>
+  </category>
+
+  <category name="rag_retrieval" count="3" direction="LOW_IS_RISK" default_block="0.1" default_flag="0.3">
+    <description>Score the retriever's output. Built on Context Relevance scores per document, then aggregated via classical IR formulas.</description>
+    <metric name="Retrieval Precision" column="retrieval_precision" fields="input_text + context: list[str]"/>
+    <metric name="Hit Rate" column="hit_rate" fields="input_text + context: list[str]"/>
+    <metric name="Reciprocal Rank" column="reciprocal_rank" fields="input_text + context: list[str]"/>
+    <critical>context MUST be a list[str], one entry per retrieved document. Single-string context gives degenerate scores.</critical>
+  </category>
+
+  <category name="quality" count="5" direction="LOW_IS_RISK" default_block="0.1" default_flag="0.3">
+    <description>Output quality metrics. 2 LLM-judge (require WXG_PROJECT_ID), 3 deterministic.</description>
+    <metric name="Answer Completeness (LLM Judge)" column="answer_completeness.llm_as_judge" fields="input_text + generated_text" llm_judge="true" requires_wxg_project_id="true"/>
+    <metric name="Conciseness (LLM Judge)" column="conciseness.llm_as_judge" fields="generated_text" llm_judge="true" requires_wxg_project_id="true"/>
+    <metric name="Text Grade Level" column="text_grade_level.flesch_kincaid_grade" fields="generated_text" llm_judge="false"/>
+    <metric name="Text Reading Ease" column="text_reading_ease.flesch_reading_ease" fields="generated_text" llm_judge="false"/>
+    <metric name="Unsuccessful Requests" column="unsuccessful_requests" fields="generated_text" actionable="false"/>
+  </category>
+
+  <category name="topic" count="1" direction="LOW_IS_RISK" default_block="0.1" default_flag="0.3">
+    <metric name="Topic Relevance" column="topic_relevance" fields="input_text + system_prompt"/>
+  </category>
+
+  <category name="pattern" count="2" direction="HIGH_IS_RISK" default_block="0.5" default_flag="None (binary)">
+    <description>Pure-Python pattern matching. Score is 1.0 on match, 0.0 on no match. No flag state (binary).</description>
+    <metric name="Keyword Detection" column="keyword" fields='input_text + params={"keywords": [...], "case_sensitive": bool (optional)}'/>
+    <metric name="Regex Detection" column="regex" fields='input_text + params={"pattern": "..."} OR {"patterns": [...]}'/>
+  </category>
+
+  <category name="tool_call" count="2" direction="LOW_IS_RISK" default_block="0.1" default_flag="0.3">
+    <metric name="Tool Call Accuracy" column="tool_call_accuracy.syntactic" fields="input_text + tool_calls + available_tools"/>
+    <metric name="Tool Call Relevance" column="tool_call_relevance.llm_as_judge" fields="input_text + tool_calls + available_tools" llm_judge="true" requires_wxg_project_id="true"/>
+    <note>Tool Call Accuracy returns None when there are no syntactic issues (the SDK doesn't emit a score for valid calls). This is treated as Pass by the threshold logic.</note>
+  </category>
+
+  <threshold_override_layers ordered_by_precedence="highest_first">
+    <layer level="1" name="per_call_argument">
+      <code>ev.evaluate(..., thresholds={"PII Detection": 0.7}, flag_thresholds={"PII Detection": 0.5})</code>
+      <use_case>Dynamic per-request policy. Most flexible.</use_case>
+    </layer>
+    <layer level="2" name="constructor_argument">
+      <code>GuardrailsEvaluator(threshold_overrides={"PII Detection": 0.7})</code>
+      <use_case>App-level policy baked into evaluator at startup.</use_case>
+    </layer>
+    <layer level="3" name="yaml_config_file">
+      <code>GuardrailsEvaluator(config_path="thresholds.yaml")</code>
+      <auto_discover>GUARDRAILS_CONFIG_PATH env var, or default `./real-time-guardrails.yaml`</auto_discover>
+      <yaml_shape>
+        <![CDATA[
+        defaults:
+          safety: 0.6
+          rag: 0.15
+          quality: 0.1
+        metrics:
+          "PII Detection": 0.7
+          "Faithfulness": 0.15
+        ]]>
+      </yaml_shape>
+      <use_case>Per-deployment policy, version-controlled separately from code.</use_case>
+    </layer>
+    <layer level="4" name="environment_variables">
+      <pattern>GUARDRAILS_THRESHOLD_&lt;METRIC_SLUG&gt;=&lt;float&gt;</pattern>
+      <category_shortcuts>GUARDRAILS_THRESHOLD_DEFAULT_SAFETY=0.6</category_shortcuts>
+      <use_case>Per-environment (dev/staging/prod) policy. Set in container env or CI.</use_case>
+    </layer>
+    <layer level="5" name="package_defaults">
+      <table>Safety: block=0.65 flag=0.4 | RAG: block=0.1 flag=0.3 | Pattern: block=0.5 (no flag) | Quality: block=0.1 flag=0.3</table>
+      <use_case>Fallback. Documented in README.</use_case>
+    </layer>
+  </threshold_override_layers>
+
+  <flag_block_invariants>
+    <high_is_risk>flag_value must be strictly LESS THAN block value. Example: flag=0.4, block=0.65.</high_is_risk>
+    <low_is_risk>flag_value must be strictly GREATER THAN block value. Example: block=0.1, flag=0.3.</low_is_risk>
+    <auto_drop>When `with_value()` is called with a new block that invalidates the existing flag, the flag is auto-dropped (set to None). To keep a Flag state at the new block level, also pass flag_thresholds={metric: new_flag}.</auto_drop>
+  </flag_block_invariants>
+
+  <selection_modes>
+    <mode name="explicit_metrics">
+      <code>ev.evaluate(..., metrics=["PII Detection", "Faithfulness"])</code>
+      <semantics>Strict — every named metric runs; missing required fields raise MissingFieldError.</semantics>
+      <use_when>Production: tight, deliberate metric set per choke point.</use_when>
+    </mode>
+    <mode name="categories">
+      <code>ev.evaluate(..., categories=["safety", "pattern"])</code>
+      <semantics>Lenient — runs every metric in those categories whose required_fields are satisfied; silently skips others.</semantics>
+      <use_when>Exploratory: "give me everything safety-related I can run with the data I have."</use_when>
+    </mode>
+    <mode name="auto_select">
+      <code>ev.evaluate(input_text="...")   # no metrics/categories arg</code>
+      <semantics>Runs every metric in the registry whose required_fields are satisfied.</semantics>
+      <use_when>Quick sanity check; not recommended for production (unpredictable cost as catalog grows).</use_when>
+    </mode>
+  </selection_modes>
+
+  <field_availability_matrix>
+    <overview>
+      Most partners don't have ALL 7 input fields. Bob's job is to tell them
+      up-front exactly which metrics will run given their data shape, so they
+      don't assume they're getting all 28 when they're actually getting a
+      subset.
+
+      This matrix maps common partner data shapes to the metric subset that
+      will run. Use it during Phase 2 (Design) to set expectations before any
+      code is written.
+    </overview>
+
+    <key>
+      WXG_PROJECT_ID env var status also matters: without it, ALL THREE
+      LLM-judge metrics (Answer Completeness, Conciseness, Tool Call Relevance)
+      are omitted from the registry regardless of which fields the partner
+      supplies. Counts below assume WXG_PROJECT_ID IS set.
+    </key>
+
+    <shape name="input-text-only" fields="input_text">
+      <runs count="11">
+        10 generic safety metrics (HAP, PII, Harm, SocialBias, Jailbreak, Violence,
+        Profanity, Unethical, SexualContent, Evasiveness) + HarmEngagement
+      </runs>
+      <skipped>PromptSafetyRisk (needs system_prompt), TopicRelevance (system_prompt),
+        Keyword/RegexDetection (params), all RAG-generation (need generated_text + context),
+        all RAG-retrieval (need context), all Quality (need generated_text),
+        all Tool-call (need tool_calls)</skipped>
+      <typical_for>Input-safety-only deployments (chat moderation, prompt filtering).</typical_for>
+    </shape>
+
+    <shape name="input-text-and-system-prompt" fields="input_text + system_prompt">
+      <runs count="13">11 above + PromptSafetyRisk + TopicRelevance</runs>
+      <typical_for>System-prompt-aware input safety (catch off-topic queries against
+        a known system prompt; detect prompt-injection).</typical_for>
+    </shape>
+
+    <shape name="input-and-output" fields="input_text + generated_text">
+      <runs count="13">
+        10 generic safety metrics (will run on either input or output side),
+        + HarmEngagement (input-only) + Answer Completeness (input+output)
+        + Conciseness, TextGradeLevel, TextReadingEase, UnsuccessfulRequests (output-only)
+        — 10 + 1 + 1 + 4 = 16. Wait: of the 10 generics, they accept_fields=either,
+        so they run once on whichever was supplied — pick the one you want via
+        explicit metric names; auto-select runs them on input.
+      </runs>
+      <typical_for>Non-RAG agent (single-shot LLM call without retrieval).</typical_for>
+    </shape>
+
+    <shape name="input-output-context-string" fields="input_text + generated_text + context (str)">
+      <runs count="16">
+        Above (input+output) + RAG generation (Answer Relevance, Context Relevance,
+        Faithfulness)
+      </runs>
+      <skipped>RAG retrieval (needs context as list[str], not single str)</skipped>
+      <typical_for>RAG agent where the partner only cares about generation quality,
+        not retrieval quality.</typical_for>
+    </shape>
+
+    <shape name="input-and-context-list" fields="input_text + context (list[str])">
+      <runs count="14">11 input-eligible safety + RAG retrieval (Retrieval Precision,
+        Hit Rate, Reciprocal Rank)</runs>
+      <typical_for>Pre-LLM retrieval guardrail. Run AFTER retrieve() but BEFORE
+        the LLM call so partner can skip the LLM if HitRate=0.</typical_for>
+    </shape>
+
+    <shape name="full-rag-with-context-string" fields="input_text + generated_text + context (str) + system_prompt">
+      <runs count="18">16 from "input-output-context-string" + PromptSafetyRisk + TopicRelevance</runs>
+      <typical_for>Most full-featured chat-style RAG agent with a defined persona.</typical_for>
+    </shape>
+
+    <shape name="tool-using-agent" fields="input_text + tool_calls + available_tools">
+      <runs count="13">11 input-eligible safety + Tool Call Accuracy + Tool Call Relevance</runs>
+      <typical_for>Agent that uses function calling; checks the LLM picked the right tool with valid args.</typical_for>
+    </shape>
+
+    <shape name="compliance-blocklist" fields="input_text + params={'keywords': [...]}">
+      <runs count="12">11 input-eligible safety + Keyword Detection</runs>
+      <typical_for>Partners who must enforce custom keyword blocklists (competitor
+        names, internal project codenames, regulated terms).</typical_for>
+    </shape>
+
+    <how_to_inspect_at_runtime>
+      <code><![CDATA[
+        # Show partner exactly which metrics will fire for their data shape:
+        ev = GuardrailsEvaluator()
+        sample = {"input_text": "...", "generated_text": "...", "context": "..."}
+        bundle = ev.evaluate(**sample)
+        print("Will run:", bundle.metrics_evaluated)
+        # Or list all + check required_fields against the sample:
+        for entry in ev.registry:
+            satisfied = entry.required_fields.issubset(sample.keys())
+            print(f"{entry.name}: {'will run' if satisfied else 'SKIPPED — needs ' + str(entry.required_fields)}")
+      ]]></code>
+    </how_to_inspect_at_runtime>
+
+    <bob_workflow_implication>
+      Phase 2 (Design integration) MUST include a "given your data, here's what
+      runs" enumeration. Don't let the partner discover at deployment time that
+      6 metrics they assumed were running aren't. See RULE 18.
+    </bob_workflow_implication>
+  </field_availability_matrix>
+
+  <per_partner_policy_pattern>
+    <description>Different partners (or tenants) may need different threshold policies.</description>
+    <approach_1 name="yaml_per_partner">
+      <how>Keep one YAML per partner: `thresholds.partner-acme.yaml`, `thresholds.partner-globex.yaml`. Switch via GUARDRAILS_CONFIG_PATH env var at deploy time.</how>
+    </approach_1>
+    <approach_2 name="per_call_at_runtime">
+      <how>Look up the partner's policy in your database; pass thresholds= per request.</how>
+      <example>
+        <![CDATA[
+        partner_policy = db.get_policy(partner_id)
+        bundle = ev.evaluate(
+            input_text=query,
+            thresholds=partner_policy["block"],
+            flag_thresholds=partner_policy["flag"],
+            fallback_messages=partner_policy["fallback"],
+        )
+        ]]>
+      </example>
+    </approach_2>
+    <approach_3 name="multiple_evaluators">
+      <how>Build N GuardrailsEvaluator instances (one per partner) at startup with different threshold_overrides=. Look up the right one per request.</how>
+      <trade_off>Higher memory; same SDK cost.</trade_off>
+    </approach_3>
+  </per_partner_policy_pattern>
+</rules>

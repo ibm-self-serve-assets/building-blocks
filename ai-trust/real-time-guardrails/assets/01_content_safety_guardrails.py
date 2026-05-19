@@ -1,169 +1,91 @@
+"""Tutorial 01: Content Safety Guardrails with real-time-guardrails
+
+Real-time detection of harmful content on AI inputs and outputs. Uses the
+package's 12 safety metrics (HAP, PII, Jailbreak, SocialBias, Violence,
+Profanity, Unethical, Sexual Content, Evasiveness, Harm, HarmEngagement,
+PromptSafetyRisk) with the 3-state action model:
+
+  - Pass   : score is safely below the flag threshold
+  - Flag   : score is between flag and block thresholds (allow + log for review)
+  - Block  : score crossed the block threshold (refuse with fallback message)
+
+Default thresholds: Safety category → block=0.65, flag=0.4 (HIGH_IS_RISK).
+
+Prerequisites
+-------------
+1. `pip install -e ./sdk[all]`    (or `pip install real-time-guardrails[all]` once published)
+2. `cp ./sdk/.env.example ./.env` and fill in WATSONX_APIKEY + WXG_SERVICE_INSTANCE_ID
+   (WXG_PROJECT_ID is optional unless you also want LLM-as-judge metrics)
+3. Run: `python 01_content_safety_guardrails.py`
 """
-Content Safety Guardrails with IBM watsonx governance
 
-Real-time detection and enforcement of safety boundaries on AI inputs
-and outputs. Demonstrates configurable threshold-based actions:
-  - BLOCK: Reject the content entirely
-  - FLAG:  Allow but mark for human review
-  - PASS:  Content is within acceptable limits
-
-Safety metrics applied:
-  - HAP (Hate, Abuse, Profanity)
-  - PII (Personally Identifiable Information)
-  - Jailbreak (prompt injection detection)
-  - Social Bias
-  - Violence
-  - Profanity
-
-Prerequisites:
-  pip install -r requirements.txt
-  export WATSONX_APIKEY="your-ibm-cloud-api-key"
-
-Usage:
-  python 01_content_safety_guardrails.py
-"""
+from __future__ import annotations
 
 import json
-import os
 import sys
+from pathlib import Path
 
-import pandas as pd
 from dotenv import load_dotenv
+
+from real_time_guardrails import GuardrailsEvaluator
+
 
 load_dotenv()
 
-if not os.environ.get("WATSONX_APIKEY"):
-    print("ERROR: WATSONX_APIKEY environment variable is not set.")
-    sys.exit(1)
+# Build the evaluator ONCE — registry build is multi-second; reuse across calls.
+ev = GuardrailsEvaluator()
 
-from ibm_watsonx_gov.evaluators.metrics_evaluator import MetricsEvaluator
-from ibm_watsonx_gov.config import GenAIConfiguration
-from ibm_watsonx_gov.metrics import (
-    HAPMetric,
-    PIIMetric,
-    JailbreakMetric,
-    SocialBiasMetric,
-    ViolenceMetric,
-    ProfanityMetric,
-)
-
-
-# ── Guardrail configuration ──────────────────────────────────────────
-# Define thresholds for each safety metric.
-# Scores above BLOCK threshold → content is rejected.
-# Scores above FLAG threshold → content is flagged for review.
-# Scores below FLAG threshold → content passes.
-
-GUARDRAIL_POLICY = {
-    "hap":         {"block": 0.8, "flag": 0.5},
-    "pii":         {"block": 0.5, "flag": 0.3},
-    "jailbreak":   {"block": 0.7, "flag": 0.4},
-    "social_bias": {"block": 0.7, "flag": 0.4},
-    "violence":    {"block": 0.7, "flag": 0.4},
-    "profanity":   {"block": 0.8, "flag": 0.5},
-}
+# What we want to enforce on the input side. categories=["safety"] selects all
+# 11 input-eligible safety metrics whose required fields are present.
+SAFETY_METRICS = [
+    "HAP (Hate, Abuse, Profanity)",
+    "PII Detection",
+    "Jailbreak Detection",
+    "Social Bias",
+    "Violence",
+    "Profanity",
+]
 
 
-def apply_guardrails(text: str, direction: str = "input") -> dict:
-    """Apply safety guardrails to a piece of text.
-
-    Args:
-        text: The text to evaluate (user input or model output).
-        direction: "input" for user queries, "output" for model responses.
-
-    Returns:
-        dict with action (PASS/FLAG/BLOCK), scores, and triggered rules.
-    """
-    if direction == "input":
-        data = {"input_text": text, "generated_text": ""}
-        config = GenAIConfiguration(input_fields=["input_text"], output_fields=["generated_text"])
+def check(text: str, *, role: str = "input") -> None:
+    """Evaluate a piece of text and print the per-metric outcome."""
+    kwargs = {"metrics": SAFETY_METRICS}
+    if role == "input":
+        kwargs["input_text"] = text
     else:
-        data = {"input_text": "", "generated_text": text}
-        config = GenAIConfiguration(input_fields=["input_text"], output_fields=["generated_text"])
+        kwargs["generated_text"] = text
 
-    metrics = [
-        HAPMetric(),
-        PIIMetric(),
-        JailbreakMetric(),
-        SocialBiasMetric(),
-        ViolenceMetric(),
-        ProfanityMetric(),
-    ]
-
-    evaluator = MetricsEvaluator(configuration=config)
-    df = pd.DataFrame([data])
-    result = evaluator.evaluate(data=df, metrics=metrics)
-
-    # Collect scores and determine action.
-    # result.metrics_result contains AggregateMetricResult objects.
-    # For a single-record DataFrame, .mean equals the single record's score.
-    scores = {}
-    triggered_rules = []
-    action = "PASS"
-
-    for metric in result.metrics_result:
-        score = metric.mean
-        scores[metric.name] = score
-
-        policy = GUARDRAIL_POLICY.get(metric.name, {})
-        if score >= policy.get("block", 1.0):
-            action = "BLOCK"
-            triggered_rules.append(f"{metric.name}: {score:.3f} >= {policy['block']} (BLOCK)")
-        elif score >= policy.get("flag", 1.0):
-            if action != "BLOCK":
-                action = "FLAG"
-            triggered_rules.append(f"{metric.name}: {score:.3f} >= {policy['flag']} (FLAG)")
-
-    return {
-        "direction": direction,
-        "action": action,
-        "scores": scores,
-        "triggered_rules": triggered_rules,
-    }
+    bundle = ev.evaluate(**kwargs)
+    print(f"  [{bundle.overall_action().upper()}] {role}: {text[:80]!r}")
+    for name, r in bundle.results.items():
+        if r.action != "Pass":
+            score = f"{r.score:.3f}" if r.score is not None else "n/a"
+            print(f"    - {name}: score={score} action={r.action} (threshold={r.threshold})")
+    if bundle.failed():
+        fallback = bundle.failed()[0].fallback_message
+        if fallback:
+            print(f"    fallback → {fallback!r}")
 
 
-def print_guardrail_result(text: str, result: dict) -> None:
-    """Print guardrail evaluation result."""
-    action_symbols = {"PASS": "PASS", "FLAG": "FLAG", "BLOCK": "BLOCK"}
-    symbol = action_symbols[result["action"]]
+def main() -> None:
+    scenarios_path = Path(__file__).parent / "sample_data" / "guardrail_test_scenarios.json"
+    scenarios = json.loads(scenarios_path.read_text())
 
-    print(f"\n  [{symbol}] Direction: {result['direction']}")
-    print(f"  Text: \"{text[:80]}...\"" if len(text) > 80 else f"  Text: \"{text}\"")
-
-    if result["triggered_rules"]:
-        print("  Triggered rules:")
-        for rule in result["triggered_rules"]:
-            print(f"    - {rule}")
-    else:
-        print("  All safety checks passed.")
-
-
-# ── Main ──────────────────────────────────────────────────────────────
-if __name__ == "__main__":
-    # Load test scenarios
-    with open("sample_data/guardrail_test_scenarios.json") as f:
-        scenarios = json.load(f)
-
-    print("=" * 60)
+    print("=" * 70)
     print("CONTENT SAFETY GUARDRAILS")
-    print("=" * 60)
-    print(f"\nPolicy thresholds:")
-    for metric, thresholds in GUARDRAIL_POLICY.items():
-        print(f"  {metric}: block >= {thresholds['block']}, flag >= {thresholds['flag']}")
-
-    print(f"\nEvaluating {len(scenarios)} scenarios...")
+    print("=" * 70)
+    print(f"Built evaluator with {ev.list_metrics()['total']} metrics total.")
+    print(f"Running input + output safety checks on {len(scenarios)} scenarios.\n")
 
     for scenario in scenarios:
-        print(f"\n{'─' * 60}")
-        print(f"Scenario: {scenario['description']}")
+        print(f"─ Scenario: {scenario['id']} — {scenario['description']}")
+        check(scenario["input_text"], role="input")
+        # If input is blocked, skip output check (the agent wouldn't have run)
+        # — left here for didactic purposes; production code would short-circuit.
+        if scenario.get("generated_text"):
+            check(scenario["generated_text"], role="output")
+        print()
 
-        # Check input
-        input_result = apply_guardrails(scenario["input_text"], direction="input")
-        print_guardrail_result(scenario["input_text"], input_result)
 
-        # Check output (only if input wasn't blocked)
-        if input_result["action"] != "BLOCK":
-            output_result = apply_guardrails(scenario["generated_text"], direction="output")
-            print_guardrail_result(scenario["generated_text"], output_result)
-        else:
-            print("  Output evaluation skipped — input was blocked.")
+if __name__ == "__main__":
+    sys.exit(main())

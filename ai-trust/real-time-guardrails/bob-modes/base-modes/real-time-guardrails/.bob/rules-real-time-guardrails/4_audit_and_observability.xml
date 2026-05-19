@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rules name="audit_and_observability">
+  <overview>
+    Compliance use cases need an immutable audit trail of every guardrail
+    decision. This file covers the AuditLogger utility, the JSONL schema,
+    sink injection, and what to put on dashboards.
+  </overview>
+
+  <audit_logger_basics>
+    <constructor_modes>
+      <mode name="file">
+        <code>audit = AuditLogger(path="/var/log/guardrails/audit.jsonl")</code>
+        <semantics>Append-only JSONL file. Auto-flushes after each record. Parent dirs created on open.</semantics>
+      </mode>
+      <mode name="sink">
+        <code>audit = AuditLogger(sink=lambda rec: splunk_client.send(rec))</code>
+        <semantics>Pluggable callable receives each record dict. Use for streaming to Splunk/ELK/CloudWatch/etc.</semantics>
+      </mode>
+      <mode name="hash_only">
+        <code>audit = AuditLogger(path="...", include_inputs=False)</code>
+        <semantics>For regulated industries (healthcare/finance) that forbid persisting user content. The per-record `input` field is dropped; the stable `input_hash` is kept so records remain joinable to source data via a separate (regulated) store.</semantics>
+      </mode>
+      <mode name="context_manager">
+        <code>with AuditLogger(path="...") as audit: ...</code>
+        <semantics>Closes the file on exit. Recommended for scripts.</semantics>
+      </mode>
+    </constructor_modes>
+
+    <recording>
+      <code>audit.record(bundle, input_payload={...}, request_id="req-42", actor="optional-user-id")</code>
+      <one_call_per>request, choke point. Don't batch multiple bundles into one record — each stage gets its own line for filterability.</one_call_per>
+    </recording>
+  </audit_logger_basics>
+
+  <jsonl_schema>
+    <description>One JSON object per line, written via `json.dumps(record) + "\n"`.</description>
+    <fields>
+      <field name="timestamp" type="ISO8601" required="true"/>
+      <field name="request_id" type="string" required="true" example="req-42"/>
+      <field name="actor" type="string" optional="true">Partner-supplied user/agent identifier.</field>
+      <field name="record_id" type="string" required="true">From `bundle.record_id` — the evaluation's internal ID.</field>
+      <field name="input_hash" type="string-16chars" required="true">Stable SHA-256 prefix of the input payload. Joinable across records.</field>
+      <field name="overall_action" type="enum" required="true">"Block" | "Flag" | "Pass" (worst of all metric actions).</field>
+      <field name="blocked_metrics" type="list[str]" required="true">Metric names that returned Block.</field>
+      <field name="flagged_metrics" type="list[str]" required="true">Metric names that returned Flag.</field>
+      <field name="metrics" type="dict" required="true">
+        Per-metric breakdown:
+        {
+          "PII Detection": {
+            "score": 0.87, "action": "Block",
+            "threshold": 0.65, "flag_threshold": 0.4,
+            "category": "safety"
+          }
+        }
+      </field>
+      <field name="input" type="dict" optional="true">Raw input payload. Omitted when include_inputs=False.</field>
+    </fields>
+  </jsonl_schema>
+
+  <splunk_pattern>
+    <send>
+      <![CDATA[
+      from splunklib.client import connect
+      service = connect(host="...", token="...")
+      audit = AuditLogger(sink=lambda rec: service.indexes["guardrails"].submit(
+          json.dumps(rec), source="real-time-guardrails", sourcetype="_json"
+      ))
+      ]]>
+    </send>
+    <query language="SPL">
+      <![CDATA[
+      index=guardrails sourcetype=_json overall_action=Block
+      | stats count by blocked_metrics{} request_id
+      ]]>
+    </query>
+  </splunk_pattern>
+
+  <elk_pattern>
+    <send>
+      <![CDATA[
+      from elasticsearch import Elasticsearch
+      es = Elasticsearch("https://...")
+      audit = AuditLogger(sink=lambda rec: es.index(
+          index="guardrails", document=rec
+      ))
+      ]]>
+    </send>
+  </elk_pattern>
+
+  <jq_queries description="useful one-liners against a local audit.jsonl">
+    <query name="block_rate_per_metric">
+      <code><![CDATA[jq -r '.metrics | to_entries[] | select(.value.action=="Block") | .key' audit.jsonl | sort | uniq -c | sort -rn]]></code>
+    </query>
+    <query name="flagged_requests_summary">
+      <code><![CDATA[jq -r 'select(.overall_action=="Flag") | "\(.timestamp) \(.request_id) \(.flagged_metrics|join(","))"' audit.jsonl]]></code>
+    </query>
+    <query name="latency_per_choke_point">
+      <code><![CDATA[# requires custom 'choke_point' field added by your wrapper
+jq -r '.choke_point' audit.jsonl | sort | uniq -c]]></code>
+    </query>
+    <query name="find_specific_input">
+      <code><![CDATA[jq 'select(.input_hash=="ed65c2ab5ccf4aad")' audit.jsonl]]></code>
+    </query>
+  </jq_queries>
+
+  <dashboards_to_build>
+    <dashboard name="block_rate_over_time">
+      <axes>x: time (1-min buckets); y: block count</axes>
+      <breakdown>by metric name</breakdown>
+      <alert>spike alert if block rate &gt; baseline * 3 for 5 min</alert>
+    </dashboard>
+    <dashboard name="flag_rate_over_time">
+      <axes>x: time; y: flag count</axes>
+      <use>identify borderline content drift</use>
+    </dashboard>
+    <dashboard name="latency_per_choke_point">
+      <axes>x: time; y: p50, p95, p99</axes>
+      <breakdown>by stage (input/retrieval/generation/output)</breakdown>
+      <alert>p95 &gt; 2s sustained → investigate LLM-judge cost — RULE 12</alert>
+    </dashboard>
+    <dashboard name="llm_judge_token_spend">
+      <use>track watsonx.ai cost from LLM-as-judge metrics</use>
+      <when>only relevant if WXG_PROJECT_ID is set</when>
+    </dashboard>
+    <dashboard name="per_partner_distribution">
+      <breakdown>by partner_id (if multi-tenant)</breakdown>
+      <use>detect a single partner's traffic dragging up overall block rate</use>
+    </dashboard>
+  </dashboards_to_build>
+
+  <latency_budget>
+    <metric_category cost="~1ms">Pattern (KeywordDetection, RegexDetection)</metric_category>
+    <metric_category cost="~1ms">Quality deterministic (TextGradeLevel, TextReadingEase, UnsuccessfulRequests)</metric_category>
+    <metric_category cost="200-800ms each">Granite Guardian (most Safety, RAG-generation, Topic, ToolCallAccuracy)</metric_category>
+    <metric_category cost="1-3s each">LLM-as-judge (Answer Completeness, Conciseness, Tool Call Relevance)</metric_category>
+    <rule>Order cheap-first per choke point. Don't run LLM-judge metrics on every request — sample (10% of traffic is a common default).</rule>
+  </latency_budget>
+
+  <dashboard_starter>
+    <description>
+      How to build a partner-facing dashboard on top of the AuditLogger JSONL.
+      A complete MUI-based reference component is in
+      .bob/reference-payloads/dashboard_skeleton.jsx; the snippets below are
+      the building blocks Bob can use to guide partners through rolling their own.
+    </description>
+    <data_source>
+      <recommended>Backend endpoint that tails the JSONL file (see
+        backend_guardrails_proxy.py for a reference: GET /api/audit/recent).
+        Frontend polls every 30 s.</recommended>
+      <avoid>Direct browser → JSONL file access. Browser → guardrails REST
+        directly. localStorage as data source (compliance issue — see RULE 15).</avoid>
+    </data_source>
+    <aggregation_snippets language="javascript">
+      <average_score_per_metric><![CDATA[
+        function avgScorePerMetric(records) {
+          const sums = new Map(), counts = new Map();
+          for (const rec of records) {
+            for (const [name, m] of Object.entries(rec.metrics || {})) {
+              if (m.score == null) continue;
+              sums.set(name, (sums.get(name) || 0) + m.score);
+              counts.set(name, (counts.get(name) || 0) + 1);
+            }
+          }
+          const out = new Map();
+          for (const [name, s] of sums) out.set(name, s / counts.get(name));
+          return out;
+        }
+      ]]></average_score_per_metric>
+      <action_counts_per_metric><![CDATA[
+        function actionCountsPerMetric(records) {
+          const out = new Map();
+          for (const rec of records) {
+            for (const [name, m] of Object.entries(rec.metrics || {})) {
+              if (!out.has(name)) out.set(name, { Pass: 0, Flag: 0, Block: 0 });
+              const bucket = out.get(name);
+              if (bucket[m.action] != null) bucket[m.action] += 1;
+            }
+          }
+          return out;
+        }
+      ]]></action_counts_per_metric>
+      <overall_pass_flag_block_counts><![CDATA[
+        function overallActionCounts(records) {
+          const out = { Pass: 0, Flag: 0, Block: 0 };
+          for (const rec of records) {
+            if (out[rec.overall_action] != null) out[rec.overall_action] += 1;
+          }
+          return out;
+        }
+      ]]></overall_pass_flag_block_counts>
+    </aggregation_snippets>
+    <visualizations>
+      <viz name="summary_stacked_bar">Pass / Flag / Block counts as one stacked horizontal bar at the top of the dashboard. Counts + percentages labeled inside the segments.</viz>
+      <viz name="per_metric_linear_progress">One row per metric: MUI LinearProgress bar showing average score, with text annotation for block/flag/pass counts.</viz>
+      <viz name="history_table_expandable">One row per decision, newest first. Expand to see per-metric breakdown (score, action, threshold, flag_threshold).</viz>
+      <viz name="time_bucketed_trend" optional="true">Optional: per-hour block rate over the last 24h. Out of scope for the basic reference; add when partners need it.</viz>
+    </visualizations>
+    <refresh_strategy>
+      <approach name="polling" default="true">30 s interval. Simple, works through any proxy / firewall. Sufficient for compliance dashboards (not user-facing real-time).</approach>
+      <approach name="server_sent_events">For sub-second latency: convert /api/audit/recent into an SSE stream from the backend. Requires changes to the proxy.</approach>
+      <approach name="websockets">For bidirectional or very high-frequency updates. Heavier lift; rarely justified for a compliance dashboard.</approach>
+    </refresh_strategy>
+  </dashboard_starter>
+
+  <compliance_notes>
+    <retention>Default file mode appends forever. For GDPR/CCPA right-to-delete: rotate the JSONL daily and run a periodic redaction job that purges records older than the retention policy.</retention>
+    <pii_in_logs>If you don't use include_inputs=False, raw input may include PII. Either: (a) treat audit logs as PII-class storage with encryption at rest, OR (b) use include_inputs=False and store the original input in a separately-controlled system, joined via input_hash.</pii_in_logs>
+    <audit_log_chain_of_custody>For regulated industries, sign the JSONL records (e.g. HMAC with a tamper-evident key) before persisting. Out of scope for the SDK but easy to add via the `sink=` callable.</audit_log_chain_of_custody>
+  </compliance_notes>
+</rules>
