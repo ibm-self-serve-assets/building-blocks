@@ -2,6 +2,24 @@
 
 A custom Bob mode that builds and deploys watsonx Orchestrate (WXO) agents end-to-end through an interactive workflow.
 
+## When to Use This Mode
+
+**Use the Domain Agent Builder when you want a working, deployed WXO agent fast — typically for a demo, PoC, or quick exploration of a domain.**
+
+This mode is opinionated and prescriptive: it asks multiple-choice questions, runs on auto-approve, and adapts a proven reference template (the portfolio advisor agent) to your domain. You trade flexibility for speed — in a single session you go from idea to a tool-augmented agent with RAG, live in your WXO instance.
+
+**Use this mode if you want to:**
+- Stand up a domain-flavored demo agent in one sitting
+- Show a customer/stakeholder what a WXO agent looks like in their industry
+- Learn the WXO agent shape by example before designing your own from scratch
+
+**Use the [WxO Agent Builder base mode](../../base-modes/agent-builder-base-mode/) instead if you want to:**
+- Architect a production agent from scratch with a custom design
+- Go through a full plan-and-approve lifecycle (discovery → plan.md → implementation → deploy/rollback scripts → docs)
+- Build multi-agent orchestrator + specialist hierarchies, custom connections, or non-standard tool patterns
+
+> The base mode is a general-purpose pair programmer for WXO agent development. This mode is a one-shot domain accelerator.
+
 ## What It Does
 
 You describe a domain (healthcare, retail, education, etc.) and Bob:
