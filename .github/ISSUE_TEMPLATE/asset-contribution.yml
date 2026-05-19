@@ -16,88 +16,67 @@ body:
   - type: input
     id: asset_name
     attributes:
-      label: Asset Name
-      description: Name of the asset or building block
+      label: Demo / Asset Name
+      description: Name of the Building Block demo or asset
       placeholder: Example - AI Powered Data Observability Dashboard
     validations:
       required: true
 
-  - type: dropdown
+  - type: checkboxes
     id: domain
     attributes:
       label: Building Block Domain
-      description: Select the primary domain for this contribution
+      description: Select one or more applicable domains
       options:
-        - Agents
-        - AI Trust
-        - Data for AI
-        - Automation
+        - label: Agents
+        - label: AI Trust
+        - label: Data for AI
+        - label: Automation
     validations:
       required: true
 
-  - type: dropdown
+  - type: checkboxes
     id: category
     attributes:
-      label: Category
-      description: Select the relevant category
+      label: Categories
+      description: Select all relevant categories for this contribution
       options:
         # Agents
-        - Agent Builder
-        - Multi Agent Orchestration
-        - Agentic SDLC
+        - label: Agent Builder
+        - label: Multi Agent Orchestration
+        - label: Agentic SDLC
 
         # AI Trust
-        - Agent Ops
-        - AI Compliance
-        - Model Evaluation
-        - Real Time Guardrails
+        - label: Agent Ops
+        - label: AI Compliance
+        - label: Model Evaluation
+        - label: Real Time Guardrails
 
         # Data for AI - Data Integration
-        - Data Integration
-        - Data Pipeline (AI Generated)
-        - Data Streaming
-        - Data Observability
+        - label: Data Integration
+        - label: Data Pipeline (AI Generated)
+        - label: Data Streaming
+        - label: Data Observability
 
         # Data for AI - Data Intelligence
-        - Data Intelligence
-        - Data Quality
-        - Data Lineage
-        - Text2SQL
+        - label: Data Intelligence
+        - label: Data Quality
+        - label: Data Lineage
+        - label: Text2SQL
 
         # Automation - Build and Deploy
-        - IaaS
-        - Code Modernization
-        - iPaaS
+        - label: IaaS
+        - label: Code Modernization
+        - label: iPaaS
 
         # Automation - Optimize
-        - Automated Resilience and Compliance
-        - Automated Resource Management
-        - FinOps
+        - label: Automated Resilience and Compliance
+        - label: Automated Resource Management
+        - label: FinOps
 
         # Automation - Secure
-        - Non-Human Identity
-        - Quantum Safe
-    validations:
-      required: true
-
-  - type: dropdown
-    id: asset_type
-    attributes:
-      label: Asset Type
-      description: Select the type of contribution
-      options:
-        - Architecture Diagram
-        - Terraform Script
-        - Automation Playbook
-        - Integration Flow
-        - Dashboard
-        - Demo Application
-        - Documentation
-        - Reference Implementation
-        - API Integration
-        - AI Agent
-        - Pipeline Template
-        - Other
+        - label: Non-Human Identity
+        - label: Quantum Safe
     validations:
       required: true
 
@@ -105,7 +84,7 @@ body:
     id: description
     attributes:
       label: Description
-      description: Provide a detailed description of the asset
+      description: Provide a detailed description of the demo or asset
       placeholder: Describe the functionality, purpose, and expected outcome
     validations:
       required: true
@@ -114,7 +93,7 @@ body:
     id: business_usecase
     attributes:
       label: Business Use Case
-      description: Describe the business problem or use case this asset addresses
+      description: Describe the business problem or use case this contribution addresses
       placeholder: Explain the customer or partner use case
     validations:
       required: true
@@ -167,7 +146,7 @@ body:
     attributes:
       label: Contribution Checklist
       options:
-        - label: I have validated the asset before submission
+        - label: I have validated the demo before submission
           required: true
 
         - label: Documentation has been included or updated
@@ -176,7 +155,7 @@ body:
         - label: Required dependencies and prerequisites are documented
           required: true
 
-        - label: The asset follows repository contribution guidelines
+        - label: The contribution follows repository contribution guidelines
           required: true
 
         - label: Screenshots, architecture diagrams, or demo assets are attached
