@@ -94,7 +94,7 @@ my_agent/
    git clone <repo-url>
    ```
 
-2. **Open the `agent-builder-base-mode` folder as the root folder in the Bob application**
+2. **Open the `agent-builder-base-mode` folder uncompress the file, and open it as the root folder in the Bob application**
 
 3. **That's it!** — The `🤖 WxO Agent Builder` mode will automatically appear in Bob's mode selector, ready to use.
 
