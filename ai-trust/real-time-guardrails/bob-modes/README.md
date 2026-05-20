@@ -8,7 +8,7 @@ A Bob Mode is a packaged expertise file (`.bob/` folder) that turns IBM Bob into
 
 ## Base Modes
 
-### 🛡️ [Real-Time Guardrails](base-modes/real-time-guardrails/) (recommended starting mode)
+### 🛡️ [Real-Time Guardrails](base-modes/real-time-guardrails/)
 
 End-to-end developer guide for adding `real-time-guardrails` to an AI/RAG agent. Bob walks the developer through **5 phases**:
 
@@ -53,7 +53,3 @@ cp -r .../building-blocks/ai-trust/real-time-guardrails/bob-modes/base-modes/rea
 ```
 
 Open Bob, select the **🛡️ Real-Time Guardrails** mode from the mode selector. Bob is now guardrails-aware and will guide you through the 5-phase workflow.
-
-## Custom Modes
-
-> _No custom modes yet. Create one if your team has a domain-specific guardrail policy (e.g. healthcare-PII strict mode, financial-compliance mode) — place under `custom-modes/<your-mode>/.bob/`._
