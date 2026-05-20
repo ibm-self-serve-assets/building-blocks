@@ -89,12 +89,9 @@ my_agent/
 
 ## Setup & Installation
 
-1. **Clone this repository**
-   ```bash
-   git clone <repo-url>
-   ```
-
-2. **Open the `agent-builder-base-mode` folder uncompress the file, and open it as the root folder in the Bob application**
+1. **Download the file agent-builder-base-mode.zip**
+   
+2. **Uncompress the .zip file. You should see a folder named `agent-builder-base-mode`, Open this folder as root folder in the Bob application**
 
 3. **That's it!** — The `🤖 WxO Agent Builder` mode will automatically appear in Bob's mode selector, ready to use.
 
