@@ -89,7 +89,7 @@ my_agent/
 
 ## Setup & Installation
 
-1. **Download the file agent-builder-base-mode.zip**
+1. **Download the file `agent-builder-base-mode.zip`**
    
 2. **Uncompress the .zip file. You should see a folder named `agent-builder-base-mode`, Open this folder as root folder in the Bob application**
 
