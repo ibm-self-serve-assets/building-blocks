@@ -12,11 +12,11 @@ A Bob Mode is a packaged expertise file (`.bob/` folder) that turns IBM Bob into
 
 End-to-end developer guide for adding `real-time-guardrails` to an AI/RAG agent. Bob walks the developer through **5 phases**:
 
-1. **Setup & Verify** (~15 min) — provision IBM Cloud services, set credentials safely, run sanity check
-2. **Design integration** (~30 min) — map the 4-choke-point pattern to the agent, pick metric sets and thresholds per choke point
-3. **Implement** (~60 min) — wire `GuardrailedAgent` or REST calls; add audit logging
-4. **Test & tune** (~30 min) — run sample workload, analyze JSONL audit trail, tune thresholds
-5. **Deploy & observe** (~45 min) — Dockerize, wire to log aggregation, build dashboards
+1. **Setup & Verify** — provision IBM Cloud services, set credentials safely, run sanity check
+2. **Design integration** — map the 4-choke-point pattern (4 points at which you can apply guardrails) to the agent, pick metric sets and thresholds per choke point
+3. **Implement** — wire `GuardrailedAgent` or REST calls; add audit logging
+4. **Test & tune** — run sample workload, analyze JSONL audit trail, tune thresholds
+5. **Deploy & observe** — Dockerize, wire to log aggregation, build dashboards
 
 The mode enforces **18 mandatory rules** covering credential hygiene, the 3-state Pass/Flag/Block action model, threshold precedence, the 4 choke points, OpenAI tool-call format, latency-aware metric ordering, compliance audit logging, custom-metric authoring, backend-proxy mandates, and auto-trigger pattern selection.
 
