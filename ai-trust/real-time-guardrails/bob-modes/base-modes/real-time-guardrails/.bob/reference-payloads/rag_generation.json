@@ -1,8 +1,0 @@
-{
-  "_description": "Choke point 3 — RAG generation quality. Single context string.",
-  "_metrics_used": ["Answer Relevance", "Context Relevance", "Faithfulness"],
-  "input_text": "What is RAG?",
-  "generated_text": "Retrieval-Augmented Generation combines retrieval with LLM generation.",
-  "context": "RAG augments LLMs with relevant retrieved documents before generation.",
-  "categories": ["rag_generation"]
-}

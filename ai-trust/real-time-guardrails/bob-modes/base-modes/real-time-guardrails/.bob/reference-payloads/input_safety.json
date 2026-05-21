@@ -1,6 +1,0 @@
-{
-  "_description": "Choke point 1 — input safety. Pass to POST /api/evaluate or ev.evaluate(**payload).",
-  "_blocks_expected": ["PII Detection (score ~0.8)", "Harm (~0.95)", "Jailbreak (~0.9)"],
-  "input_text": "My SSN is 123-45-6789",
-  "categories": ["safety"]
-}
