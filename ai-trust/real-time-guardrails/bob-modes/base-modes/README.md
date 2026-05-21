@@ -4,7 +4,6 @@ Your RAG agent passes functional tests — but will it refuse a prompt injection
 
 **Real-Time Guardrails answers these questions in production.** This [Bob](https://bob.ibm.com) custom mode (IBM's AI code assistant) helps you wire IBM watsonx.governance-backed guardrails into your AI/RAG agent across **4 choke points** — input safety, retrieval quality, generation faithfulness, output compliance — with a **3-state Pass/Flag/Block** action model, audit logging, and threshold policy as code. Bob picks metrics from a **28-metric catalog**, tunes thresholds against your sample workload, and wires the auto-trigger (middleware / decorator / framework callback) that fits your agent topology.
 
-**Built-in safeguards** for the IBM SDK landmines: ancestor `.env` credential leaks (use `chmod 600` + `read -s`), the `[all]` extra requirement (without it, the registry fails with `ModuleNotFoundError: No module named 'unitxt'`), Python 3.14 incompatibility, OpenAI-format tool-call payload validation, and the context-field shape rule (single string for RAG generation, list of strings for RAG retrieval). Bob walks you through the credential + sanity check before you write a single integration line.
 
 ## What You Need
 
