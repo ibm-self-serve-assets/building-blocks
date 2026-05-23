@@ -1,6 +1,6 @@
-# Automated Resource Management Skills
+# Application Resource Management Skills
 
-This directory contains Bob skills for Automated Resource Management using IBM Turbonomic.
+This directory contains Bob skills for Application Resource Management using IBM Turbonomic.
 
 ## 🎯 Overview
 
