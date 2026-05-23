@@ -1,4 +1,4 @@
-# Data Streaming Bob Skills
+# Automated Resource MAnagement Skills
 
 This directory contains Bob skills for Automated Resource Management using IBM Turbonomic.
 
