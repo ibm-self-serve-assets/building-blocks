@@ -1,38 +1,40 @@
 name: Create Agents Zip then Push Zip
-on: [push] # Triggers on eve  ry check-in
+on: [push]
 
 jobs:
   zip-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # Required to push changes back to the repo
+      contents: write
     steps:
-      # 1. Check out only the specific folder
+      # 1. Checkout the folder AND explicitly tell Git to track the zip file path
       - name: Checkout specific folder
         uses: actions/checkout@v4
         with:
           sparse-checkout: |
             ibm-bob/skills
+            ibm-bob/skills/skills.zip
           sparse-checkout-cone-mode: false
   
-      # 2. Create the ZIP archive of the folder contents
+      # 2. Create the ZIP archive directly inside the target directory
       - name: Create ZIP archive
         run: |
           cd ibm-bob/skills
-          zip -r ../../agents.zip .
+          # Zip everything in the current folder, excluding the zip file itself
+          zip -r skills.zip . -x "skills.zip"
   
-      # 3. Commit and push the ZIP file back to the repo
+      # 3. Commit and push the ZIP file from the root context
       - name: Commit and Push ZIP
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
 
-          git add agents.zip
+          # Add using the explicit path from the repository root
+          git add ibm-bob/skills/skills.zip
           
-          # Only commit and push if the zip file actually changed
           if git diff --staged --quiet; then
-            echo "No changes in agents.zip archive."
+            echo "No changes in skills.zip archive."
           else
-            git commit -m "chore: update agents.zip archive [skip ci]"
+            git commit -m "chore: update skills.zip archive [skip ci]"
             git push
           fi
