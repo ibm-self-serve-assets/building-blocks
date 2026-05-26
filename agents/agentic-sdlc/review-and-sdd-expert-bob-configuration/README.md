@@ -53,6 +53,10 @@ The **🔍 Configuration Gap Detector** identifies when current configuration is
 
 ---
 
+## SDD Skills
+
+![](./images/spec-driven-development-overview.png)
+
 ## 🚀 Quick Start (5 Minutes)
 
 ### Prerequisites
