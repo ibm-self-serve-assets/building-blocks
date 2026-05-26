@@ -20,14 +20,15 @@
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
 - [FinOps →](../finops/README.md)
+- [Automated Resource Management →](../automated-resource-mgmt/README.md)
 
 **Assets:**
 - [Concert Insights Dashboard →](assets/automate-resilience/README.md)
 - [Bob Modes →](bob-modes/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
-- [Observe](../../observe/application-observability/README.md)
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
+- [Secure](../../secure/non-human-identity/README.md)
 
 ---
 
@@ -536,17 +537,18 @@ API_PAGE_LIMIT=100
 
 ### Optimize Building Blocks
 - [FinOps](../finops/README.md) - Cost optimization with IBM Turbonomic
-
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
-  - [Dashboard](../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+- [Automated Resource Management](../automated-resource-mgmt/README.md) - IBM Turbonomic
 
 ### Build & Deploy Building Blocks
-- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
-- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
-- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md) - IBM Security Verify
-- [Code Assistant](../../build-and-deploy/code-assistant/README.md) - AI-powered development
+- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
+  - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
+  - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
+- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
+
+### Secure Building Blocks
+- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
+- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
 
 ---
 

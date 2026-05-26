@@ -1,0 +1,14 @@
+{
+  "_comment": "Add this block under the 'mcpServers' key in your MCP client's configuration file. The exact file path varies by client (consult your client's documentation). Adapt the env values to your environment.",
+  "mcpServers": {
+    "real-time-guardrails": {
+      "command": "real-time-guardrails",
+      "args": ["mcp"],
+      "env": {
+        "WATSONX_APIKEY": "your-ibm-cloud-api-key",
+        "WXG_SERVICE_INSTANCE_ID": "your-watsonx-governance-instance-id",
+        "WXG_PROJECT_ID": "your-watsonx-project-id"
+      }
+    }
+  }
+}

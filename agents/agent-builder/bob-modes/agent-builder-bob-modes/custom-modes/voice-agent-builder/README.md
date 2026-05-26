@@ -21,13 +21,11 @@ This mode helps you build complete voice-enabled agents directly in watsonx Orch
 - **Minimal File Creation**: Focuses on building in the platform, not managing local files
 
 ## Setup & Installation
+## Setup & Installation
 
-1. **Clone this repository**
-   ```bash
-   git clone <repo-url>
-   ```
-
-2. **Open the `voice-agent-builder` folder as the root folder in the Bob application**
+1. **Download the file voice-agent-builder.zip**
+   
+2. **Uncompress the .zip file. You should see a folder named `voice-agent-builder`, Open this folder as root folder in the Bob application**
 
 3. **That's it!** — The `🎙️ WxO Voice Agents` mode will automatically appear in Bob's mode selector, ready to use.
 

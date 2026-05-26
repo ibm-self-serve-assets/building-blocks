@@ -89,14 +89,11 @@ my_agent/
 
 ## Setup & Installation
 
-1. **Clone this repository**
-   ```bash
-   git clone <repo-url>
-   ```
+1. **Download the file `multi-agent-orchestration-base-mode.zip`**
+   
+2. **Uncompress the .zip file. You should see a folder named `multi-agent-orchestration-base-mode`, Open this folder as root folder in the Bob application**
 
-2. **Open the `agent-builder-base-mode` folder as the root folder in the Bob application**
-
-3. **That's it!** — The `🤖 WxO Agent Builder` mode will automatically appear in Bob's mode selector, ready to use.
+3. **That's it!** — The `🤖 Multi-Agent Orchestration Mode` mode will automatically appear in Bob's mode selector, ready to use.
 
 ---
 

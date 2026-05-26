@@ -35,23 +35,26 @@ It enables organizations to:
 Build and Deploy establishes the foundation for scalable DevOps and
 CI/CD practices.
 
-### **Observe**
+**📂 Implementation:** [Build and Deploy Building Blocks](../../build-and-deploy/)
 
-Observe centers on delivering deep operational visibility across
-applications, infrastructure, and networks. It transforms telemetry into
-actionable intelligence, enabling teams to detect anomalies early,
-accelerate troubleshooting, and maintain service reliability.
+### **Modernize**
+
+Modernize focuses on transforming legacy applications and infrastructure
+into cloud-native, maintainable, and efficient systems. It enables
+enterprises to understand existing codebases, refactor applications, and
+migrate workloads to modern platforms while preserving business logic.
 
 It enables organizations to:
 
--   Monitor application performance in real time.
--   Analyze distributed system behavior.
--   Identify performance bottlenecks.
--   Detect anomalies proactively.
--   Improve incident response efficiency.
+-   Analyze and understand legacy code.
+-   Transform monolithic applications to microservices.
+-   Modernize middleware and integration layers.
+-   Migrate to cloud-native platforms.
+-   Reduce technical debt.
 
-Observe ensures that dynamic environments remain transparent and
-manageable.
+Modernize ensures that legacy systems evolve into strategic assets.
+
+**📂 Implementation:** [Modernize Building Blocks](../../modernize/)
 
 ### **Optimize**
 
@@ -70,14 +73,16 @@ It enables organizations to:
 
 Optimize transforms operations into a closed-loop improvement model.
 
+**📂 Implementation:** [Optimize Building Blocks](../../optimize/)
+
 ## **Unified Automation Strategy**
 
-Together, Build and Deploy, Observe, and Optimize create a cohesive
+Together, Build and Deploy, Modernize, and Optimize create a cohesive
 automation framework. Each building block reinforces the others:
 
 -   Build establishes repeatability.
--   Observe provides operational intelligence.
--   Optimize drives continuous improvement
+-   Modernize transforms legacy systems.
+-   Optimize drives continuous improvement.
 
 This integrated model enables enterprises to scale hybrid cloud
 environments with greater predictability, stability, and efficiency.

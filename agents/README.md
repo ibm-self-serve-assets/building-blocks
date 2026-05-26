@@ -12,7 +12,7 @@ Review the accelerators inside the repo:
 
 - [agent-builder](./agent-builder)
 - [multi-agent-orchestration](./multi-agent-orchestration)
-- [agent-gateway](./agent-gateway)
+- [Agentic-SDLC](./agentic-sdlc)
 
 
 Follow the documentation in each folder to integrate the accelerator into your application.
@@ -23,11 +23,7 @@ Follow the documentation in each folder to integrate the accelerator into your a
 
 We welcome contributions! Please fork this repo, create a feature branch, and open a pull request with your changes.
 
----
 
-## License
-
-This project is licensed under the [Apache 2.0 License](https://github.com/ibm-self-serve-assets/building-blocks/tree/main?tab=Apache-2.0-1-ov-file#readme).
 
 
 

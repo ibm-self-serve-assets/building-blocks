@@ -1,0 +1,15 @@
+spec_version: v1
+name: product_kb
+description: |
+  Product knowledge base for the Customer Support Assistant.
+  Contains product specifications, warranty information, and FAQ.
+
+documents:
+  - ../data/products.txt
+
+vector_index:
+  embeddings_model_name: ibm/slate-125m-english-rtrvr-v2
+
+metadata:
+  domain: "customer_support"
+  version: "1.0"

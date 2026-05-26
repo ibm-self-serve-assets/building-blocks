@@ -1,0 +1,77 @@
+TechStore Product Catalog
+=========================
+
+Laptop Pro 15
+- Display: 15.6" Retina, 2560x1600
+- Processor: Intel Core i7-13700H
+- Memory: 16GB DDR5
+- Storage: 512GB NVMe SSD
+- Battery: Up to 10 hours
+- Price: $1,299
+- Warranty: 2-year limited hardware warranty
+- Return Policy: 30 days with original packaging
+- Common Issues: If the laptop does not power on, hold the power button for 10 seconds to force restart. For Wi-Fi connectivity issues, toggle airplane mode on and off.
+
+USB-C Hub
+- Ports: 2x USB-A 3.0, 1x HDMI 2.0, 1x SD card reader, 1x USB-C passthrough charging
+- Compatibility: Any USB-C enabled device
+- Price: $49.99
+- Warranty: 1-year limited warranty
+- Return Policy: 30 days, unopened for full refund; opened items subject to 15% restocking fee
+- Common Issues: If the hub is not recognized, try a different USB-C port on your device. Ensure your device supports USB-C data (not just charging).
+
+Wireless Mouse
+- Connectivity: Bluetooth 5.1 and 2.4GHz USB dongle
+- Battery: 2x AA, up to 12 months
+- DPI: 800 / 1200 / 1600 adjustable
+- Price: $29.99
+- Warranty: 1-year limited warranty
+- Return Policy: 30 days with receipt
+- Common Issues: If cursor is lagging, replace batteries and ensure no wireless interference. Switch between Bluetooth and USB dongle modes using the button on the bottom.
+
+Monitor 27"
+- Display: 27" IPS, 4K UHD (3840x2160)
+- Refresh Rate: 60Hz
+- Ports: 2x HDMI, 1x DisplayPort, 1x USB-C (65W charging)
+- Price: $449
+- Warranty: 3-year limited warranty including dead pixel coverage
+- Return Policy: 30 days; must include all cables and stand
+- Common Issues: If no signal is displayed, ensure the correct input source is selected. For flickering, update your graphics drivers and try a different cable.
+
+Keyboard (Mechanical)
+- Switches: Cherry MX Brown
+- Layout: Full-size with number pad
+- Connectivity: USB-C wired
+- Backlight: RGB per-key
+- Price: $79.99
+- Warranty: 2-year limited warranty
+- Return Policy: 30 days with original packaging
+
+Webcam HD
+- Resolution: 1080p at 30fps
+- Field of View: 78 degrees
+- Microphone: Built-in dual stereo
+- Mounting: Universal clip for monitors and tripods
+- Price: $59.99
+- Warranty: 1-year limited warranty
+- Return Policy: 30 days with receipt
+
+Shipping and Delivery
+- Standard shipping: 5-7 business days (free on orders over $50)
+- Express shipping: 2-3 business days ($9.99)
+- Next-day delivery: Available in select metro areas ($19.99)
+- International shipping: Not currently available
+
+General Return Policy
+- All returns must be initiated within 30 days of purchase
+- Original receipt or order confirmation required
+- Items must be in original packaging
+- Opened electronics subject to 15% restocking fee
+- Defective items can be exchanged at no cost within warranty period
+- Refunds processed within 5-7 business days after item is received
+
+Support Contact
+- Phone: 1-800-555-TECH (available Mon-Fri, 8am-8pm EST)
+- Email: support@techstore.example.com
+- Live Chat: Available on techstore.example.com (Mon-Sat, 9am-6pm EST)
+- In-store: Visit any TechStore location for hands-on support

@@ -1,3 +1,10 @@
+## 🔗 Implementation Resources
+
+For detailed implementation guides, code samples, and deployment assets, see:
+- **[Platform as a Service (iPaaS)](../../../build-and-deploy/ipaas/README.md)** - Complete IBM webMethods integration guide with watsonx Orchestrate, watsonx.governance, and watsonx.ai
+
+---
+
 ## **Platform as a Service (iPaaS)**
 IBM webMethods Integration represents a comprehensive, cloud-native
 Integration Platform as a Service (iPaaS) designed to connect

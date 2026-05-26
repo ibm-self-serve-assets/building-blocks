@@ -1,0 +1,55 @@
+{
+  "description": "Sample credit risk scoring payloads for testing the watsonx ML model.",
+  "payloads": [
+    {
+      "label": "Low risk — stable employment, small loan",
+      "values": {
+        "CheckingStatus": "0_to_200",
+        "LoanDuration": 12,
+        "CreditHistory": "credits_paid_to_date",
+        "LoanPurpose": "car_new",
+        "LoanAmount": 5000,
+        "ExistingSavings": "500_to_1000",
+        "EmploymentDuration": "4_to_7",
+        "InstallmentPercent": 2,
+        "Sex": "male",
+        "OthersOnLoan": "none",
+        "CurrentResidenceDuration": 4,
+        "OwnsProperty": "real_estate",
+        "Age": 45,
+        "InstallmentPlans": "none",
+        "Housing": "own",
+        "ExistingCreditsCount": 1,
+        "Job": "skilled",
+        "Dependents": 1,
+        "Telephone": "yes",
+        "ForeignWorker": "yes"
+      }
+    },
+    {
+      "label": "Higher risk — no checking, large loan, young borrower",
+      "values": {
+        "CheckingStatus": "no_checking",
+        "LoanDuration": 48,
+        "CreditHistory": "no_credits",
+        "LoanPurpose": "other",
+        "LoanAmount": 15000,
+        "ExistingSavings": "less_100",
+        "EmploymentDuration": "less_1",
+        "InstallmentPercent": 4,
+        "Sex": "female",
+        "OthersOnLoan": "co-applicant",
+        "CurrentResidenceDuration": 1,
+        "OwnsProperty": "car_other",
+        "Age": 23,
+        "InstallmentPlans": "bank",
+        "Housing": "rent",
+        "ExistingCreditsCount": 2,
+        "Job": "unskilled",
+        "Dependents": 0,
+        "Telephone": "none",
+        "ForeignWorker": "yes"
+      }
+    }
+  ]
+}

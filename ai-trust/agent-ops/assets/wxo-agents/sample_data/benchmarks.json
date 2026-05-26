@@ -1,0 +1,62 @@
+[
+  {
+    "agent": "customer_support_assistant",
+    "story": "You are customer CUST001. You want to check the status of your order ORD-1002. Provide your customer ID upfront. Do NOT end the conversation until you receive the order status.",
+    "starting_sentence": "Hi, my customer ID is CUST001. Can you check the status of my order ORD-1002?",
+    "goals": {
+      "get_customer-1": ["get_order_status-1"],
+      "get_order_status-1": []
+    },
+    "goal_details": [
+      {
+        "type": "tool_call",
+        "name": "get_customer-1",
+        "tool_name": "get_customer",
+        "args": {"customer_id": "CUST001"},
+        "arg_matching": {"customer_id": "strict"}
+      },
+      {
+        "type": "tool_call",
+        "name": "get_order_status-1",
+        "tool_name": "get_order_status",
+        "args": {"order_id": "ORD-1002"},
+        "arg_matching": {"order_id": "strict"}
+      }
+    ]
+  },
+  {
+    "agent": "customer_support_assistant",
+    "story": "You need help with a defective product but you do NOT provide your customer ID upfront. When asked, provide CUST002. After the agent looks up your account, ask them to create a support ticket about a broken wireless mouse with high priority.",
+    "starting_sentence": "Hi, I received a defective product and need help.",
+    "goals": {
+      "get_customer-1": ["create_support_ticket-1"],
+      "create_support_ticket-1": []
+    },
+    "goal_details": [
+      {
+        "type": "tool_call",
+        "name": "get_customer-1",
+        "tool_name": "get_customer",
+        "args": {"customer_id": "CUST002"},
+        "arg_matching": {"customer_id": "strict"}
+      },
+      {
+        "type": "tool_call",
+        "name": "create_support_ticket-1",
+        "tool_name": "create_support_ticket",
+        "args": {
+          "customer_id": "CUST002",
+          "subject": "defective wireless mouse",
+          "description": "received a broken product, requesting replacement or repair",
+          "priority": "high"
+        },
+        "arg_matching": {
+          "customer_id": "strict",
+          "subject": "fuzzy",
+          "description": "fuzzy",
+          "priority": "strict"
+        }
+      }
+    ]
+  }
+]

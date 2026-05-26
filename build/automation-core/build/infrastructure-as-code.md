@@ -1,3 +1,10 @@
+## 🔗 Implementation Resources
+
+For detailed implementation guides, Terraform modules, Ansible playbooks, and deployment assets, see:
+- **[Infrastructure as Code (IaaS)](../../../build-and-deploy/Iaas/README.md)** - Complete Terraform and Ansible automation for OpenShift deployments, including retail application demo, load testing, and multi-environment configurations
+
+---
+
 ## **Automating Enterprise Retail Application Deployment**
 Modern enterprise environments demand automation that is repeatable,
 auditable, and scalable across both infrastructure and application

@@ -1,0 +1,22 @@
+# IBM Turbonomic Resource Management Dashboard
+# Python Dependencies
+
+# Core Dash Framework
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+
+# Data Visualization
+plotly>=5.18.0
+
+# Data Processing
+pandas>=2.1.0
+
+# HTTP Requests
+requests>=2.31.0
+urllib3>=2.0.0
+
+# Production Server
+gunicorn>=21.2.0
+
+# Optional: For better performance
+# numpy>=1.24.0

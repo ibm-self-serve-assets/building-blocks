@@ -15,11 +15,13 @@
 
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
-- [Automated Resilience →](../automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [IBM Bob Apptio Mode →](./ibm-bob-apptio-mode.md)
+- [Automated Resource Management →](../automated-resource-mgmt/README.md)
+- [Automated Resilience →](../automated-resilience-and-compliance/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
-- [Observe](../../observe/application-observability/README.md)
+- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
+- [Secure](../../secure/quantum-safe/README.md)
 
 ---
 
@@ -131,22 +133,20 @@ finops-turbonomic-building block/
 ## 📚 Related Resources
 
 ### Optimize Building Blocks
-- [Automated Resilience](../automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
-  - [Quick Start](../automated-resilience-and-compliance/assets/automate-resilience/QUICKSTART.md)
-  - [Project Summary](../automated-resilience-and-compliance/assets/automate-resilience/PROJECT_SUMMARY.md)
-
-### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - Monitor with IBM Instana
-  - [Dashboard](../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../observe/network-performance/README.md) - Network monitoring with IBM SevOne
+- [IBM Bob Apptio Mode](./ibm-bob-apptio-mode.md) - AI-powered FinOps with IBM Apptio
+- [Automated Resource Management](../automated-resource-mgmt/README.md) - IBM Turbonomic resource optimization
+- [Automated Resilience](../automated-resilience-and-compliance/README.md) - IBM Concert insights
 
 ### Build & Deploy Building Blocks
-- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
-- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
-- [IaaS](../../build-and-deploy/Iaas/README.md) - Infrastructure as a Service
-- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md)
-- [Code Assistant](../../build-and-deploy/code-assistant/README.md)
-- [iPaaS](../../build-and-deploy/ipaas/README.md)
+- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
+  - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+  - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md)
+- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
+- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
+
+### Secure Building Blocks
+- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
+- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
 
 ---
 

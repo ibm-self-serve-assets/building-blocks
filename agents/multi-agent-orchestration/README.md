@@ -55,14 +55,10 @@ Download and install Bob modes for multi-agent development:
 
 - [Best Practice Guide](./assets/Best_Practice_Guide.md) - Comprehensive guide for multi-agent system design, tool development, and integration patterns
 
-## Assets & Sample Projects
-
-- [AI Travel Planner](./assets/AI-Travel-Planner/) - Demonstrates multi-agent collaboration for travel planning
-- [Optimal Supplier Selector](./assets/Optimal-Supplier-Selector/) - Intelligent supplier selection workflow
 
 ---
 
 ## Related Building Blocks
 
 - [Agent Builder](../agent-builder/)
-- [Agent Gateway](../agent-gateway/)
+- [Agentic SDLC](../agentic-sdlc/)

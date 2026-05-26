@@ -15,11 +15,23 @@ systems.
 access control, and security enforcement.
 - **Infrastructure as Code** Powered by tools such as Terraform and Ansible,
 ensures consistent, automated environment provisioning.
-- **Code Assistant** Supported by IBM Bob enhances developer productivity through AI-assisted code generation and
-modernization.
+- **Quantum-Safe Cryptography** Delivered through IBM Guardium Crypto Manager,
+provides post-quantum cryptographic protection and centralized key lifecycle
+management.
 
 ## Github Repository
 Code for these accelerators can be found in the [Build - Automation Building Blocks repo.](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build)
+
+## 🔗 Implementation Resources
+
+Detailed implementation guides, code samples, and deployment assets are available in the **Build and Deploy** folder:
+
+- **[Infrastructure as Code (IaaS)](../../../build-and-deploy/Iaas/README.md)** - Terraform and Ansible automation for OpenShift deployments
+- **[Authentication Management (Non-Human Identity)](../../../build-and-deploy/non-human-identity/README.md)** - IBM Security Verify integration and identity management
+- **[Platform as a Service (iPaaS)](../../../build-and-deploy/ipaas/README.md)** - IBM webMethods integration platform assets
+- **[Quantum-Safe Cryptography](../../../build-and-deploy/quantum-safe/README.md)** - IBM Guardium Crypto Manager for post-quantum security
+
+**📂 Browse all:** [Build and Deploy Building Blocks](../../../build-and-deploy/)
 
 ### **Key Use Cases**
 
@@ -41,11 +53,11 @@ environment standardization, configuration management, deployment
 automation, drift prevention, multi-cloud orchestration, and repeatable
 DevOps pipelines.
 
-**Code Assistant (IBM Bob)**
-Organizations adopt this capability to accelerate code development,
-modernize legacy applications, generate automation scripts, assist with
-refactoring, improve developer efficiency, reduce manual coding effort,
-and support consistent implementation patterns.
+**Quantum-Safe Cryptography (IBM Guardium Crypto Manager)**
+Key scenarios include quantum-safe migration, multi-cloud key management,
+cryptographic compliance automation, certificate lifecycle management,
+post-quantum algorithm implementation, and DevSecOps integration for
+secure credential management.
 
 ------------------------------------------------------------------------
 

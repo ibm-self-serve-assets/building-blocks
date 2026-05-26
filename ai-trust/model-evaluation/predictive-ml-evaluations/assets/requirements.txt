@@ -1,0 +1,4 @@
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+requests>=2.31.0
+python-dotenv>=1.0.0

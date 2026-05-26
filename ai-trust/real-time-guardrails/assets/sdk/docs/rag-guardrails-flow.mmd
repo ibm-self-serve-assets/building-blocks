@@ -1,0 +1,37 @@
+%% real-time-guardrails — RAG agent integration flow
+%% The four choke points where a RAG agent calls POST /api/evaluate
+
+flowchart TD
+    User([User query]) --> G1
+
+    G1["<b>① INPUT GUARDRAIL</b><br/><br/>POST /api/evaluate<br/>{ input_text, [system_prompt] }<br/><br/>PII · Jailbreak · HAP<br/>Prompt Safety Risk<br/>Topic Relevance · Patterns"]
+
+    G1 -- block --> RefuseInput[/"Refuse:<br/>'I can't help with that'"/]
+    G1 -- pass --> Retrieve[Retrieve docs<br/>from vector store]
+    Retrieve --> G2
+
+    G2["<b>② RETRIEVAL GUARDRAIL</b><br/><br/>POST /api/evaluate<br/>{ input_text, context: list[str] }<br/><br/>Hit Rate · Retrieval Precision<br/>Reciprocal Rank"]
+
+    G2 -- block --> NoInfo[/"Respond:<br/>'I don't have enough info'<br/>(skip LLM)"/]
+    G2 -- pass --> LLM[LLM generates answer]
+    LLM --> G3
+
+    G3["<b>③ GENERATION GUARDRAIL</b><br/><br/>POST /api/evaluate<br/>{ input_text, generated_text, context }<br/><br/>Faithfulness<br/>Answer Relevance · Context Relevance"]
+
+    G3 -- block --> Regen[/"Regenerate once<br/>then refuse"/]
+    G3 -- pass --> G4
+
+    G4["<b>④ OUTPUT GUARDRAIL</b><br/><br/>POST /api/evaluate<br/>{ generated_text }<br/><br/>Output PII · Output HAP<br/>Conciseness · Text Quality"]
+
+    G4 -- block --> ScrubOrRegen[/"Scrub PII<br/>or regenerate"/]
+    G4 -- pass --> Return([Return to user])
+
+    classDef guardrail fill:#fff4e6,stroke:#e67700,stroke-width:2px,color:#000
+    classDef refuseAction fill:#ffe0e0,stroke:#c92a2a,color:#000
+    classDef stage fill:#e7f5ff,stroke:#1971c2,color:#000
+    classDef terminal fill:#d3f9d8,stroke:#2f9e44,color:#000,font-weight:bold
+
+    class G1,G2,G3,G4 guardrail
+    class RefuseInput,NoInfo,Regen,ScrubOrRegen refuseAction
+    class Retrieve,LLM stage
+    class User,Return terminal

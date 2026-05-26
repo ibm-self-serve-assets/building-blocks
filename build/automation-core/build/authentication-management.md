@@ -1,3 +1,10 @@
+## 🔗 Implementation Resources
+
+For detailed implementation guides, code samples, and deployment assets, see:
+- **[Authentication Management (Non-Human Identity)](../../../build-and-deploy/non-human-identity/README.md)** - Complete IBM Security Verify integration guide with watsonx Orchestrate, watsonx.governance, and watsonx.ai
+
+---
+
 ## **Authentication Management with IBM Verify**
 Authentication Management using IBM Verify delivers a unified,
 enterprise‑grade identity and access management solution that secures

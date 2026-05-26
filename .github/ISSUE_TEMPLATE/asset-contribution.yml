@@ -1,0 +1,162 @@
+name: Asset Contribution Request
+description: Submit a new Building Blocks asset contribution request
+title: "[Asset Contribution]: "
+labels:
+  - asset-contribution
+  - building-blocks
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Building Blocks Asset Contribution
+        
+        Please provide the required details for the new asset contribution request.
+
+  - type: input
+    id: asset_name
+    attributes:
+      label: Demo / Asset Name
+      description: Name of the Building Block demo or asset
+      placeholder: Example - AI Powered Data Observability Dashboard
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: domain
+    attributes:
+      label: Building Block Domain
+      description: Select one or more applicable domains
+      options:
+        - label: Agents
+        - label: AI Trust
+        - label: Data for AI
+        - label: Automation
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: category
+    attributes:
+      label: Categories
+      description: Select all relevant categories for this contribution
+      options:
+        # Agents
+        - label: Agent Builder
+        - label: Multi Agent Orchestration
+        - label: Agentic SDLC
+
+        # AI Trust
+        - label: Agent Ops
+        - label: AI Compliance
+        - label: Model Evaluation
+        - label: Real Time Guardrails
+
+        # Data for AI - Data Integration
+        - label: Data Integration
+        - label: Data Pipeline (AI Generated)
+        - label: Data Streaming
+        - label: Data Observability
+
+        # Data for AI - Data Intelligence
+        - label: Data Intelligence
+        - label: Data Quality
+        - label: Data Lineage
+        - label: Text2SQL
+
+        # Automation - Build and Deploy
+        - label: IaaS
+        - label: Code Modernization
+        - label: iPaaS
+
+        # Automation - Optimize
+        - label: Automated Resilience and Compliance
+        - label: Automated Resource Management
+        - label: FinOps
+
+        # Automation - Secure
+        - label: Non-Human Identity
+        - label: Quantum Safe
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Provide a detailed description of the demo or asset
+      placeholder: Describe the functionality, purpose, and expected outcome
+    validations:
+      required: true
+
+  - type: textarea
+    id: business_usecase
+    attributes:
+      label: Business Use Case
+      description: Describe the business problem or use case this contribution addresses
+      placeholder: Explain the customer or partner use case
+    validations:
+      required: true
+
+  - type: textarea
+    id: technologies
+    attributes:
+      label: Technologies Used
+      description: List the IBM and partner technologies involved
+      placeholder: Example - watsonx, OpenShift, AWS, Terraform, webMethods
+    validations:
+      required: true
+
+  - type: textarea
+    id: repository_links
+    attributes:
+      label: Repository / Reference Links
+      description: Add GitHub repositories, documentation, or related references
+      placeholder: Paste links here
+
+  - type: textarea
+    id: deployment_requirements
+    attributes:
+      label: Deployment Requirements
+      description: Mention prerequisites, infrastructure, or dependencies
+      placeholder: Example - OpenShift 4.14 cluster, AWS account access
+
+  - type: textarea
+    id: architecture_details
+    attributes:
+      label: Architecture / Design Details
+      description: Provide high-level architecture or implementation details
+      placeholder: Include integration flow, components, or deployment pattern
+
+  - type: textarea
+    id: demo_assets
+    attributes:
+      label: Demo Assets
+      description: Add demo videos, screenshots, presentations, or recordings
+      placeholder: Paste URLs or references
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: Additional Notes
+      description: Any additional information or context
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Contribution Checklist
+      options:
+        - label: I have validated the demo before submission
+          required: true
+
+        - label: Documentation has been included or updated
+          required: true
+
+        - label: Required dependencies and prerequisites are documented
+          required: true
+
+        - label: The contribution follows repository contribution guidelines
+          required: true
+
+        - label: Screenshots, architecture diagrams, or demo assets are attached
+          required: false

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "real-time-guardrails"
+version = "0.1.0"
+description = "Real-time AI guardrails powered by IBM watsonx.governance — library, REST API, and MCP server"
+readme = "README.md"
+requires-python = ">=3.11,<3.15"
+authors = [{ name = "IBM" }]
+dependencies = [
+    # [metrics] pulls in unitxt + textstat + scikit-learn (deterministic +
+    # ranking metrics); [llmaj] pulls in langchain-ibm, evalassist, etc.
+    # required by LLMAsJudgeMetric. Without these extras, importing
+    # ibm_watsonx_gov.metrics raises ModuleNotFoundError at registry build time.
+    # Pinned to 1.4.x: KeywordDetectionMetric and RegexDetectionMetric were
+    # introduced in 1.4.0; the ai-trust demo's 1.3.1 doesn't export them.
+    "ibm-watsonx-gov[metrics,llmaj]>=1.4.0,<1.5.0",
+    "ibm_watsonx_ai>=1.3.13,<2.0.0",
+    "ibm-watson-openscale>=3.1.0,<3.2.0",
+    "pandas>=2.2,<3.0",
+    "python-dotenv>=1.0",
+    "PyYAML>=6.0",
+    # nest_asyncio is undeclared by ibm-watsonx-gov but is reached via
+    # run_in_event_loop during SDK evaluation. Declaring it here keeps a
+    # fresh `pip install` self-sufficient.
+    "nest_asyncio>=1.6,<2.0",
+]
+
+[project.optional-dependencies]
+rest = ["flask>=3.1,<4.0", "flask-cors>=5.0,<6.0"]
+mcp = ["mcp>=1.0"]
+dev = ["pytest>=8.0", "pytest-cov", "ruff", "mypy"]
+all = ["real-time-guardrails[rest,mcp,dev]"]
+
+[project.scripts]
+real-time-guardrails = "real_time_guardrails.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/real_time_guardrails"]
+
+[tool.pytest.ini_options]
+markers = ["integration: requires real watsonx.governance credentials"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
