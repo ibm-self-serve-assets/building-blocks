@@ -2,6 +2,13 @@
 
 A comprehensive Bob configuration for **Architecture Reviews** and **Spec-Driven Development (SDD)**, providing specialized modes and reusable skills for software development lifecycle excellence.
 
+The initial example usage was showcased in the YouTube video before being integrated into our core library of building blocks.
+
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=vx-8XHzsvG4">
+         <img src="https://img.youtube.com/vi/vx-8XHzsvG4/0.jpg" style="width:100%;">
+      </a>
+</div>
 ---
 
 ## 📋 Overview
