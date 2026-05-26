@@ -1,0 +1,70 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram name="Architecture Review System" id="architecture-review-system">
+    <mxGraphModel dx="1002" dy="688" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" value="Architecture Review System - using Bob" vertex="1">
+          <mxGeometry height="40" width="600" x="270" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="user" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" value="Architect" vertex="1">
+          <mxGeometry height="120" width="60" x="10" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="mode" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1f5ff;strokeColor=#0288d1;strokeWidth=3;fontSize=16;fontStyle=1" value="Architecture Review Mode &lt;br&gt;(Orchestrator)" vertex="1">
+          <mxGeometry height="80" width="200" x="220" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" edge="1" parent="1" source="user" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontSize=12" target="mode" value="Request Review">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="640" as="sourcePoint" />
+            <mxPoint x="430" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="skills-container" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=16;fontStyle=1;startSize=40" value="Reusable Review Skills" vertex="1">
+          <mxGeometry height="490" width="580" x="540" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="skill1" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff3e0;strokeColor=#f57c00;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="Business Alignment" vertex="1">
+          <mxGeometry height="80" width="250" x="20" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="skill2" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c2185b;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="Security + Threat Modeling" vertex="1">
+          <mxGeometry height="80" width="250" x="310" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="skill3" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="Scalability + Performance" vertex="1">
+          <mxGeometry height="80" width="250" x="20" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="skill4" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e5f5;strokeColor=#7b1fa2;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="Architecture Patterns" vertex="1">
+          <mxGeometry height="80" width="250" x="310" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="skill5" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff9c4;strokeColor=#f9a825;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="Maintainability + Tech Debt" vertex="1">
+          <mxGeometry height="80" width="250" x="20" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="skill6" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e0f2f1;strokeColor=#00897b;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="Documentation Review" vertex="1">
+          <mxGeometry height="80" width="250" x="310" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="skill7" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1976d2;strokeWidth=2;fontSize=16;align=center;verticalAlign=middle;fontStyle=1" value="12-Factor Compliance" vertex="1">
+          <mxGeometry height="80" width="250" x="165" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="output" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f1f8e9;strokeColor=#558b2f;strokeWidth=3;fontSize=16;fontStyle=1;align=center" value="Structured &lt;br&gt;Review Report" vertex="1">
+          <mxGeometry height="100" width="200" x="220" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" edge="1" parent="1" source="mode" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontSize=12;dashed=1" target="skills-container" value="Uses Skills">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="400" y="400" as="sourcePoint" />
+            <mxPoint x="450" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow3" edge="1" parent="1" source="mode" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;fontSize=16;" target="output" value="Generates">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="640" as="sourcePoint" />
+            <mxPoint x="430" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow4" edge="1" parent="1" source="output" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;fontSize=12" target="user" value="Presents">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="380" y="640" as="sourcePoint" />
+            <mxPoint x="430" y="590" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
