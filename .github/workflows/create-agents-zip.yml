@@ -1,0 +1,39 @@
+name: Create Agents Zip then Push Zip
+on: [push] # Triggers on eve  ry check-in
+
+jobs:
+  zip-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to push changes back to the repo
+    steps:
+      # 1. Check out only the specific folder
+      - name: Checkout specific folder
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            ibm-bob/skills
+          sparse-checkout-cone-mode: false
+  
+      # 2. Create the ZIP archive of the folder contents
+      - name: Create ZIP archive
+        run: |
+          cd ibm-bob/skills
+          zip -r ../agents.zip .
+          cd ..
+  
+      # 3. Commit and push the ZIP file back to the repo
+      - name: Commit and Push ZIP
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@://github.com"
+
+          git add agents.zip
+          
+          # Only commit and push if the zip file actually changed
+          if git diff --staged --quiet; then
+            echo "No changes in agents.zip archive."
+          else
+            git commit -m "chore: update agents.zip archive [skip ci]"
+            git push
+          fi
