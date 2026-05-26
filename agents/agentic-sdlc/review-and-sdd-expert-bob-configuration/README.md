@@ -29,6 +29,30 @@ This configuration transforms IBM Bob into a powerful architecture review and re
 
 ---
 
+## Specialized Review Modes
+
+Each specialized mode focuses on a specific aspect of architecture review.
+
+![](./images/architecture-review.png)
+
+---
+
+---
+
+## Configuration Gap Detector Mode
+
+The **🔍 Configuration Gap Detector** identifies when current configuration is insufficient and proposes new capabilities based on research from authoritative sources.
+
+![](./images/configuration-gap-detector.png)
+
+---
+
+## Detailed Skills
+
+![](./images/skills-review.png)
+
+---
+
 ## 🚀 Quick Start (5 Minutes)
 
 ### Prerequisites
