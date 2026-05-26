@@ -1,0 +1,159 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36">
+  <diagram name="Configuration Gap Detector Usage" id="config-gap-detector">
+    <mxGraphModel dx="1446" dy="1057" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" value="Configuration Gap Detector - Usage Flow" vertex="1">
+          <mxGeometry height="40" width="600" x="400" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="user-request" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" value="User Request" vertex="1">
+          <mxGeometry height="60" width="200" x="600" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="step1-box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 1: Active Mode Processes Request" vertex="1">
+          <mxGeometry height="140" width="320" x="50" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="step1-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="• Mode attempts to solve task &lt;br&gt;• Reads relevant skills• Applies methodology• Analyzes codebase" vertex="1">
+          <mxGeometry height="90" width="300" x="60" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="decision" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1" value="Configuration Sufficient?" vertex="1">
+          <mxGeometry height="100" width="180" x="610" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow1" edge="1" parent="1" source="user-request" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="step1-box">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow2" edge="1" parent="1" source="step1-box" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="yes-path" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 2A: Complete Task" vertex="1">
+          <mxGeometry height="140" width="320" x="1000" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="yes-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="✅ Configuration is sufficient &lt;br&gt;• Mode completes review &lt;br&gt;• Provides structured findings &lt;br&gt;• Delivers recommendations &lt;br&gt;• Task completed successfully" vertex="1">
+          <mxGeometry height="90" width="300" x="1010" y="215" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-yes" edge="1" parent="1" source="decision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#82b366;fontSize=12;fontStyle=1" target="yes-path" value="YES">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="no-path" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 2B: Gap Detected" vertex="1">
+          <mxGeometry height="100" width="320" x="540" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="no-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="⚠️ Configuration gap identified &lt;br&gt;&amp;nbsp;• Missing domain knowledge &lt;br&gt;• Insufficient workflow coverage &lt;br&gt;• New requirement type detected" vertex="1">
+          <mxGeometry height="60" width="300" x="550" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-no" edge="1" parent="1" source="decision" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;strokeColor=#d79b00;fontSize=12;fontStyle=1" target="no-path" value="NO">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 3: Switch to Config Gap Detector Mode" vertex="1">
+          <mxGeometry height="140" width="320" x="540" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="step3-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="🔍 Mode automatically switches&lt;div&gt;• Informs user about gap &lt;br&gt;• Provides context about missing capability&lt;/div&gt;" vertex="1">
+          <mxGeometry height="40" width="300" x="550" y="530" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow3" edge="1" parent="1" source="no-path" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="step3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="step4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 4: Research Best Practices" vertex="1">
+          <mxGeometry height="120" width="320" x="50" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="step4-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="🌐 Browser-based research &lt;br&gt;&amp;nbsp;• Search authoritative sources &lt;br&gt;• Official documentation &lt;br&gt;• Industry standards (OWASP, NIST, ISO) &lt;br&gt;• Framework best practices &lt;br&gt;• Validate with multiple sources" vertex="1">
+          <mxGeometry height="80" width="300" x="60" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="step5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 5: Analyze Configuration Gap" vertex="1">
+          <mxGeometry height="120" width="320" x="540" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="step5-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="📊 Gap analysis &lt;br&gt;&amp;nbsp;• Review existing Modes/Skills &lt;br&gt;• Identify what&#39;s missing&amp;nbsp;&lt;div&gt;• Explain why current config insufficient&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Provide evidence of gap&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Keep explanation factual&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="300" x="550" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="step6" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 6: Propose New Mode or Skill" vertex="1">
+          <mxGeometry height="120" width="320" x="1000" y="670" as="geometry" />
+        </mxCell>
+        <mxCell id="step6-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="💡 Solution proposal &lt;br&gt;• Create Mode (role/behavior) OR Skill (task know-how) &lt;br&gt;• Minimal, targeted addition&lt;br&gt;• Research-backed design&lt;br&gt;• Integration guidance&lt;br&gt;• Cite authoritative sources" vertex="1">
+          <mxGeometry height="80" width="300" x="1010" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow4" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="700" y="650" />
+              <mxPoint x="210" y="650" />
+            </Array>
+            <mxPoint x="700" y="630" as="sourcePoint" />
+            <mxPoint x="210" y="670" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow5" edge="1" parent="1" source="step3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="step5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow6" edge="1" parent="1" source="step5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="step6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow7" edge="1" parent="1" source="step4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="step6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="810" />
+              <mxPoint x="1160" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="step7" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Step 7: User Reviews Proposal" vertex="1">
+          <mxGeometry height="110" width="320" x="540" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="step7-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=11;spacingLeft=20;" value="👤 User decision required&amp;nbsp;&lt;div&gt;&amp;nbsp;• Review proposed Mode/Skill&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Evaluate research sources&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Approve or request modifications&amp;nbsp;&lt;/div&gt;&lt;div&gt;• No automatic implementation&lt;/div&gt;" vertex="1">
+          <mxGeometry height="80" width="300" x="550" y="880" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow8" edge="1" parent="1" source="step6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;endArrow=classic;endFill=1;" target="step7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1160" y="830" />
+              <mxPoint x="700" y="830" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="features-box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Key Features" vertex="1">
+          <mxGeometry height="270" width="320" x="50" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="features-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=20;" value="🎯 Self-Healing Configuration &lt;br&gt;• Detects gaps automatically &lt;br&gt;• Proposes targeted solutions&lt;div&gt;&lt;br&gt;🌐 Research-Backed &lt;br&gt;• Browser access for research &lt;br&gt;• Authoritative sources only&lt;br&gt;• Industry standards validation&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&amp;nbsp;🔧 Modular Architecture&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Minimal additions&amp;nbsp;&lt;/div&gt;&lt;div&gt;• No duplication&amp;nbsp;&lt;/div&gt;&lt;div&gt;• Clean integration&amp;nbsp;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&amp;nbsp;👥 User-Controlled &lt;br&gt;• Approval required &lt;br&gt;• Evidence-based proposals &lt;br&gt;• Transparent process&lt;/div&gt;" vertex="1">
+          <mxGeometry height="180" width="300" x="60" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="examples-box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=14;fontStyle=1;verticalAlign=top;align=left;spacingLeft=10;spacingTop=5;" value="Example Gap Scenarios" vertex="1">
+          <mxGeometry height="280" width="320" x="1000" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="examples-content" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontSize=10;spacingLeft=20;" value="📱 IoT Architecture Review &lt;br&gt;• No existing IoT skill &lt;br&gt;• Proposes IoT architecture review skill&amp;nbsp;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;🔗 Blockchain Security&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;• Blockchain not covered&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;• Proposes blockchain security skill&lt;br&gt;&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;🤖 ML System Architecture&amp;nbsp;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;• ML patterns missing&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;•&lt;/span&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;Proposes ML architecture skill&lt;br&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;🏥 Healthcare Compliance&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;• HIPAA expertise needed •&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;Proposes healthcare compliance skill&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&amp;nbsp;⚡ Edge Computing&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;• Edge deployment not covered&amp;nbsp;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;• Proposes edge architecture skill&lt;/span&gt;&lt;/div&gt;" vertex="1">
+          <mxGeometry height="180" width="300" x="1010" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1" value="Legend" vertex="1">
+          <mxGeometry height="20" width="100" x="50" y="980" as="geometry" />
+        </mxCell>
+        <mxCell id="legend1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="50" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend1-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="User Input" vertex="1">
+          <mxGeometry height="20" width="100" x="90" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="210" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend2-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Active Mode Processing" vertex="1">
+          <mxGeometry height="20" width="150" x="250" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="420" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend3-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Gap Detector Mode" vertex="1">
+          <mxGeometry height="20" width="150" x="460" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="630" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend4-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="Success Path" vertex="1">
+          <mxGeometry height="20" width="100" x="670" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend5" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" value="" vertex="1">
+          <mxGeometry height="20" width="30" x="790" y="1010" as="geometry" />
+        </mxCell>
+        <mxCell id="legend5-text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=10;" value="User Decision" vertex="1">
+          <mxGeometry height="20" width="100" x="830" y="1010" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

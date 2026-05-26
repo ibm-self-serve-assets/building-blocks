@@ -1,0 +1,125 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.6 Chrome/144.0.7559.236 Electron/40.8.4 Safari/537.36" version="29.6.6">
+  <diagram name="Custom Modes Overview" id="custom-modes-overview">
+    <mxGraphModel dx="1363" dy="963" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=16;fontStyle=1" value="Custom Modes Architecture - All Modes Overview" vertex="1">
+          <mxGeometry height="40" width="700" x="350" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="main-mode" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A90E2;strokeColor=#2E5C8A;strokeWidth=4;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="Architecture Review&#xa;(arch-review)&#xa;Main Orchestrator" vertex="1">
+          <mxGeometry height="100" width="280" x="595" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="specialized-container" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=16;fontStyle=1;startSize=50" value="Specialized Review Modes" vertex="1">
+          <mxGeometry height="700" width="1410" x="30" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="mode1" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="&lt;font&gt;Security and Threat Modeling&lt;br&gt;(security-review)&lt;br&gt;&lt;br&gt;OWASP, STRIDE, Auth&lt;br&gt;Data Protection, Compliance&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="280" x="230" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mode2" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="Scalability and Performance&#xa;(scalability-review)&#xa;&#xa;Scaling, Load Balancing&#xa;Caching, Optimization" vertex="1">
+          <mxGeometry height="120" width="280" x="580" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mode3" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="Architecture Patterns&#xa;(patterns-review)&#xa;&#xa;Microservices, CQRS, DDD&#xa;SOLID, Design Patterns" vertex="1">
+          <mxGeometry height="120" width="280" x="940" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="mode6" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="&lt;font&gt;12-Factor Compliance&lt;br&gt;(twelve-factor-review)&lt;br&gt;&lt;br&gt;Cloud-Native Principles&lt;br&gt;Config, Processes, Logs&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="280" x="400" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="mode7" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="Business Alignment&#xa;(business-alignment-review)&#xa;&#xa;Strategic Planning&#xa;Quality Attributes, ROI" vertex="1">
+          <mxGeometry height="120" width="280" x="760" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="skills-container" parent="specialized-container" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;fontSize=16;fontStyle=1;startSize=40" value="Review Skills (prompts/skills/)" vertex="1">
+          <mxGeometry height="280" width="1360" x="30" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="skill1" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="business-alignment-skill.md" vertex="1">
+          <mxGeometry height="60" width="240" x="747.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="skill2" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="security-threat-modeling-skill.md" vertex="1">
+          <mxGeometry height="60" width="240" x="217.5" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="skill3" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="&lt;font&gt;scalability-performance-skill.md&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="240" x="567.5" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="skill4" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="architecture-patterns-skill.md" vertex="1">
+          <mxGeometry height="60" width="240" x="927.5" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="skill5" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="maintainability-technical-debt-skill.md" vertex="1">
+          <mxGeometry height="60" width="270" x="1072.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="skill6" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="documentation-review-skill.md" vertex="1">
+          <mxGeometry height="60" width="280" x="17.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="skill7" parent="skills-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontStyle=1;fontColor=#FFFFFF" value="twelve-factor-compliance-skill.md" vertex="1">
+          <mxGeometry height="60" width="280" x="367.5" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-mode3-skill" edge="1" parent="specialized-container" source="mode3" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="skill4" value="uses">
+          <mxGeometry height="50" relative="1" width="50" x="0.0005" as="geometry">
+            <mxPoint as="offset" />
+            <mxPoint x="960" y="290" as="sourcePoint" />
+            <mxPoint x="910" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-mode1-skill" edge="1" parent="specialized-container" source="mode1" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="skill2" value="uses">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="90" y="200" as="sourcePoint" />
+            <mxPoint x="260" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-mode6-skill" edge="1" parent="specialized-container" source="mode6" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="skill7" value="uses">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="410" y="360" as="sourcePoint" />
+            <mxPoint x="900" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-mode2-skill" edge="1" parent="specialized-container" source="mode2" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="skill3" value="uses">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="410" y="200" as="sourcePoint" />
+            <mxPoint x="580" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-mode7-skill" edge="1" parent="specialized-container" source="mode7" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="skill1" value="uses">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="730" y="360" as="sourcePoint" />
+            <mxPoint x="90" y="470" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mode4" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="Maintainability and Tech Debt&#xa;(maintainability-review)&#xa;&#xa;Code Complexity, Coupling&#xa;Refactoring, Test Coverage" vertex="1">
+          <mxGeometry height="120" width="280" x="1100" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-mode4-skill" edge="1" parent="specialized-container" source="mode4" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="skill5" value="uses">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="1050" y="200" as="sourcePoint" />
+            <mxPoint x="240" y="550" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="mode5" parent="specialized-container" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=3;fontSize=16;fontStyle=1;fontColor=#FFFFFF;align=center" value="&lt;font&gt;Documentation Review&lt;br&gt;(documentation-review)&lt;br&gt;&lt;br&gt;ADRs, C4 Model, UML&lt;br&gt;API Docs, Runbooks&lt;/font&gt;" vertex="1">
+          <mxGeometry height="120" width="280" x="50" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="arrow-mode5-skill" edge="1" parent="specialized-container" source="mode5" style="endArrow=classic;html=1;rounded=0;strokeWidth=2;fontSize=16;strokeColor=#4B0082;dashed=1;dashPattern=5 5;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" target="skill6" value="uses">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="60" y="350" as="sourcePoint" />
+            <mxPoint x="540" y="540" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="arrow-main-to-container" edge="1" parent="1" source="main-mode" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=3;fontSize=16;strokeColor=#2E5C8A" target="specialized-container" value="Orchestrates">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="600" y="400" as="sourcePoint" />
+            <mxPoint x="650" y="350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend" parent="1" style="swimlane;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;fontSize=16;fontStyle=1;startSize=30" value="Legend" vertex="1">
+          <mxGeometry height="200" width="300" x="30" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-main" parent="legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#4A90E2;strokeColor=#2E5C8A;strokeWidth=2;fontSize=16;fontColor=#FFFFFF" value="Main Orchestrator Mode" vertex="1">
+          <mxGeometry height="30" width="260" x="20" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-specialized" parent="legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7B68EE;strokeColor=#4B0082;strokeWidth=2;fontSize=16;fontColor=#FFFFFF" value="Specialized Review Mode" vertex="1">
+          <mxGeometry height="30" width="260" x="20" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="legend-skill" parent="legend" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#50C878;strokeColor=#2F7C4F;strokeWidth=2;fontSize=16;fontColor=#FFFFFF" value="Review Skill File" vertex="1">
+          <mxGeometry height="30" width="260" x="20" y="130" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
