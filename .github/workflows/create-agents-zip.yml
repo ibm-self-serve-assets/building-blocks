@@ -28,12 +28,12 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@://github.com"
 
-          git add agents.zip
+          git add ibm-bob/agents.zip
           
           # Only commit and push if the zip file actually changed
           if git diff --staged --quiet; then
-            echo "No changes in agents.zip archive."
+            echo "No changes in ibm-bob/agents.zip archive."
           else
-            git commit -m "chore: update agents.zip archive [skip ci]"
+            git commit -m "chore: update ibm-bob/agents.zip archive [skip ci]"
             git push
           fi
