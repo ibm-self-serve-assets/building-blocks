@@ -94,7 +94,7 @@ Switch to **🏛️ Architecture Review** mode in Bob
 ```
 
 ### 3. Bob Will:
-1. Read the relevant skill file(s) from `prompts/skills/`
+1. Read the relevant skill file(s) from `skills/`
 2. Apply the skill's methodology to your codebase
 3. Follow the skill's checklist and review process
 4. Provide structured output with findings and recommendations
@@ -102,7 +102,7 @@ Switch to **🏛️ Architecture Review** mode in Bob
 ## 📚 Available Skills
 
 ### 1. 🎯 Business Alignment
-**File**: `prompts/skills/business-alignment-skill.md`
+**File**: `skills/business-alignment-skill.md`
 
 Evaluates how well the architecture supports organizational goals and quality attributes.
 
@@ -118,7 +118,7 @@ Evaluates how well the architecture supports organizational goals and quality at
 ---
 
 ### 2. 🔒 Security & Threat Modeling
-**File**: `prompts/skills/security-threat-modeling-skill.md`
+**File**: `skills/security-threat-modeling-skill.md`
 
 Identifies security gaps, potential attack vectors, and provides security recommendations.
 
@@ -134,7 +134,7 @@ Identifies security gaps, potential attack vectors, and provides security recomm
 ---
 
 ### 3. 📈 Scalability & Performance
-**File**: `prompts/skills/scalability-performance-skill.md`
+**File**: `skills/scalability-performance-skill.md`
 
 Evaluates system capacity, identifies bottlenecks, and provides performance optimization recommendations.
 
@@ -150,7 +150,7 @@ Evaluates system capacity, identifies bottlenecks, and provides performance opti
 ---
 
 ### 4. 🎨 Architecture Patterns
-**File**: `prompts/skills/architecture-patterns-skill.md`
+**File**: `skills/architecture-patterns-skill.md`
 
 Evaluates pattern usage, identifies anti-patterns, and recommends appropriate patterns.
 
@@ -166,7 +166,7 @@ Evaluates pattern usage, identifies anti-patterns, and recommends appropriate pa
 ---
 
 ### 5. 🔧 Maintainability & Technical Debt
-**File**: `prompts/skills/maintainability-technical-debt-skill.md`
+**File**: `skills/maintainability-technical-debt-skill.md`
 
 Identifies maintainability issues, quantifies technical debt, and provides refactoring recommendations.
 
@@ -182,7 +182,7 @@ Identifies maintainability issues, quantifies technical debt, and provides refac
 ---
 
 ### 6. 📚 Documentation Review
-**File**: `prompts/skills/documentation-review-skill.md`
+**File**: `skills/documentation-review-skill.md`
 
 Evaluates documentation completeness, clarity, and currency.
 
@@ -198,7 +198,7 @@ Evaluates documentation completeness, clarity, and currency.
 ---
 
 ### 7. ☁️ 12-Factor Compliance
-**File**: `prompts/skills/twelve-factor-compliance-skill.md`
+**File**: `skills/twelve-factor-compliance-skill.md`
 
 Evaluates compliance with 12-factor app methodology and provides cloud-native recommendations.
 
@@ -307,7 +307,7 @@ Specific, actionable improvements with:
 Skills can be customized for your organization:
 
 ### 1. Modify Existing Skills
-Edit skill files in `prompts/skills/` to:
+Edit skill files in `skills/` to:
 - Add organization-specific requirements
 - Include custom compliance checks
 - Reference internal standards
@@ -316,18 +316,18 @@ Edit skill files in `prompts/skills/` to:
 ### 2. Create New Skills
 Copy an existing skill and customize:
 ```bash
-cp prompts/skills/security-threat-modeling-skill.md \
-   prompts/skills/custom-compliance-skill.md
+cp skills/security-threat-modeling-skill.md \
+   skills/custom-compliance-skill.md
 ```
 
 ### 3. Update the Mode
-No changes needed! The mode automatically uses any skill files in `prompts/skills/`
+No changes needed! The mode automatically uses any skill files in `skills/`
 
 ## 📖 Documentation
 
-- **[Skills README](prompts/skills/README.md)** - Detailed skill documentation
-- **[Review Template](prompts/architecture-review-template.md)** - Output template
-- **[Usage Guide](prompts/architecture-review-guide.md)** - Comprehensive guide
+- **[Skills README](../skills/README.md)** - Detailed skill documentation
+- **[Review Template](guides/architecture-review-template.md)** - Output template
+- **[Usage Guide](guides/architecture-review-guide.md)** - Comprehensive guide
 
 ## 🎯 Use Cases
 
@@ -394,9 +394,9 @@ Track the effectiveness of your reviews:
 ## 🆘 Support
 
 For questions or issues:
-1. Review the [Skills README](prompts/skills/README.md)
-2. Check the [Usage Guide](prompts/architecture-review-guide.md)
-3. Review the [Template](prompts/architecture-review-template.md)
+1. Review the [Skills README](../skills/README.md)
+2. Check the [Usage Guide](guides/architecture-review-guide.md)
+3. Review the [Template](guides/architecture-review-template.md)
 4. Consult with senior architects
 
 ## 🔄 Version History

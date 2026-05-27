@@ -67,6 +67,35 @@ The **🔍 Configuration Gap Detector** identifies when current configuration is
   - Operating Systems: macOS, Linux, or Windows
   - Memory: Minimum 4 GB RAM (8 GB recommended)
 
+### Get Modes and Configurations for IBM Bob
+
+This configuration is available in the [IBM Technology Building Blocks repository](https://github.com/thomassuedbroecker/building-blocks).
+
+**Selective Download Options:**
+
+GitHub does not provide a native "Download directory" button in the standard web UI. Recommended approaches:
+
+1. **Single files** (modes, skills, rules):
+   - Navigate to the file in GitHub
+   - Click "Raw" button
+   - Save the file using your browser's "Save As" function
+
+2. **Multiple related files** (one skill or rule set):
+   - Download the repository as a ZIP file
+   - Extract only the required folder from the ZIP
+
+3. **Browser-based folder download** (optional):
+   - Change the repository URL in your browser from:
+     ```
+     https://github.com/thomassuedbroecker/building-blocks
+     ```
+     to:
+     ```
+     https://github.dev/thomassuedbroecker/building-blocks
+     ```
+   - This opens the repository in the GitHub web editor
+   - Right-click on folders to download them directly
+
 ### Installation
 
 1. **Copy configuration to your project**
@@ -88,6 +117,11 @@ The **🔍 Configuration Gap Detector** identifies when current configuration is
        ├── security-threat-modeling-skill.md
        └── twelve-factor-compliance-skill.md
    ```
+
+   **Alternative**: Use the pre-configured `_bob` folder:
+   - Copy the entire `_bob` folder from this repository
+   - Rename it to `.bob` in your project root
+   - All paths are already configured correctly
 
 2. **Verify installation**
 

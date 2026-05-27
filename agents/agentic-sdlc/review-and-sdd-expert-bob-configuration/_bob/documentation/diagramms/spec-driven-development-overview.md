@@ -65,7 +65,7 @@ The diagram should show four primary capability groups taken from [`spec-driven-
 ### Supporting Skill
 
 **Requirements Management Skill**
-- Implemented in [`prompts/skills/requirements-management-skill.md`](../prompts/skills/requirements-management-skill.md:1)
+- Implemented in [`skills/requirements-management-skill.md`](../../skills/requirements-management-skill.md:1)
 - Provides deeper requirements engineering guidance
 - Covers elicitation, prioritization, traceability, validation, and change management
 - Acts as the specialist skill underpinning the SDD mode
@@ -151,9 +151,9 @@ When updating the SDD ecosystem:
 
 ## Related Files
 
-- Main Mode: [`prompts/spec-driven-development.md`](../prompts/spec-driven-development.md:1)
-- Requirements Skill: [`prompts/skills/requirements-management-skill.md`](../prompts/skills/requirements-management-skill.md:1)
-- Guide: [`prompts/SDD-README.md`](../prompts/SDD-README.md:1)
+- Main Mode: [`documentation/guides/spec-driven-development.md`](../guides/spec-driven-development.md:1)
+- Requirements Skill: [`skills/requirements-management-skill.md`](../../skills/requirements-management-skill.md:1)
+- Guide: [`documentation/SDD-README.md`](../SDD-README.md:1)
 - Quick Start: [`prompts/SDD-QUICK-START.md`](../prompts/SDD-QUICK-START.md:1)
 - Summary: [`prompts/SDD-SUMMARY.md`](../prompts/SDD-SUMMARY.md:1)
 - Interactive Guide: [`prompts/sdd-interactive-guide.md`](../prompts/sdd-interactive-guide.md:1)
