@@ -1,31 +1,40 @@
 # Review & SDD Expert Bob Configuration
 
-A comprehensive Bob configuration for **Architecture Reviews** and **Spec-Driven Development (SDD)**, providing specialized modes and reusable skills for software development lifecycle excellence.
+## Overview
 
-The initial example usage was showcased in the YouTube video before being integrated into our core library of building blocks.
+The **Review & SDD Expert Bob Configuration** transforms IBM Bob into a powerful architecture review and requirements management partner. This comprehensive configuration provides specialized modes and reusable skills for software development lifecycle excellence, enabling teams to conduct thorough architecture reviews and implement spec-driven development practices.
 
-<div align="left">
-      <a href="https://www.youtube.com/watch?v=vx-8XHzsvG4">
-         <img src="https://img.youtube.com/vi/vx-8XHzsvG4/0.jpg" style="width:100%;">
-      </a>
-</div>
----
+📚 **[View Full Documentation](./documentation/README-ARCHITECTURE-REVIEW.md)**
 
-## 📋 Overview
+## What It Does
 
-This configuration transforms IBM Bob into a powerful architecture review and requirements management partner with:
+- **Comprehensive Architecture Reviews**: Conduct multi-dimensional reviews using 8 specialized skills covering security, scalability, patterns, maintainability, and more
+- **Spec-Driven Development**: Manage requirements, craft prompts, and maintain traceability throughout the development lifecycle
+- **Adaptive Configuration**: Automatically detect gaps and propose new capabilities based on emerging requirements
+- **Modular Skills**: Use individual skills independently or combine them for comprehensive reviews
 
-- 🏛️ **Architecture Review Mode** - Comprehensive reviews using 8 specialized skills
-- 📝 **Spec-Driven Development Mode** - Requirements management and prompt crafting
-- 🔍 **Configuration Gap Detector** - Adaptive configuration improvement
-- 📚 **8 Reusable Skills** - Modular expertise for different review areas
+## Why Use It?
 
-**Key Benefits**:
-- ✅ Consistent, repeatable review methodology
-- ✅ Modular skills that can be used independently
-- ✅ Comprehensive coverage of architecture concerns
-- ✅ Easy to customize for your organization
-- ✅ Integrates seamlessly with your SDLC
+- ✅ Ensure consistent, repeatable review methodology across projects
+- ✅ Reduce time spent on manual architecture reviews and documentation
+- ✅ Catch issues early with comprehensive coverage of architecture concerns
+- ✅ Customize easily for organization-specific requirements and standards
+- ✅ Integrate seamlessly with existing SDLC processes
+- ✅ Scale expertise across teams with reusable skills
+
+## How to Use
+
+### 1. Explore Pre-existing Configuration
+Review the available modes and skills to understand capabilities:
+- Browse the [8 specialized skills](./skills/README.md) for different review areas
+- Study the [Architecture Review documentation](./documentation/README-ARCHITECTURE-REVIEW.md)
+- Review [Spec-Driven Development guide](./documentation/SDD-README.md)
+
+### 2. Install and Configure
+Follow the [Quick Start guide](#-quick-start-5-minutes) to:
+- Copy configuration files to your project
+- Verify installation in Bob
+- Run your first architecture review
 
 ---
 
@@ -139,7 +148,7 @@ GitHub does not provide a native "Download directory" button in the standard web
 
 ---
 
-## 📁 Repository Structure
+## � Repository Structure
 
 ```
 review-and-sdd-expert-bob-configuration/
@@ -449,3 +458,32 @@ Output: Security assessment report with prioritized fixes
 | **[documentation/README-ARCHITECTURE-REVIEW.md](documentation/README-ARCHITECTURE-REVIEW.md)** | Architecture review details |
 | **[documentation/guides/QUICK-START.md](documentation/guides/QUICK-START.md)** | Quick start guide |
 | **[documentation/SDD-README.md](documentation/SDD-README.md)** | Spec-driven development |
+
+
+---
+
+## 📺 Additional Resources
+
+### Video Tutorial
+
+Watch the initial example usage showcasing the Review & SDD Expert Bob Configuration in action:
+
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=vx-8XHzsvG4">
+         <img src="https://img.youtube.com/vi/vx-8XHzsvG4/0.jpg" style="width:100%;">
+      </a>
+</div>
+
+**Video Highlights:**
+- Live demonstration of architecture review workflows
+- Step-by-step walkthrough of specialized skills
+- Real-world examples and use cases
+- Best practices for integrating into your SDLC
+
+---
+
+## Related Building Blocks
+
+- [Agent Builder](../../agent-builder/) - Build autonomous AI agents with watsonx Orchestrate
+- [Multi-Agent Orchestration](../../multi-agent-orchestration/) - Coordinate multiple agents for complex workflows
+- [Agent Ops](../../../ai-trust/agent-ops/) - Monitor and evaluate agent performance
