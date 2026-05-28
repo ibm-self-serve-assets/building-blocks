@@ -4,7 +4,7 @@
 
 The **Review & SDD Expert Bob Configuration** transforms IBM Bob into a powerful architecture review and requirements management partner. This comprehensive configuration provides specialized modes and reusable skills for software development lifecycle excellence, enabling teams to conduct thorough architecture reviews and implement spec-driven development practices.
 
-📚 **[View Full Documentation](./documentation/README-ARCHITECTURE-REVIEW.md)**
+📚 **[View Full Documentation](./_bob/documentation/README-ARCHITECTURE-REVIEW.md)**
 
 ## What It Does
 
