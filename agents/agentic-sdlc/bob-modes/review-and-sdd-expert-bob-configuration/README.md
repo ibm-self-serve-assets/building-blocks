@@ -22,6 +22,14 @@ The **Review & SDD Expert Bob Configuration** transforms IBM Bob into a powerful
 - ✅ Integrate seamlessly with existing SDLC processes
 - ✅ Scale expertise across teams with reusable skills
 
+
+ ## Setup & Installation
+
+ 1. Download the file `review-and-sdd-expert-bob-configuration.zip`
+ 2. Uncompress the .zip file. You should see a folder named review-and-sdd-expert-bob-configuration , Open this folder as root folder in
+ the Bob application
+ 3. That's it! - The all Modes and Skills will automatically appear in Bob's mode selector, ready to use.
+
 ## How to Use
 
 ### 1. Explore Pre-existing Configuration
@@ -30,12 +38,6 @@ Review the available modes and skills to understand capabilities:
 - Study the [Architecture Review documentation](./documentation/README-ARCHITECTURE-REVIEW.md)
 - Review [Spec-Driven Development guide](./documentation/SDD-README.md)
 
-### 2. Install and Configure
-Follow the [Quick Start guide](#-quick-start-5-minutes) to:
-- Copy configuration files to your project
-- Verify installation in Bob
-- Run your first architecture review
-
 ---
 
 ## Specialized Review Modes
@@ -43,8 +45,6 @@ Follow the [Quick Start guide](#-quick-start-5-minutes) to:
 Each specialized mode focuses on a specific aspect of architecture review.
 
 ![](./images/architecture-review.png)
-
----
 
 ---
 
@@ -145,78 +145,6 @@ GitHub does not provide a native "Download directory" button in the standard web
    Switch to: 🏛️ Architecture Review mode
    Request: "Review security using the security-threat-modeling skill"
    ```
-
----
-
-## � Repository Structure
-
-```
-review-and-sdd-expert-bob-configuration/
-├── README.md                          # This file - main documentation
-├── modes/
-│   └── custom_modes.yaml              # Mode definitions for Bob
-├── skills/
-│   ├── README.md                      # Skills documentation
-│   ├── architecture-patterns-skill.md
-│   ├── business-alignment-skill.md
-│   ├── documentation-review-skill.md
-│   ├── maintainability-technical-debt-skill.md
-│   ├── requirements-management-skill.md
-│   ├── scalability-performance-skill.md
-│   ├── security-threat-modeling-skill.md
-│   └── twelve-factor-compliance-skill.md
-└── documentation/                     # Additional guides and references
-    ├── README-ARCHITECTURE-REVIEW.md
-    ├── SDD-README.md
-    └── guides/
-        ├── QUICK-START.md
-        ├── SDD-QUICK-START.md
-        ├── architecture-review-guide.md
-        ├── architecture-review-template.md
-        ├── sdd-interactive-guide.md
-        └── spec-driven-development.md
-```
-
----
-
-## 🎯 Available Modes
-
-### 1. 🏛️ Architecture Review Mode
-
-**Purpose**: Conduct comprehensive architecture reviews using specialized skills
-
-**When to use**:
-- Pre-production validation
-- Technical debt assessment
-- Architecture board preparation
-- Compliance checks
-- Security audits
-- Performance analysis
-
-**Example requests**:
-```
-"Conduct a comprehensive architecture review using all skills"
-"Review security using the security-threat-modeling skill"
-"Check 12-factor compliance"
-"Analyze scalability and performance"
-```
-
-### 2. 🔍 Configuration Gap Detector Mode
-
-**Purpose**: Detect configuration gaps and propose new modes or skills
-
-**When to use**:
-- Task seems outside scope of existing modes
-- New domain requirements emerge (IoT, blockchain, ML)
-- Workflow gaps suspected
-- Before starting complex, unfamiliar tasks
-
-**Features**:
-- Analyzes task requirements against current configuration
-- Identifies missing domain knowledge
-- Researches best practices using browser capabilities
-- Proposes minimal, targeted additions
-
 ---
 
 ## 📚 Available Skills
@@ -479,11 +407,3 @@ Watch the initial example usage showcasing the Review & SDD Expert Bob Configura
 - Step-by-step walkthrough of specialized skills
 - Real-world examples and use cases
 - Best practices for integrating into your SDLC
-
----
-
-## Related Building Blocks
-
-- [Agent Builder](../../agent-builder/) - Build autonomous AI agents with watsonx Orchestrate
-- [Multi-Agent Orchestration](../../multi-agent-orchestration/) - Coordinate multiple agents for complex workflows
-- [Agent Ops](../../../ai-trust/agent-ops/) - Monitor and evaluate agent performance
