@@ -308,24 +308,3 @@ Output: Security assessment report with prioritized fixes
 | **[.bob/documentation/README-ARCHITECTURE-REVIEW.md](./.bob/documentation/README-ARCHITECTURE-REVIEW.md)** | Architecture review details |
 | **[.bob/documentation/guides/QUICK-START.md](./.bob/documentation/guides/QUICK-START.md)** | Quick start guide |
 | **[.bob/documentation/SDD-README.md](./.bob/documentation/SDD-README.md)** | Spec-driven development |
-
-
----
-
-## 📺 Additional Resources
-
-### Video Tutorial
-
-Watch the initial example usage showcasing the Review & SDD Expert Bob Configuration in action:
-
-<div align="left">
-      <a href="https://www.youtube.com/watch?v=vx-8XHzsvG4">
-         <img src="https://img.youtube.com/vi/vx-8XHzsvG4/0.jpg" style="width:100%;">
-      </a>
-</div>
-
-**Video Highlights:**
-- Live demonstration of architecture review workflows
-- Step-by-step walkthrough of specialized skills
-- Real-world examples and use cases
-- Best practices for integrating into your SDLC
