@@ -13,24 +13,25 @@ jobs:
         with:
           sparse-checkout: |
             ibm-bob/skills
-            ibm-bob/skills/skills.zip
+            ibm-bob/skills.zip
           sparse-checkout-cone-mode: false
   
       # 2. Create the ZIP archive directly inside the target directory
       - name: Create ZIP archive
         run: |
           cd ibm-bob/skills
-          # Zip everything in the current folder, excluding the zip file itself
-          zip -r skills.zip . -x "skills.zip"
+          
+          # Create zip one level up: ibm-bob/skills.zip
+          zip -r ../skills.zip .
   
       # 3. Commit and push the ZIP file from the root context
       - name: Commit and Push ZIP
         run: |
           git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@://github.com"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           # Add using the explicit path from the repository root
-          git add ibm-bob/skills/skills.zip
+          git add ibm-bob/skills.zip
           
           if git diff --staged --quiet; then
             echo "No changes in skills.zip archive."
