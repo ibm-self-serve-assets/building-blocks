@@ -48,26 +48,6 @@ This modular approach provides:
 └─────────────────────────────────────┘
 ```
 
-## 📁 File Structure
-
-```
-.bob/
-  └── custom_modes.yaml              # Architecture Review mode definition
-
-prompts/
-  ├── skills/                        # Reusable review skills
-  │   ├── README.md                  # Skills documentation
-  │   ├── business-alignment-skill.md
-  │   ├── security-threat-modeling-skill.md
-  │   ├── scalability-performance-skill.md
-  │   ├── architecture-patterns-skill.md
-  │   ├── maintainability-technical-debt-skill.md
-  │   ├── documentation-review-skill.md
-  │   └── twelve-factor-compliance-skill.md
-  │
-  ├── architecture-review-template.md    # Review document template
-  └── architecture-review-guide.md       # Comprehensive usage guide
-```
 
 ## 🚀 Quick Start
 

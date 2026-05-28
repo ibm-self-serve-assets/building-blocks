@@ -4,7 +4,7 @@
 
 The **Review & SDD Expert Bob Configuration** transforms IBM Bob into a powerful architecture review and requirements management partner. This comprehensive configuration provides specialized modes and reusable skills for software development lifecycle excellence, enabling teams to conduct thorough architecture reviews and implement spec-driven development practices.
 
-📚 **[View Full Documentation](./_bob/documentation/README-ARCHITECTURE-REVIEW.md)**
+📚 **[View Full Documentation](./.bob/documentation/README-ARCHITECTURE-REVIEW.md)**
 
 ## What It Does
 
@@ -34,9 +34,9 @@ The **Review & SDD Expert Bob Configuration** transforms IBM Bob into a powerful
 
 ### 1. Explore Pre-existing Configuration
 Review the available modes and skills to understand capabilities:
-- Browse the [8 specialized skills](./skills/README.md) for different review areas
-- Study the [Architecture Review documentation](./documentation/README-ARCHITECTURE-REVIEW.md)
-- Review [Spec-Driven Development guide](./documentation/SDD-README.md)
+- Browse the [8 specialized skills](./.bob/skills/README.md) for different review areas
+- Study the [Architecture Review documentation](./.bob/documentation/README-ARCHITECTURE-REVIEW.md)
+- Review [Spec-Driven Development guide](./.bob/documentation/SDD-README.md)
 
 ---
 
@@ -66,140 +66,60 @@ The **🔍 Configuration Gap Detector** identifies when current configuration is
 
 ![](./images/spec-driven-development-overview.png)
 
-## 🚀 Quick Start (5 Minutes)
-
-### Prerequisites
-
-- ✅ **IBM Bob installed** - [Download here](https://bob.ibm.com/docs/ide/getting-started/install)
-- ✅ **IBMid account** - Required for authentication
-- ✅ **System requirements**:
-  - Operating Systems: macOS, Linux, or Windows
-  - Memory: Minimum 4 GB RAM (8 GB recommended)
-
-### Get Modes and Configurations for IBM Bob
-
-This configuration is available in the [IBM Technology Building Blocks repository](https://github.com/thomassuedbroecker/building-blocks).
-
-**Selective Download Options:**
-
-GitHub does not provide a native "Download directory" button in the standard web UI. Recommended approaches:
-
-1. **Single files** (modes, skills, rules):
-   - Navigate to the file in GitHub
-   - Click "Raw" button
-   - Save the file using your browser's "Save As" function
-
-2. **Multiple related files** (one skill or rule set):
-   - Download the repository as a ZIP file
-   - Extract only the required folder from the ZIP
-
-3. **Browser-based folder download** (optional):
-   - Change the repository URL in your browser from:
-     ```
-     https://github.com/thomassuedbroecker/building-blocks
-     ```
-     to:
-     ```
-     https://github.dev/thomassuedbroecker/building-blocks
-     ```
-   - This opens the repository in the GitHub web editor
-   - Right-click on folders to download them directly
-
-### Installation
-
-1. **Copy configuration to your project**
-
-   Copy these folders to your project root:
-
-   ```bash
-   your-project/
-   ├── .bob/
-   │   └── custom_modes.yaml          # From: modes/custom_modes.yaml
-   └── skills/                         # From: skills/
-       ├── README.md
-       ├── architecture-patterns-skill.md
-       ├── business-alignment-skill.md
-       ├── documentation-review-skill.md
-       ├── maintainability-technical-debt-skill.md
-       ├── requirements-management-skill.md
-       ├── scalability-performance-skill.md
-       ├── security-threat-modeling-skill.md
-       └── twelve-factor-compliance-skill.md
-   ```
-
-   **Alternative**: Use the pre-configured `_bob` folder:
-   - Copy the entire `_bob` folder from this repository
-   - Rename it to `.bob` in your project root
-   - All paths are already configured correctly
-
-2. **Verify installation**
-
-   - Open your project in Bob
-   - Check mode selector (bottom-left) for new modes:
-     - 🏛️ Architecture Review
-     - 🔍 Configuration Gap Detector
-
-3. **Try your first review**
-
-   ```
-   Switch to: 🏛️ Architecture Review mode
-   Request: "Review security using the security-threat-modeling skill"
-   ```
----
 
 ## 📚 Available Skills
 
 ### 1. 🎯 Business Alignment
-**File**: [`skills/business-alignment-skill.md`](skills/business-alignment-skill.md)
+**File**: [`.bob/skills/business-alignment-skill.md`](./.bob/skills/business-alignment-skill.md)
 
 Evaluates how well architecture supports organizational goals and quality attributes.
 
 **Key Areas**: Strategic planning, quality attributes, stakeholder analysis, cost-benefit analysis
 
 ### 2. 🔒 Security & Threat Modeling
-**File**: [`skills/security-threat-modeling-skill.md`](skills/security-threat-modeling-skill.md)
+**File**: [`.bob/skills/security-threat-modeling-skill.md`](./.bob/skills/security-threat-modeling-skill.md)
 
 Identifies security gaps, attack vectors, and provides security recommendations.
 
 **Key Areas**: OWASP Top 10, STRIDE, authentication/authorization, compliance (GDPR, HIPAA, PCI-DSS)
 
 ### 3. 📈 Scalability & Performance
-**File**: [`skills/scalability-performance-skill.md`](skills/scalability-performance-skill.md)
+**File**: [`.bob/skills/scalability-performance-skill.md`](./.bob/skills/scalability-performance-skill.md)
 
 Evaluates system capacity, identifies bottlenecks, provides optimization recommendations.
 
 **Key Areas**: Scaling strategies, load balancing, caching, database optimization, SLAs
 
 ### 4. 🎨 Architecture Patterns
-**File**: [`skills/architecture-patterns-skill.md`](skills/architecture-patterns-skill.md)
+**File**: [`.bob/skills/architecture-patterns-skill.md`](./.bob/skills/architecture-patterns-skill.md)
 
 Evaluates pattern usage, identifies anti-patterns, recommends appropriate patterns.
 
 **Key Areas**: Microservices, CQRS, Event Sourcing, DDD, SOLID principles, API design
 
 ### 5. 🔧 Maintainability & Technical Debt
-**File**: [`skills/maintainability-technical-debt-skill.md`](skills/maintainability-technical-debt-skill.md)
+**File**: [`.bob/skills/maintainability-technical-debt-skill.md`](./.bob/skills/maintainability-technical-debt-skill.md)
 
 Identifies maintainability issues, quantifies technical debt, provides refactoring recommendations.
 
 **Key Areas**: Code complexity, coupling/cohesion, duplication, test coverage, debt quantification
 
 ### 6. 📚 Documentation Review
-**File**: [`skills/documentation-review-skill.md`](skills/documentation-review-skill.md)
+**File**: [`.bob/skills/documentation-review-skill.md`](./.bob/skills/documentation-review-skill.md)
 
 Evaluates documentation completeness, clarity, and currency.
 
 **Key Areas**: ADRs, C4 diagrams, UML, API documentation, runbooks
 
 ### 7. ☁️ 12-Factor Compliance
-**File**: [`skills/twelve-factor-compliance-skill.md`](skills/twelve-factor-compliance-skill.md)
+**File**: [`.bob/skills/twelve-factor-compliance-skill.md`](./.bob/skills/twelve-factor-compliance-skill.md)
 
 Evaluates compliance with 12-factor app methodology for cloud-native readiness.
 
 **Key Areas**: All 12 factors from codebase to admin processes
 
 ### 8. 📋 Requirements Management
-**File**: [`skills/requirements-management-skill.md`](skills/requirements-management-skill.md)
+**File**: [`.bob/skills/requirements-management-skill.md`](./.bob/skills/requirements-management-skill.md)
 
 Elicits, documents, analyzes, and validates software requirements.
 
@@ -208,6 +128,8 @@ Elicits, documents, analyzes, and validates software requirements.
 ---
 
 ## 💡 Usage Examples
+
+Add a code or a repo to your IBM Bob IDE, then follow the examples.
 
 ### Example 1: Pre-Production Review
 
@@ -318,7 +240,7 @@ Output: Security assessment report with prioritized fixes
 
 1. **Modify existing skills**
 
-   Edit skill files in `skills/` to add:
+   Edit skill files in `.bob/skills/` to add:
    - Internal compliance requirements
    - Company-specific patterns
    - Custom quality attributes
@@ -328,8 +250,8 @@ Output: Security assessment report with prioritized fixes
 
    ```bash
    # Copy an existing skill as template
-   cp skills/security-threat-modeling-skill.md \
-      skills/custom-compliance-skill.md
+   cp .bob/skills/security-threat-modeling-skill.md \
+      .bob/skills/custom-compliance-skill.md
    ```
 
    Then customize:
@@ -340,7 +262,7 @@ Output: Security assessment report with prioritized fixes
 
 3. **Update mode configuration**
 
-   The Architecture Review mode automatically uses any skill files in `skills/`, so no mode changes needed!
+   The Architecture Review mode automatically uses any skill files in `.bob/skills/`, so no mode changes needed!
 
 ### Skill Structure Template
 
@@ -382,10 +304,10 @@ Output: Security assessment report with prioritized fixes
 | Document | Purpose |
 |----------|---------|
 | **README.md** | Main documentation (this file) |
-| **[skills/README.md](skills/README.md)** | Skills documentation |
-| **[documentation/README-ARCHITECTURE-REVIEW.md](documentation/README-ARCHITECTURE-REVIEW.md)** | Architecture review details |
-| **[documentation/guides/QUICK-START.md](documentation/guides/QUICK-START.md)** | Quick start guide |
-| **[documentation/SDD-README.md](documentation/SDD-README.md)** | Spec-driven development |
+| **[.bob/skills/README.md](./.bob/skills/README.md)** | Skills documentation |
+| **[.bob/documentation/README-ARCHITECTURE-REVIEW.md](./.bob/documentation/README-ARCHITECTURE-REVIEW.md)** | Architecture review details |
+| **[.bob/documentation/guides/QUICK-START.md](./.bob/documentation/guides/QUICK-START.md)** | Quick start guide |
+| **[.bob/documentation/SDD-README.md](./.bob/documentation/SDD-README.md)** | Spec-driven development |
 
 
 ---
