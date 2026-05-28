@@ -44,7 +44,7 @@ Review the available modes and skills to understand capabilities:
 
 Each specialized mode focuses on a specific aspect of architecture review.
 
-![architecture-review](./images/architecture-review.png)
+![architecture-review](./.bob/images/architecture-review.png)
 
 ---
 
@@ -52,19 +52,19 @@ Each specialized mode focuses on a specific aspect of architecture review.
 
 The **🔍 Configuration Gap Detector** identifies when current configuration is insufficient and proposes new capabilities based on research from authoritative sources.
 
-![configuration-gap-detector](./images/configuration-gap-detector.png)
+![configuration-gap-detector](./.bob/images/configuration-gap-detector.png)
 
 ---
 
 ## Detailed Skills
 
-![skills-review](./images/skills-review.png)
+![skills-review](./.bob/images/skills-review.png)
 
 ---
 
 ## SDD Skills
 
-![spec-driven-development-overview](./images/spec-driven-development-overview.png)
+![spec-driven-development-overview](./.bob/images/spec-driven-development-overview.png)
 
 
 ## 📚 Available Skills
