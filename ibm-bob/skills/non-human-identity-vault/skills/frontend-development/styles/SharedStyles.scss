@@ -1,0 +1,414 @@
+// Shared SCSS Styles
+// Reusable styles for IBM Carbon Design System applications
+
+@use '@carbon/react/scss/spacing' as *;
+@use '@carbon/react/scss/type' as *;
+@use '@carbon/react/scss/theme' as *;
+
+// ============================================================================
+// THEME CONFIGURATION (g100 Dark Theme)
+// ============================================================================
+
+// Ensure dark background is applied throughout the app
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: var(--cds-background);
+  color: var(--cds-text-primary);
+}
+
+// Override Carbon Content component for dark theme
+.cds--content {
+  background: var(--cds-background) !important;
+  color: var(--cds-text-primary);
+}
+
+// ============================================================================
+// LAYOUT UTILITIES
+// ============================================================================
+
+.production-content {
+  margin-top: 3rem; // Account for fixed header
+  min-height: calc(100vh - 3rem);
+  background: var(--cds-background);
+}
+
+.breadcrumb-container {
+  background: var(--cds-layer-01);
+  padding: 1rem 2rem;
+  border-bottom: 1px solid var(--cds-border-subtle);
+}
+
+.app-container {
+  padding: $spacing-07 0 $spacing-09 0;
+  min-height: calc(100vh - 3rem);
+  max-width: 1584px;
+  margin: 0 auto;
+  background: var(--cds-background);
+}
+
+// ============================================================================
+// TYPOGRAPHY
+// ============================================================================
+
+.page-title {
+  @include type-style('productive-heading-05');
+  margin: 0 0 $spacing-03 0;
+  color: var(--cds-text-primary);
+}
+
+.page-subtitle {
+  @include type-style('body-long-02');
+  margin: 0;
+  color: var(--cds-text-secondary);
+  max-width: 760px;
+}
+
+.section-title {
+  @include type-style('productive-heading-04');
+  color: var(--cds-text-primary);
+  margin: 0 0 $spacing-05 0;
+}
+
+// ============================================================================
+// COMPONENTS
+// ============================================================================
+
+// Loading State
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: $spacing-09 0;
+}
+
+// Empty State
+.empty-state {
+  text-align: center;
+  padding: $spacing-09;
+  color: var(--cds-text-secondary);
+}
+
+// Error State
+.error-container {
+  padding: $spacing-05;
+  background: var(--cds-support-error);
+  color: var(--cds-text-on-color);
+  border-radius: 4px;
+  margin: $spacing-05 0;
+}
+
+// ============================================================================
+// CARDS AND TILES
+// ============================================================================
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: $spacing-05;
+  margin-bottom: $spacing-07;
+}
+
+.stat-tile {
+  padding: $spacing-05;
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.clickable-tile {
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+}
+
+// ============================================================================
+// BUTTONS AND ACTIONS
+// ============================================================================
+
+.action-bar {
+  display: flex;
+  gap: $spacing-03;
+  align-items: center;
+  margin: $spacing-05 0;
+}
+
+.button-group {
+  display: flex;
+  gap: $spacing-03;
+}
+
+// ============================================================================
+// FORMS
+// ============================================================================
+
+.form-group {
+  margin-bottom: $spacing-05;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: $spacing-05;
+  margin-bottom: $spacing-05;
+}
+
+// ============================================================================
+// TABLES
+// ============================================================================
+
+.data-table-container {
+  margin: $spacing-05 0;
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: $spacing-05;
+}
+
+// ============================================================================
+// SEVERITY INDICATORS
+// ============================================================================
+
+.severity-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.critical {
+    background: var(--cds-support-error);
+    color: var(--cds-text-on-color);
+  }
+
+  &.high {
+    background: var(--cds-support-warning);
+    color: var(--cds-text-primary);
+  }
+
+  &.medium {
+    background: var(--cds-support-info);
+    color: var(--cds-text-on-color);
+  }
+
+  &.low {
+    background: var(--cds-layer-accent);
+    color: var(--cds-text-primary);
+  }
+}
+
+// ============================================================================
+// STATUS INDICATORS
+// ============================================================================
+
+.status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-02;
+
+  &.connected {
+    color: var(--cds-support-success);
+  }
+
+  &.disconnected {
+    color: var(--cds-support-error);
+  }
+
+  &.warning {
+    color: var(--cds-support-warning);
+  }
+}
+
+// ============================================================================
+// ANIMATIONS
+// ============================================================================
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.4s ease-out;
+}
+
+// ============================================================================
+// SCROLLBAR
+// ============================================================================
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cds-layer-01);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--cds-border-subtle);
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--cds-border-strong);
+  }
+}
+
+// ============================================================================
+// RESPONSIVE DESIGN
+// ============================================================================
+
+@media (max-width: 672px) {
+  .app-container {
+    padding: $spacing-05 0 $spacing-07 0;
+  }
+
+  .tile-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 1055px) {
+  .page-title {
+    @include type-style('productive-heading-04');
+  }
+}
+
+// ============================================================================
+// UTILITY CLASSES
+// ============================================================================
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: $spacing-03; }
+.mt-2 { margin-top: $spacing-05; }
+.mt-3 { margin-top: $spacing-07; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: $spacing-03; }
+.mb-2 { margin-bottom: $spacing-05; }
+.mb-3 { margin-bottom: $spacing-07; }
+
+.p-0 { padding: 0; }
+.p-1 { padding: $spacing-03; }
+.p-2 { padding: $spacing-05; }
+.p-3 { padding: $spacing-07; }
+
+.flex {
+  display: flex;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.gap-1 { gap: $spacing-03; }
+.gap-2 { gap: $spacing-05; }
+.gap-3 { gap: $spacing-07; }
+
+// ============================================================================
+// ACCESSIBILITY
+// ============================================================================
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+// Focus visible for keyboard navigation
+*:focus-visible {
+  outline: 2px solid var(--cds-focus);
+  outline-offset: 2px;
+}
+
+// ============================================================================
+// PRINT STYLES
+// ============================================================================
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .production-content {
+    margin-top: 0;
+  }
+
+  .breadcrumb-container {
+    display: none;
+  }
+}
+
+// Made with Bob
