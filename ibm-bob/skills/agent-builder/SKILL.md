@@ -13,8 +13,8 @@ Execute the following script to install `ibm-watsonx-orchestrate` into a virtual
 
 ```bash
 # Make the script executable (first time only)
-chmod +x install-adk.sh
-bash install-adk.sh
+chmod +x run-adk.sh
+bash run-adk.sh
 ```
 
 ### Using the orchestrate CLI executable
