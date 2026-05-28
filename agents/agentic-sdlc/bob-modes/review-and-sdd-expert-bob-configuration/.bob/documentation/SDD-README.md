@@ -207,7 +207,7 @@ SDD mode integrates with all SDLC phases:
 - Risk assessment
 - Resource planning
 
-**Example Prompt**: See [Planning Phase Prompts](sdd-interactive-guide.md#planning-phase-prompts)
+**Example Prompt**: See [Planning Phase Prompts](guides/sdd-interactive-guide.md#planning-phase-prompts)
 
 ### Requirements Phase
 **Focus**: Detailed requirements gathering and documentation
@@ -218,7 +218,7 @@ SDD mode integrates with all SDLC phases:
 - Requirements prioritization
 - Acceptance criteria definition
 
-**Example Prompt**: See [Requirements Phase Prompts](sdd-interactive-guide.md#requirements-phase-prompts)
+**Example Prompt**: See [Requirements Phase Prompts](guides/sdd-interactive-guide.md#requirements-phase-prompts)
 
 ### Design Phase
 **Focus**: Architecture and detailed design
@@ -229,7 +229,7 @@ SDD mode integrates with all SDLC phases:
 - Data model design
 - Integration specifications
 
-**Example Prompt**: See [Design Phase Prompts](sdd-interactive-guide.md#design-phase-prompts)
+**Example Prompt**: See [Design Phase Prompts](guides/sdd-interactive-guide.md#design-phase-prompts)
 
 ### Implementation Phase
 **Focus**: Code development
@@ -239,7 +239,7 @@ SDD mode integrates with all SDLC phases:
 - Error handling specifications
 - Testing approach definition
 
-**Example Prompt**: See [Implementation Phase Prompts](sdd-interactive-guide.md#implementation-phase-prompts)
+**Example Prompt**: See [Implementation Phase Prompts](guides/sdd-interactive-guide.md#implementation-phase-prompts)
 
 ### Testing Phase
 **Focus**: Quality assurance and validation
@@ -249,7 +249,7 @@ SDD mode integrates with all SDLC phases:
 - Performance testing specifications
 - Security testing requirements
 
-**Example Prompt**: See [Testing Phase Prompts](sdd-interactive-guide.md#testing-phase-prompts)
+**Example Prompt**: See [Testing Phase Prompts](guides/sdd-interactive-guide.md#testing-phase-prompts)
 
 ### Deployment Phase
 **Focus**: Production release
@@ -259,7 +259,7 @@ SDD mode integrates with all SDLC phases:
 - Monitoring requirements
 - Rollback procedures
 
-**Example Prompt**: See [Deployment Phase Prompts](sdd-interactive-guide.md#deployment-phase-prompts)
+**Example Prompt**: See [Deployment Phase Prompts](guides/sdd-interactive-guide.md#deployment-phase-prompts)
 
 ### Maintenance Phase
 **Focus**: Bug fixes and enhancements
@@ -269,7 +269,7 @@ SDD mode integrates with all SDLC phases:
 - Performance optimization specifications
 - Technical debt documentation
 
-**Example Prompt**: See [Maintenance Phase Prompts](sdd-interactive-guide.md#maintenance-phase-prompts)
+**Example Prompt**: See [Maintenance Phase Prompts](guides/sdd-interactive-guide.md#maintenance-phase-prompts)
 
 ---
 
