@@ -1,6 +1,6 @@
-# Architecture Review Skills
+# Bob Skills
 
-This directory contains reusable skill definitions for conducting architecture reviews. Each skill provides a structured methodology, checklist, and output format for a specific review area.
+This directory contains reusable skill definitions used by Bob custom modes. Skills provide structured methodologies, checklists, and output patterns for specific domains such as architecture review and requirements management.
 
 ## Available Skills
 
@@ -129,11 +129,20 @@ When using the 🏛️ Architecture Review mode, Bob will automatically:
 3. **Follow the skill's checklist** and review process
 4. **Provide structured output** using the skill's format
 
+### In Spec-Driven Development Mode
+
+When using the 🧭 Spec-Driven Development mode, Bob will automatically:
+
+1. **Read the requirements-management skill** when requirements expertise is needed
+2. **Apply requirements elicitation, prioritization, validation, and traceability guidance**
+3. **Help structure specifications and prompts**
+4. **Provide actionable outputs for planning, design, implementation, and validation**
+
 ### Example Requests
 
-**Complete Review (All Skills)**:
+**Complete Review (All Review Skills)**:
 ```
-"Conduct a comprehensive architecture review using all 7 skills"
+"Conduct a comprehensive architecture review using all relevant skills"
 ```
 
 **Focused Review (Single Skill)**:
@@ -152,6 +161,13 @@ When using the 🏛️ Architecture Review mode, Bob will automatically:
 **Iterative Review**:
 ```
 "Start with security review, then we'll do performance"
+```
+
+**Spec-Driven Development**:
+```
+"Help me define requirements for a new project"
+"Review this specification for completeness and testability"
+"Turn these notes into structured functional and non-functional requirements"
 ```
 
 ## Skill Structure
@@ -251,6 +267,6 @@ Keep skills up-to-date:
 
 ---
 
-**Last Updated**: 2026-05-26
-**Version**: 1.1
+**Last Updated**: 2026-05-29
+**Version**: 1.2
 **Skills Count**: 8

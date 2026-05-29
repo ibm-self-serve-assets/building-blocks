@@ -207,7 +207,7 @@ SDD mode integrates with all SDLC phases:
 - Risk assessment
 - Resource planning
 
-**Example Prompt**: See [Planning Phase Prompts](guides/sdd-interactive-guide.md#planning-phase-prompts)
+**Example Prompt**: See [Planning Phase Prompts](./guides/sdd-interactive-guide.md#planning-phase-prompts)
 
 ### Requirements Phase
 **Focus**: Detailed requirements gathering and documentation
@@ -218,7 +218,7 @@ SDD mode integrates with all SDLC phases:
 - Requirements prioritization
 - Acceptance criteria definition
 
-**Example Prompt**: See [Requirements Phase Prompts](guides/sdd-interactive-guide.md#requirements-phase-prompts)
+**Example Prompt**: See [Requirements Phase Prompts](./guides/sdd-interactive-guide.md#requirements-phase-prompts)
 
 ### Design Phase
 **Focus**: Architecture and detailed design
@@ -229,7 +229,7 @@ SDD mode integrates with all SDLC phases:
 - Data model design
 - Integration specifications
 
-**Example Prompt**: See [Design Phase Prompts](guides/sdd-interactive-guide.md#design-phase-prompts)
+**Example Prompt**: See [Design Phase Prompts](./guides/sdd-interactive-guide.md#design-phase-prompts)
 
 ### Implementation Phase
 **Focus**: Code development
@@ -239,7 +239,7 @@ SDD mode integrates with all SDLC phases:
 - Error handling specifications
 - Testing approach definition
 
-**Example Prompt**: See [Implementation Phase Prompts](guides/sdd-interactive-guide.md#implementation-phase-prompts)
+**Example Prompt**: See [Implementation Phase Prompts](./guides/sdd-interactive-guide.md#implementation-phase-prompts)
 
 ### Testing Phase
 **Focus**: Quality assurance and validation
@@ -249,7 +249,7 @@ SDD mode integrates with all SDLC phases:
 - Performance testing specifications
 - Security testing requirements
 
-**Example Prompt**: See [Testing Phase Prompts](guides/sdd-interactive-guide.md#testing-phase-prompts)
+**Example Prompt**: See [Testing Phase Prompts](./guides/sdd-interactive-guide.md#testing-phase-prompts)
 
 ### Deployment Phase
 **Focus**: Production release
@@ -259,7 +259,7 @@ SDD mode integrates with all SDLC phases:
 - Monitoring requirements
 - Rollback procedures
 
-**Example Prompt**: See [Deployment Phase Prompts](guides/sdd-interactive-guide.md#deployment-phase-prompts)
+**Example Prompt**: See [Deployment Phase Prompts](./guides/sdd-interactive-guide.md#deployment-phase-prompts)
 
 ### Maintenance Phase
 **Focus**: Bug fixes and enhancements
@@ -269,7 +269,7 @@ SDD mode integrates with all SDLC phases:
 - Performance optimization specifications
 - Technical debt documentation
 
-**Example Prompt**: See [Maintenance Phase Prompts](guides/sdd-interactive-guide.md#maintenance-phase-prompts)
+**Example Prompt**: See [Maintenance Phase Prompts](./guides/sdd-interactive-guide.md#maintenance-phase-prompts)
 
 ---
 
@@ -364,10 +364,11 @@ See [Real-World Examples](sdd-interactive-guide.md#real-world-examples) for:
 
 ### Documentation
 
-- **Main SDD Mode**: [`spec-driven-development.md`](spec-driven-development.md)
-- **Requirements Skill**: [`skills/requirements-management-skill.md`](skills/requirements-management-skill.md)
-- **Interactive Guide**: [`sdd-interactive-guide.md`](sdd-interactive-guide.md)
-- **Skills Overview**: [`skills/README.md`](skills/README.md)
+- **Main SDD Mode Guide**: [`./guides/spec-driven-development.md`](./guides/spec-driven-development.md)
+- **Requirements Skill**: [`../skills/requirements-management-skill.md`](../skills/requirements-management-skill.md)
+- **Interactive Guide**: [`./guides/sdd-interactive-guide.md`](./guides/sdd-interactive-guide.md)
+- **Skills Overview**: [`../skills/README.md`](../skills/README.md)
+- **Mode Configuration**: [`../custom_modes.yaml`](../custom_modes.yaml)
 
 ### External Resources
 
@@ -464,7 +465,7 @@ Rule of thumb: If someone unfamiliar with the project can understand what needs 
 - **WSJF**: Weighted Shortest Job First
 - **Value vs. Effort**: 2x2 matrix
 
-See [Requirements Prioritization](skills/requirements-management-skill.md#6-requirements-prioritization) for details.
+See [Requirements Prioritization](../skills/requirements-management-skill.md#6-requirements-prioritization) for details.
 
 ### Q: Can I use SDD mode with Agile?
 
@@ -499,13 +500,13 @@ To improve SDD mode:
 ## Support
 
 For questions or support:
-- Review the [Interactive Guide](sdd-interactive-guide.md)
-- Check [Requirements Management Skill](skills/requirements-management-skill.md)
+- Review the [Interactive Guide](./guides/sdd-interactive-guide.md)
+- Check [Requirements Management Skill](../skills/requirements-management-skill.md)
 - Consult [External Resources](#external-resources)
 - Engage with the Bob community
 
 ---
 
-**Last Updated**: 2026-05-26  
-**Version**: 1.0  
+**Last Updated**: 2026-05-29
+**Version**: 1.1
 **Maintained By**: SDD Team

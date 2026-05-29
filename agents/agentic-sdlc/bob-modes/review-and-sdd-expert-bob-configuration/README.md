@@ -8,7 +8,9 @@ The **Review & SDD Expert Bob Configuration** transforms IBM Bob into a powerful
 
 ## What It Does
 
-- **Comprehensive Architecture Reviews**: Conduct multi-dimensional reviews using 8 specialized skills covering security, scalability, patterns, maintainability, and more
+- **10 Custom Modes**: Including orchestrator review mode, 7 focused review modes, spec-driven development mode, and configuration gap detector
+- **8 Reusable Skills**: Comprehensive coverage of architecture review domains and requirements management
+- **Comprehensive Architecture Reviews**: Conduct multi-dimensional reviews using specialized skills covering security, scalability, patterns, maintainability, and more
 - **Spec-Driven Development**: Manage requirements, craft prompts, and maintain traceability throughout the development lifecycle
 - **Adaptive Configuration**: Automatically detect gaps and propose new capabilities based on emerging requirements
 - **Modular Skills**: Use individual skills independently or combine them for comprehensive reviews
@@ -37,6 +39,21 @@ Review the available modes and skills to understand capabilities:
 - Browse the [8 specialized skills](./.bob/skills/README.md) for different review areas
 - Study the [Architecture Review documentation](./.bob/documentation/README-ARCHITECTURE-REVIEW.md)
 - Review [Spec-Driven Development guide](./.bob/documentation/SDD-README.md)
+
+---
+
+## 🎯 Configuration Architecture
+
+This configuration provides:
+
+- **10 Custom Modes**
+  - 1 orchestrator review mode (🏛️ Architecture Review)
+  - 7 focused review modes (🔒 Security, 📈 Scalability, 🎨 Patterns, 🔧 Maintainability, 📚 Documentation, ☁️ 12-Factor, 🎯 Business Alignment)
+  - 1 specification-driven development mode (🧭 Spec-Driven Development)
+  - 1 configuration gap detection mode (🔍 Configuration Gap Detector)
+- **8 Reusable Skills**
+  - 7 architecture review skills
+  - 1 requirements management skill
 
 ---
 

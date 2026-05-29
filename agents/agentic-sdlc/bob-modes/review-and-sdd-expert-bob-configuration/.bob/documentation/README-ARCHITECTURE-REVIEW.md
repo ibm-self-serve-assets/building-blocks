@@ -1,394 +1,288 @@
-# Architecture Review Mode with Reusable Skills
+# Bob Custom Modes and Skills Overview
 
-A modular, skill-based architecture review system for Bob Code Assistant.
-
+A modular, skill-based Bob configuration for architecture review, specification-driven development, and configuration gap detection.
 
 ## 📋 Overview
 
-This repository provides a **skill-based architecture review mode** that uses reusable, specialized review skills. Instead of multiple separate modes, you have:
+This `.bob` configuration provides:
 
-- **1 Architecture Review Mode** (🏛️) - Orchestrates reviews using skills
-- **7 Specialized Skills** - Reusable review methodologies for different areas
+- **9 Custom Modes**
+  - 1 orchestrator review mode
+  - 7 focused review modes
+  - 1 specification-driven development mode
+  - 1 configuration gap detection mode
+- **8 Reusable Skills**
+  - 7 architecture review skills
+  - 1 requirements management skill
 
 This modular approach provides:
-- ✅ **Flexibility**: Use all skills or focus on specific areas
+- ✅ **Flexibility**: Use broad orchestration or focused modes
 - ✅ **Reusability**: Skills can be used across projects and modes
-- ✅ **Consistency**: Same methodology every time
-- ✅ **Maintainability**: Update skills independently
-- ✅ **Extensibility**: Easy to add new skills
+- ✅ **Consistency**: Shared methodologies across workflows
+- ✅ **Maintainability**: Update modes and skills independently
+- ✅ **Extensibility**: Add new modes or skills incrementally
 
-## 🎯 Architecture
+## 🎯 Configuration Architecture
 
 ```
-┌─────────────────────────────────────┐
-│  🏛️ Architecture Review Mode        │
-│  (Orchestrator)                     │
-└──────────────┬──────────────────────┘
-               │
-               │ Uses
-               ▼
-┌─────────────────────────────────────┐
-│  📚 Review Skills (Reusable)        │
-├─────────────────────────────────────┤
-│  1. Business Alignment              │
-│  2. Security & Threat Modeling      │
-│  3. Scalability & Performance       │
-│  4. Architecture Patterns           │
-│  5. Maintainability & Tech Debt     │
-│  6. Documentation Review            │
-│  7. 12-Factor Compliance            │
-└─────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│                        Custom Modes                          │
+├──────────────────────────────────────────────────────────────┤
+│ 🏛️ Architecture Review      - Orchestrates review skills     │
+│ 🧭 Spec-Driven Development  - Drives requirements/spec work  │
+│ 🔒 Security Review          - Focused security analysis      │
+│ 📈 Scalability Review       - Focused performance analysis   │
+│ 🎨 Patterns Review          - Focused pattern analysis       │
+│ 🔧 Maintainability Review   - Focused code quality review    │
+│ 📚 Documentation Review     - Focused documentation review   │
+│ ☁️ 12-Factor Review         - Focused cloud-native review    │
+│ 🎯 Business Alignment       - Focused business alignment     │
+│ 🔍 Config Gap Detector      - Detects missing capabilities   │
+└──────────────────────────────────────────────────────────────┘
+                              │
+                              │ Uses
+                              ▼
+┌──────────────────────────────────────────────────────────────┐
+│                      Reusable Skills                         │
+├──────────────────────────────────────────────────────────────┤
+│ 1. Business Alignment                                        │
+│ 2. Security & Threat Modeling                                │
+│ 3. Scalability & Performance                                 │
+│ 4. Architecture Patterns                                     │
+│ 5. Maintainability & Technical Debt                          │
+│ 6. Documentation Review                                      │
+│ 7. 12-Factor Compliance                                      │
+│ 8. Requirements Management                                   │
+└──────────────────────────────────────────────────────────────┘
 ```
-
 
 ## 🚀 Quick Start
 
-### 1. Activate the Mode
-Switch to **🏛️ Architecture Review** mode in Bob
+### 1. Activate the Appropriate Mode
 
-### 2. Request a Review
+Choose the mode that matches your task in Bob:
 
-**Complete Review (All 7 Skills)**:
-```
-"Conduct a comprehensive architecture review using all skills"
-```
+- **🏛️ Architecture Review** for multi-skill or broad architecture reviews
+- **🧭 Spec-Driven Development** for requirements, specifications, and prompt engineering
+- **Focused review modes** for a single review domain
+- **🔍 Configuration Gap Detector** when current capabilities seem insufficient
 
-**Focused Review (Specific Skills)**:
-```
-"Review security using the security-threat-modeling skill"
-"Check 12-factor compliance"
-"Analyze scalability and performance"
-```
+### 2. Request the Task
 
-**Multi-Skill Review**:
-```
-"Review security, scalability, and 12-factor compliance"
+**Architecture Review**
+```text
+"Conduct a comprehensive architecture review using all relevant skills"
+"Review security, scalability, and 12-factor compliance before production"
 ```
 
-### 3. Bob Will:
-1. Read the relevant skill file(s) from `skills/`
-2. Apply the skill's methodology to your codebase
-3. Follow the skill's checklist and review process
-4. Provide structured output with findings and recommendations
+**Spec-Driven Development**
+```text
+"Help me define requirements for a new project"
+"Review this specification for completeness and testability"
+"Turn these notes into structured functional and non-functional requirements"
+```
+
+**Configuration Gap Detection**
+```text
+"Check whether the current Bob configuration is sufficient for this task"
+"Identify missing modes or skills for regulated medical software reviews"
+```
+
+### 3. Bob Will
+
+1. Read the relevant mode instructions
+2. Read the relevant skill file(s)
+3. Apply the documented methodology
+4. Produce structured, actionable output
+
+## 🧩 Available Modes
+
+### 1. 🏛️ Architecture Review (`arch-review`)
+Orchestrates architecture reviews using reusable review skills.
+
+**Use When**:
+- You need a comprehensive review
+- You want multiple review areas combined
+- You need pre-production validation
+
+### 2. 🧭 Spec-Driven Development (`sdd`)
+Supports requirements management, specification creation, and prompt engineering across the SDLC.
+
+**Use When**:
+- You need to define or refine requirements
+- You want to create or review specifications
+- You need prompt engineering support for AI-assisted development
+
+### 3. 🔒 Security & Threat Modeling (`security-review`)
+Focused security architecture and threat analysis.
+
+### 4. 📈 Scalability & Performance (`scalability-review`)
+Focused scalability and performance analysis.
+
+### 5. 🎨 Architecture Patterns (`patterns-review`)
+Focused architecture pattern and design review.
+
+### 6. 🔧 Maintainability & Technical Debt (`maintainability-review`)
+Focused maintainability and technical debt analysis.
+
+### 7. 📚 Documentation Review (`documentation-review`)
+Focused architecture documentation and diagram review.
+
+### 8. ☁️ 12-Factor Compliance (`twelve-factor-review`)
+Focused cloud-native and 12-factor compliance review.
+
+### 9. 🎯 Business Alignment (`business-alignment-review`)
+Focused business goals and quality attribute review.
+
+### 10. 🔍 Configuration Gap Detector (`config-gap-detector`)
+Detects missing capabilities and proposes new modes or skills.
 
 ## 📚 Available Skills
 
 ### 1. 🎯 Business Alignment
-**File**: `skills/business-alignment-skill.md`
+**File**: `../skills/business-alignment-skill.md`
 
 Evaluates how well the architecture supports organizational goals and quality attributes.
 
-**Key Areas**:
-- Strategic technology planning
-- Quality attribute requirements (performance, security, availability)
-- Stakeholder analysis and management
-- Cost-benefit analysis and ROI
-- Risk assessment and mitigation
-
-**Use When**: Strategic reviews, quality attribute validation, stakeholder analysis
-
----
-
 ### 2. 🔒 Security & Threat Modeling
-**File**: `skills/security-threat-modeling-skill.md`
+**File**: `../skills/security-threat-modeling-skill.md`
 
 Identifies security gaps, potential attack vectors, and provides security recommendations.
 
-**Key Areas**:
-- OWASP Top 10 vulnerabilities
-- STRIDE threat modeling
-- Authentication and authorization
-- Data protection and encryption
-- Compliance (GDPR, HIPAA, PCI-DSS, SOC2)
-
-**Use When**: Security reviews, compliance assessments, threat modeling
-
----
-
 ### 3. 📈 Scalability & Performance
-**File**: `skills/scalability-performance-skill.md`
+**File**: `../skills/scalability-performance-skill.md`
 
 Evaluates system capacity, identifies bottlenecks, and provides performance optimization recommendations.
 
-**Key Areas**:
-- Horizontal and vertical scaling strategies
-- Load balancing and distribution
-- Caching strategies (CDN, application, database)
-- Database optimization and indexing
-- Performance benchmarking and SLAs
-
-**Use When**: Performance analysis, capacity planning, scalability assessments
-
----
-
 ### 4. 🎨 Architecture Patterns
-**File**: `skills/architecture-patterns-skill.md`
+**File**: `../skills/architecture-patterns-skill.md`
 
 Evaluates pattern usage, identifies anti-patterns, and recommends appropriate patterns.
 
-**Key Areas**:
-- Microservices vs. Monolith architecture
-- CQRS, Event Sourcing, DDD
-- SOLID principles
-- Design patterns (GoF, Enterprise)
-- API design (REST, GraphQL, gRPC)
-
-**Use When**: Pattern reviews, design principle validation, architectural decisions
-
----
-
 ### 5. 🔧 Maintainability & Technical Debt
-**File**: `skills/maintainability-technical-debt-skill.md`
+**File**: `../skills/maintainability-technical-debt-skill.md`
 
 Identifies maintainability issues, quantifies technical debt, and provides refactoring recommendations.
 
-**Key Areas**:
-- Code complexity analysis (cyclomatic, cognitive)
-- Coupling and cohesion analysis
-- Code duplication detection
-- Test coverage and quality
-- Technical debt quantification
-
-**Use When**: Technical debt assessments, code quality reviews, refactoring planning
-
----
-
 ### 6. 📚 Documentation Review
-**File**: `skills/documentation-review-skill.md`
+**File**: `../skills/documentation-review-skill.md`
 
 Evaluates documentation completeness, clarity, and currency.
 
-**Key Areas**:
-- Architecture Decision Records (ADRs)
-- C4 Model diagrams (Context, Container, Component, Code)
-- UML diagrams (sequence, class, deployment)
-- API documentation (OpenAPI, AsyncAPI)
-- Runbooks and operational guides
-
-**Use When**: Documentation quality reviews, ADR validation, diagram completeness
-
----
-
 ### 7. ☁️ 12-Factor Compliance
-**File**: `skills/twelve-factor-compliance-skill.md`
+**File**: `../skills/twelve-factor-compliance-skill.md`
 
 Evaluates compliance with 12-factor app methodology and provides cloud-native recommendations.
 
-**Key Areas**:
-- Codebase, Dependencies, Config
-- Backing Services, Build/Release/Run
-- Processes, Port Binding, Concurrency
-- Disposability, Dev/Prod Parity
-- Logs, Admin Processes
+### 8. 🧭 Requirements Management
+**File**: `../skills/requirements-management-skill.md`
 
-**Use When**: Cloud-native readiness, 12-factor compliance, deployment reviews
-
----
+Supports elicitation, documentation, prioritization, validation, and traceability of requirements.
 
 ## 💡 Usage Examples
 
 ### Example 1: Complete Architecture Review
-```
+```text
 User: "Conduct a comprehensive architecture review of this system"
-
-Bob will:
-1. Read all 7 skill files
-2. Apply each skill's methodology
-3. Provide findings for each area
-4. Create executive summary
-5. Prioritize recommendations
 ```
 
 ### Example 2: Security-Focused Review
-```
+```text
 User: "Review security using the security-threat-modeling skill"
-
-Bob will:
-1. Read security-threat-modeling-skill.md
-2. Perform STRIDE threat modeling
-3. Check OWASP Top 10
-4. Assess authentication/authorization
-5. Provide security recommendations
 ```
 
-### Example 3: Pre-Production Checklist
-```
-User: "Review security, scalability, and 12-factor compliance before production"
-
-Bob will:
-1. Read the 3 relevant skill files
-2. Apply each skill's checklist
-3. Identify production readiness gaps
-4. Prioritize critical issues
+### Example 3: Specification Review
+```text
+User: "Review this specification for completeness, consistency, and testability"
 ```
 
-### Example 4: Technical Debt Assessment
-```
-User: "Analyze technical debt and maintainability"
-
-Bob will:
-1. Read maintainability-technical-debt-skill.md
-2. Analyze code complexity
-3. Identify coupling issues
-4. Quantify technical debt
-5. Provide refactoring roadmap
+### Example 4: Requirements Definition
+```text
+User: "Help me define functional and non-functional requirements for a new feature"
 ```
 
-## 📊 Review Output Format
+### Example 5: Configuration Gap Detection
+```text
+User: "Do we need a dedicated compliance mode for medical devices?"
+```
 
-Each skill provides structured output:
+## 📊 Output Patterns
+
+Depending on the mode and skill, Bob typically provides:
 
 ### ✅ Achieved
-What's working well and meets standards
+What is already strong or complete
 
 ### ⚠️ Concerns
-Areas needing attention or improvement
+Areas needing attention or clarification
 
 ### ❌ Not Achieved
-Critical gaps that must be addressed
+Critical gaps or missing elements
 
 ### 💡 Recommendations
-Specific, actionable improvements with:
-- Priority (Critical/High/Medium/Low)
-- Impact and benefits
-- Implementation approach
-- Effort estimate
+Specific next actions, priorities, and improvements
 
-## 🎓 Benefits of Skill-Based Approach
+## 🎓 Benefits of the Modular Approach
 
-### For Architects
-- ✅ **Consistent methodology** across all reviews
+### For Architects and Engineers
+- ✅ **Consistent methodology** across reviews and specification work
 - ✅ **Reusable expertise** codified in skills
-- ✅ **Flexible scope** - use what you need
-- ✅ **Easy to extend** with new skills
+- ✅ **Flexible scope** from focused analysis to orchestration
+- ✅ **Easy extension** with new modes and skills
 
 ### For Teams
-- ✅ **Knowledge sharing** through documented skills
-- ✅ **Faster onboarding** with clear processes
-- ✅ **Quality assurance** with checklists
-- ✅ **Continuous improvement** by updating skills
+- ✅ **Knowledge sharing** through documented modes and skills
+- ✅ **Faster onboarding** with clear workflows
+- ✅ **Quality assurance** with structured checklists
+- ✅ **Continuous improvement** through modular updates
 
-### For Organizations
-- ✅ **Standardized reviews** across projects
-- ✅ **Scalable process** as teams grow
-- ✅ **Audit trail** of review decisions
-- ✅ **Best practices** captured and shared
-
-## 🔧 Customizing Skills
-
-Skills can be customized for your organization:
+## 🔧 Customization
 
 ### 1. Modify Existing Skills
-Edit skill files in `skills/` to:
+Edit files in `../skills/` to:
 - Add organization-specific requirements
 - Include custom compliance checks
 - Reference internal standards
-- Add company-specific patterns
+- Extend review or requirements workflows
 
 ### 2. Create New Skills
-Copy an existing skill and customize:
-```bash
-cp skills/security-threat-modeling-skill.md \
-   skills/custom-compliance-skill.md
-```
+Copy an existing skill and customize it for your domain.
 
-### 3. Update the Mode
-No changes needed! The mode automatically uses any skill files in `skills/`
+### 3. Add New Modes
+Update `.bob/custom_modes.yaml` when a new role, workflow, or behavior style is needed.
 
 ## 📖 Documentation
 
 - **[Skills README](../skills/README.md)** - Detailed skill documentation
-- **[Review Template](guides/architecture-review-template.md)** - Output template
-- **[Usage Guide](guides/architecture-review-guide.md)** - Comprehensive guide
-
-## 🎯 Use Cases
-
-### Pre-Production Review
-```
-"Review security, scalability, and 12-factor compliance before production deployment"
-```
-
-### Technical Debt Sprint
-```
-"Analyze maintainability and technical debt to plan refactoring sprint"
-```
-
-### Architecture Board Preparation
-```
-"Conduct comprehensive review for architecture board presentation"
-```
-
-### Compliance Audit
-```
-"Review security and 12-factor compliance for SOC2 audit"
-```
-
-### Performance Investigation
-```
-"Analyze scalability and performance to identify bottlenecks"
-```
-
-### Documentation Sprint
-```
-"Review documentation completeness and create improvement plan"
-```
-
-## 🔄 Workflow
-
-```
-1. Request Review
-   ↓
-2. Bob Reads Relevant Skills
-   ↓
-3. Bob Applies Skill Methodology
-   ↓
-4. Bob Analyzes Codebase
-   ↓
-5. Bob Provides Structured Findings
-   ↓
-6. Team Reviews Recommendations
-   ↓
-7. Team Creates Action Items
-   ↓
-8. Follow-up Review (if needed)
-```
-
-## 📈 Success Metrics
-
-Track the effectiveness of your reviews:
-- Number of critical issues identified
-- Issues resolved before production
-- Reduction in production incidents
-- Improvement in code quality metrics
-- Team satisfaction with review process
-- Time saved in review board meetings
+- **[Architecture Review Quick Start](guides/QUICK-START.md)** - Review-oriented quick start
+- **[Architecture Review Guide](guides/architecture-review-guide.md)** - Detailed review guidance
+- **[SDD Guide](SDD-README.md)** - Spec-driven development documentation
 
 ## 🆘 Support
 
 For questions or issues:
 1. Review the [Skills README](../skills/README.md)
-2. Check the [Usage Guide](guides/architecture-review-guide.md)
-3. Review the [Template](guides/architecture-review-template.md)
-4. Consult with senior architects
+2. Check the relevant guide in `guides/`
+3. Review `.bob/custom_modes.yaml`
+4. Use Configuration Gap Detector when capabilities appear incomplete
 
 ## 🔄 Version History
 
-- **v2.0** (2026-03-31) - Skill-based modular approach
-  - 7 reusable review skills
-  - Single orchestrator mode
-  - Flexible, focused reviews
-  - Enhanced reusability
+- **v3.0** (2026-05-29) - Multi-mode configuration aligned with current `.bob` setup
+  - Added Spec-Driven Development mode
+  - Documented focused review modes
+  - Documented Configuration Gap Detector
+  - Updated skill inventory to 8 skills
 
-- **v1.0** (2026-03-31) - Initial release
-  - Single comprehensive mode
-  - 7 review areas
-  - Structured output
+- **v2.0** (2026-03-31) - Skill-based modular architecture review approach
+- **v1.0** (2026-03-31) - Initial architecture review release
 
 ---
 
-**Created**: 2026-03-31  
-**Last Updated**: 2026-03-31  
-**Version**: 2.0  
-**Skills**: 7
+**Created**: 2026-03-31
+**Last Updated**: 2026-05-29
+**Version**: 3.0
+**Modes**: 10
+**Skills**: 8
 
-For the latest updates, check the repository regularly.
+For the latest updates, check `.bob/custom_modes.yaml` and the documentation directory regularly.

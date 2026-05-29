@@ -2,8 +2,16 @@
 
 ## 🚀 Get Started in 3 Steps
 
-### 1. Switch to Architecture Review Mode
-Select **🏛️ Architecture Review** from Bob's mode selector
+### 1. Switch to the Right Review Mode
+Select one of the review-oriented modes from Bob's mode selector:
+- **🏛️ Architecture Review** for multi-skill reviews
+- **🔒 Security & Threat Modeling** for focused security analysis
+- **📈 Scalability & Performance** for focused performance analysis
+- **🎨 Architecture Patterns** for focused pattern analysis
+- **🔧 Maintainability & Technical Debt** for focused maintainability analysis
+- **📚 Documentation Review** for focused documentation analysis
+- **☁️ 12-Factor Compliance** for focused cloud-native analysis
+- **🎯 Business Alignment** for focused business alignment analysis
 
 ### 2. Choose Your Review Type
 Pick from the examples below based on your needs
@@ -19,7 +27,7 @@ Bob will read the relevant skills, apply the methodology, and provide structured
 
 **Full Architecture Review**
 ```
-"Conduct a comprehensive architecture review using all 7 skills"
+"Conduct a comprehensive architecture review using all relevant skills"
 ```
 
 **Pre-Production Checklist**
@@ -144,6 +152,7 @@ For each review, Bob provides:
 | 5 | 🔧 Maintainability & Tech Debt | Code Quality & Debt | `maintainability-technical-debt-skill.md` |
 | 6 | 📚 Documentation | Docs & Diagrams | `documentation-review-skill.md` |
 | 7 | ☁️ 12-Factor Compliance | Cloud-Native Readiness | `twelve-factor-compliance-skill.md` |
+| 8 | 🧭 Requirements Management | Requirements & Specifications | `requirements-management-skill.md` |
 
 ---
 
@@ -244,5 +253,5 @@ Try: "Start with security, then we'll do performance"
 
 ---
 
-**Version**: 2.0  
-**Last Updated**: 2026-03-31
+**Version**: 3.0
+**Last Updated**: 2026-05-29
