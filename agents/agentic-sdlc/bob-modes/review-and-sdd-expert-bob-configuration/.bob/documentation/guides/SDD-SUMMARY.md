@@ -8,25 +8,25 @@ This document summarizes the complete Spec-Driven Development (SDD) mode impleme
 
 ### Core Documentation
 
-1. **[`spec-driven-development.md`](spec-driven-development.md)** (424 lines)
+1. **[`spec-driven-development.md`](spec-driven-development.md)**
    - Main SDD mode prompt file
    - Core philosophy and principles
    - Requirements management framework
    - SDLC integration strategies
 
-2. **[`sdd-interactive-guide.md`](sdd-interactive-guide.md)** (1,015 lines)
+2. **[`sdd-interactive-guide.md`](sdd-interactive-guide.md)**
    - Step-by-step interactive guide
    - 5-step prompt crafting framework
    - SDLC-specific guidelines for all phases
    - Real-world examples and transformations
 
-3. **[`SDD-README.md`](SDD-README.md)** (565 lines)
+3. **[`../SDD-README.md`](../SDD-README.md)**
    - Comprehensive documentation hub
    - Getting started guide
    - Workflow examples
    - Best practices compilation
 
-4. **[`SDD-QUICK-START.md`](SDD-QUICK-START.md)** (424 lines)
+4. **[`SDD-QUICK-START.md`](SDD-QUICK-START.md)**
    - 5-minute quick start guide
    - Scenario-based quick starts
    - Ready-to-use templates
@@ -34,29 +34,31 @@ This document summarizes the complete Spec-Driven Development (SDD) mode impleme
 
 ### Skills
 
-5. **[`skills/requirements-management-skill.md`](skills/requirements-management-skill.md)** (625 lines)
+5. **[`../../skills/requirements-management-skill.md`](../../skills/requirements-management-skill.md)**
    - Specialized requirements engineering skill
    - Stakeholder analysis framework
    - Requirements elicitation techniques
    - Prioritization frameworks (MoSCoW, Kano, WSJF)
 
-6. **[`skills/README.md`](skills/README.md)** (Updated)
+6. **[`../../skills/README.md`](../../skills/README.md)** (Updated)
    - Added Requirements Management skill (#8)
    - Updated skill count from 7 to 8
-   - Updated version to 1.1
+   - Updated version to 1.2
 
 ## Structure
 
 ```
-prompts/
-├── spec-driven-development.md          # Main SDD mode
-├── sdd-interactive-guide.md            # Interactive guide
-├── SDD-README.md                       # Documentation hub
-├── SDD-QUICK-START.md                  # Quick start
-├── SDD-SUMMARY.md                      # This file
+.bob/
+├── documentation/
+│   ├── SDD-README.md                       # Documentation hub
+│   └── guides/
+│       ├── spec-driven-development.md      # Main SDD mode
+│       ├── sdd-interactive-guide.md        # Interactive guide
+│       ├── SDD-QUICK-START.md              # Quick start
+│       └── SDD-SUMMARY.md                  # This file
 └── skills/
-    ├── requirements-management-skill.md # Requirements skill
-    └── README.md                        # Skills overview
+    ├── requirements-management-skill.md    # Requirements skill
+    └── README.md                           # Skills overview
 ```
 
 ## Key Features
@@ -94,10 +96,10 @@ prompts/
 4. Use provided templates
 
 ### For Detailed Learning
-1. Read [`SDD-README.md`](SDD-README.md)
+1. Read [`../SDD-README.md`](../SDD-README.md)
 2. Study [`spec-driven-development.md`](spec-driven-development.md)
 3. Practice with [`sdd-interactive-guide.md`](sdd-interactive-guide.md)
-4. Reference [`skills/requirements-management-skill.md`](skills/requirements-management-skill.md)
+4. Reference [`../../skills/requirements-management-skill.md`](../../skills/requirements-management-skill.md)
 
 ## Task Requirements Fulfilled
 
@@ -156,13 +158,14 @@ All requested resources have been integrated:
 ## Quick Links
 
 - **Start Here**: [SDD-QUICK-START.md](SDD-QUICK-START.md)
-- **Learn More**: [SDD-README.md](SDD-README.md)
+- **Learn More**: [../SDD-README.md](../SDD-README.md)
 - **Main Mode**: [spec-driven-development.md](spec-driven-development.md)
 - **Interactive Guide**: [sdd-interactive-guide.md](sdd-interactive-guide.md)
-- **Requirements Skill**: [skills/requirements-management-skill.md](skills/requirements-management-skill.md)
+- **Requirements Skill**: [../../skills/requirements-management-skill.md](../../skills/requirements-management-skill.md)
 
 ---
 
-**Created**: 2026-05-26  
-**Version**: 1.0  
+**Created**: 2026-05-26
+**Last Updated**: 2026-05-29
+**Version**: 1.1
 **Status**: Complete and ready for use

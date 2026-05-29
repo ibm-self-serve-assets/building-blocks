@@ -218,7 +218,7 @@ Try: "Start with security, then we'll do performance"
 
 ## 📖 Learn More
 
-- **[Skills Documentation](skills/README.md)** - Detailed skill information
+- **[Skills Documentation](../../skills/README.md)** - Detailed skill information
 - **[Review Template](architecture-review-template.md)** - Output format
 - **[Usage Guide](architecture-review-guide.md)** - Comprehensive guide
 - **[Main README](../README-ARCHITECTURE-REVIEW.md)** - Full documentation
