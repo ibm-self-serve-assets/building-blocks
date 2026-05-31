@@ -503,7 +503,9 @@ EOT
 
 ### 4. Python Producer Development
 
-Generate production-ready Python producer with proper serialization:
+Generate production-ready Python producer with proper serialization.
+
+**When adding sample transactions**, always create and use a Python virtual environment before running the producer to ensure proper dependency isolation.
 
 #### Dependencies (`python/requirements.txt`)
 ```
