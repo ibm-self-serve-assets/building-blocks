@@ -1,5 +1,5 @@
 ---
-name: ai-agent-builder
+name: agent-builder
 description: Build and deploy multi-agent systems with tools (MCP servers) using watsonx Orchestrate's Agent Development Kit (ADK), CLI and REST API
 ---
 
