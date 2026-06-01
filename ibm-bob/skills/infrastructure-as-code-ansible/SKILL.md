@@ -1,5 +1,5 @@
 ---
-name: infrastructure-as-code-ansible
+name: ansible
 description: Use for any Ansible-related tasks including playbook development, shell script conversion, debugging failures, or interactive setup. This is the parent skill that provides access to specialized Ansible workflows.
 ---
 
