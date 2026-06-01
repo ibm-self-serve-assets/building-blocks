@@ -1,5 +1,5 @@
 ---
-name: terraform-infrastructure-as-code
+name: infrastructure-as-code-terraform
 description: Use when writing, reviewing, or debugging Terraform/OpenTofu modules, tests, CI/CD pipelines, or state operations. Diagnoses failure modes (identity churn, secrets, blast radius, CI drift, state corruption) with version-aware guidance.
 license: Apache-2.0
 metadata:
