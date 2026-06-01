@@ -1,5 +1,5 @@
 ---
-name: terraform-iac
+name: terraform-infrastructure-as-code
 description: Use when writing, reviewing, or debugging Terraform/OpenTofu modules, tests, CI/CD pipelines, or state operations. Diagnoses failure modes (identity churn, secrets, blast radius, CI drift, state corruption) with version-aware guidance.
 license: Apache-2.0
 metadata:
