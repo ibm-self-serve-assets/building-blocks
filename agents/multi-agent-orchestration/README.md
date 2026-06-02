@@ -31,12 +31,7 @@ Enables AI agents to discover, communicate, and collaborate regardless of underl
 
 ## How to Use
 
-### 1. Explore Pre-existing Assets
-Browse sample projects to understand multi-agent patterns and implementations:
-- [AI Travel Planner](./assets/AI-Travel-Planner/) - Multi-agent travel planning system
-- [Optimal Supplier Selector](./assets/Optimal-Supplier-Selector/) - Intelligent supplier selection
-
-### 2. Build Your Own Multi-Agent System
+### 1. Build Your Own Multi-Agent System
 Follow best practices for designing and implementing multi-agent orchestration:
 - Review the [Best Practice Guide](./assets/Best_Practice_Guide.md) for design patterns and guidelines
 - Design agent collaboration architecture with clear responsibilities
