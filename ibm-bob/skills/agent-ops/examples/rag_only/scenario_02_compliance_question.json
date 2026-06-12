@@ -1,0 +1,15 @@
+{
+  "agent": "knowledge_agent",
+  "story": "You are a new hire who wants to know which data classifications must be encrypted at rest according to the company's data handling policy. Ask naturally. Do NOT end the conversation until the agent gives a specific list of classifications, citing the policy.",
+  "starting_sentence": "Which data classifications need to be encrypted at rest according to our data handling policy?",
+  "goals": {
+    "search_compliance_kb-1": []
+  },
+  "goal_details": [
+    {
+      "type": "conversational_search",
+      "name": "search_compliance_kb-1",
+      "keywords": ["confidential", "restricted", "encryption at rest", "encrypted at rest"]
+    }
+  ]
+}

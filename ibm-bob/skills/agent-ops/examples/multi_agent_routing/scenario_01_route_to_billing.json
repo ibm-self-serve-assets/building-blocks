@@ -1,0 +1,25 @@
+{
+  "agent": "support_facilitator_agent",
+  "story": "You are a customer with account ID ACC-9001 who has a billing question about a charge on your last invoice. Provide your account ID upfront and mention the word 'billing' clearly. Do NOT end the conversation until the agent has retrieved your billing history.",
+  "starting_sentence": "Hi, my account ID is ACC-9001. I have a billing question about a charge on my last invoice.",
+  "goals": {
+    "route_to_billing_agent-1": ["get_billing_history-1"],
+    "get_billing_history-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "route_to_billing_agent-1",
+      "tool_name": "transfer_to_billing_agent",
+      "args": { "account_id": "ACC-9001" },
+      "arg_matching": { "account_id": "strict" }
+    },
+    {
+      "type": "tool_call",
+      "name": "get_billing_history-1",
+      "tool_name": "get_billing_history",
+      "args": { "account_id": "ACC-9001" },
+      "arg_matching": { "account_id": "strict" }
+    }
+  ]
+}

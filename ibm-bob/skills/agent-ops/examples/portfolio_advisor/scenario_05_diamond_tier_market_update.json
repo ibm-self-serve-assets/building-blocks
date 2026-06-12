@@ -1,0 +1,33 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You want to know what benefits Diamond tier account holders receive. Then you want to see all Diamond tier account holders. After reviewing the list, ask the agent to generate a market update communication for Lisa Anderson (account ID ACC007). Do NOT end the conversation until you receive the market update.",
+  "starting_sentence": "What benefits do Diamond tier account holders get? Also show me all Diamond tier holders.",
+  "goals": {
+    "get_account_holders_by_tier-1": ["generate_investment_communication-1"],
+    "generate_investment_communication-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "get_account_holders_by_tier-1",
+      "tool_name": "get_account_holders_by_tier",
+      "args": { "tier": "Diamond" },
+      "arg_matching": { "tier": "strict" }
+    },
+    {
+      "type": "tool_call",
+      "name": "generate_investment_communication-1",
+      "tool_name": "generate_investment_communication",
+      "args": {
+        "account_id": "ACC007",
+        "communication_type": "market_update",
+        "custom_content": "<IGNORE>"
+      },
+      "arg_matching": {
+        "account_id": "strict",
+        "communication_type": "strict",
+        "custom_content": "optional"
+      }
+    }
+  ]
+}

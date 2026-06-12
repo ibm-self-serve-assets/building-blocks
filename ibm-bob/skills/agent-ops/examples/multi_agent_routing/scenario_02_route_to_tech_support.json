@@ -1,0 +1,33 @@
+{
+  "agent": "support_facilitator_agent",
+  "story": "You are a customer with account ID ACC-9001 whose internet has been down for two hours. You need technical help. Provide your account ID upfront and clearly describe the technical issue. Do NOT end the conversation until the agent has opened a tech support ticket.",
+  "starting_sentence": "Hi, my account ID is ACC-9001. My internet has been down for two hours and I need help troubleshooting.",
+  "goals": {
+    "route_to_tech_support_agent-1": ["create_support_ticket-1"],
+    "create_support_ticket-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "route_to_tech_support_agent-1",
+      "tool_name": "transfer_to_tech_support_agent",
+      "args": { "account_id": "ACC-9001" },
+      "arg_matching": { "account_id": "strict" }
+    },
+    {
+      "type": "tool_call",
+      "name": "create_support_ticket-1",
+      "tool_name": "create_support_ticket",
+      "args": {
+        "account_id": "ACC-9001",
+        "category": "connectivity",
+        "summary": "<IGNORE>"
+      },
+      "arg_matching": {
+        "account_id": "strict",
+        "category": "strict",
+        "summary": "fuzzy"
+      }
+    }
+  ]
+}

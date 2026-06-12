@@ -1,0 +1,25 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You are a Gold tier account holder (ACC002, Michael Chen). You want to understand your fee structure and rebalancing policy. Ask: What is the annual management fee for Gold tier accounts? What is the rebalancing drift threshold and review frequency for Gold tier? Also ask about the minimum additional investment required. After getting those answers, ask the agent to look up your account details. Do NOT end the conversation until you have received answers about fees, rebalancing policy, and your account details.",
+  "starting_sentence": "I'm a Gold tier account holder. What is my annual management fee, and what is the rebalancing policy for my tier?",
+  "goals": {
+    "finance_portfolio_kb-1": ["get_account_holder_by_id-1"],
+    "get_account_holder_by_id-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "finance_portfolio_kb-1",
+      "tool_name": "finance_portfolio_kb",
+      "args": {},
+      "arg_matching": {}
+    },
+    {
+      "type": "tool_call",
+      "name": "get_account_holder_by_id-1",
+      "tool_name": "get_account_holder_by_id",
+      "args": { "account_id": "ACC002" },
+      "arg_matching": { "account_id": "strict" }
+    }
+  ]
+}

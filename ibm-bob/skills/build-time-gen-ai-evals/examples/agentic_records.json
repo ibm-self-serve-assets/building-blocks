@@ -1,0 +1,125 @@
+[
+  {
+    "input_text": "What is the weather in Paris?",
+    "generated_text": "I'll check the weather in Paris for you.",
+    "tool_calls": [
+      {"name": "get_weather", "parameters": {"city": "Paris", "units": "celsius"}}
+    ],
+    "available_tools": [
+      {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "parameters": {
+          "city": {"type": "string", "description": "City name"},
+          "units": {"type": "string", "description": "celsius or fahrenheit"}
+        }
+      },
+      {
+        "name": "get_forecast",
+        "description": "Get multi-day forecast for a city",
+        "parameters": {
+          "city": {"type": "string", "description": "City name"},
+          "days": {"type": "integer", "description": "Number of days (1-10)"}
+        }
+      }
+    ],
+    "ground_truth": [
+      {"name": "get_weather", "parameters": {"city": "Paris"}}
+    ]
+  },
+  {
+    "input_text": "Show me the next 5 days of weather in Tokyo.",
+    "generated_text": "I'll fetch the 5-day forecast for Tokyo.",
+    "tool_calls": [
+      {"name": "get_forecast", "parameters": {"city": "Tokyo", "days": 5}}
+    ],
+    "available_tools": [
+      {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "parameters": {
+          "city": {"type": "string", "description": "City name"},
+          "units": {"type": "string", "description": "celsius or fahrenheit"}
+        }
+      },
+      {
+        "name": "get_forecast",
+        "description": "Get multi-day forecast for a city",
+        "parameters": {
+          "city": {"type": "string", "description": "City name"},
+          "days": {"type": "integer", "description": "Number of days (1-10)"}
+        }
+      }
+    ],
+    "ground_truth": [
+      {"name": "get_forecast", "parameters": {"city": "Tokyo", "days": 5}}
+    ]
+  },
+  {
+    "input_text": "Book me a flight from SFO to JFK next Friday.",
+    "generated_text": "I'll search for flights from SFO to JFK on the requested date.",
+    "tool_calls": [
+      {"name": "search_flights", "parameters": {"origin": "SFO", "destination": "JFK", "date": "2026-06-12"}}
+    ],
+    "available_tools": [
+      {
+        "name": "search_flights",
+        "description": "Search available flights between two airports on a given date",
+        "parameters": {
+          "origin": {"type": "string", "description": "Origin airport IATA code"},
+          "destination": {"type": "string", "description": "Destination airport IATA code"},
+          "date": {"type": "string", "description": "Date in YYYY-MM-DD format"}
+        }
+      },
+      {
+        "name": "book_flight",
+        "description": "Book a specific flight by flight number",
+        "parameters": {
+          "flight_number": {"type": "string"},
+          "passenger_name": {"type": "string"}
+        }
+      }
+    ],
+    "ground_truth": [
+      {"name": "search_flights", "parameters": {"origin": "SFO", "destination": "JFK", "date": "2026-06-12"}}
+    ]
+  },
+  {
+    "input_text": "What's the temperature outside right now in London?",
+    "generated_text": "Let me look up the current weather in London.",
+    "tool_calls": [
+      {"name": "get_weather", "parameters": {"city": "London"}}
+    ],
+    "available_tools": [
+      {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "parameters": {
+          "city": {"type": "string", "description": "City name"},
+          "units": {"type": "string", "description": "celsius or fahrenheit"}
+        }
+      }
+    ],
+    "ground_truth": [
+      {"name": "get_weather", "parameters": {"city": "London"}}
+    ]
+  },
+  {
+    "input_text": "Cancel my reservation, please.",
+    "generated_text": "I don't have access to your reservation system from here. Could you provide a confirmation number or ask the support desk directly?",
+    "tool_calls": [],
+    "available_tools": [
+      {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "parameters": {"city": {"type": "string"}}
+      },
+      {
+        "name": "get_forecast",
+        "description": "Get multi-day forecast for a city",
+        "parameters": {"city": {"type": "string"}, "days": {"type": "integer"}}
+      }
+    ],
+    "ground_truth": []
+  }
+]

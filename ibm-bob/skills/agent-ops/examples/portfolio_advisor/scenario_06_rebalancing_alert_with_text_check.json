@@ -1,0 +1,40 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You are David Thompson with account ID ACC004. You are a Bronze tier account holder concerned about your portfolio allocation. You want the agent to look up your account, then generate a rebalancing alert for you. After receiving the alert, ask the agent to summarize what actions you should take. Do NOT end the conversation until the agent provides a clear summary of recommended actions.",
+  "starting_sentence": "Hi, I'm David Thompson, account ACC004. I'm worried my portfolio allocation might be off. Can you check my account and send me a rebalancing alert?",
+  "goals": {
+    "get_account_holder_by_id-1": ["generate_investment_communication-1"],
+    "generate_investment_communication-1": ["action_summary-1"],
+    "action_summary-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "get_account_holder_by_id-1",
+      "tool_name": "get_account_holder_by_id",
+      "args": { "account_id": "ACC004" },
+      "arg_matching": { "account_id": "strict" }
+    },
+    {
+      "type": "tool_call",
+      "name": "generate_investment_communication-1",
+      "tool_name": "generate_investment_communication",
+      "args": {
+        "account_id": "ACC004",
+        "communication_type": "rebalancing_alert",
+        "custom_content": "<IGNORE>"
+      },
+      "arg_matching": {
+        "account_id": "strict",
+        "communication_type": "strict",
+        "custom_content": "optional"
+      }
+    },
+    {
+      "type": "text",
+      "name": "action_summary-1",
+      "response": "The agent should summarize recommended rebalancing actions for a Bronze tier account holder with low risk tolerance, including adjustments to stocks, bonds, and cash allocations.",
+      "keywords": ["rebalancing", "allocation", "stocks", "bonds"]
+    }
+  ]
+}

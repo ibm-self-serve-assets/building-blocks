@@ -1,0 +1,41 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You want help with your portfolio but you do NOT provide your account ID upfront. When the agent asks for your account ID, provide ACC005. Then ask the agent to calculate your portfolio metrics. After seeing the metrics, ask the agent to generate a quarterly statement for your account. Do NOT end the conversation until you receive the quarterly statement.",
+  "starting_sentence": "Hi, I need help reviewing my investment portfolio.",
+  "goals": {
+    "get_account_holder_by_id-1": ["calculate_portfolio_metrics-1"],
+    "calculate_portfolio_metrics-1": ["generate_investment_communication-1"],
+    "generate_investment_communication-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "get_account_holder_by_id-1",
+      "tool_name": "get_account_holder_by_id",
+      "args": { "account_id": "ACC005" },
+      "arg_matching": { "account_id": "strict" }
+    },
+    {
+      "type": "tool_call",
+      "name": "calculate_portfolio_metrics-1",
+      "tool_name": "calculate_portfolio_metrics",
+      "args": { "tier": "<IGNORE>" },
+      "arg_matching": { "tier": "optional" }
+    },
+    {
+      "type": "tool_call",
+      "name": "generate_investment_communication-1",
+      "tool_name": "generate_investment_communication",
+      "args": {
+        "account_id": "ACC005",
+        "communication_type": "quarterly_statement",
+        "custom_content": "<IGNORE>"
+      },
+      "arg_matching": {
+        "account_id": "strict",
+        "communication_type": "strict",
+        "custom_content": "optional"
+      }
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You are an account holder with account ID ACC001. You want to review your portfolio details and get a portfolio performance report. Provide your account ID ACC001 upfront. Do NOT end the conversation until you receive the generated performance report.",
+  "starting_sentence": "Hi, my account ID is ACC001. Can you show me my portfolio details and generate a portfolio performance report?",
+  "goals": {
+    "get_account_holder_by_id-1": ["generate_investment_communication-1"],
+    "generate_investment_communication-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "get_account_holder_by_id-1",
+      "tool_name": "get_account_holder_by_id",
+      "args": { "account_id": "ACC001" },
+      "arg_matching": { "account_id": "strict" }
+    },
+    {
+      "type": "tool_call",
+      "name": "generate_investment_communication-1",
+      "tool_name": "generate_investment_communication",
+      "args": {
+        "account_id": "ACC001",
+        "communication_type": "portfolio_performance_report",
+        "custom_content": "<IGNORE>"
+      },
+      "arg_matching": {
+        "account_id": "strict",
+        "communication_type": "strict",
+        "custom_content": "optional"
+      }
+    }
+  ]
+}

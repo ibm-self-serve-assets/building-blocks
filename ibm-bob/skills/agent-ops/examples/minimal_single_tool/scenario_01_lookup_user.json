@@ -1,0 +1,17 @@
+{
+  "agent": "example_agent",
+  "story": "You are a user with user ID USR-42. You want to look up your own profile information. Provide your user ID upfront. Do NOT end the conversation until the agent shows you your profile.",
+  "starting_sentence": "Hi, my user ID is USR-42. Can you show me my profile?",
+  "goals": {
+    "get_user_by_id-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "get_user_by_id-1",
+      "tool_name": "get_user_by_id",
+      "args": { "user_id": "USR-42" },
+      "arg_matching": { "user_id": "strict" }
+    }
+  ]
+}

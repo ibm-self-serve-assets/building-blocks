@@ -1,0 +1,25 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You are concerned about compliance requirements. Ask the agent: What are the KYC documentation requirements for Diamond tier accounts? What is the threshold for automatic AML flagging on wire transfers? After getting compliance answers, ask the agent to show you all Diamond tier account holders so you can verify which ones need enhanced due diligence. Do NOT end the conversation until you receive the compliance information and the list of Diamond holders.",
+  "starting_sentence": "I need to understand our compliance requirements. What KYC documentation is required for Diamond tier accounts, and what are the AML thresholds for wire transfers?",
+  "goals": {
+    "finance_portfolio_kb-1": ["get_account_holders_by_tier-1"],
+    "get_account_holders_by_tier-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "finance_portfolio_kb-1",
+      "tool_name": "finance_portfolio_kb",
+      "args": {},
+      "arg_matching": {}
+    },
+    {
+      "type": "tool_call",
+      "name": "get_account_holders_by_tier-1",
+      "tool_name": "get_account_holders_by_tier",
+      "args": { "tier": "Diamond" },
+      "arg_matching": { "tier": "strict" }
+    }
+  ]
+}

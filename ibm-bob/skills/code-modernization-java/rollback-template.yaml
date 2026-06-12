@@ -1,0 +1,93 @@
+# Rollback Plan Template
+
+rollback_plan:
+  name: "Module X Migration Rollback"
+  
+  trigger_conditions:
+    - error_rate > 5%
+    - latency_p99 > 2000ms
+    - critical_bug_reported
+    - business_stakeholder_request
+    - business_metric_drop > 10%
+
+  immediate_actions:
+    - step: "Disable feature flag"
+      command: "feature-flags set MODULE_X_MODERN false"
+      expected_time: "< 1 minute"
+      owner: "on-call-engineer"
+
+    - step: "Verify traffic routing"
+      command: "kubectl get virtualservice -o yaml"
+      expected_result: "100% to legacy"
+      expected_time: "< 2 minutes"
+
+    - step: "Alert team"
+      channels:
+        - slack: "#platform-alerts"
+        - email: "stakeholders@company.com"
+        - pagerduty: "on-call-engineer"
+
+  validation:
+    - "Confirm error rates returning to baseline"
+    - "Verify no data inconsistencies"
+    - "Check all integrations functioning"
+    - "Verify key business metrics"
+    - "Test critical user paths"
+
+  within_15_minutes:
+    - "Assess impact and root cause"
+    - "Decide: rollback or fix forward"
+    - "Communicate to stakeholders"
+    - "Update status page if needed"
+
+  full_rollback_procedure:
+    - step: "Revert database migrations"
+      command: "python manage.py migrate app_name previous_migration"
+      validation: "Check schema matches legacy"
+      
+    - step: "Restore previous release"
+      command: "kubectl rollout undo deployment/app-name"
+      validation: "Verify pods running legacy version"
+      
+    - step: "Clear caches"
+      command: "redis-cli FLUSHALL"
+      validation: "Confirm cache cleared"
+      
+    - step: "Verify system health"
+      checks:
+        - "Error rate < 1%"
+        - "Latency p99 < baseline"
+        - "All services responding"
+        - "Database connections healthy"
+
+  communication:
+    immediate:
+      - "Post in #platform-alerts"
+      - "Update incident ticket"
+      - "Notify on-call manager"
+    
+    within_1_hour:
+      - "Send stakeholder email"
+      - "Update status page"
+      - "Schedule post-mortem"
+    
+    within_24_hours:
+      - "Conduct post-mortem"
+      - "Document lessons learned"
+      - "Update migration plan"
+
+  post_rollback:
+    - "Schedule incident review meeting"
+    - "Create investigation ticket with priority"
+    - "Update migration timeline"
+    - "Review and improve monitoring"
+    - "Update rollback procedures based on learnings"
+
+# Example Usage:
+# 1. Monitor triggers continuously
+# 2. Execute immediate actions if triggered
+# 3. Validate rollback success
+# 4. Communicate to stakeholders
+# 5. Conduct post-mortem
+
+# Made with Bob

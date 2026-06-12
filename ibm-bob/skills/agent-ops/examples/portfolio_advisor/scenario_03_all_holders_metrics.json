@@ -1,0 +1,35 @@
+{
+  "agent": "portfolio_advisor_agent",
+  "story": "You want to see all account holders and calculate their overall portfolio metrics. Do NOT end the conversation until you receive the calculated metrics.",
+  "starting_sentence": "Show me all account holders and calculate their portfolio metrics",
+  "goals": {
+    "get_account_holder_data-1": ["calculate_portfolio_metrics-1"],
+    "calculate_portfolio_metrics-1": []
+  },
+  "goal_details": [
+    {
+      "type": "tool_call",
+      "name": "get_account_holder_data-1",
+      "tool_name": "get_account_holder_data",
+      "args": {
+        "account_id": "<IGNORE>",
+        "tier": "<IGNORE>",
+        "status": "<IGNORE>",
+        "limit": "<IGNORE>"
+      },
+      "arg_matching": {
+        "account_id": "optional",
+        "tier": "optional",
+        "status": "optional",
+        "limit": "optional"
+      }
+    },
+    {
+      "type": "tool_call",
+      "name": "calculate_portfolio_metrics-1",
+      "tool_name": "calculate_portfolio_metrics",
+      "args": { "tier": "<IGNORE>" },
+      "arg_matching": { "tier": "optional" }
+    }
+  ]
+}

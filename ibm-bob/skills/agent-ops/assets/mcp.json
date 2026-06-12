@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "watsonx-orchestrate-adk-docs": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcp-proxy>=0.11.0,<0.12.0",
+        "mcp-proxy",
+        "--transport",
+        "streamablehttp",
+        "https://developer.watson-orchestrate.ibm.com/mcp"
+      ],
+      "alwaysAllow": [
+        "search_ibm_watsonx_orchestrate_adk",
+        "query_docs_filesystem_ibm_watsonx_orchestrate_adk"
+      ]
+    }
+  }
+}

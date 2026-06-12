@@ -1,0 +1,12 @@
+{
+  "_description": "Choke point 2 — RAG retrieval quality. CRITICAL: context MUST be list[str].",
+  "_metrics_used": ["Retrieval Precision", "Hit Rate", "Reciprocal Rank"],
+  "_note": "These metrics derive from Context Relevance per-doc scores. With 1/3 relevant docs, expect Hit Rate≈1 (one relevant found), Retrieval Precision≈0.33, Reciprocal Rank≈1.0 (relevant is first).",
+  "input_text": "What is RAG?",
+  "context": [
+    "RAG augments LLMs with retrieved documents.",
+    "Cats are popular household pets.",
+    "Unrelated context about cooking."
+  ],
+  "categories": ["rag_retrieval"]
+}

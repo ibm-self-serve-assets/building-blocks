@@ -1,0 +1,3 @@
+story,agent
+"The user wants to look up their portfolio details using their account holder ID ACC001 and get a detailed report of their holdings.",portfolio_advisor_agent
+"The user wants to check all Gold tier account holders and calculate portfolio metrics for one of them.",portfolio_advisor_agent

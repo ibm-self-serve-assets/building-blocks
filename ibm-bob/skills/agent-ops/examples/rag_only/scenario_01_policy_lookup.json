@@ -1,0 +1,15 @@
+{
+  "agent": "knowledge_agent",
+  "story": "You are an employee who wants to know what the company's remote work policy says about working from a different country for more than 30 days. Phrase your question naturally. Do NOT end the conversation until the agent has given you a clear answer that cites the policy.",
+  "starting_sentence": "What does our remote work policy say about working from a different country for more than 30 days?",
+  "goals": {
+    "search_policy_kb-1": []
+  },
+  "goal_details": [
+    {
+      "type": "conversational_search",
+      "name": "search_policy_kb-1",
+      "keywords": ["30 days", "thirty days", "extended remote", "international remote"]
+    }
+  ]
+}

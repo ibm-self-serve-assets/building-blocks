@@ -1,0 +1,32 @@
+[
+  {
+    "question": "What is retrieval-augmented generation?",
+    "context": "RAG is a technique that combines a retrieval step with a generative model. The retriever pulls relevant documents from a knowledge base, and the generator uses those documents as context to produce a grounded answer.",
+    "generated_text": "RAG is an approach that retrieves relevant documents and uses them to generate answers.",
+    "reference": "Retrieval-augmented generation (RAG) combines document retrieval with text generation."
+  },
+  {
+    "question": "What are the main components of a RAG pipeline?",
+    "context": "A typical RAG pipeline has three components: (1) an embedding model that converts documents and queries into vectors, (2) a vector store that holds the indexed documents and supports similarity search, and (3) a generator (LLM) that produces the final answer from the retrieved context.",
+    "generated_text": "A RAG pipeline has three main components: an embedding model, a vector store, and a generator LLM.",
+    "reference": "RAG pipelines consist of an embedder, a retriever/vector store, and a generator."
+  },
+  {
+    "question": "Why is chunking important in RAG?",
+    "context": "Chunking splits source documents into smaller passages so that retrieval can return focused, relevant context to the model. Chunk size and overlap directly affect retrieval precision: chunks too large dilute relevance; chunks too small lose context.",
+    "generated_text": "Chunking splits documents into smaller passages so retrieval returns focused, relevant context. Both chunk size and overlap matter — too large dilutes relevance, too small loses context.",
+    "reference": "Chunking determines retrieval quality. Right-sizing chunks is critical for RAG performance."
+  },
+  {
+    "question": "What is the difference between dense and sparse retrieval?",
+    "context": "Dense retrieval uses neural embeddings to find semantically similar passages. Sparse retrieval uses term-frequency methods like BM25 to find lexically similar passages. Hybrid approaches combine both for better recall and precision.",
+    "generated_text": "Dense retrieval uses neural embeddings for semantic similarity; sparse retrieval uses BM25-style keyword matching. Hybrid retrieval combines both.",
+    "reference": "Dense retrieval is semantic; sparse retrieval is lexical. Hybrid often wins."
+  },
+  {
+    "question": "How do you evaluate RAG quality?",
+    "context": "RAG quality is evaluated along multiple axes: answer relevance (does the answer address the question?), faithfulness (is the answer grounded in the retrieved context?), context relevance (is the retrieved context useful?), and retrieval precision (how many retrieved chunks are actually relevant?).",
+    "generated_text": "RAG quality is measured across four axes: answer relevance, faithfulness, context relevance, and retrieval precision.",
+    "reference": "RAG evaluation looks at answer relevance, faithfulness, context relevance, and retrieval precision."
+  }
+]
