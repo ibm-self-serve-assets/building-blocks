@@ -60,6 +60,8 @@ def build_registry(config: GuardrailsConfig) -> MetricRegistry:
         HitRateMetric,
         JailbreakMetric,
         KeywordDetectionMetric,
+        OutputHAPMetric,
+        OutputPIIMetric,
         PIIMetric,
         ProfanityMetric,
         PromptSafetyRiskMetric,
@@ -103,8 +105,8 @@ def build_registry(config: GuardrailsConfig) -> MetricRegistry:
                 column_name="hap",
                 threshold_spec=_SAFETY_DEFAULT,
                 required_fields=frozenset(),
-                accepts_fields=_EITHER_INPUT_OR_OUTPUT,
-                description="Hate, Abuse, and Profanity detection.",
+                accepts_fields=_INPUT_ONLY,
+                description="Hate, Abuse, and Profanity detection on the user input. For HAP detection on model output, use 'Output HAP Detection'.",
             ),
             MetricEntry(
                 name="PII Detection",
@@ -113,8 +115,28 @@ def build_registry(config: GuardrailsConfig) -> MetricRegistry:
                 column_name="pii",
                 threshold_spec=_SAFETY_DEFAULT,
                 required_fields=frozenset(),
-                accepts_fields=_EITHER_INPUT_OR_OUTPUT,
-                description="Personally identifiable information detection.",
+                accepts_fields=_INPUT_ONLY,
+                description="Personally identifiable information detection on the user input. For PII detection on model output, use 'Output PII Detection'.",
+            ),
+            MetricEntry(
+                name="Output PII Detection",
+                metric=OutputPIIMetric(),
+                category="safety",
+                column_name="output_pii",
+                threshold_spec=_SAFETY_DEFAULT,
+                required_fields=frozenset({"generated_text"}),
+                accepts_fields=_OUTPUT_ONLY,
+                description="Personally identifiable information detection on the model output (generated_text).",
+            ),
+            MetricEntry(
+                name="Output HAP Detection",
+                metric=OutputHAPMetric(),
+                category="safety",
+                column_name="output_hap",
+                threshold_spec=_SAFETY_DEFAULT,
+                required_fields=frozenset({"generated_text"}),
+                accepts_fields=_OUTPUT_ONLY,
+                description="Hate, Abuse, and Profanity detection on the model output (generated_text).",
             ),
             MetricEntry(
                 name="Harm",
@@ -296,7 +318,10 @@ def build_registry(config: GuardrailsConfig) -> MetricRegistry:
                     name="Answer Completeness (LLM Judge)",
                     metric=build_answer_completeness(judge),
                     category="quality",
-                    column_name="answer_completeness",
+                    # SDK appends ``.llm_as_judge`` to the column name for
+                    # LLM-judge metrics (same pattern as Conciseness +
+                    # Tool Call Relevance).
+                    column_name="answer_completeness.llm_as_judge",
                     threshold_spec=_QUALITY_DEFAULT,
                     required_fields=_INPUT_AND_OUTPUT,
                     description="LLM-judge score of how completely the response addresses the input.",
@@ -305,7 +330,10 @@ def build_registry(config: GuardrailsConfig) -> MetricRegistry:
                     name="Conciseness (LLM Judge)",
                     metric=build_conciseness(judge),
                     category="quality",
-                    column_name="conciseness",
+                    # SDK returns this LLM-judge column with a ``.llm_as_judge``
+                    # suffix; match the SDK exactly so the score is read (not
+                    # silently None'd) and the warning log no longer fires.
+                    column_name="conciseness.llm_as_judge",
                     threshold_spec=_QUALITY_DEFAULT,
                     required_fields=_OUTPUT_ONLY,
                     description="LLM-judge score of response conciseness.",

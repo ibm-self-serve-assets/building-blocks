@@ -66,9 +66,17 @@ class GuardrailsEvaluator:
 
     def _build_sdk_evaluator(self) -> Any:
         try:
+            from ibm_watsonx_gov.config import GenAIConfiguration  # type: ignore
             from ibm_watsonx_gov.evaluators import MetricsEvaluator  # type: ignore
 
-            return MetricsEvaluator()
+            # Explicit default config so ``_run_sdk`` can restore it after
+            # per-call field-routing swaps (see _run_sdk for details).
+            self._default_config = GenAIConfiguration(
+                input_fields=["input_text"],
+                output_fields=["generated_text"],
+                context_fields=["context"],
+            )
+            return MetricsEvaluator(configuration=self._default_config)
         except Exception as exc:
             raise EvaluatorInitError(
                 f"Failed to initialize ibm_watsonx_gov MetricsEvaluator: {exc}"
@@ -141,10 +149,9 @@ class GuardrailsEvaluator:
         self._registry.validate_required(entries, available_fields)
         df = self._build_dataframe(normalized)
         sdk_metrics = self._materialize_metrics(entries, normalized)
-        result_df = self._run_sdk(df, sdk_metrics, entries)
+        result_chunks = self._run_sdk(df, sdk_metrics, entries)
         return self._collect_results(
-            result_df,
-            entries,
+            result_chunks,
             record_id,
             per_call_thresholds=thresholds,
             per_call_flag_thresholds=flag_thresholds,
@@ -301,20 +308,126 @@ class GuardrailsEvaluator:
         df: "pd.DataFrame",
         sdk_metrics: list[Any],
         entries: Sequence[MetricEntry],
-    ) -> "pd.DataFrame":
+    ) -> list[tuple["pd.DataFrame", list[MetricEntry], str]]:
+        """Run SDK metric evaluation with per-call field routing.
+
+        For single-field safety/quality metrics that accept either ``input_text``
+        or ``generated_text`` (``accepts_fields=_EITHER_INPUT_OR_OUTPUT``), this
+        method points the SDK at whichever field the partner populated. When
+        BOTH fields are populated, the metric is run twice and its results are
+        surfaced with suffixed names — ``"Harm (input)"`` and ``"Harm (output)"``
+        — so partners see both scores and decide what to do (no merge imposed).
+
+        Multi-field metrics (Faithfulness, Retrieval Precision, etc.) and
+        explicitly-scoped ones (PII Detection, Output PII Detection, etc.) use
+        their default/specific field bindings; the wrapper does not reroute them.
+
+        Returns a list of ``(result_df, entries_in_chunk, name_suffix)`` tuples,
+        one per SDK call made.
+        """
         try:
-            result = self._sdk_evaluator.evaluate(data=df, metrics=sdk_metrics)
-            return result.to_df()
+            from ibm_watsonx_gov.config import GenAIConfiguration  # type: ignore
         except Exception as exc:
-            metric_names = [e.name for e in entries]
-            raise MetricExecutionError(
-                ", ".join(metric_names), exc
+            raise EvaluatorInitError(
+                f"Failed to import GenAIConfiguration: {exc}"
             ) from exc
+
+        from .metrics import (
+            _EITHER_INPUT_OR_OUTPUT,
+            _INPUT_ONLY,
+            _OUTPUT_ONLY,
+        )
+
+        def _is_populated(column: str) -> bool:
+            if column not in df.columns:
+                return False
+            val = df[column].iloc[0]
+            if val is None:
+                return False
+            if isinstance(val, str) and val == "":
+                return False
+            if isinstance(val, list) and len(val) == 0:
+                return False
+            return True
+
+        has_input = _is_populated("input_text")
+        has_output = _is_populated("generated_text")
+
+        # Bucket (entry, metric) pairs by which field they should scan.
+        input_group: list[tuple[MetricEntry, Any]] = []
+        output_group: list[tuple[MetricEntry, Any]] = []
+        default_group: list[tuple[MetricEntry, Any]] = []
+        both_input_group: list[tuple[MetricEntry, Any]] = []
+        both_output_group: list[tuple[MetricEntry, Any]] = []
+
+        for entry, metric in zip(entries, sdk_metrics):
+            af = entry.accepts_fields
+            if af == _INPUT_ONLY:
+                input_group.append((entry, metric))
+            elif af == _OUTPUT_ONLY:
+                output_group.append((entry, metric))
+            elif af == _EITHER_INPUT_OR_OUTPUT:
+                if has_input and has_output:
+                    both_input_group.append((entry, metric))
+                    both_output_group.append((entry, metric))
+                elif has_output:
+                    output_group.append((entry, metric))
+                else:
+                    # has_input or neither — default to input-side scanning
+                    input_group.append((entry, metric))
+            else:
+                # Multi-field metrics (RAG generation/retrieval, system-prompt
+                # bound, tool-call, etc.) — use the default config.
+                default_group.append((entry, metric))
+
+        cfg_input = GenAIConfiguration(
+            input_fields=["input_text"],
+            output_fields=["generated_text"],
+            context_fields=["context"],
+        )
+        cfg_output = GenAIConfiguration(
+            input_fields=["generated_text"],
+            output_fields=["generated_text"],
+            context_fields=["context"],
+        )
+
+        result_chunks: list[tuple["pd.DataFrame", list[MetricEntry], str]] = []
+
+        def _run_group(group, config, suffix):
+            if not group:
+                return
+            entries_in_group = [e for e, _ in group]
+            metrics_in_group = [m for _, m in group]
+            if config is not None:
+                self._sdk_evaluator.configuration = config
+            try:
+                result = self._sdk_evaluator.evaluate(
+                    data=df, metrics=metrics_in_group
+                )
+                result_chunks.append(
+                    (result.to_df(), entries_in_group, suffix)
+                )
+            except Exception as exc:
+                metric_names = [e.name for e in entries_in_group]
+                raise MetricExecutionError(
+                    ", ".join(metric_names), exc
+                ) from exc
+
+        try:
+            _run_group(default_group, None, "")
+            _run_group(input_group, cfg_input, "")
+            _run_group(output_group, cfg_output, "")
+            _run_group(both_input_group, cfg_input, " (input)")
+            _run_group(both_output_group, cfg_output, " (output)")
+        finally:
+            # Restore default config so we don't leak per-call state.
+            self._sdk_evaluator.configuration = self._default_config
+
+        return result_chunks
 
     def _collect_results(
         self,
-        result_df: "pd.DataFrame",
-        entries: Sequence[MetricEntry],
+        result_chunks: list[tuple["pd.DataFrame", list[MetricEntry], str]],
         record_id: str,
         *,
         per_call_thresholds: Mapping[str, float] | None,
@@ -322,31 +435,37 @@ class GuardrailsEvaluator:
         fallback_messages: Mapping[str, str] | None = None,
     ) -> ResultBundle:
         results: dict[str, GuardrailResult] = {}
-        columns = set(result_df.columns) if hasattr(result_df, "columns") else set()
-        for entry in entries:
-            spec = self._threshold_resolver.resolve(
-                entry.name,
-                entry.category,
-                entry.threshold_spec,
-                per_call=per_call_thresholds,
-                per_call_flag=per_call_flag_thresholds,
+        for result_df, entries_in_chunk, suffix in result_chunks:
+            columns = (
+                set(result_df.columns) if hasattr(result_df, "columns") else set()
             )
-            score = self._extract_score(result_df, entry, columns)
-            passed, action = spec.apply(score)
-            fallback = self._resolve_fallback(
-                entry, action, fallback_messages
-            )
-            results[entry.name] = GuardrailResult(
-                metric=entry.name,
-                category=entry.category,
-                score=score,
-                passed=passed,
-                action=action,
-                column=entry.column_name if entry.column_name in columns else None,
-                threshold=spec.value,
-                flag_threshold=spec.flag_value,
-                fallback_message=fallback,
-            )
+            for entry in entries_in_chunk:
+                spec = self._threshold_resolver.resolve(
+                    entry.name,
+                    entry.category,
+                    entry.threshold_spec,
+                    per_call=per_call_thresholds,
+                    per_call_flag=per_call_flag_thresholds,
+                )
+                score = self._extract_score(result_df, entry, columns)
+                passed, action = spec.apply(score)
+                fallback = self._resolve_fallback(
+                    entry, action, fallback_messages
+                )
+                key = entry.name + suffix
+                results[key] = GuardrailResult(
+                    metric=key,
+                    category=entry.category,
+                    score=score,
+                    passed=passed,
+                    action=action,
+                    column=(
+                        entry.column_name if entry.column_name in columns else None
+                    ),
+                    threshold=spec.value,
+                    flag_threshold=spec.flag_value,
+                    fallback_message=fallback,
+                )
         return ResultBundle.from_mapping(record_id, results)
 
     @staticmethod
