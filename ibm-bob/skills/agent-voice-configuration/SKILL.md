@@ -1,3 +1,8 @@
+---
+name: agent-voice-configuration
+description: Build voice-enabled agents in watsonx Orchestrate using the ADK. This guide covers initial setup, key concepts for building your first voice agent.
+---
+
 # Getting Started with Voice Agents
 
 ## Overview

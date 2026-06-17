@@ -1,3 +1,8 @@
+---
+name: automated-resource-mgmt-turbonomic
+description: Reusable skills for the Turbonomic Resource Dashboard project. Each skill is a specialized workflow that Bob can activate to help with specific development tasks.
+---
+
 # Skills Documentation
 
 This directory contains reusable skills for the Turbonomic Resource Dashboard project. Each skill is a specialized workflow that Bob can activate to help with specific development tasks.

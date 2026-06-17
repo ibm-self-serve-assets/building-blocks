@@ -1,3 +1,8 @@
+---
+name: automated-resource-mgmt-turbonomic
+description: Deploy and manage HashiCorp Vault using Ansible automation with proper configuration, permissions, and security setup.
+---
+
 # Bob Skills Directory
 
 This directory contains modular, domain-specific skills that Bob can automatically activate based on user requests. Each skill follows the official Bob skills format with YAML front matter and structured instructions.
@@ -6,7 +11,7 @@ This directory contains modular, domain-specific skills that Bob can automatical
 
 ```
 .bob/skills/
-├── README.md                           # This file
+├── SKILL.md                           # This file
 ├── SKILLS_SUMMARY.md                   # Comprehensive overview
 ├── ansible-automation/                 # Ansible and infrastructure automation
 │   ├── SKILL.md                        # Core skill instructions
