@@ -1,0 +1,13 @@
+dept_id,dept_name,region,cost_center,business_unit,dept_head,employee_count
+DEPT-NA-SALES,North America Sales,North America,CC-1001,Sales,Sarah Johnson,45
+DEPT-EMEA-SALES,EMEA Sales,Europe,CC-1002,Sales,Michael Schmidt,32
+DEPT-APAC-SALES,APAC Sales,Asia Pacific,CC-1003,Sales,Li Wei,28
+DEPT-LATAM-SALES,LATAM Sales,Latin America,CC-1004,Sales,Carlos Rodriguez,18
+DEPT-PROD-ENG,Product Engineering,Global,CC-2001,Engineering,David Chen,85
+DEPT-CLOUD-OPS,Cloud Operations,Global,CC-2002,Engineering,Priya Sharma,42
+DEPT-PROF-SVC,Professional Services,Global,CC-3001,Services,James Wilson,55
+DEPT-CUST-SUC,Customer Success,Global,CC-3002,Services,Emma Thompson,38
+DEPT-MARKETING,Marketing,Global,CC-4001,Marketing,Robert Martinez,25
+DEPT-FINANCE,Finance & Accounting,Global,CC-5001,Finance,Jennifer Lee,22
+DEPT-HR,Human Resources,Global,CC-5002,HR,Amanda Brown,15
+DEPT-IT,IT Infrastructure,Global,CC-5003,IT,Thomas Anderson,18
