@@ -1,7 +1,7 @@
 """
 FastAPI RAG Retrieval Server
-Provides REST API endpoints for semantic search and keyword search
-Supports OpenSearch and Milvus vector databases
+Provides REST API endpoints for hybrid search and keyword search
+Supports IBM watsonx.data OpenSearch
 """
 
 from __future__ import annotations
@@ -22,7 +22,6 @@ from pydantic import BaseModel, Field
 
 # Vector DBs
 from opensearchpy import OpenSearch
-from pymilvus import connections, Collection, utility
 
 # Embeddings (Watsonx)
 from ibm_watsonx_ai import Credentials
@@ -117,7 +116,7 @@ class EmbeddingConfig:
 
 @dataclass
 class VectorDbConfig:
-    db_type: str = ""  # opensearch | milvus
+    db_type: str = "opensearch"
 
     # OpenSearch
     opensearch_host: str = ""
@@ -127,22 +126,8 @@ class VectorDbConfig:
     opensearch_index: str = "rag-index"
     opensearch_use_ssl: bool = True
 
-    # Milvus
-    milvus_host: str = ""
-    milvus_port: int = 19530
-    milvus_user: str = ""
-    milvus_password: str = ""
-    milvus_secure: bool = False
-    milvus_collection: str = "rag_collection"
-    milvus_dense_field: str = "vector"
-    milvus_text_field: str = "text"
-
     def is_configured(self) -> bool:
-        if self.db_type == "opensearch":
-            return bool(self.opensearch_host and self.opensearch_index)
-        if self.db_type == "milvus":
-            return bool(self.milvus_host and self.milvus_collection)
-        return False
+        return bool(self.opensearch_host and self.opensearch_index)
 
 
 def _env_bool(key: str, default: bool = False) -> bool:
@@ -153,9 +138,11 @@ def _env_bool(key: str, default: bool = False) -> bool:
 
 
 def load_embedding_config() -> EmbeddingConfig:
+    # IBM_API_KEY is the canonical env var; WATSONX_API_KEY kept as fallback for backwards compat.
+    api_key = (os.getenv("IBM_API_KEY") or os.getenv("WATSONX_API_KEY") or "").strip()
     return EmbeddingConfig(
         watsonx_url=os.getenv("WATSONX_URL", "").strip(),
-        watsonx_api_key=os.getenv("WATSONX_API_KEY", "").strip(),
+        watsonx_api_key=api_key,
         project_id=os.getenv("WATSONX_PROJECT_ID", "").strip(),
         embedding_model_id=os.getenv("EMBEDDING_MODEL_ID", "").strip(),
     )
@@ -163,7 +150,7 @@ def load_embedding_config() -> EmbeddingConfig:
 
 def load_vector_db_config() -> VectorDbConfig:
     return VectorDbConfig(
-        db_type=os.getenv("VECTOR_DB_TYPE", "").strip().lower(),
+        db_type="opensearch",
 
         opensearch_host=os.getenv("OPENSEARCH_HOST", "").strip(),
         opensearch_port=int(os.getenv("OPENSEARCH_PORT", "9200")),
@@ -171,15 +158,6 @@ def load_vector_db_config() -> VectorDbConfig:
         opensearch_password=os.getenv("OPENSEARCH_PASSWORD", "").strip(),
         opensearch_index=os.getenv("OPENSEARCH_INDEX", "rag-index").strip(),
         opensearch_use_ssl=_env_bool("OPENSEARCH_USE_SSL", True),
-
-        milvus_host=os.getenv("MILVUS_HOST", "").strip(),
-        milvus_port=int(os.getenv("MILVUS_PORT", "19530")),
-        milvus_user=os.getenv("MILVUS_USER", "").strip(),
-        milvus_password=os.getenv("MILVUS_PASSWORD", "").strip(),
-        milvus_secure=_env_bool("MILVUS_SECURE", False),
-        milvus_collection=os.getenv("MILVUS_COLLECTION", "rag_collection").strip(),
-        milvus_dense_field=os.getenv("MILVUS_DENSE_FIELD", "vector").strip(),
-        milvus_text_field=os.getenv("MILVUS_TEXT_FIELD", "text").strip(),
     )
 
 
@@ -251,19 +229,6 @@ def _opensearch_client(vdb: VectorDbConfig) -> OpenSearch:
     )
 
 
-def _milvus_connect(vdb: VectorDbConfig) -> None:
-    kwargs: Dict[str, Any] = {
-        "host": vdb.milvus_host,
-        "port": str(vdb.milvus_port),
-        "secure": vdb.milvus_secure,
-    }
-    if vdb.milvus_user:
-        kwargs["user"] = vdb.milvus_user
-    if vdb.milvus_password:
-        kwargs["password"] = vdb.milvus_password
-    connections.connect(alias="default", **kwargs)
-
-
 # =============================================================================
 # Bootstrap connectivity checks
 # =============================================================================
@@ -302,14 +267,6 @@ def bootstrap_check_connections() -> None:
                 _print_bootstrap_status("OPENSEARCH", ok, f"{host}:{port} ssl={use_ssl}")
             except Exception as e:
                 _print_bootstrap_status("OPENSEARCH", False, f"{type(e).__name__}: {e}")
-
-        elif vdb.db_type == "milvus":
-            try:
-                _milvus_connect(vdb)
-                ver = utility.get_server_version()
-                _print_bootstrap_status("MILVUS", True, f"server_version={ver}")
-            except Exception as e:
-                _print_bootstrap_status("MILVUS", False, f"{type(e).__name__}: {e}")
 
         else:
             _print_bootstrap_status("VECTOR_DB", False, f"Unknown VECTOR_DB_TYPE={vdb.db_type}")
@@ -471,16 +428,6 @@ async def get_config():
                 "username": _mask_username(vdb.opensearch_username),
                 "password_set": bool(vdb.opensearch_password),
             },
-            "milvus": {
-                "host": vdb.milvus_host,
-                "port": vdb.milvus_port,
-                "secure": vdb.milvus_secure,
-                "collection": vdb.milvus_collection,
-                "dense_field": vdb.milvus_dense_field,
-                "text_field": vdb.milvus_text_field,
-                "username": _mask_username(vdb.milvus_user),
-                "password_set": bool(vdb.milvus_password),
-            },
         },
     }
 
@@ -505,10 +452,7 @@ async def retrieve(request: RetrievalRequest):
         )
 
     dest = (request.destination_index or "").strip()
-    if vdb.db_type == "opensearch":
-        index_name = dest or vdb.opensearch_index
-    else:
-        index_name = dest or vdb.milvus_collection
+    index_name = dest or vdb.opensearch_index
 
     try:
         embedding = get_embedding(emb_cfg)
@@ -526,45 +470,7 @@ async def retrieve(request: RetrievalRequest):
                 results=_format_hits(hits),
             )
 
-        if vdb.db_type == "milvus":
-            _milvus_connect(vdb)
-            coll = Collection(name=index_name)
-            coll.load()
-
-            search_params = {"metric_type": "L2", "params": {"nprobe": 10}}
-            res = coll.search(
-                data=[vector],
-                anns_field=vdb.milvus_dense_field,
-                param=search_params,
-                limit=request.k,
-                output_fields=["id", "title", "source", "page_number", "chunk_seq", "document_url", vdb.milvus_text_field],
-            )
-
-            out: List[SearchResult] = []
-            for hits in res:
-                for h in hits:
-                    ent = h.entity
-                    out.append(
-                        SearchResult(
-                            id=ent.get("id"),
-                            score=float(h.distance),
-                            title=ent.get("title", ""),
-                            source=ent.get("source", ""),
-                            page_number=str(ent.get("page_number", "")),
-                            chunk_seq=str(ent.get("chunk_seq", "")),
-                            document_url=ent.get("document_url", ""),
-                            text=ent.get(vdb.milvus_text_field, "") or "",
-                        )
-                    )
-
-            return RetrievalResponse(
-                backend="milvus",
-                index=index_name,
-                k=request.k,
-                results=out,
-            )
-
-        raise HTTPException(status_code=500, detail=f"Unsupported VECTOR_DB_TYPE={vdb.db_type}")
+        raise HTTPException(status_code=500, detail="Only VECTOR_DB_TYPE=opensearch is supported")
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Retrieval error: {type(e).__name__}: {e}")

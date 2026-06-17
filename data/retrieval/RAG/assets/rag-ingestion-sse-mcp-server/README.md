@@ -458,10 +458,6 @@ When contributing to this project:
 4. Test with both OpenSearch and Milvus
 5. Ensure bootstrap checks pass
 
-## License
-
-This project is part of the IBM Data for AI Building Block.
-
 ## Support
 
 For issues and questions:

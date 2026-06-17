@@ -2,15 +2,17 @@
 ## Introduction
 The **Technology Building Block** is a curated set of IBM capabilities developed by the Build Engineering team to accelerate solution delivery and demonstrate the value of the IBM technology stack, with a focus on Embeddable AI and Automation.
 
-These building blocks showcase seamless integration across IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and reduce time-to-value. 
+These building blocks showcase seamless integration across IBM Data & AI and Automation platforms, delivering reusable engineering patterns that simplify implementation and reduce time-to-value.
+
+> **Note**: The building blocks are **AI-tool agnostic** — they can be used with **IBM Bob**, **Claude**, **GitHub Copilot**, or any other AI coding assistant. Bob is the recommended tool for the included modes and skills, but all runnable assets (FastAPI services, Python scripts, Terraform IaC) work independently of any AI assistant.
 
 For more information, see the [documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/)
 
-## What is the Technology Building Block?  
-The Building Block is a **reference implementation framework** that accelerates engineering and partner-facing engagements. It enables teams to:  
-- Rapidly **prototype, deploy, and validate** AI-powered applications.  
-- Seamlessly **integrate IBM services** like **watsonx.ai**, **watsonx.data**, **Instana**, **Turbonomic** abd other IBM offerings with partner and open-source ecosystems.  
-- Present **business-aligned outcomes** Showcasing seamless integration and value delivery through reusable building blocks that highlight the full potential of IBM’s capabilities.
+## What is the Technology Building Block?
+The Building Block is a **reference implementation framework** that accelerates engineering and partner-facing engagements. It enables teams to:
+- Rapidly **prototype, deploy, and validate** AI-powered applications.
+- Seamlessly **integrate IBM services** like **watsonx.ai**, **watsonx.data**, **Instana**, **Turbonomic** and other IBM offerings with partner and open-source ecosystems.
+- Present **business-aligned outcomes** showcasing seamless integration and value delivery through reusable building blocks that highlight the full potential of IBM's capabilities.
 
 <img width="1708" height="943" alt="Screenshot 2026-04-28 at 11 32 33 AM" src="https://github.com/user-attachments/assets/1410b2d7-b506-4167-9332-906a64b6c132" />
 

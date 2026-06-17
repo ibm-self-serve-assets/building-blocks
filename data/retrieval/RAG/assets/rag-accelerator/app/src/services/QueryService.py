@@ -1,13 +1,11 @@
 import logging
+import os
 from dotenv import load_dotenv
 
 from app.src.utils import rag_helper_functions
 from app.src.utils import config
-from app.src.utils.milvus_connection import MilvusConnection
 from app.src.utils.connection_factory import ConnectionFactory
 from app.src.utils.embeddings.factory import EmbeddingFactory
-from langchain.vectorstores import Milvus
-import os
 
 
 load_dotenv()
@@ -31,14 +29,11 @@ project_id = parameters["watsonx_project_id"]
 
 
 def connection_setup(connection_name: str):
-    """
-    Setup connection based on connection_name.
-    Supports both 'milvus_connect' and 'opensearch_connect'.
-    """
+    """Setup OpenSearch connection."""
     logger.debug("Initializing connection with connection_name=%s", connection_name)
 
-    if connection_name not in ["milvus_connect", "opensearch_connect"]:
-        raise ValueError(f"Unsupported connection: {connection_name}. Supported: milvus_connect, opensearch_connect")
+    if connection_name != "opensearch_connect":
+        raise ValueError(f"Unsupported connection: {connection_name}. Supported: opensearch_connect")
 
     connection = ConnectionFactory.create_connection(connection_name, parameters)
     client, connection_args = connection.connect()
@@ -46,9 +41,7 @@ def connection_setup(connection_name: str):
 
     return client, connection_args
 
-# Initialize connections lazily - will be set up when needed
-milvus_client = None
-milvus_connection_args = None
+# Initialize connection lazily
 opensearch_client = None
 opensearch_connection_args = None
 
@@ -71,53 +64,6 @@ def get_embedding():
     logger.debug("Embedding model initialized with provider: %s", embedding_provider)
     
     return embedding
-
-
-def search_milvus(client, connection_args, index_name: str, question: str, top_k: int = 5):
-    """
-    Dense search only using Milvus (L2 + IVF_FLAT)
-    """
-    logger.info("Milvus search started")
-    logger.debug("Search parameters: index_name=%s, top_k=%s", index_name, top_k)
-    try:
-        embedding = get_embedding()
-
-        hybrid_search = (parameters.get("milvus_hybrid_search", "false").lower()== "true")
-        logger.debug("Hybrid search enabled: %s", hybrid_search)
-
-        if hybrid_search:
-            vector_field_name = "dense"
-        else:
-            vector_field_name = "vector"
-
-        logger.info(f"Index name: {index_name} and question: {question}")
-
-        logger.info("Initializing Milvus vector store...")
-        vector_store = Milvus(
-            embedding_function=embedding,
-            vector_field=vector_field_name,
-            connection_args=connection_args,
-            primary_field="id",
-            consistency_level="Strong",
-            collection_name=index_name,
-        )
-
-        logger.info("Performing similarity search in Milvus...")
-
-        if parameters["vectorsearch_top_n_results"]:
-            top_k = int(parameters["vectorsearch_top_n_results"])
-        
-        logger.info("Performing similarity search in Milvus")
-        search_result = vector_store.similarity_search_with_score(
-            question,
-            k=top_k
-        )
-        logger.debug("Search result: %s", search_result)
-        return search_result
-
-    except Exception as e:
-        logger.exception("Milvus search failed: %s", e)
-        raise
 
 
 def search_opensearch(client, index_name: str, question: str, top_k: int = 5):
@@ -191,8 +137,7 @@ def search_opensearch(client, index_name: str, question: str, top_k: int = 5):
 
 def generate_answer(payload: dict):
     """
-    Called from /query route.
-    Supports both Milvus and OpenSearch based on connection_name.
+    Called from /query route. Uses IBM watsonx.data OpenSearch.
     """
 
     logger.info("Generating answer for query")
@@ -200,20 +145,13 @@ def generate_answer(payload: dict):
 
     question = payload["query"]
     index_name = payload["index_name"]
-    connection_name = payload.get("connection_name", "milvus_connect")
+    connection_name = payload.get("connection_name", "opensearch_connect")
 
-    # Setup connection dynamically based on connection_name
     logger.info(f"Setting up {connection_name} connection for query")
     client, connection_args = connection_setup(connection_name)
     logger.debug(f"{connection_name} connection args: %s", connection_args)
 
-    # Perform search based on connection type
-    if connection_name == "milvus_connect":
-        search_result = search_milvus(client, connection_args, index_name, question)
-    elif connection_name == "opensearch_connect":
-        search_result = search_opensearch(client, index_name, question)
-    else:
-        raise ValueError(f"Unsupported connection: {connection_name}")
+    search_result = search_opensearch(client, index_name, question)
 
     if not search_result:
         return [], "No relevant documents found."

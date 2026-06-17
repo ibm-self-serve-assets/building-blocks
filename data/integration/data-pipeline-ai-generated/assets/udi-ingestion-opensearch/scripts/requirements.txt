@@ -1,0 +1,15 @@
+# Python dependencies for UDI Flow Creation Script
+# Python >= 3.12 required
+# Install with: pip install -r requirements.txt
+
+# IBM UDI SDK for watsonx integration
+ibm-udi>=1.0.0
+
+# pydantic is used internally by ibm-udi but not declared in its dependencies
+pydantic>=2.0.0
+
+# Backported type hints — still useful for older type-checking tooling under Python 3.12
+typing-extensions>=4.15.0
+
+# boto3 is used by setup.py to enumerate COS files for the ingest_cpd_connections node
+boto3>=1.26.0

@@ -25,8 +25,8 @@ class COSService:
         and setting up the COS client.
         """
         load_dotenv()
-        self.api_key = os.getenv("IBM_CLOUD_API_KEY")
-        self.instance_id = os.getenv("COS_SERVICE_INSTANCE_ID")
+        self.api_key = os.getenv("IBM_API_KEY") or os.getenv("IBM_CLOUD_API_KEY")
+        self.instance_id = os.getenv("COS_INSTANCE_CRN") or os.getenv("COS_SERVICE_INSTANCE_ID")
         self.endpoint = os.getenv("COS_ENDPOINT")
         self.bucket_name = bucket_name
         self._temp_dir_obj = None
@@ -42,8 +42,8 @@ class COSService:
         Validates required environment variables and logs warnings for missing variables.
         """
         required_vars = {
-            "IBM_CLOUD_API_KEY": self.api_key,
-            "COS_SERVICE_INSTANCE_ID": self.instance_id,
+            "IBM_API_KEY (or IBM_CLOUD_API_KEY)": self.api_key,
+            "COS_INSTANCE_CRN (or COS_SERVICE_INSTANCE_ID)": self.instance_id,
             "COS_ENDPOINT": self.endpoint,
             "COS_BUCKET_NAME": self.bucket_name
         }
@@ -64,11 +64,11 @@ class COSService:
         """
         try:
             return ibm_boto3.client(
-                's3',
+                "s3",
                 ibm_api_key_id=self.api_key,
                 ibm_service_instance_id=self.instance_id,
-                config=Config(signature_version='oauth'),
-                endpoint_url=self.endpoint
+                config=Config(signature_version="oauth"),
+                endpoint_url=self.endpoint,
             )
         except Exception as e:
             logging.exception(f"Error initializing COS client: {e}")

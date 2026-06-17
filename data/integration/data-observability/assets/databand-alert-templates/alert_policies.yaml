@@ -1,0 +1,93 @@
+# Databand Alert Policy Templates
+#
+# These YAML templates define common IBM Databand alert definitions.
+# Apply them via the Databand API or the databand-pipeline-monitor service.
+#
+# POST /api/v1/alert_defs with any section below as the request body.
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. High Null Rate — fires when null_rate exceeds 5 % across any column
+# ─────────────────────────────────────────────────────────────────────────────
+null_rate_policy:
+  name: high-null-rate
+  pipeline_name: "{{ pipeline_name }}"
+  severity: high
+  alert_on_change: false
+  alert_configurations:
+    - type: column_anomaly
+      metric: null_rate
+      operator: gt
+      value: 0.05
+      column: "*"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. Row Count Anomaly — triggers when row count drops > 20 % vs prior run
+# ─────────────────────────────────────────────────────────────────────────────
+row_count_drop_policy:
+  name: row-count-drop
+  pipeline_name: "{{ pipeline_name }}"
+  severity: critical
+  alert_on_change: true
+  alert_configurations:
+    - type: run_anomaly
+      metric: row_count
+      operator: lt
+      # relative percentage: 0.80 = row count < 80% of previous run
+      value: 0.80
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. Schema Drift — fires whenever schema changes are detected
+# ─────────────────────────────────────────────────────────────────────────────
+schema_drift_policy:
+  name: schema-drift-detected
+  pipeline_name: "{{ pipeline_name }}"
+  severity: high
+  alert_on_change: false
+  alert_configurations:
+    - type: schema_change
+      metric: schema_drift
+      operator: eq
+      value: true
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. SLA Breach — fires when run duration exceeds 2 hours
+# ─────────────────────────────────────────────────────────────────────────────
+sla_breach_policy:
+  name: sla-breach
+  pipeline_name: "{{ pipeline_name }}"
+  severity: medium
+  alert_on_change: false
+  alert_configurations:
+    - type: run_duration
+      metric: duration_seconds
+      operator: gt
+      value: 7200
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. Data Quality Score — fires when overall quality score falls below 0.85
+# ─────────────────────────────────────────────────────────────────────────────
+quality_score_policy:
+  name: low-quality-score
+  pipeline_name: "{{ pipeline_name }}"
+  severity: high
+  alert_on_change: false
+  alert_configurations:
+    - type: run_anomaly
+      metric: quality_score
+      operator: lt
+      value: 0.85
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. Duplicate Rate — fires when duplicate row rate exceeds 2 %
+# ─────────────────────────────────────────────────────────────────────────────
+duplicate_rate_policy:
+  name: high-duplicate-rate
+  pipeline_name: "{{ pipeline_name }}"
+  severity: medium
+  alert_on_change: false
+  alert_configurations:
+    - type: column_anomaly
+      metric: duplicate_rate
+      operator: gt
+      value: 0.02
+      column: "*"

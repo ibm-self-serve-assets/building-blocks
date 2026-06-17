@@ -657,10 +657,6 @@ When contributing to this project:
 5. Ensure bootstrap checks pass
 6. Add error handling for edge cases
 
-## License
-
-This project is part of the IBM Data for AI Building Block.
-
 ## Support
 
 For issues and questions:

@@ -193,49 +193,6 @@ async def create_and_check_async_elastic_client(es_connection, elastic_search_mo
     except Exception as e:
         raise ValueError(f"Error: {str(e)}")
 
-def connect_to_milvus_database(db_connection, parameters):
-    import re
-    from pymilvus import connections
-    # Validate and set the default database if not provided
-    db_connection['database'] = db_connection.get('database', 'default')
-    
-    # Define connection parameters
-    connection_params = {
-        'alias': db_connection['database'],
-        'host': db_connection['host'],
-        'port': db_connection['port'],
-        'user': db_connection['username'],
-        'password': db_connection['password'],
-        'secure': True
-    }
-
-    milvus_credentials = {'db_name': db_connection['database'], 'password': db_connection['password'],
-                                   'uri': "https://"+db_connection['host']+":"+db_connection['port'], "secure": True,
-                                  'user': db_connection['username'] }
-
-    # Handle SSL certificate if provided
-    if 'ssl_certificate' in db_connection:
-        ssl_certificate_content = db_connection.get('ssl_certificate', "")
-        cert_file_path = 'milvus_conn.cert'
-        with open(cert_file_path, 'w') as file:
-            file.write(ssl_certificate_content)
-        connection_params['server_pem_path'] = cert_file_path
-        milvus_credentials['server_pem_path']=cert_file_path
-
-    # Connect to Milvus if connection_type is 'milvus'
-    milvus_client = connections.connect(**connection_params)
-
-    print("Successfully connected to milvus database")
-
-    # # Validate the vector_store_index_name using regular expression
-    # regex = r'^[A-Za-z_]+[A-Za-z0-9_]*$' 
-    
-    # # Ensure the index name follows the regex pattern
-    # if not re.match(regex, parameters['vector_store_index_name']):
-    #     raise ValueError(f"ERROR: {parameters['vector_store_index_name']} name can only contain letters, numbers, and underscores.")
-
-    return milvus_client, milvus_credentials
-
 def connect_to_datastax(db_connection,parameters):
     """
     Connects to DataStax.
@@ -786,7 +743,3 @@ def qa_with_llm(client, deployment_id, retreival_flag=False):
     return display(widgets.VBox([ui_title, question_textbox, filters_header, field_textbox, value_textbox, submit_button, result_output]))
 
 
-# Sample Materials, provided under license.</a> <br>
-# Licensed Materials - Property of IBM. <br>
-# © Copyright IBM Corp. 2024, 2025. All Rights Reserved. <br>
-# US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp. 

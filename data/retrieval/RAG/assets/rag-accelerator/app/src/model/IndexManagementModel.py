@@ -4,14 +4,14 @@ from typing import List, Dict, Any, Optional
 
 class ListIndexInput(BaseModel):
     connection_name: str = Field(
-        ...,
-        description="connection name for (milvus_connect/opensearch_connect)",
+        default="opensearch_connect",
+        description="connection name — use 'opensearch_connect'",
     )
-    
+
     class Config:
         json_schema_extra = {
             "example": {
-                "connection_name": "milvus_connect"
+                "connection_name": "opensearch_connect"
             }
         }
 
@@ -24,18 +24,18 @@ class ListIndexResponse(BaseModel):
 
 class DeleteIndexInput(BaseModel):
     connection_name: str = Field(
-        ...,
-        description="connection name for (milvus_connect/opensearch_connect)",
+        default="opensearch_connect",
+        description="connection name — use 'opensearch_connect'",
     )
     index_name: str = Field(
         ...,
-        description="Index name or collection name to delete",
+        description="Index name to delete",
     )
-    
+
     class Config:
         json_schema_extra = {
             "example": {
-                "connection_name": "milvus_connect",
+                "connection_name": "opensearch_connect",
                 "index_name": "example_index_name"
             }
         }

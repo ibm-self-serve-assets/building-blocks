@@ -9,7 +9,6 @@ ibm-watsonx-ai
 
 # Vector databases
 opensearch-py
-pymilvus[bulk_writer]
 
 # Additional dependencies
 requests

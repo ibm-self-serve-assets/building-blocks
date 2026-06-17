@@ -1,0 +1,35 @@
+# Root-level requirements — delegates to app/requirements.txt
+# Install with: pip install -r app/requirements.txt
+#
+# MCP server
+mcp
+fastapi
+uvicorn
+starlette
+python-dotenv
+
+# IBM Cloud
+ibm-cos-sdk
+ibm-cos-sdk-core
+ibm-cos-sdk-s3transfer
+ibm-watsonx-ai==1.4.6
+
+# Document processing
+langchain
+langchain-community
+langchain-text-splitters
+pypdf
+unstructured==0.17.2
+docx2txt
+python-docx
+beautifulsoup4
+lxml
+
+# Vector DBs
+opensearch-py==3.0.0
+
+# Utilities
+pandas>=2.2.0,<2.4.0
+tqdm
+requests
+tiktoken

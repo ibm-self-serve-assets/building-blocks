@@ -887,10 +887,6 @@ Key dependencies (see `requirements.txt` for complete list):
 - **langchain**: Document processing and RAG utilities
 - **unstructured**: Document parsing
 
-## License
-
-[Add your license information]
-
 ## Contributing
 
 [Add contribution guidelines]

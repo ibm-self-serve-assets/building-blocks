@@ -293,9 +293,11 @@ def load_cos_config() -> CosConfig:
 
 
 def load_embedding_config() -> EmbeddingConfig:
+    # IBM_API_KEY is the canonical env var; WATSONX_API_KEY kept as fallback for backwards compat.
+    api_key = (os.getenv("IBM_API_KEY") or os.getenv("WATSONX_API_KEY") or "").strip()
     return EmbeddingConfig(
         watsonx_url=os.getenv("WATSONX_URL", "").strip(),
-        watsonx_api_key=os.getenv("WATSONX_API_KEY", "").strip(),
+        watsonx_api_key=api_key,
         project_id=os.getenv("WATSONX_PROJECT_ID", "").strip(),
         embedding_model_id=os.getenv("EMBEDDING_MODEL_ID", "").strip(),
     )
@@ -782,7 +784,7 @@ async def ingest_from_cos_prefix(
     if not cos_cfg.is_configured():
         raise ValueError("COS is not configured. Set COS_ENDPOINT, COS_API_KEY, COS_INSTANCE_CRN, COS_BUCKET.")
     if not embed_cfg.is_configured():
-        raise ValueError("Embedding is not configured. Set WATSONX_URL, WATSONX_API_KEY, WATSONX_PROJECT_ID, EMBEDDING_MODEL_ID.")
+        raise ValueError("Embedding is not configured. Set IBM_API_KEY (or WATSONX_API_KEY), WATSONX_URL, WATSONX_PROJECT_ID, EMBEDDING_MODEL_ID.")
     if not vdb.is_configured():
         raise ValueError("Vector DB is not configured. Set VECTOR_DB_TYPE and required backend env vars.")
 

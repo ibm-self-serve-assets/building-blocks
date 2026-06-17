@@ -1,89 +1,155 @@
 # Data Streaming Bob Skills
 
-This directory contains Bob skills for data streaming operations using Confluent Kafka.
+Bob skills for real-time data streaming using **Confluent** on IBM Cloud, with Apache Kafka, Apache Flink, and Infrastructure-as-Code support.
 
-## Available Skill
+## Overview
 
-The `data-streaming-confluent.zip` file contains the following skill:
+These skills empower IBM Bob to design and build Confluent-based streaming pipelines on IBM Cloud — covering Terraform IaC provisioning, Kafka topic design, Schema Registry integration, Python producer/consumer patterns, and Apache Flink SQL stream processing.
 
-### data-streaming-confluent
-A comprehensive skill for working with Confluent Kafka, providing capabilities for:
-- Creating Confluent backbone infrastructure
-- Producing messages to Kafka topics
-- Consuming messages from Kafka topics
-- Interacting with Confluent Schema Registry
-- Managing Kafka streaming operations
+## Available Skills
 
-## Installation and Setup
+| Skill | Zip | Use When |
+|---|---|---|
+| `data-streaming-confluent` | [`data-streaming-confluent.zip`](data-streaming-confluent.zip) | Building end-to-end Confluent streaming pipelines: IaC, Kafka topics, schemas, Python clients, Flink SQL |
+| `confluent-iac-terraform` | [`confluent-iac-terraform.zip`](confluent-iac-terraform.zip) | Confluent infrastructure-as-code: Terraform provider for environments, clusters, topics, ACLs, service accounts |
 
-### Step 1: Download the Skill
-Download the `data-streaming-confluent.zip` file from this directory.
+---
 
-### Step 2: Extract the Skill to Bob Workspace
-Extract the contents of `data-streaming-confluent.zip` to your Bob workspace skills directory:
+### `data-streaming-confluent`
+
+A comprehensive skill for building Confluent-based streaming pipelines on IBM Cloud:
+
+- Confluent Terraform provider infrastructure-as-code: environment, cluster, topics, Schema Registry, ACLs, service accounts, API keys
+- Apache Kafka topic design (partitions, retention, compaction, replication factor)
+- Avro / JSON Schema / Protobuf schema authoring and Schema Registry integration
+- `confluent-kafka` Python producer with Schema Registry-aware serializer (`AvroSerializer`)
+- `confluent-kafka` Python consumer with `AvroDeserializer` and consumer-group offset management
+- Apache Flink SQL statement generation for stream filtering, aggregation, and enrichment
+- Confluent Source/Sink connector configuration (IBM COS, IBM Db2, PostgreSQL, S3)
+- Stream Governance: data lineage policy, schema compatibility levels, stream quality rules
+- Multi-environment backbone creation (dev / staging / prod)
+
+### `confluent-iac-terraform`
+
+A focused skill for Confluent infrastructure-as-code with Terraform:
+
+- Confluent Terraform provider (`confluentinc/confluent`) configuration
+- Environment, cluster, topic, Schema Registry resource definitions
+- Service account, API key, and RBAC ACL patterns
+- Variable management with `variables.tf` and `terraform.tfvars`
+- Output blocks for bootstrap servers and API key export
+
+---
+
+## Installation
+
+### Step 1 — Install the skill(s)
+
+The zip files are pre-structured with `.bob/skills/<skill-folder>/` internally. Extract from your **project root**:
 
 ```bash
-# Navigate to your Bob workspace skills directory
-cd /path/to/your/bob/workspace/.bob/skills
-
-# Extract the skill
-unzip /path/to/data-streaming-confluent.zip
+# From the root of your Bob workspace project
+unzip data-streaming-confluent.zip
+unzip confluent-iac-terraform.zip
 ```
 
-After extraction, you should see a `data-streaming-confluent` folder in your `.bob/skills` directory.
-
-### Step 3: Verify Installation
-Check that the skill is properly installed:
-
-```bash
-ls -la .bob/skills/data-streaming-confluent
+This will create:
+```
+.bob/skills/data-streaming-confluent/SKILL.md
+.bob/skills/confluent-iac-terraform/SKILL.md
 ```
 
-You should see the skill files and configuration.
+### Step 2 — Enable in IBM Bob
 
-### Step 4: Activate the Skill
-To use the skill:
-1. Open Bob and select any mode you want to work in
-2. Enable the **Skills** button in that mode
-3. The `data-streaming-confluent` skill will be available for use within that mode
+Open IBM Bob → Skills panel → enable the desired skill(s). Bob will use them as active context for every prompt in this workspace.
 
-## Usage
+### Step 3 — Verify
 
-Once activated, the **data-streaming-confluent** skill provides comprehensive functionality for working with Confluent Kafka:
+Ask Bob: *"What data streaming skills do you have active?"*
 
-- **Confluent Backbone Creation**: Set up and configure Confluent infrastructure backbone
-- **Message Production**: Send messages to Kafka topics
-- **Message Consumption**: Read and process messages from Kafka topics
-- **Schema Management**: Work with Confluent Schema Registry for Avro, JSON, and Protobuf schemas
-- **Stream Processing**: Handle real-time data streaming operations
+---
 
-## Requirements
+## Usage Examples
 
-Before using this skill, ensure you have:
-- Access to a Confluent Kafka cluster
-- Valid credentials and appropriate permissions
-- Schema Registry access (if using schema features)
-- Network connectivity to your Kafka cluster
+Once activated, you can ask Bob:
 
-## Configuration
+- *"Create a Confluent environment and Kafka cluster using Terraform for IBM Cloud"*
+- *"Design Kafka topics for an IoT sensor events pipeline with 12 partitions and 7-day retention"*
+- *"Generate a Python Avro producer with Schema Registry for Confluent on IBM Cloud"*
+- *"Write a Flink SQL statement to aggregate sensor events by device and 5-minute windows"*
+- *"Configure a Confluent IBM COS sink connector to archive Kafka topics to object storage"*
 
-After installation, you may need to configure the skill with your Kafka cluster details:
-- Kafka broker endpoints
-- Authentication credentials
-- Schema Registry URL (if applicable)
-- Topic names and configurations
+---
 
-Refer to the skill's internal documentation for specific configuration parameters.
+## What Bob Can Help You Build
+
+With these skills, Bob can generate:
+
+```
+terraform/
+├── providers.tf          # Confluent + IBM Cloud providers
+├── variables.tf          # Environment-specific inputs
+├── main.tf               # Topics, schemas, connectors, ACLs, service accounts
+└── outputs.tf            # Bootstrap servers, API keys, .env output
+
+python/
+├── requirements.txt      # confluent-kafka[avro], fastavro
+├── produce_messages.py   # Schema Registry-aware Avro producer
+├── consume_messages.py   # Avro consumer with consumer-group management
+└── sample-transactions.json
+
+flink/
+└── statements.sql        # Flink SQL stream processing jobs
+```
+
+---
+
+## Prerequisites
+
+Before using these skills, ensure you have:
+
+- Confluent Cloud account on IBM Cloud
+- Confluent Cloud API key and secret
+- Terraform >= 1.3 (for infrastructure provisioning)
+- Python 3.10+ with `confluent-kafka[avro]` and `fastavro`
+
+## Skill Capabilities Summary
+
+| Capability | data-streaming-confluent | confluent-iac-terraform |
+|---|---|---|
+| Terraform IaC | ✅ | ✅ |
+| Kafka Topic Design | ✅ | ✅ |
+| Avro/JSON Schema Registry | ✅ | ✅ |
+| Python Producer/Consumer | ✅ | — |
+| Apache Flink SQL | ✅ | — |
+| Connector Config (COS, Db2) | ✅ | — |
+| Stream Governance | ✅ | — |
+| ACL & RBAC Patterns | ✅ | ✅ |
+
+## Confluent Resource Reference
+
+| Resource | Terraform Resource | Description |
+|---|---|---|
+| Environment | `confluent_environment` | Logical namespace for clusters |
+| Kafka Cluster | `confluent_kafka_cluster` | Basic / Standard / Dedicated |
+| Topic | `confluent_kafka_topic` | Event stream with partition config |
+| Schema Registry | `confluent_schema_registry_cluster` | Avro/JSON/Protobuf schema store |
+| Service Account | `confluent_service_account` | Auth principal for producers/consumers |
+| API Key | `confluent_api_key` | Kafka and Schema Registry credentials |
+| Connector | `confluent_connector` | Managed source/sink for external systems |
 
 ## Troubleshooting
 
-If the skill doesn't appear after installation:
-1. Verify the extraction path is correct (`.bob/skills/`)
-2. Check file permissions
-3. Restart Bob to refresh the skills list
-4. Ensure you've enabled the Skills button in your current mode
-5. Review Bob logs for any error messages
+**Skill doesn't appear after installation:**
+1. Verify `.bob/skills/data-streaming-confluent/SKILL.md` exists
+2. Restart Bob to refresh the skills list
+3. Ensure you've enabled the Skills button in your current mode
 
-## Support
+**Bob generates incorrect Kafka producer code:**
+1. Specify `confluent-kafka` not `kafka-python` in your request
+2. Mention Schema Registry if using Avro serialization
 
-For issues or questions about this skill, please refer to the main documentation or contact your administrator.
+## Related
+
+- [`../README.md`](../README.md) — Data Streaming building block overview
+- [`../assets/`](../assets/) — Deployable Confluent streaming assets

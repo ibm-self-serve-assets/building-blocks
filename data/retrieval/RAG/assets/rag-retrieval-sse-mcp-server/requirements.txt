@@ -1,0 +1,19 @@
+# Root-level requirements — delegates to app/requirements.txt
+# Install with: pip install -r app/requirements.txt
+#
+# MCP server (SSE transport)
+mcp
+fastapi
+uvicorn[standard]
+starlette
+python-dotenv
+pydantic
+
+# IBM watsonx.ai for embeddings and generation
+ibm-watsonx-ai
+
+# Vector databases
+opensearch-py
+
+# Utilities
+requests

@@ -1,0 +1,8 @@
+openlineage-integration-common==1.26.0
+openlineage-python==1.26.0
+requests==2.32.5
+python-dotenv==1.2.1
+tenacity==9.1.2
+click==8.3.1
+PyYAML==6.0.3
+ibm-cloud-sdk-core==3.24.2

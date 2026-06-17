@@ -1,0 +1,17 @@
+# Root-level requirements — delegates to app/requirements.txt
+# Install with: pip install -r app/requirements.txt
+#
+# FastAPI and server
+fastapi
+uvicorn[standard]
+python-dotenv
+pydantic
+
+# IBM watsonx.ai for embeddings
+ibm-watsonx-ai
+
+# Vector databases
+opensearch-py
+
+# Utilities
+requests

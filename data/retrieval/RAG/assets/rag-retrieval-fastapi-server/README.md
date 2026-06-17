@@ -548,10 +548,6 @@ for result in results['results']:
 - **OpenAPI Spec**: Available at `http://your-app-url/openapi.json`
 - **IBM Code Engine Docs**: https://cloud.ibm.com/docs/codeengine
 
-## License
-
-This project is part of the RAG retrieval system for the retail application.
-
 ## Related Projects
 
 - **RAG Ingestion MCP Server**: For ingesting documents into vector databases

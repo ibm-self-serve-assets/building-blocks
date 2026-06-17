@@ -27,7 +27,6 @@ ibm-watsonx-ai==1.4.6
 
 # Vector DBs (notebook)
 opensearch-py==3.0.0
-pymilvus[bulk_writer]==2.5.11
 
 # Avoid source-build issues on Windows
 pandas>=2.2.0,<2.4.0
