@@ -8,12 +8,12 @@ This directory contains building blocks for data integration — enabling data p
 
 | Scenario | Building Block |
 |---|---|
-| Need AI to generate a DataStage ingestion pipeline from a plain-English description | [`data-pipeline-ai-generated/`](data-pipeline-ai-generated/) |
-| Ingest PDFs, DOCX, or HTML documents into a structured pipeline | [`data-pipeline-ai-generated/data-ingestion/`](data-pipeline-ai-generated/data-ingestion/) |
-| Process real-time Kafka event streams with Flink SQL or Python producers/consumers | [`data-streaming/`](data-streaming/) |
-| Provision a complete Confluent environment as Terraform IaC | [`data-streaming/`](data-streaming/) |
-| Monitor data pipeline health, surface quality anomalies, and track SLA breaches | [`data-observability/`](data-observability/) |
-| Emit OpenLineage events from any Python, DataStage, or Spark pipeline | [`data-observability/`](data-observability/) |
+| Need AI to generate a DataStage ingestion pipeline from a plain-English description | [`data-pipeline-ai-generated/`](data-pipeline-ai-generated/README.md) |
+| Ingest PDFs, DOCX, or HTML documents into a structured pipeline | [`data-pipeline-ai-generated/assets/udi-ingestion-opensearch/`](data-pipeline-ai-generated/assets/udi-ingestion-opensearch/README.md) |
+| Process real-time Kafka event streams with Flink SQL or Python producers/consumers | [`data-streaming/`](data-streaming/README.md) |
+| Provision a complete Confluent environment as Terraform IaC | [`data-streaming/`](data-streaming/README.md) |
+| Monitor data pipeline health, surface quality anomalies, and track SLA breaches | [`data-observability/`](data-observability/README.md) |
+| Emit OpenLineage events from any Python, DataStage, or Spark pipeline | [`data-observability/`](data-observability/README.md) |
 
 ---
 
@@ -71,8 +71,8 @@ Open IBM Bob → Skills panel → enable the skill. Bob will use it as active co
 
 ## Building Blocks
 
-### 1. Data Pipeline (AI Generated)
-**Location**: [`data-pipeline-ai-generated/`](data-pipeline-ai-generated/)
+### 1. Data Ingestion — AI Generated
+**Location**: [`data-pipeline-ai-generated/`](data-pipeline-ai-generated/README.md)
 **IBM Products**: IBM Bob, IBM DataStage, IBM UDI, IBM Docling, IBM watsonx.data
 **Product Components**: DataStage connectors; CDC (Change Data Capture); Docling document parsing; Unstructured Data Integration (UDI); IBM COS
 
@@ -85,16 +85,16 @@ Build and run batch, real-time, replication, and unstructured data pipelines wit
 - Schema mapping, validation, and error handling
 
 **Bob Assets**:
-- `data-ingestion/bob-modes/base-modes/data-ingestion.zip` — Bob mode for AI-generated pipelines
-- `data-ingestion/bob-skills/data-ingestion-structured.zip` — Structured ingestion skill
-- `data-ingestion/bob-skills/data-ingestion-unstructured.zip` — Unstructured ingestion skill
+- [`data-pipeline-ai-generated/bob-modes/base-modes/data-ingestion.zip`](data-pipeline-ai-generated/bob-modes/base-modes/data-ingestion.zip) — Bob mode for AI-generated pipelines
+- [`data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip`](data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip) — Structured ingestion skill
+- [`data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip`](data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip) — Unstructured ingestion skill
 
-[View Details →](data-pipeline-ai-generated/)
+[View Details →](data-pipeline-ai-generated/README.md)
 
 ---
 
 ### 2. Data Streaming
-**Location**: [`data-streaming/`](data-streaming/)
+**Location**: [`data-streaming/`](data-streaming/README.md)
 **IBM Products**: Confluent (on IBM Cloud)
 **Product Components**: Apache Kafka topics; Confluent Schema Registry; Apache Flink SQL; Confluent Connectors; Stream Governance; Terraform IaC
 
@@ -110,14 +110,14 @@ Supports real-time event ingestion, streaming pipelines, and stream processing f
 - Source and sink connectors for IBM services (COS, Db2, watsonx.data)
 
 **Bob Assets**:
-- `bob-skills/data-streaming-confluent.zip` — Confluent Terraform IaC + Flink SQL + Python patterns skill
+- [`data-streaming/bob-skills/data-streaming-confluent.zip`](data-streaming/bob-skills/data-streaming-confluent.zip) — Confluent Terraform IaC + Flink SQL + Python patterns skill
 
-[View Details →](data-streaming/)
+[View Details →](data-streaming/README.md)
 
 ---
 
 ### 3. Data Observability
-**Location**: [`data-observability/`](data-observability/)
+**Location**: [`data-observability/`](data-observability/README.md)
 **IBM Products**: IBM Databand
 **Product Components**: Databand REST API v1; OpenLineage HTTP transport; IBM Cloud IAM; IBM Cloud Object Storage
 
@@ -131,10 +131,10 @@ Monitor and ensure data pipeline quality and reliability using IBM Databand — 
 - FastAPI service for Databand API integration
 
 **Bob Assets**:
-- `bob-modes/base-modes/data-observability-builder.zip` — Bob mode for observability development
-- `bob-skills/databand-pipeline-setup.zip` — Databand pipeline onboarding skill
+- [`data-observability/bob-modes/base-modes/data-observability-builder.zip`](data-observability/bob-modes/base-modes/data-observability-builder.zip) — Bob mode for observability development
+- [`data-observability/bob-skills/databand-pipeline-setup.zip`](data-observability/bob-skills/databand-pipeline-setup.zip) — Databand pipeline onboarding skill
 
-[View Details →](data-observability/)
+[View Details →](data-observability/README.md)
 
 ---
 

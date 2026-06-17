@@ -84,7 +84,7 @@ Open IBM Bob → Skills panel → enable `astradb-nosql-design`.
 ## Building Blocks
 
 ### 1. Astra DB NoSQL CRUD Service
-**Location**: `astradb/assets/astradb-nosql-crud/`
+**Location**: [`astradb/assets/astradb-nosql-crud/`](astradb/assets/astradb-nosql-crud/README.md)
 **IBM Products**: IBM HCD (Astra DB)
 **Description**: FastAPI service providing full CRUD operations on Astra DB NoSQL collections using `astrapy` Data API with MongoDB-style filter expressions.
 
@@ -131,20 +131,13 @@ curl -X POST http://localhost:8080/collections/find \
 
 ---
 
-## Bob Modes
+## IBM Bob — Your Fellow Developer
 
-- **[`astradb/bob-modes/`](./astradb/bob-modes/)**: AI mode for Astra DB NoSQL data modeling and CRUD
-  - **Install**: copy [`astradb/bob-modes/base-modes/nosql-astradb-builder.zip`](./astradb/bob-modes/base-modes/nosql-astradb-builder.zip) to your Bob modes directory
+**Bob Mode**: [`astradb/bob-modes/base-modes/nosql-astradb-builder.zip`](astradb/bob-modes/base-modes/nosql-astradb-builder.zip) — NoSQL Astra DB data modeling and CRUD specialist
 
-## Bob Skills
+**Bob Skill**: [`astradb/bob-skills/astradb-nosql-design.zip`](astradb/bob-skills/astradb-nosql-design.zip) — Astra DB document modeling, MongoDB-style CRUD, bulk operations, collection schema design
 
-Install by extracting the zip into your Bob workspace `.bob/skills/` directory:
-
-| Skill | Zip | Capabilities |
-|---|---|---|
-| `astradb-nosql-design` | [`astradb/bob-skills/astradb-nosql-design.zip`](./astradb/bob-skills/astradb-nosql-design.zip) | Astra DB document modeling, MongoDB-style CRUD, bulk operations, collection schema design, data migration patterns |
-
-See [`astradb/bob-skills/README.md`](./astradb/bob-skills/README.md) for full installation instructions.
+See [`astradb/bob-skills/README.md`](astradb/bob-skills/README.md) for full installation instructions.
 
 ## Architecture
 

@@ -71,7 +71,7 @@ Open IBM Bob → Skills panel → enable the skill. Bob will use it as active co
 ## Building Blocks
 
 ### 1. RAG (Retrieval-Augmented Generation)
-**Location**: [`RAG/`](RAG/)
+**Location**: [`RAG/`](RAG/README.md)
 **IBM Products**: IBM watsonx.ai, IBM watsonx.data (OpenSearch), IBM Cloud Object Storage
 **Product Components**: RAG Accelerator; OpenSearch; IBM watsonx.ai embeddings; MCP Servers (SSE)
 
@@ -87,18 +87,18 @@ Complete RAG pipeline with document ingestion, embedding generation, vector stor
 - IBM Bob, Claude, and other AI assistant integration via MCP
 
 **Bob Assets**:
-- `bob-modes/base-modes/rag-builder.zip` — End-to-end RAG pipeline builder mode
-- `bob-modes/base-modes/rag-ingestion.zip` — RAG ingestion specialist mode
-- `bob-modes/base-modes/rag-retrieval.zip` — RAG retrieval + generation specialist mode
-- `bob-skills/rag-pipeline-builder.zip` — RAG pipeline design skill
-- `bob-skills/rag-mcp-server-builder.zip` — MCP server development skill
+- [`RAG/bob-modes/base-modes/rag-builder.zip`](RAG/bob-modes/base-modes/rag-builder.zip) — End-to-end RAG pipeline builder mode
+- [`RAG/bob-modes/base-modes/rag-ingestion.zip`](RAG/bob-modes/base-modes/rag-ingestion.zip) — RAG ingestion specialist mode
+- [`RAG/bob-modes/base-modes/rag-retrieval.zip`](RAG/bob-modes/base-modes/rag-retrieval.zip) — RAG retrieval + generation specialist mode
+- [`RAG/bob-skills/rag-pipeline-builder.zip`](RAG/bob-skills/rag-pipeline-builder.zip) — RAG pipeline design skill
+- [`RAG/bob-skills/rag-mcp-server-builder.zip`](RAG/bob-skills/rag-mcp-server-builder.zip) — MCP server development skill
 
-[View Details →](RAG/)
+[View Details →](RAG/README.md)
 
 ---
 
-### 2. Hybrid Search
-**Location**: [`vector-search/`](vector-search/)
+### 2. Vector Search — Hybrid Search (OpenSearch)
+**Location**: [`vector-search/`](vector-search/README.md)
 **IBM Products**: IBM watsonx.data (OpenSearch), IBM watsonx.ai
 **Product Components**: OpenSearch k-NN; IBM watsonx.ai embeddings; IBM COS; IBM Docling
 
@@ -114,15 +114,15 @@ Build hybrid search solutions combining semantic vector search and BM25 keyword 
 - Score normalisation and result ranking
 
 **Bob Assets**:
-- `opensearch/bob-modes/base-modes/opensearch-builder.zip` — OpenSearch hybrid search mode
-- `opensearch/bob-skills/opensearch-vector-search.zip` — OpenSearch k-NN + hybrid search skill
+- [`vector-search/opensearch/bob-modes/base-modes/opensearch-builder.zip`](vector-search/opensearch/bob-modes/base-modes/opensearch-builder.zip) — OpenSearch hybrid search mode
+- [`vector-search/opensearch/bob-skills/opensearch-vector-search.zip`](vector-search/opensearch/bob-skills/opensearch-vector-search.zip) — OpenSearch k-NN + hybrid search skill
 
-[View Details →](vector-search/)
+[View Details →](vector-search/README.md)
 
 ---
 
-### 3. No-SQL Database
-**Location**: [`no-sql-database/`](no-sql-database/)
+### 3. NoSQL Database — Astra DB / watsonx.data DataStax
+**Location**: [`no-sql-database/`](no-sql-database/README.md)
 **IBM Products**: IBM HCD (Astra DB / watsonx.data DataStax)
 **Product Components**: Astra DB Data API; astrapy SDK; Apache Cassandra-compatible storage
 
@@ -139,15 +139,15 @@ Provides large-scale NoSQL storage with Cassandra compatibility using DataStax A
 - FastAPI REST service with Docker deployment
 
 **Bob Assets**:
-- `astradb/bob-modes/base-modes/nosql-astradb-builder.zip` — NoSQL Astra DB mode
-- `astradb/bob-skills/astradb-nosql-design.zip` — Document modeling + CRUD skill
+- [`no-sql-database/astradb/bob-modes/base-modes/nosql-astradb-builder.zip`](no-sql-database/astradb/bob-modes/base-modes/nosql-astradb-builder.zip) — NoSQL Astra DB mode
+- [`no-sql-database/astradb/bob-skills/astradb-nosql-design.zip`](no-sql-database/astradb/bob-skills/astradb-nosql-design.zip) — Document modeling + CRUD skill
 
-[View Details →](no-sql-database/)
+[View Details →](no-sql-database/README.md)
 
 ---
 
-### 4. Zero Copy
-**Location**: [`zero-copy/`](zero-copy/)
+### 4. Zero-Copy Lakehouse
+**Location**: [`zero-copy/`](zero-copy/README.md)
 **IBM Products**: IBM watsonx.data
 **Product Components**: Apache Iceberg; Delta Lake; Presto SQL engine; Apache Spark; IBM COS; IBM Db2; watsonx.data REST API v2
 
@@ -162,11 +162,11 @@ Federated analytics without copying data. Query across IBM COS, AWS S3, IBM Db2,
 - Iceberg compaction, snapshot management, and schema evolution
 
 **Bob Assets**:
-- `zero-copy-lakehouse/bob-modes/base-modes/lakehouse-setup.zip` — Lakehouse setup mode
-- `zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip` — watsonx.data setup skill
-- `zero-copy-lakehouse/bob-skills/iceberg-table-management.zip` — Iceberg / Delta Lake lifecycle skill
+- [`zero-copy/zero-copy-lakehouse/bob-modes/base-modes/lakehouse-setup.zip`](zero-copy/zero-copy-lakehouse/bob-modes/base-modes/lakehouse-setup.zip) — Lakehouse setup mode
+- [`zero-copy/zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip`](zero-copy/zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip) — watsonx.data setup skill
+- [`zero-copy/zero-copy-lakehouse/bob-skills/iceberg-table-management.zip`](zero-copy/zero-copy-lakehouse/bob-skills/iceberg-table-management.zip) — Iceberg / Delta Lake lifecycle skill
 
-[View Details →](zero-copy/)
+[View Details →](zero-copy/README.md)
 
 ---
 

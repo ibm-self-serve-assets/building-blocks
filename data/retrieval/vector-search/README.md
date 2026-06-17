@@ -1,4 +1,4 @@
-# Hybrid Search
+# Vector Search — Hybrid Search (OpenSearch)
 
 **Core Capability**: Retrieval
 **IBM Products**: IBM watsonx.data (OpenSearch), IBM watsonx.ai, IBM Cloud Object Storage

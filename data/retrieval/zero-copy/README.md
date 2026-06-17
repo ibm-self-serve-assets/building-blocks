@@ -1,4 +1,4 @@
-# Zero Copy
+# Zero-Copy Lakehouse
 
 **Core Capability**: Retrieval
 **IBM Products**: IBM watsonx.data
@@ -77,7 +77,7 @@ Open IBM Bob → Skills panel → enable both skills. Bob will use them as activ
 ## Building Blocks
 
 ### Zero-Copy Lakehouse
-**Location**: [`zero-copy-lakehouse/`](zero-copy-lakehouse/)
+**Location**: [`zero-copy-lakehouse/`](zero-copy-lakehouse/README.md)
 **IBM Products**: IBM watsonx.data (Apache Iceberg + Presto), IBM COS, IBM Db2
 **Description**: Complete zero-copy lakehouse implementation — Python automation script for watsonx.data environment provisioning, federated SQL patterns, and Iceberg table lifecycle management.
 
@@ -97,11 +97,11 @@ python watsonxdata_setup.py
 - Sample data load
 
 **Bob Assets**:
-- `bob-modes/base-modes/lakehouse-setup.zip` — Lakehouse setup and federated SQL mode
-- `bob-skills/watsonxdata-lakehouse.zip` — watsonx.data REST API v2 provisioning skill
-- `bob-skills/iceberg-table-management.zip` — Iceberg DDL, DML, time-travel, compaction skill
+- [`zero-copy-lakehouse/bob-modes/base-modes/lakehouse-setup.zip`](zero-copy-lakehouse/bob-modes/base-modes/lakehouse-setup.zip) — Lakehouse setup and federated SQL mode
+- [`zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip`](zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip) — watsonx.data REST API v2 provisioning skill
+- [`zero-copy-lakehouse/bob-skills/iceberg-table-management.zip`](zero-copy-lakehouse/bob-skills/iceberg-table-management.zip) — Iceberg DDL, DML, time-travel, compaction skill
 
-[View Details →](zero-copy-lakehouse/)
+[View Details →](zero-copy-lakehouse/README.md)
 
 ---
 

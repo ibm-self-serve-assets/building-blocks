@@ -67,7 +67,7 @@ Open IBM Bob → Skills panel → enable the skill. Bob will use it as active co
 ## Building Blocks
 
 ### 1. Data Quality
-**Location**: [`data-quality/`](data-quality/)
+**Location**: [`data-quality/`](data-quality/README.md)
 **IBM Products**: IBM watsonx.data Intelligence
 **Product Components**: Data Quality Rules API; Data Profiling API; IBM Cloud IAM; IBM Cloud Object Storage
 
@@ -82,15 +82,15 @@ Ensure data quality through automated validation rules and quality checks using 
 - FastAPI service wrapping the DAI API
 
 **Bob Assets**:
-- `bob-modes/base-modes/data-quality-builder.zip` — Bob mode for DQ rule authoring
-- `bob-skills/data-quality-rules.zip` — DQ rule implementation skill (all 5 types)
+- [`data-quality/bob-modes/base-modes/data-quality-builder.zip`](data-quality/bob-modes/base-modes/data-quality-builder.zip) — Bob mode for DQ rule authoring
+- [`data-quality/bob-skills/data-quality-rules.zip`](data-quality/bob-skills/data-quality-rules.zip) — DQ rule implementation skill (all 5 types)
 
-[View Details →](data-quality/)
+[View Details →](data-quality/README.md)
 
 ---
 
 ### 2. Data Lineage
-**Location**: [`data-lineage/`](data-lineage/)
+**Location**: [`data-lineage/`](data-lineage/README.md)
 **IBM Products**: IBM watsonx.data Intelligence (Manta data lineage), IBM Databand
 **Product Components**: Manta data lineage REST API; OpenLineage HTTP transport; IBM Cloud IAM; IBM COS
 
@@ -105,15 +105,15 @@ Track data transformations and maintain a full lineage graph for all IBM Cloud d
 - FastAPI service for event collection
 
 **Bob Assets**:
-- `bob-modes/base-modes/data-lineage-builder.zip` — Bob mode for lineage instrumentation
-- `bob-skills/openlineage-instrumentation.zip` — OpenLineage + Manta integration skill
+- [`data-lineage/bob-modes/base-modes/data-lineage-builder.zip`](data-lineage/bob-modes/base-modes/data-lineage-builder.zip) — Bob mode for lineage instrumentation
+- [`data-lineage/bob-skills/openlineage-instrumentation.zip`](data-lineage/bob-skills/openlineage-instrumentation.zip) — OpenLineage + Manta integration skill
 
-[View Details →](data-lineage/)
+[View Details →](data-lineage/README.md)
 
 ---
 
 ### 3. Text2SQL
-**Location**: [`text2sql/`](text2sql/)
+**Location**: [`text2sql/`](text2sql/README.md)
 **IBM Products**: IBM watsonx.data Intelligence
 **Product Components**: Text2SQL API; DAI Metadata Enrichment API; IBM Cloud IAM
 
@@ -128,11 +128,11 @@ Convert natural language questions to SQL queries using IBM watsonx.data Intelli
 - Deployable via IBM Code Engine or Red Hat OpenShift
 
 **Bob Assets**:
-- `bob-modes/base-modes/text-to-sql.zip` — Bob mode for Text2SQL development
-- `bob-skills/text2sql-metadata-enrichment.zip` — Metadata enrichment skill
-- `bob-skills/text2sql-query-optimizer.zip` — Query accuracy optimization skill
+- [`text2sql/bob-modes/base-modes/text-to-sql.zip`](text2sql/bob-modes/base-modes/text-to-sql.zip) — Bob mode for Text2SQL development
+- [`text2sql/bob-skills/text2sql-metadata-enrichment.zip`](text2sql/bob-skills/text2sql-metadata-enrichment.zip) — Metadata enrichment skill
+- [`text2sql/bob-skills/text2sql-query-optimizer.zip`](text2sql/bob-skills/text2sql-query-optimizer.zip) — Query accuracy optimization skill
 
-[View Details →](text2sql/)
+[View Details →](text2sql/README.md)
 
 ---
 

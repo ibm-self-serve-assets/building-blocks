@@ -14,10 +14,10 @@ Comprehensive data ingestion for IBM watsonx.data covering both **structured** d
 
 | Scenario | Asset |
 |---|---|
-| Ingest from IBM Db2, PostgreSQL, MySQL, or Oracle into watsonx.data | [`assets/structured-data/`](assets/structured-data/) — DataStage CDC patterns |
-| Ingest PDFs, DOCX, HTML, images, or email documents into a pipeline | [`assets/unstructured-data/`](assets/unstructured-data/) — IBM Docling + UDI patterns |
-| Use IBM UDI + OpenSearch for unstructured document search | [`assets/udi-ingestion-opensearch/`](assets/udi-ingestion-opensearch/) |
-| Ask Bob to generate a pipeline from a plain-English description | Activate **Data Ingestion** Bob Mode (`data-ingestion.zip`) |
+| Ingest from IBM Db2, PostgreSQL, MySQL, or Oracle into watsonx.data | Activate **Data Ingestion** Bob Mode → Bob generates the DataStage CDC pipeline |
+| Ingest PDFs, DOCX, HTML, images, or email documents into a pipeline | Activate **Data Ingestion** Bob Mode → Bob generates the IBM Docling + UDI pipeline |
+| Use IBM UDI + OpenSearch for unstructured document search | [`assets/udi-ingestion-opensearch/`](assets/udi-ingestion-opensearch/README.md) |
+| Ask Bob to generate a pipeline from a plain-English description | Activate **Data Ingestion** Bob Mode ([`bob-modes/base-modes/data-ingestion.zip`](bob-modes/base-modes/data-ingestion.zip)) |
 
 ---
 

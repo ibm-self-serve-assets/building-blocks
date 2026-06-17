@@ -15,7 +15,7 @@ Use these building blocks when you need to **accelerate delivery** of an IBM dat
 | I want to… | Go here |
 |---|---|
 | Build a RAG pipeline — ingest documents, embed, search, answer questions | [`retrieval/RAG/`](retrieval/RAG/) |
-| Add hybrid vector + keyword search to my app | [`retrieval/vector-search/`](retrieval/vector-search/) |
+| Add hybrid vector + keyword search (OpenSearch) to my app | [`retrieval/vector-search/`](retrieval/vector-search/README.md) |
 | Store and query documents with NoSQL (Cassandra-compatible) | [`retrieval/no-sql-database/`](retrieval/no-sql-database/) |
 | Query across COS, Db2, S3 without copying data | [`retrieval/zero-copy/`](retrieval/zero-copy/) |
 | Build AI-generated DataStage / ingestion pipelines | [`integration/data-pipeline-ai-generated/`](integration/data-pipeline-ai-generated/) |
@@ -105,8 +105,9 @@ Describe your source and target in plain English — IBM Bob generates the compl
 
 | Asset | Description |
 |---|---|
-| `assets/structured-data/` | DataStage CDC patterns for relational sources |
-| `assets/unstructured-data/` | IBM Docling + UDI document ingestion patterns |
+| [`assets/udi-ingestion-opensearch/`](integration/data-pipeline-ai-generated/assets/udi-ingestion-opensearch/README.md) | IBM UDI + OpenSearch ingestion pipeline |
+| `bob-skills/data-ingestion-structured.zip` | Bob generates DataStage CDC pipeline (structured sources) |
+| `bob-skills/data-ingestion-unstructured.zip` | Bob generates Docling + UDI pipeline (documents) |
 
 ---
 
