@@ -1,0 +1,8 @@
+scenario_id,scenario_name,scenario_type,is_actual,is_budget,is_forecast,planning_cycle
+ACT,Actual,Actual,1,0,0,Current
+BUD,Budget,Budget,0,1,0,Current
+FC-Q1,Forecast Q1,Forecast,0,0,1,Current-Q1
+FC-Q2,Forecast Q2,Forecast,0,0,1,Current-Q2
+FC-Q3,Forecast Q3,Forecast,0,0,1,Current-Q3
+FC-Q4,Forecast Q4,Forecast,0,0,1,Current-Q4
+PY-ACT,Prior Year Actual,Actual,1,0,0,Prior Year

@@ -1,4 +1,4 @@
-# IBM Turbonomic Resource Management Dashboard
+# IBM Planning Analytics Budget and Forecasting
 
 ---
 
@@ -6,478 +6,758 @@
 
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
-- [← FinOps](../finops/README.md)
+- [← Automated Resource Management](../automated-resource-mgmt/README.md)
 - [Automated Resilience →](../automated-resilience-and-compliance/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Secure](../../secure/quantum-safe/README.md)
+- [Build & Deploy](../../build-and-deploy/README.md)
+- [Secure](../../secure/non-human-identity/README.md)
 
 ---
 
-# IBM Turbonomic Resource Management Dashboard
+# IBM Planning Analytics Budget and Forecasting
 
-A production-ready Dash application for monitoring and managing IBM Turbonomic resources with 8 comprehensive tabs, robust error handling, and beautiful IBM Carbon dark theme.
+A comprehensive Bob skill and mode package for exploring IBM Planning Analytics and TM1 data through natural language queries, enabling business-focused insights, variance analysis, and executive-ready reporting for budget and forecasting workflows.
 
 ## 🎯 Overview
 
-This dashboard provides a complete interface for:
-- **Overview**: Entity distribution, action severity, target health, and savings opportunities
-- **Pending Actions**: Filterable action list with execution capability
-- **Entities**: Entity browser with state distribution and filtering
-- **App Statistics**: Application performance monitoring (simplified version)
-- **Targets**: Target status and inventory management
-- **Groups**: Group management and organization
-- **Kubernetes**: Cluster monitoring
-- **Policies**: Automation policy management
+This building block transforms Planning Analytics into an accessible business intelligence platform for financial planning and analysis, enabling users to:
 
-## ✅ Critical Fixes Implemented
+- 🗣️ **Natural Language Queries** - Ask questions in plain English, not MDX
+- 📊 **Variance Analysis** - Budget vs Actual, Forecast vs Actual, Period-over-Period
+- 🔍 **Outlier Detection** - Identify anomalous patterns requiring attention
+- 📈 **Key Driver Analysis** - Understand what's driving your results
+- 📄 **Executive Reports** - Professional, business-ready formatting
+- 🤖 **AI-Powered Insights** - Automated analysis and recommendations
 
-All critical fixes from the Automated Resource Management mode are implemented:
+## ✅ What's Included
 
-### EC001: Correct API Endpoints
-- ✅ Uses `GET /api/v3/markets/Market/entities` instead of `/api/v3/entities`
-- ✅ Multiple fallback strategies for entity fetching
+This building block provides:
 
-### EC002: Response Normalization
-- ✅ `_to_list()` method handles all API response formats
-- ✅ Handles None, list, dict with wrappers, dict with only 'links'
+### 📦 Bob Skills
+- **planning-analytics-skill.zip** - Complete Planning Analytics skill with:
+  - Natural language to TM1 query translation
+  - Financial analysis capabilities (variance, trend, outlier detection)
+  - Executive reporting templates
+  - Pre-analyzed cube support
+  - Comprehensive usage guide and examples
 
-### EC003: Safe Timestamp Conversion
-- ✅ Handles both ISO 8601 strings and epoch milliseconds
-- ✅ Handles both string and int timestamp formats
-- ✅ Comprehensive error handling with try-except
+### 🎨 Bob Modes
+- **planning-analytics-mode.zip** - Specialized mode configuration with:
+  - TM1 modeling expertise (cubes, dimensions, rules, processes)
+  - Planning Analytics Workspace guidance
+  - REST API and OData integration patterns
+  - Best practices and troubleshooting workflows
+  - Response formatting for business users
 
-### EC004: Server-Side Filtering
-- ✅ Uses `POST /api/v3/search` with regex criteria
-- ✅ 5 fallback strategies for application search
-- ✅ Ensures filters apply BEFORE limit
+### 🔌 Assets
+- **mcp.json** - Model Context Protocol configuration for:
+  - IBM Planning Analytics MCP servers (production and TechZone)
+  - Pre-configured tool permissions
+  - Authentication headers
+  - Timeout and connection settings
 
-### EC005: Dropdown Visibility
-- ✅ Complete CSS styling for all dropdown states
-- ✅ White text on dark background for visibility
-- ✅ Hover, focus, and selected states properly styled
-
-### EC006: None Value Handling
-- ✅ Uses `or {}` pattern for dict defaults
-- ✅ `safe_get()` helper for nested dictionary access
-- ✅ Checks for None before all operations
+### 📊 Sample Dataset
+- **FPA_Variance_Analysis/** - Complete sample dataset for hands-on learning:
+  - 5 dimension files (Time, Account, Department, Scenario, Version)
+  - 1 fact file with 163 financial records spanning 3.5 years
+  - Budget vs Actual variance data with AI-generated explanations
+  - Year-over-Year comparison data (FY2023-2026)
+  - Ready-to-import CSV files for Planning Analytics
+  - Comprehensive README with 20+ example queries and answers
 
 ## 📋 Prerequisites
 
-- Python 3.8 or higher
-- IBM Turbonomic instance (v8.x recommended)
-- Valid Turbonomic credentials with API access
-- Network access to Turbonomic API
+- IBM Planning Analytics or TM1 instance (v11.x or higher recommended)
+- Valid Planning Analytics credentials with API access
+- Network access to Planning Analytics REST API
+- Bob AI assistant with MCP support
+- Planning Analytics Workspace (optional, for enhanced features)
 
 ## 🚀 Quick Start
 
-### 1. Clone or Download
+### 1. Install Bob Skills
+
+Extract the skill package:
 
 ```bash
-cd Turbonomic_BB
+cd optimize/budget-and-forecasting/bob-skills
+unzip planning-analytics-skill.zip -d ~/.bob/skills/planning-analytics
 ```
 
-### 2. Install Dependencies
+Or manually copy to your Bob skills directory.
+
+### 2. Install Bob Modes
+
+Extract the mode package:
 
 ```bash
-# Create virtual environment (recommended)
-python3 -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-
-# Install dependencies
-pip install -r requirements.txt
+cd optimize/budget-and-forecasting/bob-modes/base-modes
+unzip planning-analytics-mode.zip -d ~/.bob/modes/planning-analytics
 ```
 
-### 3. Start the Application
+The mode includes:
+- Custom mode configuration (custom_modes.yaml)
+- Mode rules and workflows (rules-planning-analytics/)
+
+### 3. Configure MCP Servers
+
+Copy the MCP configuration:
 
 ```bash
-# Using Python directly
-python app.py
-
-# Or using the start script
-chmod +x scripts/start.sh
-./scripts/start.sh
+cp optimize/budget-and-forecasting/assets/mcp.json ~/.bob/mcp.json
 ```
 
-### 4. Access the Dashboard
+**Update credentials** in mcp.json:
+- Replace `Authorization` header with your Planning Analytics API key
+- Update server URLs if using different instances
+- Configure timeout values based on your data volume
 
-Open your browser and navigate to:
+### 4. Activate and Use
+
+**In Advanced Mode:**
 ```
-http://localhost:8050
+"Use planning-analytics skill to show Q1 2025 compensation budget vs actual by department"
 ```
 
-### 5. Login
+**In Planning Analytics Mode:**
+```
+"Show Q1 2025 compensation budget vs actual by department"
+```
 
-Enter your Turbonomic credentials:
-- **Host**: Your Turbonomic hostname (e.g., `turbonomic.example.com`)
-- **Username**: Your Turbonomic username
-- **Password**: Your Turbonomic password
-- **Verify SSL**: Check if using valid SSL certificate
+The skill activates automatically for Planning Analytics queries.
 
 ## 📁 Project Structure
 
 ```
-Turbonomic_BB/
-├── app.py                      # Main Dash application (1,416 lines)
-├── turbo_client.py             # Turbonomic API client (589 lines)
-├── requirements.txt            # Python dependencies
-├── README.md                   # This file
+optimize/budget-and-forecasting/
+├── README.md                                    # This file
 ├── assets/
-│   └── custom.css             # IBM Carbon dark theme (545 lines)
-└── scripts/
-    ├── start.sh               # Start script
-    └── stop.sh                # Stop script
+│   ├── mcp.json                                # MCP server configuration
+│   └── FPA_Variance_Analysis/                 # Sample dataset
+│       ├── README.md                           # Dataset documentation
+│       ├── dim_time.csv                        # 42 months (FY2023-2026)
+│       ├── dim_account.csv                     # 17 accounts (Revenue, COGS, OpEx)
+│       ├── dim_department.csv                  # 12 departments
+│       ├── dim_scenario.csv                    # 7 scenarios (Budget, Actual, Forecast, PY)
+│       ├── dim_version.csv                     # 5 versions
+│       └── fact_financial_data.csv             # 163 financial records
+├── bob-modes/
+│   └── base-modes/
+│       └── planning-analytics-mode.zip         # Mode + rules package
+│           ├── custom_modes.yaml               # Mode configuration
+│           └── rules-planning-analytics/       # Mode rules
+│               ├── 1_overview.xml
+│               ├── 2_mcp_tools_reference.xml
+│               ├── 3_workflows.xml
+│               ├── 4_best_practices.xml
+│               ├── 5_response_patterns.xml
+│               └── 6_troubleshooting.xml
+└── bob-skills/
+    └── planning-analytics-skill.zip            # Complete skill package
+        ├── SKILL.md                            # Skill specification
+        ├── README.md                           # Skill overview
+        ├── USAGE-GUIDE.md                      # Detailed usage guide
+        └── examples/                           # Query examples
 ```
 
-## 🎨 Features by Tab
+## 🎨 Features by Use Case
 
-### 1. 📊 Overview Tab
-- **4 Metric Cards**: Total Entities, Pending Actions, Targets, Potential Savings
-- **5 Charts**:
-  - Entity Distribution (donut chart)
-  - Actions by Type (bar chart)
-  - Severity Breakdown (donut chart)
-  - Target Health (bar chart)
-  - Savings Opportunities (placeholder)
-- **Color-coded** action types, severities, and statuses
+### 1. 📊 Budget vs Actual Analysis
 
-### 2. ⚡ Pending Actions Tab
-- **3 Charts**: Action Type Breakdown, By Entity Type, Severity Distribution
-- **4 Filters**: Action Type, Entity Type, Severity, Search
-- **Action Table**: Multi-select with pagination
-- **Execute Selected**: Batch action execution with confirmation modal
-- **Detailed Feedback**: Success/failure toast notifications
+**Example Queries:**
+```
+"Show Q1 2025 compensation budget vs actual by department"
+"What's the variance in marketing expenses for March?"
+"Compare budget to actual revenue by region"
+```
 
-### 3. 🖥️ Entities Tab
-- **3 Charts**: State Distribution, Top Entity Types, By Environment
-- **3 Filters**: Entity Type (single-select), State, Search
-- **Entity Inventory**: Paginated table with 20 rows per page
-- **Client-side Filtering**: Fast filtering from stored data
+**Capabilities:**
+- Automatic variance calculation ($ and %)
+- Material variance identification (>10% or >$100K)
+- Hierarchical rollups (department → region → total)
+- Key findings and insights
+- Data quality notes
 
-### 4. 📈 App Statistics Tab
-- **Search Interface**: Server-side application search with 5 fallback strategies
-- **Application Selection**: Dropdown populated from search results
-- **Time Range Selection**: 24h, 7d, 30d, 90d radio buttons
-- **3 Metric Cards**: ResponseTime, Transaction, Pending Actions with latest values
-- **2 Time-Series Charts**: Transaction (TPS) and ResponseTime (msec)
-- **Chart Features**: Spline curves, area fills, Average/Maximum/Capacity lines
-- **Unified Hover**: Shows all metrics at cursor position
-- **Safe Timestamp Handling**: Supports both ISO 8601 and epoch milliseconds
-- **Status Messages**: Color-coded search feedback (green/yellow/red)
+### 2. 📈 Forecast Analysis
 
-### 5. 🎯 Targets Tab
-- **2 Charts**: Status Overview (donut), Targets by Type (horizontal bar)
-- **Target Inventory**: Filterable and sortable table
-- **Color-coded Status**: Green for Validated, Red for Failed/Discovered
+**Example Queries:**
+```
+"Show forecast vs actual sales for Q4"
+"What's the forecast accuracy by product line?"
+"Compare forecast to actual by region"
+```
 
-### 6. 📁 Groups Tab
-- **2 Charts**: Groups by Type (bar), Groups by Origin (donut)
-- **Group Inventory**: 5 columns with filtering and sorting
-- **Member Count**: Shows number of entities in each group
+**Capabilities:**
+- Forecast accuracy metrics
+- Trend identification
+- Seasonal pattern detection
+- Forecast bias analysis
 
-### 7. ☸️ Kubernetes Tab
-- **Cluster Inventory**: Name, Type, State
-- **Filterable Table**: Native filtering and sorting
+### 3. 🔍 Outlier Detection
 
-### 8. ⚙️ Policies Tab
-- **3 Metric Cards**: Total Policies, Enabled, Default Policies
-- **Policy Status Chart**: Enabled vs Disabled (donut)
-- **Policy Inventory**: 5 columns with color-coded Enabled status
+**Example Queries:**
+```
+"Find unusual expense patterns in March"
+"Identify anomalies in sales data"
+"Show outliers in compensation by department"
+```
+
+**Capabilities:**
+- Statistical outlier detection
+- Pattern anomaly identification
+- Threshold-based alerts
+- Root cause suggestions
+
+### 4. 📉 Trend Analysis
+
+**Example Queries:**
+```
+"Show sales trends over the last 12 months"
+"What are the quarterly revenue patterns?"
+"Display monthly expense trends for 2024"
+```
+
+**Capabilities:**
+- Time series visualization
+- Growth rate calculation
+- Moving averages
+- Seasonal decomposition
+
+### 5. 🎯 Key Driver Analysis
+
+**Example Queries:**
+```
+"What's driving revenue variance in the East region?"
+"Identify top contributors to expense growth"
+"Show key drivers of profit change"
+```
+
+**Capabilities:**
+- Impact analysis
+- Contribution analysis
+- Waterfall breakdowns
+- Driver ranking
+
+### 6. 📄 Executive Reporting
+
+**Example Queries:**
+```
+"Generate executive summary for Q1 results"
+"Create variance report for the board"
+"Produce monthly financial dashboard"
+```
+
+**Capabilities:**
+- Professional formatting
+- Executive summaries
+- Key metrics highlights
+- Actionable recommendations
+- PDF report generation
 
 ## 🔧 Configuration
 
-### Environment Variables (Optional)
+### MCP Server Configuration
 
-You can set these environment variables instead of entering credentials each time:
+The `mcp.json` file configures three MCP servers:
 
-```bash
-export TURBO_HOST="turbonomic.example.com"
-export TURBO_USERNAME="your_username"
-export TURBO_PASSWORD="your_password"
-export TURBO_VERIFY_SSL="false"
+1. **ibm-pa-tools** (Production)
+   - URL: IBM Planning Analytics SaaS
+   - Purpose: Production data queries
+   - Tools: Data explorer, cube discovery, member lookup
+
+2. **ibm-pa-tools-tz-server** (TechZone - Analysis)
+   - URL: TechZone demo environment
+   - Purpose: Process management and execution
+   - Tools: TI process CRUD, execution, monitoring
+
+3. **ibm-pa-tools-tz-cube** (TechZone - Cube)
+   - URL: TechZone demo environment
+   - Purpose: Cube operations and analysis
+   - Tools: Data queries, cube management, impact analysis
+
+### Authentication
+
+Update the `Authorization` header in mcp.json:
+
+```json
+"Authorization": "Basic <your-base64-encoded-credentials>"
 ```
 
-### Custom Port
+To encode credentials:
+```bash
+echo -n "APIKey:your-api-key" | base64
+```
 
-To run on a different port, modify `app.py`:
+### Timeout Configuration
 
-```python
-if __name__ == "__main__":
-    app.run_server(debug=True, host="0.0.0.0", port=8080)  # Change port here
+Adjust timeout values based on your data volume:
+
+```json
+"timeout": 300  // 5 minutes for large queries
 ```
 
 ## 🏗️ Architecture
 
 ### Components
 
-1. **turbo_client.py**: Turbonomic API v3 client
-   - Session-based authentication
-   - Multiple fallback strategies
-   - Comprehensive error handling
-   - Response normalization with `_to_list()`
+1. **Planning Analytics Skill**
+   - Natural language understanding
+   - Query translation (NL → MDX)
+   - Financial analysis algorithms
+   - Report formatting
+   - Business context generation
 
-2. **app.py**: Main Dash application
-   - 8 tabs with dedicated callbacks
-   - Login/authentication system
-   - Data stores for each tab
-   - Interval-based data refresh
+2. **Planning Analytics Mode**
+   - TM1 modeling expertise
+   - Workflow orchestration
+   - Best practices enforcement
+   - Error handling and recovery
+   - Response formatting
 
-3. **custom.css**: IBM Carbon dark theme
-   - Complete dropdown visibility fix
-   - Responsive design
-   - Professional styling
+3. **MCP Integration**
+   - Server connection management
+   - Tool invocation
+   - Response normalization
+   - Error handling
+   - Session management
 
 ### Data Flow
 
 ```
-User Login → Authentication → Session Store
+User Query → Skill Activation → Intent Understanding
     ↓
-Tab Selection → Interval Trigger → Data Loading Callback
+Cube Discovery → Member Lookup → Query Construction
     ↓
-API Client → Turbonomic API → Response Normalization
+MCP Tool Invocation → TM1 API → Data Retrieval
     ↓
-Data Store → Render Callback → UI Components
+Analysis (Variance/Trend/Outlier) → Insight Generation
     ↓
-User Interaction → Filter/Action Callbacks → Updated UI
+Report Formatting → Executive Summary → User Response
 ```
 
-## 🔍 API Integration Details
+## 🔍 MCP Tools Reference
 
-### Endpoints Used
+### Discovery Tools
+- `get_available_tm1_servers` - List available servers
+- `get_tm1_cubes` - List cubes with metadata
+- `list_cubes_with_ai_analysis_metadata` - Check pre-analyzed cubes
+- `get_cube_dimensions` - Get cube dimensions
+- `get_cube_sample_members` - See sample members
+- `lookup_potential_members` - Search for members by name
 
-- `POST /api/v3/login` - Authentication
-- `GET /api/v3/markets/Market/entities` - Fetch entities (CORRECT endpoint)
-- `POST /api/v3/markets/Market/actions` - Get pending actions
-- `POST /api/v3/actions/{uuid}` - Execute actions
-- `POST /api/v3/search` - Server-side filtering
-- `GET /api/v3/targets` - Get targets
-- `GET /api/v3/groups` - Get groups
-- `GET /api/v3/clusters` - Get Kubernetes clusters
-- `GET /api/v3/settingspolicies` - Get policies
+### Query Tools
+- `get_data_from_data_explorer` - Natural language queries (pre-analyzed cubes)
+- `execute_mdx_and_get_view` - Direct MDX queries (any cube)
+- `get_MDX_for_recommended_view` - Generate MDX from natural language
 
-### Fallback Strategies
+### Analysis Tools
+- `perform_impact_analysis` - Identify key drivers
+- `perform_outlier_detection` - Find anomalies
+- `generate_exploration_analysis_report` - Create PDF reports
 
-The client implements multiple fallback strategies for reliability:
-
-1. **Entity Fetching**:
-   - Try `/markets/Market/entities` with type parameter
-   - Fallback to `/entities` with type parameter
-   - Fallback to querying each entity type individually
-
-2. **Application Search** (5 strategies):
-   - POST /search with BusinessApplication
-   - GET /businessapplications
-   - POST /search for each APP_ENTITY_TYPES
-   - GET /markets/Market/entities with app types
-   - Client-side filtering as last resort
-
-3. **Action Execution** (3 formats):
-   - POST /actions/{uuid}?accept=true
-   - POST /actions/{uuid} with payload
-   - POST /actions/{uuid}/accept
+### Management Tools
+- `create_tm1_cube` / `delete_tm1_cube` - Cube management
+- `save_mdx_view` / `get_saved_view` / `list_cube_views` - View management
+- `create_tm1_process` / `update_tm1_process` / `delete_tm1_process` - Process CRUD
+- `execute_tm1_processes_asynchronously` - Execute processes
 
 ## 🐛 Troubleshooting
 
-### Issue: "No entities returned"
+### Issue: "Cube not found"
 
-**Cause**: No targets configured or API endpoint issue
-
-**Solution**:
-1. Verify targets are configured in Turbonomic
-2. Check logs for API endpoint errors
-3. Ensure using `/markets/Market/entities` endpoint
-
-### Issue: "Application search not working"
-
-**Cause**: Client-side filtering or POST /search not available
+**Cause**: Cube name mismatch or server not connected
 
 **Solution**:
-1. Verify using POST /search with criteria
-2. Check Turbonomic version supports /search
-3. Review logs for endpoint errors
+1. Use `get_tm1_cubes` to list available cubes
+2. Verify server connection in mcp.json
+3. Check cube name spelling and case sensitivity
 
-### Issue: "Dropdown text not visible"
+### Issue: "Cube not pre-analyzed"
 
-**Cause**: CSS not loaded or browser cache
-
-**Solution**:
-1. Verify `custom.css` is in `assets/` folder
-2. Clear browser cache (Ctrl+Shift+R)
-3. Check browser dev tools for CSS errors
-
-### Issue: "TypeError on timestamp"
-
-**Cause**: API returns string timestamp
+**Cause**: Cube lacks AI-generated metadata
 
 **Solution**:
-- Already fixed with `safe_timestamp_to_datetime()`
-- Check logs for specific error details
+1. Check status with `list_cubes_with_ai_analysis_metadata`
+2. Switch to `execute_mdx_and_get_view` with MDX query
+3. Use `get_cube_sample_members` to construct MDX
 
-### Issue: "Connection failed"
+### Issue: "Member not found"
+
+**Cause**: Member name mismatch or doesn't exist
+
+**Solution**:
+1. Use `lookup_potential_members` to search for members
+2. Use `get_cube_sample_members` to see available members
+3. Check member name spelling and hierarchy
+
+### Issue: "Query timeout"
+
+**Cause**: Large data volume or slow network
+
+**Solution**:
+1. Increase timeout in mcp.json (default: 300 seconds)
+2. Add filters to reduce data volume
+3. Use aggregated members instead of leaf members
+
+### Issue: "Authentication failed"
 
 **Causes**:
-- Invalid credentials
+- Invalid API key
+- Expired credentials
 - Network connectivity
-- SSL certificate issues
 
 **Solutions**:
-1. Verify credentials are correct
-2. Check network access to Turbonomic
-3. Try with "Verify SSL" unchecked for self-signed certificates
+1. Verify API key is correct and active
+2. Check network access to Planning Analytics
+3. Regenerate API key if expired
+4. Verify Authorization header format in mcp.json
+
+### Issue: "No data returned"
+
+**Cause**: Empty cells or incorrect member selection
+
+**Solution**:
+1. Verify members exist and have data
+2. Check time period selection
+3. Use `get_cube_sample_members` to find populated members
+4. Review dimension selections
 
 ## 📊 Performance
 
-- **Initial Load**: ~2-5 seconds (depends on data volume)
-- **Tab Switch**: Instant (data cached in stores)
-- **Data Refresh**: Automatic every 30-60 seconds
-- **Filter Operations**: Client-side, instant response
-- **Action Execution**: 1-3 seconds per action
+- **Initial Discovery**: ~2-5 seconds (server + cube listing)
+- **Simple Query**: ~1-3 seconds (pre-analyzed cubes)
+- **Complex Query**: ~5-15 seconds (MDX with calculations)
+- **Variance Analysis**: ~3-10 seconds (depends on data volume)
+- **Outlier Detection**: ~10-30 seconds (statistical analysis)
+- **PDF Report**: ~15-45 seconds (includes analysis + formatting)
+
+## 📊 Using the Sample Dataset
+
+### Overview
+
+The included **FPA_Variance_Analysis** dataset provides a complete, ready-to-use example for learning Planning Analytics budget and forecasting workflows with Bob.
+
+**Dataset Contents:**
+- **163 financial records** spanning 3.5 years (FY2023-2026)
+- **5 dimensions**: Time (42 months), Account (17), Department (12), Scenario (7), Version (5)
+- **Real-world variance scenarios** with AI-generated explanations
+- **Year-over-Year data** for trend analysis
+- **Material variances** flagged for investigation
+
+### Quick Start with Sample Data
+
+#### Step 1: Import to Planning Analytics
+
+**Option A: Using Bob (Recommended)**
+```
+"Use planning-analytics skill to create a Financial Performance cube from the CSV files in assets/FPA_Variance_Analysis"
+```
+
+Bob will:
+1. Create dimensions from dim_*.csv files
+2. Build the Financial Performance cube
+3. Load fact data from fact_financial_data.csv
+4. Verify data integrity
+
+**Option B: Manual Import via TurboIntegrator**
+1. Create dimensions: Time, Account, Department, Scenario, Version
+2. Create cube: Financial_Performance
+3. Run TI process to load fact_financial_data.csv
+
+#### Step 2: Try Example Queries
+
+Once data is loaded, try these queries with Bob:
+
+**Budget vs Actual Analysis:**
+```
+"Show Q1 2024 budget vs actual variance by department"
+"What were the material variances in January 2024?"
+"Why did North America Sales miss budget in January 2024?"
+```
+
+**Year-over-Year Analysis:**
+```
+"Compare Q1 2024 revenue to Q1 2023 by region"
+"Show year-over-year growth trends for North America Sales"
+"Which region had the strongest YoY growth in Q1 2024?"
+```
+
+**Trend Analysis:**
+```
+"Show month-over-month revenue trends for Q1 2024"
+"What is the 3-month rolling average for R&D expenses?"
+"Identify seasonal patterns in sales data"
+```
+
+**Outlier Detection:**
+```
+"Find unusual expense patterns in March 2024"
+"Identify anomalies in APAC sales performance"
+"Show departments with high variance volatility"
+```
+
+### Sample Dataset Features
+
+#### 1. Rich Variance Explanations
+
+Every material variance includes:
+- **Root cause** (e.g., "Two deals slipped to February")
+- **Supporting details** (e.g., "Acme Corp $120K, TechStart $80K")
+- **Variance type** (Timing, Structural, Operational)
+- **Impact assessment** (Revenue, downstream effects)
+- **Resolution status** (e.g., "Both deals closed in February")
+
+**Example from dataset:**
+```
+NA Sales Jan 2024: -$175K (-35%)
+Explanation: "Two major deals slipped to February: Acme Corp $120K 
+(procurement delayed) and TechStart $80K (budget freeze). 
+Timing-related variance."
+```
+
+#### 2. Multi-Year Comparisons
+
+Track performance across 3.5 years:
+- **FY2023**: Baseline year
+- **FY2024**: Growth with timing challenges
+- **FY2025**: Strong recovery and expansion
+- **FY2026**: Normalization at higher baseline
+
+**Example YoY Trend (NA Sales January):**
+- 2023: $450K (baseline)
+- 2024: $325K (-28% - timing issue)
+- 2025: $625K (+92% - recovery)
+- 2026: $595K (-5% - normalization)
+
+#### 3. Cross-Functional Impact Analysis
+
+See how variances cascade across departments:
+
+**Primary Variance:**
+- NA Sales Revenue: -$175K
+
+**Downstream Impacts:**
+- Sales Commissions: -$17.5K (favorable)
+- Professional Services: -$15K (delayed implementations)
+- Marketing: +$7K (pipeline investment)
+
+#### 4. Forecast Accuracy Tracking
+
+Multiple forecast scenarios:
+- **FC-Q1**: Quarter 1 forecast
+- **FC-Q2**: Quarter 2 forecast
+- **FC-Q3**: Quarter 3 forecast
+- **FC-Q4**: Quarter 4 forecast
+
+Compare forecasts to actuals to measure accuracy.
+
+### Example Workflows with Sample Data
+
+#### Workflow 1: Monthly Variance Review
+
+```
+1. "Show all material variances for January 2024"
+   → Bob identifies 4 variances >$100K or >20%
+
+2. "Explain the NA Sales revenue variance"
+   → Bob provides root cause analysis with details
+
+3. "What was the downstream impact on other departments?"
+   → Bob shows cascade effects (commissions, services, marketing)
+
+4. "Did the variance resolve in February?"
+   → Bob compares Feb performance and confirms recovery
+```
+
+#### Workflow 2: Year-over-Year Growth Analysis
+
+```
+1. "Compare Q1 2024 to Q1 2023 by region"
+   → Bob shows YoY growth for all regions
+
+2. "Which region had the strongest growth?"
+   → Bob identifies EMEA with +12% YoY
+
+3. "Show the 3-year trend for North America"
+   → Bob displays Jan 2023-2026 with CAGR calculation
+
+4. "What's driving the growth in EMEA?"
+   → Bob analyzes variance explanations for insights
+```
+
+#### Workflow 3: Forecast Accuracy Assessment
+
+```
+1. "How accurate was the Q1 2024 forecast?"
+   → Bob compares FC-Q1 to ACT for Q1 2024
+
+2. "Which departments had the largest forecast errors?"
+   → Bob ranks departments by forecast variance
+
+3. "What patterns exist in forecast errors?"
+   → Bob identifies timing-related vs structural issues
+
+4. "Generate a forecast accuracy report"
+   → Bob creates executive summary with recommendations
+```
+
+### Dataset Statistics
+
+**Coverage:**
+- **Time Periods**: 42 months (Jan 2023 - Jun 2026)
+- **Departments**: 12 (Sales: 4, Engineering: 2, Services: 2, Corporate: 4)
+- **Accounts**: 17 (Revenue: 4, COGS: 2, OpEx: 11)
+- **Scenarios**: 7 (ACT, BUD, 4 Forecasts, PY-ACT)
+- **Records**: 163 with rich metadata
+
+**Variance Distribution:**
+- **Material Variances**: 28 records (>$100K or >20%)
+- **Timing-Related**: 60% of variances
+- **Structural**: 30% of variances
+- **Operational**: 10% of variances
+
+**Data Quality:**
+- **Completeness**: 100% (no missing values)
+- **Explanations**: 100% for material variances
+- **Data Sources**: Tracked for all records
+- **Audit Trail**: Full lineage available
+
+### Learning Path
+
+**Beginner (Week 1):**
+1. Import sample data to Planning Analytics
+2. Run basic queries (budget vs actual)
+3. Explore variance explanations
+4. Try simple trend analysis
+
+**Intermediate (Week 2):**
+1. Perform year-over-year comparisons
+2. Calculate rolling averages
+3. Identify outliers and patterns
+4. Generate variance reports
+
+**Advanced (Week 3):**
+1. Cross-functional impact analysis
+2. Forecast accuracy assessment
+3. Predictive variance modeling
+4. Custom TM1 rules and calculations
+
+**Expert (Week 4):**
+1. Automated variance investigation workflows
+2. Integration with external data sources
+3. Custom AI-powered analysis
+4. Executive dashboard creation
+
+### Additional Resources
+
+For detailed information about the sample dataset:
+- See [`assets/FPA_Variance_Analysis/README.md`](assets/FPA_Variance_Analysis/README.md)
+- 20+ example queries with answers
+- Complex TM1 rules and calculations
+- Variance investigation workflows
+- Forecast accuracy tracking methods
 
 ## 🔒 Security
 
-- **Credentials**: Stored in session only (not persisted)
-- **SSL**: Configurable verification
-- **API Calls**: Session-based authentication
+- **Credentials**: Stored in MCP configuration only
+- **API Keys**: Base64 encoded in Authorization header
+- **SSL**: HTTPS for production servers
+- **Session Management**: Token-based authentication
+- **Data Access**: Respects TM1 security model
 - **No Data Storage**: All data in memory only
-
-## 🚢 Production Deployment
-
-### Using Gunicorn
-
-```bash
-gunicorn app:server -b 0.0.0.0:8050 --workers 4
-```
-
-### Using Docker
-
-Create `Dockerfile`:
-
-```dockerfile
-FROM python:3.9-slim
-
-WORKDIR /app
-
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-EXPOSE 8050
-
-CMD ["gunicorn", "app:server", "-b", "0.0.0.0:8050", "--workers", "4"]
-```
-
-Build and run:
-
-```bash
-docker build -t turbonomic-dashboard .
-docker run -p 8050:8050 turbonomic-dashboard
-```
-
-### Environment Variables for Production
-
-```bash
-export DASH_DEBUG=false
-export DASH_HOST=0.0.0.0
-export DASH_PORT=8050
-```
 
 ## 🧪 Testing
 
 ### Manual Testing Checklist
 
-- [ ] Login with valid credentials
-- [ ] All 8 tabs load without errors
-- [ ] Charts display correctly with data
-- [ ] Tables show data with proper styling
-- [ ] Filters work on all tabs
-- [ ] Dropdowns are visible (white text)
-- [ ] Action execution works with feedback
-- [ ] No console errors in browser
-- [ ] Responsive design works on mobile
+- [ ] Skill activates for Planning Analytics queries
+- [ ] Server discovery works (`get_available_tm1_servers`)
+- [ ] Cube listing works (`get_tm1_cubes`)
+- [ ] Natural language query works (pre-analyzed cube)
+- [ ] MDX query works (any cube)
+- [ ] Variance analysis produces correct results
+- [ ] Outlier detection identifies anomalies
+- [ ] Report formatting is professional
+- [ ] Error messages are clear and actionable
+- [ ] MCP tools respond within timeout
 
-### Edge Cases Covered
+### Example Test Queries
 
-- ✅ Empty API responses
-- ✅ None values in data
-- ✅ Type mismatches (string vs int)
-- ✅ Missing required fields
-- ✅ Large datasets (>500 items)
-- ✅ API failures and timeouts
-- ✅ UI visibility in dark theme
-- ✅ Chart with no data
-- ✅ Dropdown with no options
-- ✅ Filter with no matches
+```
+# Basic Query
+"Show Q1 2025 compensation data"
 
-## 📝 Logging
+# Variance Analysis
+"Compare Q1 budget vs actual by department"
 
-Logs are written to console with the following levels:
+# Trend Analysis
+"Show monthly sales trends for 2024"
 
-- **INFO**: Normal operations, API calls
-- **WARNING**: Unexpected data formats, missing fields
-- **ERROR**: API failures, authentication errors
-- **DEBUG**: Detailed API responses (when debug=True)
+# Outlier Detection
+"Find unusual expense patterns in March"
 
-View logs:
-
-```bash
-# When running directly
-python app.py
-
-# When using gunicorn
-gunicorn app:server --log-level info
+# Key Driver Analysis
+"What's driving revenue variance in East region?"
 ```
 
-## 🤝 Contributing
+## 📝 Best Practices
 
-To extend the dashboard:
+### Query Construction
+- Use specific time periods (Q1 2025, March 2024)
+- Specify dimensions clearly (by department, by region)
+- Request specific measures (budget, actual, forecast)
+- Use business terminology, not technical names
 
-1. **Add New Tab**:
-   - Add entry to `NAV_ITEMS`
-   - Create data loading callback
-   - Create render callback
-   - Add to navigation routing
+### Data Analysis
+- Always request variance analysis for budget/actual comparisons
+- Use outlier detection for large datasets
+- Request key driver analysis for material variances
+- Generate executive summaries for board presentations
 
-2. **Add New Chart**:
-   - Use Plotly `go.Figure()`
-   - Apply `BASE_LAYOUT` for consistency
-   - Use color schemes from constants
+### Performance Optimization
+- Use pre-analyzed cubes when available
+- Filter data at query time, not post-processing
+- Use aggregated members for high-level views
+- Request only needed dimensions and measures
 
-3. **Add New Filter**:
-   - Create dropdown/input component
-   - Add to filter callback inputs
-   - Apply filter logic in callback
+### Error Handling
+- Check cube availability before querying
+- Verify member existence before filtering
+- Handle empty results gracefully
+- Provide clear error messages to users
 
 ## 📚 Additional Resources
 
-- [Turbonomic API Documentation](https://docs.turbonomic.com/)
-- [Dash Documentation](https://dash.plotly.com/)
-- [Plotly Documentation](https://plotly.com/python/)
-- [IBM Carbon Design System](https://carbondesignsystem.com/)
+- [IBM Planning Analytics Documentation](https://www.ibm.com/docs/en/planning-analytics)
+- [TM1 REST API Reference](https://www.ibm.com/docs/en/planning-analytics/2.0.0?topic=api-tm1-rest)
+- [Planning Analytics Workspace Guide](https://www.ibm.com/docs/en/planning-analytics/2.0.0?topic=planning-analytics-workspace)
+- [MDX Reference](https://www.ibm.com/docs/en/planning-analytics/2.0.0?topic=reference-mdx)
 
 ## 📄 License
 
-This project is provided as-is for use with IBM Turbonomic.
+This building block is provided as-is for use with IBM Planning Analytics.
 
 ## 🙏 Acknowledgments
 
-- Built with Dash by Plotly
-- Styled with IBM Carbon Design System
-- All critical fixes from Automated Resource Management mode
+- Built for IBM Planning Analytics and TM1
+- Powered by Model Context Protocol (MCP)
+- Integrated with Bob AI assistant
+- Designed for financial planning and analysis professionals
 
 ## 📞 Support
 
 For issues or questions:
 1. Check the Troubleshooting section
-2. Review logs for error details
-3. Verify Turbonomic API access
-4. Check network connectivity
+2. Review skill USAGE-GUIDE.md for detailed examples
+3. Verify MCP server configuration
+4. Check Planning Analytics API access
+5. Review mode rules for workflow guidance
 
 ---
 
 **Version**: 1.0.0  
-**Last Updated**: 2026-04-21  
+**Last Updated**: 2026-06-17  
 **Status**: Production Ready ✅
 
-Made with ❤️ for IBM Turbonomic users
+Made with ❤️ for IBM Planning Analytics users

@@ -1,0 +1,18 @@
+account_id,account_name,account_type,account_category,parent_account,is_revenue,is_expense,gl_code
+REV-001,Enterprise Software Revenue,Revenue,Product Revenue,TOTAL-REV,1,0,4000-100
+REV-002,Professional Services Revenue,Revenue,Service Revenue,TOTAL-REV,1,0,4000-200
+REV-003,Subscription Revenue,Revenue,Recurring Revenue,TOTAL-REV,1,0,4000-300
+REV-004,Maintenance Revenue,Revenue,Recurring Revenue,TOTAL-REV,1,0,4000-400
+COGS-001,Cost of Goods Sold,COGS,Direct Costs,TOTAL-COGS,0,1,5000-100
+COGS-002,Service Delivery Costs,COGS,Direct Costs,TOTAL-COGS,0,1,5000-200
+OPEX-001,Sales & Marketing,Operating Expense,Sales,TOTAL-OPEX,0,1,6000-100
+OPEX-002,Research & Development,Operating Expense,R&D,TOTAL-OPEX,0,1,6000-200
+OPEX-003,General & Administrative,Operating Expense,G&A,TOTAL-OPEX,0,1,6000-300
+OPEX-004,Sales Commissions,Operating Expense,Sales,TOTAL-OPEX,0,1,6000-110
+OPEX-005,Marketing Programs,Operating Expense,Sales,TOTAL-OPEX,0,1,6000-120
+OPEX-006,Travel & Entertainment,Operating Expense,G&A,TOTAL-OPEX,0,1,6000-310
+OPEX-007,IT Infrastructure,Operating Expense,G&A,TOTAL-OPEX,0,1,6000-320
+OPEX-008,Professional Fees,Operating Expense,G&A,TOTAL-OPEX,0,1,6000-330
+TOTAL-REV,Total Revenue,Revenue,Total,ROOT,1,0,4000-000
+TOTAL-COGS,Total COGS,COGS,Total,ROOT,0,1,5000-000
+TOTAL-OPEX,Total Operating Expenses,Operating Expense,Total,ROOT,0,1,6000-000

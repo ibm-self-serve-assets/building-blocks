@@ -1,0 +1,71 @@
+{
+  "mcpServers": {
+    "ibm-pa-tools": {
+      "type": "streamable-http",
+      "url": "https://us-east-1.planninganalytics.saas.ibm.com/api/YOUR_TENANT_ID/v0/agentic-ai/ibm-pa-tools/mcp",
+      "headers": {
+        "Authorization": "Basic <your-base64-encoded-api-key>",
+        "Accept": "text/event-stream",
+        "Cache-Control": "no-cache"
+      },
+      "timeout": 300,
+      "alwaysAllow": [
+        "get_cubes_that_may_answer_query",
+        "get_available_tm1_servers",
+        "get_data_from_data_explorer",
+        "lookup_potential_members",
+        "get_cube_sample_members"
+      ],
+      "disabled": false
+    },
+    "ibm-pa-tools-tz-server": {
+      "type": "streamable-http",
+      "url": "http://na4.services.cloud.techzone.ibm.com:38912/api/YOUR_TENANT_ID/v0/agentic-ai/analysis/mcp",
+      "headers": {
+        "Authorization": "Basic <your-base64-encoded-credentials>",
+        "Accept": "text/event-stream",
+        "Cache-Control": "no-cache"
+      },
+      "timeout": 300,
+      "disabled": false,
+      "alwaysAllow": [
+        "update_tm1_process",
+        "execute_tm1_processes_asynchronously",
+        "create_tm1_process",
+        "get_tm1_server_process_status",
+        "get_tm1_server_process_execution_error_logs",
+        "delete_tm1_process",
+        "get_tm1_processes",
+        "get_tm1_process_details"
+      ]
+    },
+    "ibm-pa-tools-tz-cube": {
+      "type": "streamable-http",
+      "url": "http://na4.services.cloud.techzone.ibm.com:38912/api/YOUR_TENANT_ID/v0/agentic-ai/cube/mcp",
+      "headers": {
+        "Authorization": "Basic <your-base64-encoded-credentials>",
+        "Accept": "text/event-stream",
+        "Cache-Control": "no-cache"
+      },
+      "timeout": 300,
+      "alwaysAllow": [
+        "get_data_from_data_explorer",
+        "get_cubes_that_may_answer_query",
+        "lookup_potential_members",
+        "get_cube_sample_members",
+        "get_cube_dimensions",
+        "execute_mdx_and_get_view",
+        "list_cubes_with_ai_analysis_metadata",
+        "get_tm1_cubes",
+        "get_cube_dimensions_with_metadata",
+        "create_tm1_cube",
+        "get_available_tm1_servers",
+        "generate_exploration_analysis_report",
+        "perform_impact_analysis"
+      ],
+      "disabled": false
+    }
+  }
+}
+
+// Made with Bob

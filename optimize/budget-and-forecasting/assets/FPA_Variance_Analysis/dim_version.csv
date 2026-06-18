@@ -1,0 +1,6 @@
+version_id,version_name,version_type,is_working,is_locked,created_date,created_by
+V1,Working Version,Working,1,0,2024-01-01,System
+V2,Approved Budget,Official,0,1,2024-01-15,CFO
+V3,Board Approved,Official,0,1,2024-02-01,Board
+V4,Reforecast v1,Reforecast,1,0,2024-04-01,FP&A Team
+V5,Reforecast v2,Reforecast,1,0,2024-07-01,FP&A Team
