@@ -72,6 +72,56 @@ flink/
 └── statements.sql        # Flink SQL stream processing jobs
 ```
 
+## Assets
+
+### Real-Time Supply Chain Risk Control Tower
+
+> **Path**: [`assets/supply-chain-risk-control-tower/`](./assets/supply-chain-risk-control-tower/)
+
+A Confluent Cloud building block that detects, scores, and acts on supply-chain disruption risk in real time. Built for IBM partner demos, technical workshops, and proof-of-value engagements.
+
+**Use when:**
+
+- An IBM partner needs a self-contained demo covering risk scoring, event streams, recommendations, and alerts — runnable from a laptop with no access to a customer ERP or supplier system.
+- A pre-sales or technical team is preparing for a workshop and needs a complete business story backed by running code.
+- A customer has asked how IBM and Confluent can help reduce supply chain disruption risk and a technical proof point is needed.
+- A solutions architect needs a reference implementation of streaming joins, risk scoring, schema enforcement, and AI integration as an end-to-end pattern.
+
+**What it demonstrates:**
+
+- Confluent Cloud as a real-time event correlation backbone for supply chain signals
+- A Kafka topic model covering 7 supply chain domains: supplier, component, purchase orders, shipments, inventory, customer orders, and external risk events
+- JSON Schema data contracts enforced via Confluent Schema Registry
+- A Python risk engine that consumes multiple event streams concurrently and publishes scored risk events, recommendations, and control tower alerts
+- Reference Flink SQL that implements the same risk scoring logic as a production streaming job on Confluent Cloud
+- An IBM Carbon Design dashboard with a browser-based simulation mode and a live Kafka streaming mode
+- watsonx.ai prompt templates covering executive risk summary, supplier escalation email, and procurement recommendation
+- Terraform infrastructure-as-code for provisioning a complete Confluent Cloud environment
+- IBM integration story covering watsonx.ai, watsonx.data, IBM Db2, IBM MQ, IBM OpenSearch, IBM Maximo, IBM Instana, Terraform, and Ansible
+
+**Running modes:**
+
+| Mode | What runs | Kafka needed | Python needed | Time to start |
+|------|-----------|-------------|---------------|--------------|
+| Browser simulation | In-browser JavaScript engine — open `code/ui/index.html` directly | No | No | Under 1 minute |
+| Python dry run | Python risk engine with synthetic data, no Kafka required | No | Yes | Under 5 minutes |
+| Full Confluent Cloud | Real Kafka topics, live event stream, Terraform provisioning | Yes | Yes | 15–30 minutes |
+
+**IBM capabilities used:**
+
+| IBM Capability | Role |
+|----------------|------|
+| IBM watsonx.ai | Executive summaries, supplier escalation emails, and next-best-action guidance from risk events |
+| IBM watsonx.data | Governed analytical access to event history via Confluent Tableflow lakehouse integration |
+| IBM Db2 | Source for supplier master data, purchase orders, and inventory via the Db2 managed connector |
+| IBM MQ | Bridge for legacy EDI and supplier message feeds via the MQ Source connector |
+| IBM OpenSearch | Operational risk dashboard consuming the three output topics |
+| IBM Maximo | Automatic maintenance and logistics work orders from CRITICAL-severity alerts |
+| IBM Instana | Performance and health monitoring of Kafka producers, consumers, and risk engine |
+| Terraform / Ansible | Automated provisioning and configuration of the Confluent Cloud environment |
+
+---
+
 ## IBM Cloud References
 
 - [Confluent on IBM Cloud Catalog](https://cloud.ibm.com/catalog/services/confluent)

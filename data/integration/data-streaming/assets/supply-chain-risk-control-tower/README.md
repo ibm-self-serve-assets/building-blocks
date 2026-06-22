@@ -1,4 +1,4 @@
-﻿# Real-Time Supply Chain Risk Control Tower
+# Real-Time Supply Chain Risk Control Tower
 
 A Confluent Cloud building block that detects, scores, and acts on supply-chain disruption risk in real time. Built for IBM partner demos, technical workshops, and proof-of-value engagements.
 
@@ -14,8 +14,8 @@ A Confluent Cloud building block that detects, scores, and acts on supply-chain 
   - [Future architecture aspirations](#future-architecture-aspirations)
 - [System requirements](#system-requirements)
 - [Running modes](#running-modes)
-- [Mode 1: Browser simulation â€” no installation required](#mode-1-browser-simulation)
-- [Mode 2: Python dry run â€” no Kafka required](#mode-2-python-dry-run)
+- [Mode 1: Browser simulation — no installation required](#mode-1-browser-simulation)
+- [Mode 2: Python dry run — no Kafka required](#mode-2-python-dry-run)
 - [Mode 3: Full Confluent Cloud deployment](#mode-3-full-confluent-cloud-deployment)
   - [Step 1: Clone the repository](#step-1-clone-the-repository)
   - [Step 2: Create a Confluent Cloud API key](#step-2-create-a-confluent-cloud-api-key)
@@ -86,7 +86,7 @@ Supply chain events originate from six categories of systems:
 
 | Source | Examples |
 |--------|---------|
-| ERP systems | IBM Db2, SAP, Oracle â€” supplier master data, purchase orders, inventory |
+| ERP systems | IBM Db2, SAP, Oracle — supplier master data, purchase orders, inventory |
 | Supplier portals and EDI feeds | Direct supplier APIs, EDI gateways |
 | Shipment and logistics tracking | Carrier APIs, freight forwarder feeds, customs status |
 | Inventory management systems | WMS, MES, on-hand and reserved quantity updates |
@@ -99,14 +99,14 @@ In this repository, all source data is replaced by a synthetic event generator (
 
 Events are ingested into Confluent Cloud via:
 
-- **Managed connectors** â€” for production deployments connecting to IBM Db2, IBM MQ, Salesforce, SAP, and other enterprise systems. Not configured in this repo as connector setup is specific to each customer environment.
-- **Python producers** (`code/scrc/producer.py`) â€” used in this repo to publish synthetic events to all 7 input Kafka topics for demo purposes.
+- **Managed connectors** — for production deployments connecting to IBM Db2, IBM MQ, Salesforce, SAP, and other enterprise systems. Not configured in this repo as connector setup is specific to each customer environment.
+- **Python producers** (`code/scrc/producer.py`) — used in this repo to publish synthetic events to all 7 input Kafka topics for demo purposes.
 
 #### Layer 3: Kafka topics with Schema Registry data contracts
 
 Ten Kafka topics are provisioned by Terraform (`code/terraform/main.tf`) and governed by JSON Schema files (`code/schemas/`).
 
-**7 input topics â€” raw supply chain events:**
+**7 input topics — raw supply chain events:**
 
 | Topic name (in code) | Domain | Schema file |
 |----------------------|--------|------------|
@@ -118,7 +118,7 @@ Ten Kafka topics are provisioned by Terraform (`code/terraform/main.tf`) and gov
 | `customer_orders` | Customer demand, priority, revenue at risk | `customer_orders.json` |
 | `external_risk_events` | Port, weather, tariff, and geopolitical risk | `external_risk_events.json` |
 
-**3 output topics â€” processed outputs from the risk engine:**
+**3 output topics — processed outputs from the risk engine:**
 
 | Topic name (in code) | Content |
 |----------------------|---------|
@@ -132,20 +132,20 @@ Schema registration is handled by `code/scrc/register_schemas.py`. Run `python -
 
 The risk engine is the core processing layer. It is implemented in two forms:
 
-**Python implementation (this repo) â€” `code/scrc/risk_engine.py`**
+**Python implementation (this repo) — `code/scrc/risk_engine.py`**
 
 Subscribes to all 7 input topics using a Kafka consumer group (`scrc-risk-engine`). For each event received, it updates in-memory state and recalculates risk for every affected component. Publishes results to the 3 output topics.
 
-**Confluent Cloud Flink SQL (reference) â€” `code/flink-sql/`**
+**Confluent Cloud Flink SQL (reference) — `code/flink-sql/`**
 
 Four SQL files implement the same logic as a fully managed streaming job on Confluent Cloud. This is the recommended path for production deployments where the Python engine would be replaced by Flink for scalability, exactly-once processing, and operational simplicity.
 
 The risk engine performs four operations on every event:
 
-1. **Join** â€” correlates events from all 7 input topics by component ID and route ID
-2. **Days-of-supply calculation** â€” divides available inventory (on-hand minus reserved) by daily usage rate
-3. **Risk scoring across 5 dimensions** â€” see the Risk scoring model section below
-4. **Recommendation generation** â€” maps risk band and available mitigations to a specific recommended action
+1. **Join** — correlates events from all 7 input topics by component ID and route ID
+2. **Days-of-supply calculation** — divides available inventory (on-hand minus reserved) by daily usage rate
+3. **Risk scoring across 5 dimensions** — see the Risk scoring model section below
+4. **Recommendation generation** — maps risk band and available mitigations to a specific recommended action
 
 #### Layer 5: Downstream applications and integrations
 
@@ -153,14 +153,14 @@ Events from the 3 output topics are consumed by downstream systems. The table be
 
 | Downstream system | Status in this repo | Future extension |
 |-------------------|--------------------|--------------------|
-| IBM Carbon Design dashboard (`code/ui/`) | Implemented â€” full browser dashboard with simulation and live Kafka modes | - |
-| Slack alert | Implemented â€” `code/scrc/slack_alerts.py` sends HIGH and CRITICAL alerts via webhook | Extend to Microsoft Teams via Adaptive Card webhook |
-| watsonx.ai | Prompt templates only (`docs/agents/`) â€” no live API calls in this repo | Connect `WATSONX_API_KEY` and call the Prompt Lab API to generate executive summaries and supplier emails in real time |
-| OpenSearch / Kibana | Configuration only â€” `OPENSEARCH_URL` in `.env`, index template in `docs/assets/` | Implement a Kafka consumer that writes risk score events to the OpenSearch index |
+| IBM Carbon Design dashboard (`code/ui/`) | Implemented — full browser dashboard with simulation and live Kafka modes | - |
+| Slack alert | Implemented — `code/scrc/slack_alerts.py` sends HIGH and CRITICAL alerts via webhook | Extend to Microsoft Teams via Adaptive Card webhook |
+| watsonx.ai | Prompt templates only (`docs/agents/`) — no live API calls in this repo | Connect `WATSONX_API_KEY` and call the Prompt Lab API to generate executive summaries and supplier emails in real time |
+| OpenSearch / Kibana | Configuration only — `OPENSEARCH_URL` in `.env`, index template in `docs/assets/` | Implement a Kafka consumer that writes risk score events to the OpenSearch index |
 | Procurement workflow / ITSM | Not implemented | Integrate with ServiceNow or IBM Turbonomic via their REST APIs, triggered by CRITICAL-severity control tower alerts |
-| watsonx.data / Tableflow | Not implemented â€” referenced in README and docs | Configure Confluent Tableflow to stream output topic events to an IBM Cloud Object Storage bucket as Iceberg tables |
+| watsonx.data / Tableflow | Not implemented — referenced in README and docs | Configure Confluent Tableflow to stream output topic events to an IBM Cloud Object Storage bucket as Iceberg tables |
 | IBM Cloud Object Storage | Not implemented | Use as the raw data lake landing zone for all 10 Kafka topics via Confluent S3-compatible sink connector |
-| IBM Maximo | Not implemented â€” referenced in README and docs | Create maintenance or logistics work orders via the Maximo Application Framework REST API when CRITICAL alerts are generated |
+| IBM Maximo | Not implemented — referenced in README and docs | Create maintenance or logistics work orders via the Maximo Application Framework REST API when CRITICAL alerts are generated |
 | IBM Instana | Not implemented | Add Instana monitoring agents to the Python risk engine process and Kafka consumer group for production observability |
 
 ---
@@ -193,25 +193,25 @@ Risk bands:
 
 The following capabilities are shown in the architecture diagram and represent the full production vision for this building block. They are not implemented in the current codebase but are designed to be added incrementally as the demo is taken further in a customer engagement.
 
-**ServiceNow â€” Procurement workflow automation** â€” [SPEC-04](docs/specs/SPEC-04-servicenow-itsm.md)
+**ServiceNow — Procurement workflow automation** — [SPEC-04](docs/specs/SPEC-04-servicenow-itsm.md)
 CRITICAL-severity control tower alerts trigger automated incident creation in ServiceNow (procurement task, supplier escalation ticket). Integration point is the `control_tower_alerts` output topic.
 
-**IBM Cloud Object Storage â€” Raw data lake** â€” [SPEC-05](docs/specs/SPEC-05-ibm-cos-data-lake.md)
+**IBM Cloud Object Storage — Raw data lake** — [SPEC-05](docs/specs/SPEC-05-ibm-cos-data-lake.md)
 A Confluent S3-compatible sink connector streams all output topics to IBM Cloud Object Storage in JSON format, creating a full historical audit trail of every supply chain event and risk decision.
 
-**watsonx.data with Tableflow â€” Governed analytics** â€” [SPEC-06](docs/specs/SPEC-06-watsonxdata-tableflow.md)
+**watsonx.data with Tableflow — Governed analytics** — [SPEC-06](docs/specs/SPEC-06-watsonxdata-tableflow.md)
 Confluent Tableflow surfaces the raw events and risk scores as Apache Iceberg tables directly queryable by watsonx.data. This enables historical trend analysis, what-if simulations, and model training without requiring a separate ETL pipeline.
 
-**OpenSearch operational dashboard** â€” [SPEC-02](docs/specs/SPEC-02-opensearch-consumer.md)
+**OpenSearch operational dashboard** — [SPEC-02](docs/specs/SPEC-02-opensearch-consumer.md)
 A dedicated Kafka consumer writes `supply_chain_risk_scores` and `control_tower_alerts` events to an OpenSearch index using the template in [`docs/assets/opensearch-index-template.json`](docs/assets/opensearch-index-template.json). Kibana dashboards visualise risk by supplier, region, component, and customer.
 
-**IBM Maximo â€” Work order automation** â€” [SPEC-07](docs/specs/SPEC-07-ibm-maximo.md)
+**IBM Maximo — Work order automation** — [SPEC-07](docs/specs/SPEC-07-ibm-maximo.md)
 When a CRITICAL alert is generated for a component linked to a physical asset or facility, the Maximo Application Framework REST API creates a maintenance or logistics work order automatically, closing the loop between the digital risk signal and the physical operational response.
 
-**Microsoft Teams alerts** â€” [SPEC-03](docs/specs/SPEC-03-teams-alerts.md)
+**Microsoft Teams alerts** — [SPEC-03](docs/specs/SPEC-03-teams-alerts.md)
 Extend the existing Slack webhook integration ([`code/scrc/slack_alerts.py`](code/scrc/slack_alerts.py)) to also publish to a Microsoft Teams channel using an Adaptive Card webhook. Both platforms can be targeted simultaneously from the same alert handler.
 
-**watsonx.ai live API** â€” [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md)
+**watsonx.ai live API** — [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md)
 Wire the IBM watsonx.ai REST API directly into the risk engine so every CRITICAL event automatically generates a plain-language executive summary and supplier escalation email without any manual copy-paste step.
 
 ---
@@ -235,7 +235,7 @@ Wire the IBM watsonx.ai REST API directly into the risk engine so every CRITICAL
 | Tool | Minimum version | How to install |
 |------|----------------|----------------|
 | Terraform | 1.5 | https://developer.hashicorp.com/terraform/install |
-| Confluent Cloud account | â€” | https://confluent.cloud (free trial available) |
+| Confluent Cloud account | — | https://confluent.cloud (free trial available) |
 | Confluent Cloud API key | Cloud resource management scope | See Step 2 below |
 
 ---
@@ -365,7 +365,7 @@ This key is used by Terraform to provision the infrastructure. It is a cloud-lev
 4. Select My account
 5. Select Cloud resource management as the scope
 6. Click Next, give the key a name such as `scrc-terraform`, and click Create API key
-7. Download or copy the key ID and secret â€” you will need them in Step 4
+7. Download or copy the key ID and secret — you will need them in Step 4
 
 If your Confluent Cloud account already has an environment provisioned and your key does not have permission to create new environments, note the environment ID (it looks like `env-abc123`). The setup script will ask for it.
 
@@ -732,7 +732,7 @@ The `.env` file at the project root is not deleted by Terraform. Remove it manua
 
 ## Demo scenarios
 
-All scenarios use the same component (`BRG-9004` â€” High-load bearing assembly), the same primary supplier (`SUP-1007` â€” Pacific Motion Components, reliability score 74), and the same strategic customer order (`CO-10491` â€” NorthStar Energy Systems, 900 units, $750,000 revenue at risk). This gives the audience a single coherent story to follow.
+All scenarios use the same component (`BRG-9004` — High-load bearing assembly), the same primary supplier (`SUP-1007` — Pacific Motion Components, reliability score 74), and the same strategic customer order (`CO-10491` — NorthStar Energy Systems, 900 units, $750,000 revenue at risk). This gives the audience a single coherent story to follow.
 
 | Scenario | Flag | What happens |
 |----------|------|-------------|
@@ -864,8 +864,8 @@ supply-chain-risk-control-tower/
 |       |-- conftest.py           Adds code/ to sys.path for test imports
 |       `-- test_risk_logic.py    Unit tests: risk bands, days-of-supply, end-to-end score
 |
-|-- .env.example                  Credential template â€” copy to .env before running
-|-- .env                          Generated by setup.sh â€” gitignored, never commit
+|-- .env.example                  Credential template — copy to .env before running
+|-- .env                          Generated by setup.sh — gitignored, never commit
 |-- .gitignore
 |-- pyproject.toml                Python package definition and entry points
 `-- README.md
@@ -879,14 +879,14 @@ All runtime configuration is read from environment variables loaded from `.env`.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `CONFLUENT_BOOTSTRAP_SERVERS` | Yes (Kafka) | â€” | Kafka cluster bootstrap endpoint |
-| `CONFLUENT_API_KEY` | Yes (Kafka) | â€” | Kafka cluster API key |
-| `CONFLUENT_API_SECRET` | Yes (Kafka) | â€” | Kafka cluster API secret |
+| `CONFLUENT_BOOTSTRAP_SERVERS` | Yes (Kafka) | — | Kafka cluster bootstrap endpoint |
+| `CONFLUENT_API_KEY` | Yes (Kafka) | — | Kafka cluster API key |
+| `CONFLUENT_API_SECRET` | Yes (Kafka) | — | Kafka cluster API secret |
 | `CONFLUENT_CLIENT_ID` | No | `supply-chain-risk-control-tower` | Client identifier shown in Confluent Cloud monitoring |
 | `CONFLUENT_CONSUMER_GROUP` | No | `scrc-risk-engine` | Consumer group ID for the risk engine |
-| `SCHEMA_REGISTRY_URL` | Yes (schemas) | â€” | Schema Registry REST endpoint |
-| `SCHEMA_REGISTRY_API_KEY` | Yes (schemas) | â€” | Schema Registry API key |
-| `SCHEMA_REGISTRY_API_SECRET` | Yes (schemas) | â€” | Schema Registry API secret |
+| `SCHEMA_REGISTRY_URL` | Yes (schemas) | — | Schema Registry REST endpoint |
+| `SCHEMA_REGISTRY_API_KEY` | Yes (schemas) | — | Schema Registry API key |
+| `SCHEMA_REGISTRY_API_SECRET` | Yes (schemas) | — | Schema Registry API secret |
 | `SLACK_WEBHOOK_URL` | No | blank | Slack incoming webhook URL for HIGH and CRITICAL alerts |
 | `OPENSEARCH_URL` | No | `http://localhost:9200` | OpenSearch endpoint for dashboard consumers |
 | `WATSONX_API_KEY` | No | blank | IBM watsonx.ai API key |
@@ -965,10 +965,10 @@ BRIDGE_PORT=8766 python code/ui/kafka_bridge.py
 
 | Document | Purpose |
 |----------|---------|
-| [`docs/demo_script.md`](docs/demo_script.md) | Presenter talk track â€” step-by-step commands, expected terminal output, and audience talking points for a live demo |
-| [`docs/workshop_guide.md`](docs/workshop_guide.md) | Hands-on workshop agenda â€” tasks, discussion prompts, and facilitator notes for a 2â€“4 hour technical session |
-| [`docs/security_governance.md`](docs/security_governance.md) | Security checklist â€” credential rotation, network controls, schema governance, and production readiness review |
-| [`docs/specs/README.md`](docs/specs/README.md) | Extension specs index â€” what is built, what each spec covers, how to pick up and implement one |
+| [`docs/demo_script.md`](docs/demo_script.md) | Presenter talk track — step-by-step commands, expected terminal output, and audience talking points for a live demo |
+| [`docs/workshop_guide.md`](docs/workshop_guide.md) | Hands-on workshop agenda — tasks, discussion prompts, and facilitator notes for a 2–4 hour technical session |
+| [`docs/security_governance.md`](docs/security_governance.md) | Security checklist — credential rotation, network controls, schema governance, and production readiness review |
+| [`docs/specs/README.md`](docs/specs/README.md) | Extension specs index — what is built, what each spec covers, how to pick up and implement one |
 
 ---
 
@@ -992,7 +992,7 @@ The [`docs/agents/`](docs/agents/) folder contains three prompt templates for IB
 6. Select a foundation model (recommended: `ibm/granite-13b-instruct-v2` or `meta-llama/llama-3-1-70b-instruct`).
 7. Click **Generate**.
 
-The output is ready to send or use in a slide deck. For live API integration â€” where watsonx.ai is called automatically each time the risk engine emits a CRITICAL event â€” see [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md).
+The output is ready to send or use in a slide deck. For live API integration — where watsonx.ai is called automatically each time the risk engine emits a CRITICAL event — see [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md).
 
 ---
 
@@ -1039,33 +1039,33 @@ The [`docs/specs/`](docs/specs/) folder contains seven spec-driven development d
 
 | Spec | Integration | Effort |
 |------|-------------|--------|
-| [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md) | watsonx.ai live API â€” real-time executive summaries triggered by CRITICAL events | Low |
-| [SPEC-02](docs/specs/SPEC-02-opensearch-consumer.md) | OpenSearch / Kibana â€” operational risk dashboard consumer | Low |
-| [SPEC-03](docs/specs/SPEC-03-teams-alerts.md) | Microsoft Teams â€” webhook alerts for HIGH and CRITICAL events | Low |
-| [SPEC-04](docs/specs/SPEC-04-servicenow-itsm.md) | ServiceNow / ITSM â€” automated procurement incident workflow | Medium |
-| [SPEC-05](docs/specs/SPEC-05-ibm-cos-data-lake.md) | IBM Cloud Object Storage â€” raw event data lake via Confluent S3 sink connector | Medium |
-| [SPEC-06](docs/specs/SPEC-06-watsonxdata-tableflow.md) | watsonx.data / Tableflow â€” governed Apache Iceberg analytics | Medium |
-| [SPEC-07](docs/specs/SPEC-07-ibm-maximo.md) | IBM Maximo â€” maintenance work order automation from CRITICAL alerts | High |
+| [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md) | watsonx.ai live API — real-time executive summaries triggered by CRITICAL events | Low |
+| [SPEC-02](docs/specs/SPEC-02-opensearch-consumer.md) | OpenSearch / Kibana — operational risk dashboard consumer | Low |
+| [SPEC-03](docs/specs/SPEC-03-teams-alerts.md) | Microsoft Teams — webhook alerts for HIGH and CRITICAL events | Low |
+| [SPEC-04](docs/specs/SPEC-04-servicenow-itsm.md) | ServiceNow / ITSM — automated procurement incident workflow | Medium |
+| [SPEC-05](docs/specs/SPEC-05-ibm-cos-data-lake.md) | IBM Cloud Object Storage — raw event data lake via Confluent S3 sink connector | Medium |
+| [SPEC-06](docs/specs/SPEC-06-watsonxdata-tableflow.md) | watsonx.data / Tableflow — governed Apache Iceberg analytics | Medium |
+| [SPEC-07](docs/specs/SPEC-07-ibm-maximo.md) | IBM Maximo — maintenance work order automation from CRITICAL alerts | High |
 
 ### What each spec contains
 
 Every spec follows a consistent structure so a developer can start implementing immediately:
 
-1. **Purpose** â€” what business problem this integration solves and which architecture layer it extends
-2. **Input** â€” the Kafka topic or existing code module it reads from, including the exact message schema
-3. **Output** â€” what the integration produces (API call, index document, webhook payload, connector config)
-4. **Prerequisites** â€” all accounts, credentials, and tools required before writing a line of code
-5. **Implementation steps** â€” numbered, copy-pasteable steps from zero to working integration
-6. **Complete code** â€” full source for every new file to create and every existing file to modify
-7. **New `.env` variables** â€” exact variable names and descriptions to add to `.env` and `.env.example`
-8. **Verification** â€” step-by-step instructions to confirm the integration is working end to end
+1. **Purpose** — what business problem this integration solves and which architecture layer it extends
+2. **Input** — the Kafka topic or existing code module it reads from, including the exact message schema
+3. **Output** — what the integration produces (API call, index document, webhook payload, connector config)
+4. **Prerequisites** — all accounts, credentials, and tools required before writing a line of code
+5. **Implementation steps** — numbered, copy-pasteable steps from zero to working integration
+6. **Complete code** — full source for every new file to create and every existing file to modify
+7. **New `.env` variables** — exact variable names and descriptions to add to `.env` and `.env.example`
+8. **Verification** — step-by-step instructions to confirm the integration is working end to end
 
 ### How to use a spec
 
 1. Read the **Purpose** section to confirm this is the right integration for your use case.
-2. Complete all **Prerequisites** before starting â€” missing credentials mid-implementation is the most common blocker.
+2. Complete all **Prerequisites** before starting — missing credentials mid-implementation is the most common blocker.
 3. Follow the **Implementation steps** in order. Each step is self-contained and testable.
-4. Use the **Complete code** section as the source of truth. Do not improvise around it â€” the code is written to integrate with the existing `code/scrc/` modules and topic schema.
+4. Use the **Complete code** section as the source of truth. Do not improvise around it — the code is written to integrate with the existing `code/scrc/` modules and topic schema.
 5. Add the new variables from the spec to your `.env` file before running.
 6. Run the **Verification** steps to confirm everything works before moving to the next spec.
 
@@ -1077,7 +1077,7 @@ Confluent Cloud acts as the real-time nervous system for supply chain events. Ra
 
 | IBM Capability | Role in this pattern |
 |----------------|---------------------|
-| IBM watsonx.ai | Converts risk events and recommendations into plain-language executive summaries, supplier escalation emails, and next-best-action guidance using the prompt templates in [`docs/agents/`](docs/agents/) â€” see [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md) for live API integration |
+| IBM watsonx.ai | Converts risk events and recommendations into plain-language executive summaries, supplier escalation emails, and next-best-action guidance using the prompt templates in [`docs/agents/`](docs/agents/) — see [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md) for live API integration |
 | IBM watsonx.data | Provides governed analytical access to the complete event history via Confluent Tableflow lakehouse integration, enabling historical trend analysis and model training |
 | IBM Db2 | Source system for supplier master data, purchase orders, and inventory records, connected to Confluent via the Db2 managed connector |
 | IBM MQ | Bridge for legacy EDI and supplier message feeds that cannot publish directly to Kafka, connected via the MQ Source connector |
