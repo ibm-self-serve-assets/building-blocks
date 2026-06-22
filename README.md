@@ -14,7 +14,7 @@ The Building Block is a **reference implementation framework** that accelerates 
 - Seamlessly **integrate IBM services** like **watsonx.ai**, **watsonx.data**, **Instana**, **Turbonomic** and other IBM offerings with partner and open-source ecosystems.
 - Present **business-aligned outcomes** showcasing seamless integration and value delivery through reusable building blocks that highlight the full potential of IBM's capabilities.
 
-<img width="1708" height="943" alt="Screenshot 2026-04-28 at 11 32 33 AM" src="https://github.com/user-attachments/assets/1410b2d7-b506-4167-9332-906a64b6c132" />
+<img width="1393" height="740" alt="605339941-96f5db8e-6318-4d7f-bab3-8fdd8732e91d" src="https://github.com/user-attachments/assets/51795882-e2d5-4610-97f2-d90ca714577a" />
 
 Embeddable capabilities across key domains:
 
