@@ -24,8 +24,6 @@ Embeddable capabilities across key domains:
 - **Build & Deploy** – Tools for infrastructure automation and AI-assisted development using Infrastructure-as-Code and code generation.
 - **Modernize** – Observability capabilities including dependency mapping, anomaly detection, and application monitoring.
 - **Optimize** – AI-driven solutions for cost optimization, risk detection, and automated remediation across application environments. 
-<img width="1659" height="938" alt="Screenshot 2026-04-28 at 11 25 57 AM" src="https://github.com/user-attachments/assets/967d6d37-6138-422f-95f3-cff83691b1a0" />
-
 ---
 
 ## License
