@@ -27,7 +27,7 @@ langchain-core==0.3.80
 langchain-elasticsearch==0.3.2
 langchain-ibm==0.3.20
 langchain-text-splitters==0.3.11
-langsmith==0.4.56
+langsmith==0.8.0
 
 # Document Processing
 unstructured[all-docs]==0.16.0
