@@ -17,18 +17,21 @@
 
 ## 🔗 Navigation
 
-**Observe Building Blocks:**
-- [← Back to Observe](../README.md)
-- [Network Performance →](../network-performance/README.md)
-
 **Assets:**
-- [Observability Dashboard →](assets/application-observability/README.md)
-- [Instana MCP Server →](assets/instana-mcp/)
-- [Bob Modes →](bob-modes/README.md)
+- [Bob Skills →](bob-skills/README.md) | [⬇ Download Skills ZIP](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-skills/application-observability.zip)
+- [Bob Modes →](bob-modes/README.md) | [⬇ Download Modes ZIP](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-modes/application-observability.zip)
 
-**Other Categories:**
-- [Build & Deploy](../../build-and-deploy/authentication-mgmt/README.md)
-- [Optimize](../../optimize/finops/README.md)
+**Other Optimize Building Blocks:**
+- [Automated Resilience & Compliance](../automated-resilience-and-compliance/README.md)
+- [Automated Resource Management](../automated-resource-mgmt/README.md)
+- [Budget & Forecasting](../budget-and-forecasting/README.md)
+- [FinOps](../finops/README.md)
+
+**Build & Deploy Building Blocks:**
+- [Asset Management](../../build-and-deploy/asset-management/README.md)
+- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md)
+- [Infrastructure as Code](../../build-and-deploy/infrastructure-as-code/README.md)
+- [iPaaS](../../build-and-deploy/ipaas/README.md)
 
 ---
 
@@ -51,8 +54,6 @@ This building block provides a complete application observability solution using
 ### 1. Instana Observability Dashboard
 
 A comprehensive Python Dash application for monitoring applications through IBM Instana.
-
-**Location:** [`assets/application-observability/`](assets/application-observability/README.md)
 
 **Features:**
 - 📊 Real-time service health monitoring
@@ -77,15 +78,11 @@ cd assets/application-observability
 scripts\setup.bat   # Windows
 ```
 
-[📖 Full Documentation](assets/application-observability/README.md) | [⚡ Quick Start](assets/application-observability/QUICKSTART.md) | [📊 Project Summary](assets/application-observability/PROJECT_SUMMARY.md)
-
 ---
 
 ### 2. Instana MCP Server
 
 Model Context Protocol server for integrating Instana observability with AI assistants like IBM Bob.
-
-**Location:** [`assets/instana-mcp/`](assets/instana-mcp/)
 
 **Capabilities:**
 - 🤖 AI-powered incident analysis
@@ -95,8 +92,8 @@ Model Context Protocol server for integrating Instana observability with AI assi
 - ⚠️ Agent monitoring and alerts
 
 **Deployment Options:**
-- **Code Engine:** [`deploy-ce/`](assets/instana-mcp/deploy-ce/) - IBM Cloud Code Engine deployment
-- **Container:** [`mcp-server/`](assets/instana-mcp/mcp-server/) - Docker containerized server
+- **Code Engine:** `deploy-ce/` - IBM Cloud Code Engine deployment
+- **Container:** `mcp-server/` - Docker containerized server
 
 **MCP Tools Available:**
 - `get_event` - Retrieve specific events by ID
@@ -115,8 +112,10 @@ Specialized IBM Bob modes for application observability workflows.
 
 **Location:** [`bob-modes/`](bob-modes/README.md)
 
+**Download:** [⬇ application-observability.zip](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-modes/application-observability.zip)
+
 **Includes:**
-- **Application Observability Mode** ([`application-observability.yaml`](bob-modes/base-modes/application-observability.yaml))
+- **Application Observability Mode**
   - Domain-specific observability expertise
   - Instana integration patterns
   - Dashboard generation guidance
@@ -131,6 +130,18 @@ cp bob-modes/base-modes/application-observability.yaml \
 ```
 
 [📖 Bob Modes Documentation](bob-modes/README.md)
+
+---
+
+### 4. Bob Skills
+
+Pre-built IBM Bob skills for application observability.
+
+**Location:** [`bob-skills/`](bob-skills/README.md)
+
+**Download:** [⬇ application-observability.zip](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-skills/application-observability.zip)
+
+[📖 Bob Skills Documentation](bob-skills/README.md)
 
 ---
 
@@ -186,7 +197,7 @@ cp bob-modes/base-modes/application-observability.yaml \
 
 1. **Clone or navigate to the project:**
    ```bash
-   cd observe/application-observability
+   cd optimize/application-observability
    ```
 
 2. **Choose your component:**
@@ -210,7 +221,15 @@ cp bob-modes/base-modes/application-observability.yaml \
 
    **For Bob Modes:**
    ```bash
+   # Download the ZIP from the link above or:
    cd bob-modes
+   # Follow installation instructions in README.md
+   ```
+
+   **For Bob Skills:**
+   ```bash
+   # Download the ZIP from the link above or:
+   cd bob-skills
    # Follow installation instructions in README.md
    ```
 
@@ -225,8 +244,6 @@ Monitor your applications deployed on OpenShift or Kubernetes:
 - Identify performance bottlenecks
 - Monitor error rates and latency
 - Visualize service dependencies
-
-**Example:** Monitor the [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) deployed via [Ansible](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
 
 ### 2. AI-Powered Incident Response
 
@@ -306,7 +323,8 @@ Identify and resolve performance issues:
 1. **Dashboard** queries Instana API for metrics and displays visualizations
 2. **MCP Server** provides AI-powered analysis and automation capabilities
 3. **Bob Modes** enhance development workflows with observability expertise
-4. **Instana** collects telemetry from monitored applications
+4. **Bob Skills** provide pre-built AI skills for observability tasks
+5. **Instana** collects telemetry from monitored applications
 
 ---
 
@@ -345,28 +363,20 @@ Identify and resolve performance issues:
 ## 📚 Related Resources
 
 ### Observability Assets
-- [Instana Observability Dashboard](assets/application-observability/README.md) - Python Dash application
-  - [Quick Start Guide](assets/application-observability/QUICKSTART.md)
-  - [Project Summary](assets/application-observability/PROJECT_SUMMARY.md)
-- [Instana MCP Server](assets/instana-mcp/) - MCP integration
-- [Bob Modes](bob-modes/README.md) - Custom Bob modes for observability
-
-### Applications to Monitor
-- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample app to monitor
-  - [Deployment Guide](../../build-and-deploy/Iaas/assets/retailapp/deploy-steps.md)
-  - [JMeter Load Testing](../../build-and-deploy/Iaas/assets/retailapp/jmeter/README.md)
-- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
-
-### Build & Deploy Building Blocks
-- [Authentication Management](../../build-and-deploy/authentication-mgmt/README.md) - IBM Security Verify
-- [Code Assistant](../../build-and-deploy/code-assistant/README.md) - AI-powered development
-- [IaaS](../../build-and-deploy/Iaas/README.md) - Infrastructure as a Service
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration platform
+- [Bob Modes](bob-modes/README.md) — Custom Bob modes for observability | [⬇ Download](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-modes/application-observability.zip)
+- [Bob Skills](bob-skills/README.md) — Pre-built Bob skills for observability | [⬇ Download](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-skills/application-observability.zip)
 
 ### Optimize Building Blocks
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md) - IBM Concert insights
-- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
-- [Network Performance](../network-performance/README.md) - Network monitoring with IBM SevOne
+- [Automated Resilience & Compliance](../automated-resilience-and-compliance/README.md) — IBM Concert insights
+- [Automated Resource Management](../automated-resource-mgmt/README.md) — Resource optimization
+- [Budget & Forecasting](../budget-and-forecasting/README.md) — Cost forecasting
+- [FinOps](../finops/README.md) — Cost optimization with IBM Turbonomic
+
+### Build & Deploy Building Blocks
+- [Asset Management](../../build-and-deploy/asset-management/README.md) — Asset lifecycle management
+- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) — Application modernization
+- [Infrastructure as Code](../../build-and-deploy/infrastructure-as-code/README.md) — IaC automation
+- [iPaaS](../../build-and-deploy/ipaas/README.md) — Integration platform
 
 ---
 
@@ -374,9 +384,10 @@ Identify and resolve performance issues:
 
 ### Getting Help
 
-- **Dashboard Issues:** Check [README](assets/application-observability/README.md) and logs in `assets/application-observability/logs/`
-- **MCP Server Issues:** Review MCP server logs and configuration
+- **Dashboard Issues:** Check the MCP server logs and Instana API configuration
+- **MCP Server Issues:** Review MCP server logs and environment variable setup
 - **Bob Modes:** See [Bob Modes documentation](bob-modes/README.md)
+- **Bob Skills:** See [Bob Skills documentation](bob-skills/README.md)
 - **Instana API:** Consult IBM Instana documentation
 
 ### Contributing
