@@ -19,7 +19,7 @@ jobs:
       # 2. Create the ZIP archive directly inside the target directory
       - name: Create ZIP archive
         run: |
-          rm -f skills.zip
+          rm -f ibm-bob/skills.zip
           cd ibm-bob/skills
           
           # Create zip one level up: ibm-bob/skills.zip
