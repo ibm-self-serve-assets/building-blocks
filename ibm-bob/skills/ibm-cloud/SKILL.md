@@ -2,12 +2,6 @@
 name: ibmcloud-cli
 description: >-
   Work with IBM Cloud by using the stand-alone `ibmcloud` CLI or IBM Cloud Shell.
-  Use this whenever the user mentions IBM Cloud CLI, `ibmcloud`, Cloud Shell,
-  installing or updating the CLI, logging in with IBMid, SSO, federated ID, API
-  key, targeting an account, region, or resource group, configuring CLI defaults,
-  managing CLI plug-ins, getting command help, using JSON output, troubleshooting
-  CLI authentication/targeting issues, or using classic infrastructure commands
-  through `ibmcloud sl`.
 metadata:
   enabled: true
   author: IBM (adapted)
