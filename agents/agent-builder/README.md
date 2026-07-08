@@ -22,12 +22,7 @@ The **Agent Builder** building block enables developers to rapidly create autono
 
 ## How to Use
 
-### 1. Explore Pre-existing Assets
-Browse the sample projects and demos to understand agent capabilities and implementation patterns:
-- Review the [Contextual Knowledge Hub](./assets/contextual-knowledge-hub/) for working examples
-- Study existing agent configurations and integrations
-
-### 2. Build Your Own Agent
+###  Build Your Own Agent
 Use Bob modes to start building custom agents:
 - Explore the **Agent Builder Bob Mode** for guided agent development
 - Configure agent behaviors, rules, and enterprise integrations
