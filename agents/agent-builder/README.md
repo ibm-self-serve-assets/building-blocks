@@ -38,10 +38,6 @@ Download and install Bob modes for guided agent development:
 
 📖 See the [bob-modes README](./bob-modes/README.md) for installation instructions.
 
-## Assets & Sample Projects
-
-- [Contextual Knowledge Hub](./assets/contextual-knowledge-hub/) - Sample project demonstrating agent builder capabilities
-
 ---
 
 ## Related Building Blocks
