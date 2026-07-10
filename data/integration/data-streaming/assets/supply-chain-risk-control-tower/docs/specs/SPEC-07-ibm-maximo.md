@@ -4,373 +4,191 @@ Back to [specs index](README.md) | [main README](../../README.md)
 
 ---
 
-## 1. Purpose
+## Spec Classification
 
-When the risk engine raises a CRITICAL control tower alert — typically because a component shipment is severely delayed and inventory is critically low — a physical response is often required: expediting a logistics pick-up, scheduling an emergency maintenance inspection, or reallocating parts from another production line. These actions are managed in IBM Maximo.
-
-This spec adds a consumer that reads the `control_tower_alerts` Kafka topic and automatically creates a **Maximo Work Order** for every CRITICAL alert, pre-populated with the affected component, supplier, risk score, and recommended action. The work order is assigned to the logistics or maintenance team and set to priority 1 (Emergency).
-
-**Architecture layer extended:** Layer 5 — Downstream applications and integrations.
-
-**New file:** `code/scrc/maximo_consumer.py`
+| Field | Value |
+|---|---|
+| Spec type | SDD implementation spec |
+| Status | Ready for Bob implementation after Maximo auth mode, site ID, and org ID are confirmed |
+| Primary actor | Bob / developer implementing with Bob |
+| Target asset | Supply Chain Risk Control Tower |
+| Architecture layer | Layer 5 — Downstream applications and asset/work management |
 
 ---
 
-## 2. Input
+## 1. Business Goal
 
-| Property | Value |
-|----------|-------|
-| Topic consumed | `control_tower_alerts` |
+Some CRITICAL supply-chain alerts require a physical response such as logistics expediting, emergency maintenance inspection, or parts reallocation. This spec adds a Maximo consumer that creates a work order for CRITICAL alerts so operational response can be tracked in IBM Maximo.
+
+---
+
+## 2. Scope
+
+Create a standalone consumer for `control_tower_alerts`. It filters CRITICAL events and creates Maximo work orders with priority 1 and waiting-for-approval status.
+
+---
+
+## 3. Non-Goals
+
+- Do not synchronously create Maximo work orders from the risk engine publish path.
+- Do not create work orders for HIGH, MEDIUM, or LOW alerts.
+- Do not model the full Maximo asset/location hierarchy in this spec.
+- Do not require Maximo for the base Kafka demo to run.
+
+---
+
+## 4. Files to Create or Modify
+
+- `code/scrc/maximo_consumer.py`
+- `.env.example`
+- `tests/` or the existing test location for `scrc` modules
+
+---
+
+## 5. Input Contract
+
+| Item | Requirement |
+|---|---|
+| Topic | `control_tower_alerts` |
 | Consumer group | `scrc-maximo-consumer` |
-| Filter | `alert["severity"] == "CRITICAL"` — HIGH and lower are skipped |
-| Alert schema | `alert_id`, `risk_id`, `severity`, `title`, `message`, `recommended_action`, `event_time` |
-| Risk score (for WO description) | Joined from `supply_chain_risk_scores` using `risk_id` if available |
+| Filter | `alert["severity"] == "CRITICAL"` |
+| Alert fields | `alert_id`, `risk_id`, `severity`, `title`, `message`, `recommended_action`, `event_time` |
+| Optional enrichment | Risk score joined by `risk_id` if available |
 
 ---
 
-## 3. Output
+## 6. Output Contract
 
-| Output | Description |
-|--------|-------------|
-| Maximo Work Order | Created via Maximo REST API `POST /maximo/oslc/os/mxwo` |
-| Work Order fields | `wonum` (auto), `description`, `longdescription`, `wopriority` (1 = Emergency), `siteid`, `orgid`, `status` (WAPPR — Waiting for Approval) |
-
----
-
-## 4. Prerequisites
-
-| Requirement | Details |
-|-------------|---------|
-| IBM Maximo Application Suite | MAS 8.x or Maximo 7.6.1+ with REST API enabled |
-| Maximo OSLC REST API | Enabled by default in MAS; verify at `https://YOUR_HOST/maximo/oslc/` |
-| Maximo user | Integration user with `MXAPIWO` object structure access and `PLUSAPPAUTHOR` security group, or equivalent work order create permission |
-| Site ID and Org ID | Find in Maximo: **Administration → Organizations** — note `SITEID` and `ORGID` |
-| Python package | `requests` — already a dependency |
-
-### Maximo authentication options
-
-Maximo supports two authentication modes:
-
-- **Basic auth** (used in this spec): `username:password` in the `Authorization` header. Simple but requires HTTPS in production.
-- **API key** (recommended for production): Create a Maximo API key under **User → API Keys** and pass it as the `apikey` header instead of basic auth.
+| Item | Requirement |
+|---|---|
+| Maximo Work Order | Created via Maximo REST/OSLC API `POST /maximo/oslc/os/mxwo` or environment-specific equivalent |
+| Work Order fields | `description`, long description, `wopriority=1`, `siteid`, `orgid`, `status=WAPPR`, `worktype=CM` unless configured otherwise |
+| Runtime output | Log created work order number/location and source alert ID |
 
 ---
 
-## 5. Implementation steps
+## 7. Functional Requirements
 
-### Step 1: Verify Maximo REST API access
-
-```bash
-curl -u YOUR_USER:YOUR_PASSWORD \
-  "https://YOUR_MAXIMO_HOST/maximo/oslc/os/mxwo?oslc.pageSize=1" \
-  -H "Accept: application/json"
-```
-
-A 200 response with a JSON body confirms the API is reachable. A 401 means credentials are wrong. A 403 means the user lacks work order read permission.
-
-### Step 2: Note the Site ID and Org ID
-
-In Maximo, navigate to **Administration → Organizations** and note the `SITEID` and `ORGID` for the site that will own the work orders.
-
-### Step 3: Add `.env` variables
-
-Add all variables from section 7 to `.env`.
-
-### Step 4: Create `code/scrc/maximo_consumer.py`
-
-Create the file with the complete code from section 6.
-
-### Step 5: Run the consumer
-
-```bash
-source .venv/bin/activate
-python -m scrc.maximo_consumer
-```
-
-### Step 6: Produce a CRITICAL event and verify the work order
-
-```bash
-python -m scrc.producer --scenario inventory_drop --count 10
-```
-
-Then check Maximo: **Work Orders → Work Order Tracking** → filter by description containing `Supply Chain`.
+- Create `maximo_consumer.py` as a standalone process.
+- Support API key authentication as preferred production mode and basic auth as optional dev mode.
+- Map CRITICAL alert fields to a Maximo work order payload.
+- Use configured site ID and org ID.
+- Include alert ID, risk ID, recommended action, and event time in the long description.
+- Skip non-CRITICAL alerts without calling Maximo.
 
 ---
 
-## 6. Complete code
+## 8. Configuration and Secrets
 
-### `code/scrc/maximo_consumer.py` — new file
-
-```python
-from __future__ import annotations
-
-"""
-IBM Maximo consumer — reads control_tower_alerts from Kafka and creates
-a Maximo Work Order for every CRITICAL severity event.
-
-Authentication: basic auth by default; set MAXIMO_API_KEY to use API key auth instead.
-
-Run:
-    python -m scrc.maximo_consumer
-"""
-
-import os
-from datetime import datetime, timezone
-from typing import Any
-
-import requests
-import typer
-from rich.console import Console
-
-from .kafka_utils import consume_loop, consumer_config
-from .settings import TOPICS, load_settings
-
-app = typer.Typer(help="Create Maximo work orders from CRITICAL control tower alerts.")
-console = Console()
-
-# Maximo work order priority: 1 = Emergency, 2 = High, 3 = Medium, 4 = Low
-CRITICAL_PRIORITY = 1
-INITIAL_STATUS = "WAPPR"  # Waiting for Approval — change to "APPR" to skip approval
-
-
-def _build_headers(api_key: str | None, username: str | None, password: str | None) -> dict[str, str]:
-    headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "x-method-override": "BULK",
-    }
-    if api_key:
-        headers["apikey"] = api_key
-    elif username and password:
-        import base64
-        token = base64.b64encode(f"{username}:{password}".encode()).decode()
-        headers["Authorization"] = f"Basic {token}"
-    return headers
-
-
-def _create_work_order(
-    base_url: str,
-    headers: dict[str, str],
-    alert: dict[str, Any],
-    site_id: str,
-    org_id: str,
-) -> dict[str, Any]:
-    """Create a Maximo Work Order via the OSLC REST API.
-
-    Returns the created work order record.
-    """
-    url = f"{base_url.rstrip('/')}/maximo/oslc/os/mxwo"
-
-    short_desc = f"Supply Chain CRITICAL Risk — {alert.get('title', 'Alert')}"[:100]
-
-    long_desc_lines = [
-        f"Automatically created by Supply Chain Risk Control Tower.",
-        f"",
-        f"Alert ID         : {alert.get('alert_id', '')}",
-        f"Risk ID          : {alert.get('risk_id', '')}",
-        f"Severity         : {alert.get('severity', '')}",
-        f"",
-        f"Details:",
-        f"{alert.get('message', '')}",
-        f"",
-        f"Recommended action:",
-        f"{alert.get('recommended_action', '')}",
-        f"",
-        f"Event time       : {alert.get('event_time', '')}",
-        f"Created          : {datetime.now(tz=timezone.utc).isoformat()}",
-    ]
-
-    payload = {
-        "description": short_desc,
-        "description_longdescription": "\n".join(long_desc_lines),
-        "wopriority": CRITICAL_PRIORITY,
-        "siteid": site_id,
-        "orgid": org_id,
-        "status": INITIAL_STATUS,
-        "worktype": "CM",  # Corrective Maintenance — change to match your Maximo config
-    }
-
-    response = requests.post(url, json=payload, headers=headers, timeout=20, verify=True)
-    response.raise_for_status()
-
-    # Maximo returns 201 Created with a Location header containing the new WO URI
-    location = response.headers.get("Location", "")
-    wo_number = location.rstrip("/").split("/")[-1] if location else "unknown"
-    return {"wonum": wo_number, "location": location}
-
-
-def _handle_alert(
-    topic: str,
-    key: str | None,
-    event: dict[str, Any],
-    base_url: str,
-    headers: dict[str, str],
-    site_id: str,
-    org_id: str,
-) -> None:
-    severity = event.get("severity", "")
-    if severity != "CRITICAL":
-        console.print(f"[dim]Skipped {severity} alert {event.get('alert_id', '')}[/dim]")
-        return
-
-    console.print(
-        f"[yellow]CRITICAL alert — creating Maximo work order...[/yellow] "
-        f"{event.get('alert_id', '')}"
-    )
-
-    try:
-        result = _create_work_order(base_url, headers, event, site_id, org_id)
-        console.print(
-            f"[green]Work order created:[/green] {result['wonum']} "
-            f"— {result['location']}"
-        )
-    except requests.HTTPError as exc:
-        console.print(f"[red]ERROR creating work order: {exc}[/red]")
-        if exc.response is not None:
-            console.print(f"[red]Response body: {exc.response.text[:500]}[/red]")
-    except requests.ConnectionError as exc:
-        console.print(f"[red]Cannot connect to Maximo at {base_url}: {exc}[/red]")
-
-
-@app.command()
-def main() -> None:
-    settings = load_settings()
-
-    if not settings.kafka.is_configured:
-        console.print("[red]ERROR: Kafka credentials missing. Check .env.[/red]")
-        raise typer.Exit(1)
-
-    base_url = os.getenv("MAXIMO_BASE_URL", "")
-    api_key = os.getenv("MAXIMO_API_KEY") or None
-    username = os.getenv("MAXIMO_USERNAME") or None
-    password = os.getenv("MAXIMO_PASSWORD") or None
-    site_id = os.getenv("MAXIMO_SITE_ID", "BEDFORD")
-    org_id = os.getenv("MAXIMO_ORG_ID", "EAGLENA")
-
-    if not base_url:
-        console.print("[red]ERROR: MAXIMO_BASE_URL must be set in .env.[/red]")
-        raise typer.Exit(1)
-
-    if not api_key and not (username and password):
-        console.print("[red]ERROR: Set either MAXIMO_API_KEY or both MAXIMO_USERNAME and MAXIMO_PASSWORD in .env.[/red]")
-        raise typer.Exit(1)
-
-    headers = _build_headers(api_key, username, password)
-
-    auth_mode = "API key" if api_key else "basic auth"
-    console.print(f"Maximo base URL : {base_url}")
-    console.print(f"Authentication  : {auth_mode}")
-    console.print(f"Site ID         : {site_id}")
-    console.print(f"Org ID          : {org_id}")
-    console.print(f"Initial status  : {INITIAL_STATUS}")
-
-    from confluent_kafka import Consumer
-    consumer = Consumer(consumer_config(settings.kafka, group_id="scrc-maximo-consumer"))
-    topics = [TOPICS["alerts"]]
-    console.print(f"Subscribing to  : {', '.join(topics)}")
-
-    consume_loop(
-        consumer,
-        topics,
-        lambda topic, key, event: _handle_alert(
-            topic, key, event, base_url, headers, site_id, org_id
-        ),
-    )
-
-
-if __name__ == "__main__":
-    app()
-```
-
----
-
-## 7. New `.env` variables
-
-Add to `.env` and `.env.example`:
+Add placeholders to `.env.example`. Add real values only to local `.env`, CI/CD secret stores, or the relevant managed connector configuration.
 
 ```dotenv
 # IBM Maximo — work order automation (SPEC-07)
 MAXIMO_BASE_URL=https://YOUR_MAXIMO_HOST
-# Use API key auth (recommended for production):
 MAXIMO_API_KEY=
-# OR use basic auth (simpler for dev instances):
 MAXIMO_USERNAME=
 MAXIMO_PASSWORD=
-# Site and org from Administration → Organizations in Maximo
 MAXIMO_SITE_ID=BEDFORD
 MAXIMO_ORG_ID=EAGLENA
 ```
 
 ---
 
-## 8. Verification
+## 9. Runtime Behavior
 
-1. Verify the Maximo REST API is reachable from your machine:
+- The consumer runs independently of the core risk engine.
+- If `MAXIMO_API_KEY` is present, use API-key auth; otherwise use basic auth only when username/password are present.
+- The consumer should validate required configuration at startup.
+- For each CRITICAL alert, create a work order and log the resulting work order number if returned.
+- Commit Kafka offsets only after a successful create, intentional skip, or explicitly handled non-retryable error.
 
-   ```bash
-   curl -u YOUR_USER:YOUR_PASSWORD \
-     "https://YOUR_MAXIMO_HOST/maximo/oslc/os/mxwo?oslc.pageSize=1" \
-     -H "Accept: application/json"
-   ```
+---
 
-   Expect HTTP 200 with a JSON body. A 401 means wrong credentials; a 404 means the OSLC API path is different on your instance — check with your Maximo admin.
+## 10. Failure Handling and Idempotency
 
-2. Start the consumer:
+- Use idempotency when possible by checking for an existing work order with the same alert ID before creating a new one.
+- Retry network/5xx failures with bounded backoff.
+- Treat 401/403 as configuration/permission failures and surface clearly.
+- Treat 404 path errors as Maximo API path/configuration issues.
+- Malformed alert messages should be skipped with clear warning logs to avoid poison-message loops.
 
-   ```bash
-   source .venv/bin/activate
-   python -m scrc.maximo_consumer
-   ```
+---
 
-3. Produce CRITICAL events:
+## 11. Security, Privacy, and Governance
 
-   ```bash
-   python -m scrc.producer --scenario inventory_drop --count 10
-   ```
+- Never log API keys or passwords.
+- Use HTTPS only.
+- Use a dedicated Maximo integration user with least-privilege work-order create access.
+- Avoid sending unnecessary sensitive customer/supplier data to Maximo.
+- Prefer API key auth for production.
 
-4. The consumer terminal should print:
+---
 
-   ```
-   CRITICAL alert — creating Maximo work order...  ALERT-xxxx
-   Work order created: 1234 — https://YOUR_HOST/maximo/oslc/os/mxwo/1234
-   ```
+## 12. Testing Requirements
 
-5. In Maximo, navigate to **Work Orders → Work Order Tracking**. Filter by `Description contains Supply Chain`. The new work order should appear with:
-   - Priority: 1 (Emergency)
-   - Status: WAPPR (Waiting for Approval)
-   - Work Type: CM (Corrective Maintenance)
-   - Long description containing the alert ID, risk ID, and recommended action.
+- Unit test alert-to-work-order payload mapping.
+- Unit test auth header selection for API key and basic auth modes.
+- Unit test CRITICAL filtering and non-CRITICAL skips.
+- Unit test 401/403/404/422/5xx/timeout handling with requests mocked.
+- Unit test idempotency behavior if lookup is implemented.
 
-6. To test the API call without the full Kafka stack, call `_create_work_order` directly:
+---
 
-   ```python
-   import os
-   from code.scrc.maximo_consumer import _build_headers, _create_work_order
+## 13. Acceptance Criteria
 
-   headers = _build_headers(
-       api_key=os.getenv("MAXIMO_API_KEY"),
-       username=os.getenv("MAXIMO_USERNAME"),
-       password=os.getenv("MAXIMO_PASSWORD"),
-   )
-   alert = {
-       "alert_id": "TEST-001", "risk_id": "RISK-001", "severity": "CRITICAL",
-       "title": "Test work order", "message": "Integration test from SPEC-07.",
-       "recommended_action": "Verify Maximo API connectivity.",
-       "event_time": "2026-01-01T00:00:00Z",
-   }
-   result = _create_work_order(
-       os.getenv("MAXIMO_BASE_URL"), headers, alert,
-       os.getenv("MAXIMO_SITE_ID"), os.getenv("MAXIMO_ORG_ID"),
-   )
-   print(result)
-   ```
+- [ ] `.env.example` includes Maximo placeholders with no real credentials.
+- [ ] Consumer subscribes to `control_tower_alerts` with `scrc-maximo-consumer`.
+- [ ] Only CRITICAL alerts result in Maximo API calls.
+- [ ] Work orders contain priority 1, WAPPR status, site ID, org ID, alert ID, risk ID, and recommended action.
+- [ ] Maximo API failures are logged clearly and do not impact the core risk engine.
+- [ ] Automated tests pass without a real Maximo instance.
 
-### Common issues
+---
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| HTTP 401 | Wrong credentials | Verify username/password or re-generate the API key |
-| HTTP 403 | User lacks WO create permission | Add user to `PLUSAPPAUTHOR` security group or grant `MXAPIWO` object structure access |
-| HTTP 404 on `/maximo/oslc/os/mxwo` | OSLC API path differs on your instance | Try `/maximo/oslc/os/mxwo` → `/maximo/oslc/os/MXWO` (uppercase) or check with Maximo admin |
-| HTTP 422 | Invalid `siteid` or `orgid` | Verify the values in Maximo under **Administration → Organizations** |
-| `ConnectionError` | Maximo not reachable from your machine | Check VPN, firewall rules, or use a jump host |
+## 14. Implementation Notes for Bob
+
+- Keep Maximo-specific API logic isolated behind small client/helper functions.
+- Do not assume the OSLC path case; make it configurable if needed.
+- Keep Maximo field names centralized as constants to support customer-specific configuration.
+- Preserve the consumer pattern used by the ServiceNow spec where possible.
+
+---
+
+## 15. Verification
+
+1. Verify `GET <MAXIMO_BASE_URL>/maximo/oslc/` or the configured Maximo API base path is reachable.
+2. Start `python -m scrc.maximo_consumer`.
+3. Produce CRITICAL alerts from the risk engine.
+4. Confirm the consumer logs a created work order.
+5. In Maximo Work Order Tracking, filter descriptions containing `Supply Chain` and verify priority, status, site, org, and long description.
+
+---
+
+## 16. Open Questions
+
+Confirm whether the target Maximo environment requires API key auth, basic auth, or another enterprise SSO/OAuth flow.
+
+---
+
+## Definition of Ready
+
+Bob may start implementation only when all of the following are known:
+
+- The integration target and trigger are clear.
+- Input topic, payload contract, filtering rules, and expected output are defined.
+- Required files to create or modify are listed.
+- Required environment variables are named and have placeholder-safe examples.
+- Failure behavior is defined for missing credentials, API errors, timeouts, malformed messages, and retry/idempotency concerns.
+- Acceptance criteria are testable without relying only on a manual UI check.
+
+---
+
+## Bob / SDD Execution Guardrails
+
+- Treat this document as the implementation contract, not as a tutorial. Use the existing application patterns and shared utilities where they already exist.
+- Keep changes limited to the files listed in **Files to create or modify** unless the implementation cannot compile or pass tests without a clearly justified additional change.
+- Do not commit secrets, tokens, webhook URLs, passwords, API keys, generated credentials, or tenant-specific endpoints.
+- Prefer small, reviewable changes. Keep connector/API-specific logic isolated behind a dedicated module or consumer.
+- External systems must be optional at runtime. If credentials are missing, the core Kafka demo must still run unless this spec explicitly requires the integration process to be started.
+- Add or update tests before marking the spec complete. Mock external APIs, webhooks, and cloud services in automated tests.
+- Log enough metadata for troubleshooting, but never log secret values or full credentials.

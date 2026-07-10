@@ -4,278 +4,191 @@ Back to [specs index](README.md) | [main README](../../README.md)
 
 ---
 
-## 1. Purpose
+## Spec Classification
 
-The risk engine produces a continuous stream of scored events, but analytics teams need to query that history — trend analysis, model training, compliance reporting. This spec connects the three output Kafka topics to **IBM watsonx.data** via **Confluent Tableflow**, which continuously materialises each topic into a governed **Apache Iceberg** table.
-
-Once the Iceberg tables exist in watsonx.data, analytics teams can:
-
-- Run SQL queries against the full risk event history using the Presto/Trino engine.
-- Join risk scores against historical supplier data and customer orders.
-- Train predictive risk models on months of scored events.
-- Schedule reports on risk trend by component, supplier, and time window.
-
-**Architecture layer extended:** Layer 5 — Governed analytics.
-
-**Implementation approach:** Confluent Tableflow configuration + watsonx.data catalog registration. No Python code changes required.
+| Field | Value |
+|---|---|
+| Spec type | SDD implementation spec |
+| Status | Ready for configuration implementation after Stream Governance entitlement is confirmed |
+| Primary actor | Bob / developer implementing with Bob |
+| Target asset | Supply Chain Risk Control Tower |
+| Architecture layer | Layer 5 — Governed analytics |
 
 ---
 
-## 2. Input
+## 1. Business Goal
 
-| Property | Value |
-|----------|-------|
+Analytics teams need governed SQL access to historical risk events. This spec uses Confluent Tableflow to materialize output topics into Apache Iceberg tables and registers those tables in IBM watsonx.data for Presto/Trino querying.
+
+---
+
+## 2. Scope
+
+Configure Tableflow for the three output topics, connect the Iceberg storage to watsonx.data, register/query the tables, and provide reference analytics SQL.
+
+---
+
+## 3. Non-Goals
+
+- Do not add Python runtime changes.
+- Do not replace SPEC-05; this spec is the governed analytics path, not the raw archive path.
+- Do not change Kafka topic schemas.
+- Do not promise sub-second analytics latency; this is near-real-time analytical storage.
+
+---
+
+## 4. Files to Create or Modify
+
+- `code/flink-sql/watsonxdata_queries.sql`
+- `docs/specs/SPEC-06-watsonxdata-tableflow.md`
+- `optional IaC files if Tableflow/catalog setup is automated later`
+
+---
+
+## 5. Input Contract
+
+| Item | Requirement |
+|---|---|
 | Topics | `supply_chain_risk_scores`, `supply_chain_recommendations`, `control_tower_alerts` |
-| Tableflow storage | Confluent-managed Apache Iceberg tables in an S3-compatible store |
-| Sync mechanism | Confluent Tableflow (built-in, no connector needed) |
-| Schema source | Confluent Schema Registry — JSON Schema registered for each topic |
+| Schema source | Confluent Schema Registry JSON Schema subjects |
+| Sync mechanism | Confluent Tableflow |
+| Storage | S3-compatible object storage, preferably IBM COS for this asset |
+| Catalog | watsonx.data Iceberg catalog |
 
 ---
 
-## 3. Output
+## 6. Output Contract
 
-| Output | Description |
-|--------|-------------|
-| Iceberg tables | One Iceberg table per topic in the watsonx.data catalog |
+| Item | Requirement |
+|---|---|
+| Iceberg tables | One governed table per output topic |
 | Table names | `supply_chain_risk_scores`, `supply_chain_recommendations`, `control_tower_alerts` |
-| Query engine | IBM watsonx.data Presto/Trino — query via console or JDBC |
-| Latency | Near real-time — new Kafka messages appear in Iceberg tables within 1–5 minutes |
+| Query engine | watsonx.data Presto/Trino |
+| Expected latency | Approximately 1–5 minutes after Kafka messages are produced |
 
 ---
 
-## 4. Prerequisites
+## 7. Functional Requirements
 
-| Requirement | Details |
-|-------------|---------|
-| Confluent Cloud | Stream Governance package (required for Tableflow) |
-| Schema Registry | Schemas must be registered — run `scripts/register_schemas.sh` first |
-| IBM watsonx.data | Provision a watsonx.data instance on IBM Cloud |
-| Object storage | IBM COS bucket or AWS S3 bucket for Iceberg data files |
-| watsonx.data catalog | Create a catalog connected to the COS/S3 bucket |
-
-### Stream Governance requirement
-
-Tableflow is part of the Confluent Cloud Stream Governance package. Enable it in the Confluent Cloud console under **Environment → Stream Governance → Upgrade to Advanced** (or verify it is already included in your contract).
+- Verify Schema Registry subjects exist before enabling Tableflow.
+- Enable Tableflow for each output topic.
+- Use IBM COS or another supported S3-compatible store for Iceberg data.
+- Register the resulting Iceberg tables in watsonx.data.
+- Provide reference SQL for counts, CRITICAL trends, supplier/component risk, and recommendation analysis.
+- Document troubleshooting steps for missing schemas, Tableflow errors, and catalog registration issues.
 
 ---
 
-## 5. Implementation steps
+## 8. Configuration and Secrets
 
-### Step 1: Register schemas (if not already done)
+Add placeholders to `.env.example`. Add real values only to local `.env`, CI/CD secret stores, or the relevant managed connector configuration.
 
-Tableflow uses the Schema Registry schema to define the Iceberg table structure. Schemas must be registered before enabling Tableflow.
-
-```bash
-source .venv/bin/activate
-bash scripts/register_schemas.sh
-```
-
-Verify registration:
-
-```bash
-curl -u "${SCHEMA_REGISTRY_API_KEY}:${SCHEMA_REGISTRY_API_SECRET}" \
-  "${SCHEMA_REGISTRY_URL}/subjects" | python -m json.tool
-```
-
-### Step 2: Create the COS / S3 bucket for Iceberg data
-
-If using IBM COS, create a bucket named `scrc-tableflow-iceberg` (or your preference) following the IBM COS steps in [SPEC-05](SPEC-05-ibm-cos-data-lake.md), steps 1–2. Note the bucket name and endpoint.
-
-If using AWS S3, create a standard bucket in the same region as your Confluent cluster.
-
-### Step 3: Enable Tableflow on each output topic
-
-In the Confluent Cloud UI:
-
-1. Open your cluster → **Topics**.
-2. Click `supply_chain_risk_scores` → **Tableflow → Enable**.
-3. Select the storage backend (IBM COS / S3) and enter the bucket name and credentials.
-4. Choose the catalog (see step 4 — return here after setting up watsonx.data).
-5. Repeat for `supply_chain_recommendations` and `control_tower_alerts`.
-
-Using the Confluent CLI:
-
-```bash
-confluent tableflow enable \
-  --cluster YOUR_CLUSTER_ID \
-  --environment YOUR_ENV_ID \
-  --topic supply_chain_risk_scores \
-  --storage-type s3 \
-  --s3-bucket scrc-tableflow-iceberg \
-  --s3-endpoint https://s3.us-east.cloud-object-storage.appdomain.cloud \
-  --aws-access-key-id YOUR_HMAC_ACCESS_KEY \
-  --aws-secret-access-key YOUR_HMAC_SECRET_KEY
-```
-
-### Step 4: Provision IBM watsonx.data
-
-1. In IBM Cloud, search for **watsonx.data** and provision an instance (Lite tier is available).
-2. Open the watsonx.data console.
-3. Go to **Infrastructure manager → Add component → Add bucket**.
-4. Select **IBM Cloud Object Storage**, enter the bucket name (`scrc-tableflow-iceberg`), endpoint, and HMAC credentials from step 2.
-5. Activate the bucket as an Iceberg catalog named `scrc_risk`.
-
-### Step 5: Register the Iceberg tables in watsonx.data
-
-Once Tableflow is writing Iceberg metadata to the COS bucket, register the tables in watsonx.data:
-
-1. In the watsonx.data console, go to **Data manager → Add table**.
-2. Select the `scrc_risk` catalog.
-3. Click **Register Iceberg table** and point to the Iceberg metadata file in the bucket:
-   ```
-   s3://scrc-tableflow-iceberg/supply_chain_risk_scores/metadata/v1.metadata.json
-   ```
-4. Repeat for `supply_chain_recommendations` and `control_tower_alerts`.
-
-Alternatively, use the Presto query engine to create the tables directly:
-
-```sql
-CREATE TABLE scrc_risk.supply_chain_risk_scores
-USING ICEBERG
-LOCATION 's3://scrc-tableflow-iceberg/supply_chain_risk_scores/';
-```
-
-### Step 6: Query the data
-
-In the watsonx.data SQL editor:
-
-```sql
--- Most recent CRITICAL events
-SELECT
-    event_time,
-    component_id,
-    supplier_id,
-    risk_score,
-    root_cause,
-    days_of_supply
-FROM scrc_risk.supply_chain_risk_scores
-WHERE risk_band = 'CRITICAL'
-ORDER BY event_time DESC
-LIMIT 20;
-```
-
-```sql
--- Risk score trend by component over the last 7 days
-SELECT
-    DATE_TRUNC('hour', CAST(event_time AS TIMESTAMP)) AS hour,
-    component_id,
-    AVG(risk_score)     AS avg_risk_score,
-    MAX(risk_score)     AS max_risk_score,
-    COUNT(*)            AS event_count
-FROM scrc_risk.supply_chain_risk_scores
-WHERE event_time >= CAST(NOW() - INTERVAL '7' DAY AS VARCHAR)
-GROUP BY 1, 2
-ORDER BY 1 DESC, 3 DESC;
-```
-
-```sql
--- Join risk scores with recommendations
-SELECT
-    r.event_time,
-    r.component_id,
-    r.risk_band,
-    r.risk_score,
-    rec.recommended_action,
-    rec.confidence
-FROM scrc_risk.supply_chain_risk_scores r
-JOIN scrc_risk.supply_chain_recommendations rec
-  ON r.risk_id = rec.risk_id
-WHERE r.risk_band IN ('HIGH', 'CRITICAL')
-ORDER BY r.event_time DESC
-LIMIT 50;
+```dotenv
+# watsonx.data / Tableflow (SPEC-06)
+# No new Python application environment variables are required.
+# Store COS/Tableflow credentials in Confluent Cloud, watsonx.data, Terraform variables, or a secret manager.
 ```
 
 ---
 
-## 6. Complete code
+## 9. Runtime Behavior
 
-No Python code changes are required for this spec. The entire integration is configuration-driven through Confluent Cloud and watsonx.data.
-
-### Reference SQL queries — save as `code/flink-sql/watsonxdata_queries.sql`
-
-```sql
--- ============================================================
--- watsonx.data reference queries for SCRC Iceberg tables
--- Run these in the watsonx.data SQL editor after SPEC-06 setup
--- ============================================================
-
--- 1. Current risk state per component (latest score)
-SELECT
-    component_id,
-    supplier_id,
-    risk_score,
-    risk_band,
-    days_of_supply,
-    root_cause,
-    event_time
-FROM (
-    SELECT *,
-        ROW_NUMBER() OVER (PARTITION BY component_id ORDER BY event_time DESC) AS rn
-    FROM scrc_risk.supply_chain_risk_scores
-) t
-WHERE rn = 1
-ORDER BY risk_score DESC;
-
--- 2. Supplier reliability ranking (average risk score contributed)
-SELECT
-    supplier_id,
-    COUNT(*)            AS total_events,
-    AVG(risk_score)     AS avg_risk_score,
-    SUM(CASE WHEN risk_band = 'CRITICAL' THEN 1 ELSE 0 END) AS critical_count,
-    SUM(CASE WHEN risk_band = 'HIGH' THEN 1 ELSE 0 END)     AS high_count
-FROM scrc_risk.supply_chain_risk_scores
-GROUP BY supplier_id
-ORDER BY critical_count DESC, avg_risk_score DESC;
-
--- 3. Alert response audit (match alerts to recommendations)
-SELECT
-    a.alert_id,
-    a.severity,
-    a.title,
-    a.event_time   AS alert_time,
-    r.recommended_action,
-    r.confidence
-FROM scrc_risk.control_tower_alerts a
-LEFT JOIN scrc_risk.supply_chain_recommendations r ON a.risk_id = r.risk_id
-WHERE a.severity IN ('HIGH', 'CRITICAL')
-ORDER BY a.event_time DESC;
-```
+- The Python application continues producing Kafka events as-is.
+- Tableflow asynchronously materializes each topic into Iceberg files/tables.
+- watsonx.data queries the tables after registration.
+- New records should appear in analytic tables within the expected near-real-time latency window.
+- Reference SQL should not rely on environment-specific table paths unless clearly parameterized.
 
 ---
 
-## 7. New `.env` variables
+## 10. Failure Handling and Idempotency
 
-No new variables are added to the Python application. The COS credentials are entered directly in the Confluent Cloud Tableflow UI or stored in `terraform.tfvars` if using the Terraform connector resource from SPEC-05.
+- If schemas are missing, Tableflow should not be enabled until Schema Registry registration is fixed.
+- If no data appears, inspect Tableflow status and storage permissions before changing application code.
+- Treat Tableflow as at-least-once ingestion from Kafka into analytical storage.
+- Catalog registration failures should be resolved in watsonx.data/COS configuration, not by changing event producers.
+- Document any manual UI steps that cannot yet be automated.
 
 ---
 
-## 8. Verification
+## 11. Security, Privacy, and Governance
 
-1. Confirm Tableflow is active on each topic in the Confluent Cloud UI: **Topics → supply_chain_risk_scores → Tableflow → Status: Running**.
+- Store object storage credentials in managed configuration or secret stores.
+- Use governed catalog permissions in watsonx.data.
+- Do not expose raw supplier/customer data to users without appropriate data access controls.
+- Define retention and table access policy before production use.
+- Avoid copying credentials into SQL files or Markdown examples.
 
-2. Produce events:
+---
 
-   ```bash
-   source .venv/bin/activate
-   python -m scrc.producer --scenario supplier_delay --count 100
-   ```
+## 12. Testing Requirements
 
-3. Wait 2–5 minutes for Tableflow to flush the first Iceberg data file. In the COS bucket, you should see files under:
+- Validate reference SQL syntax where possible.
+- Manual integration test confirms table counts increase after events are produced.
+- Confirm each topic has a registered schema subject before Tableflow is enabled.
+- Confirm watsonx.data queries can filter CRITICAL events and aggregate by supplier/component.
+- No Python unit tests are required unless automation scripts are added.
 
-   ```
-   supply_chain_risk_scores/data/
-   supply_chain_risk_scores/metadata/
-   ```
+---
 
-4. In the watsonx.data SQL editor, run:
+## 13. Acceptance Criteria
 
-   ```sql
-   SELECT COUNT(*) FROM scrc_risk.supply_chain_risk_scores;
-   ```
+- [ ] Schema Registry subjects exist for all three output topics.
+- [ ] Tableflow is enabled and running for all three topics.
+- [ ] Iceberg metadata/data appears in the configured object storage location.
+- [ ] watsonx.data catalog contains the three expected tables.
+- [ ] Reference SQL returns counts and trend results.
+- [ ] No Python runtime changes were made unnecessarily.
+- [ ] Credentials are not committed to source control.
 
-   The count should match the number of risk score events produced.
+---
 
-5. If no data appears after 10 minutes:
-   - Check the Schema Registry topic subjects: `supply_chain_risk_scores-value` must exist.
-   - Check the Tableflow status in Confluent Cloud for error messages.
-   - Verify the HMAC credentials have read-write access to the COS bucket.
+## 14. Implementation Notes for Bob
+
+- Keep this spec configuration-driven.
+- Save only reusable, non-secret SQL in `code/flink-sql/watsonxdata_queries.sql` or another agreed docs/code location.
+- Make it clear when a step is manual UI configuration versus automatable IaC.
+- Preserve compatibility with SPEC-05 bucket/credential decisions where possible.
+
+---
+
+## 15. Verification
+
+1. Run the schema registration script and confirm all output-topic subjects exist.
+2. Enable Tableflow on each output topic.
+3. Produce events from the risk engine.
+4. Wait 2–5 minutes and verify Iceberg files/metadata appear in object storage.
+5. Register tables in watsonx.data.
+6. Run `SELECT COUNT(*) FROM supply_chain_risk_scores;` and confirm rows appear.
+7. Run a CRITICAL-risk trend query from the reference SQL.
+
+---
+
+## 16. Open Questions
+
+Confirm exact Confluent Tableflow entitlement and whether Tableflow setup will be manual UI, CLI, or Terraform-driven in the target environment.
+
+---
+
+## Definition of Ready
+
+Bob may start implementation only when all of the following are known:
+
+- The integration target and trigger are clear.
+- Input topic, payload contract, filtering rules, and expected output are defined.
+- Required files to create or modify are listed.
+- Required environment variables are named and have placeholder-safe examples.
+- Failure behavior is defined for missing credentials, API errors, timeouts, malformed messages, and retry/idempotency concerns.
+- Acceptance criteria are testable without relying only on a manual UI check.
+
+---
+
+## Bob / SDD Execution Guardrails
+
+- Treat this document as the implementation contract, not as a tutorial. Use the existing application patterns and shared utilities where they already exist.
+- Keep changes limited to the files listed in **Files to create or modify** unless the implementation cannot compile or pass tests without a clearly justified additional change.
+- Do not commit secrets, tokens, webhook URLs, passwords, API keys, generated credentials, or tenant-specific endpoints.
+- Prefer small, reviewable changes. Keep connector/API-specific logic isolated behind a dedicated module or consumer.
+- External systems must be optional at runtime. If credentials are missing, the core Kafka demo must still run unless this spec explicitly requires the integration process to be started.
+- Add or update tests before marking the spec complete. Mock external APIs, webhooks, and cloud services in automated tests.
+- Log enough metadata for troubleshooting, but never log secret values or full credentials.

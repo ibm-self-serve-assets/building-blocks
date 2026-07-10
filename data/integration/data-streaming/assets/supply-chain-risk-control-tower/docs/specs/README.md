@@ -1,17 +1,17 @@
 # Extension Specifications
 
-This folder contains one spec-driven development document per future integration shown in the architecture diagram. Each spec is self-contained — a developer can pick up any one of them and implement it without needing to read the rest of the codebase first.
-
 Back to [main README](../../README.md).
+
+This folder contains SDD-ready specifications for future integrations in the Supply Chain Risk Control Tower. Each spec is written as an implementation contract for Bob and a developer, not as a long copy-paste tutorial.
+
+The goal is to give Bob enough intent, boundaries, contracts, and validation criteria to implement safely while avoiding over-prescribing every line of code.
 
 ---
 
-## What is already built
-
-The core application is complete and runnable without any of these integrations:
+## What is Already Built
 
 | Component | Location |
-|-----------|----------|
+|---|---|
 | Python risk engine — consumes 7 input topics, scores risk, publishes 3 output topics | `code/scrc/` |
 | IBM Carbon Design browser dashboard — simulation and live Kafka modes | `code/ui/` |
 | JSON Schema data contracts for all 10 Kafka topics | `code/schemas/` |
@@ -23,61 +23,77 @@ The core application is complete and runnable without any of these integrations:
 
 ---
 
-## What these specs cover
+## SDD Authoring Principles Used in This Folder
 
-Each spec adds one integration to the existing application. They are ordered from simplest to most complex.
-
-| Spec | Integration | Effort |
-|------|-------------|--------|
-| [SPEC-01](SPEC-01-watsonx-ai-live.md) | watsonx.ai live API — real-time executive summaries and supplier emails on CRITICAL events | Low |
-| [SPEC-02](SPEC-02-opensearch-consumer.md) | OpenSearch — operational risk dashboard that indexes all three output topics | Low |
-| [SPEC-03](SPEC-03-teams-alerts.md) | Microsoft Teams — webhook alerts for HIGH and CRITICAL severity events | Low |
-| [SPEC-04](SPEC-04-servicenow-itsm.md) | ServiceNow — automated procurement incident workflow from `control_tower_alerts` | Medium |
-| [SPEC-05](SPEC-05-ibm-cos-data-lake.md) | IBM Cloud Object Storage — raw event data lake via Confluent S3-compatible sink connector | Medium |
-| [SPEC-06](SPEC-06-watsonxdata-tableflow.md) | watsonx.data / Tableflow — governed Apache Iceberg analytics tables from output topics | Medium |
-| [SPEC-07](SPEC-07-ibm-maximo.md) | IBM Maximo — maintenance and logistics work order automation from CRITICAL alerts | High |
+1. **Intent before implementation** — every spec starts with the business goal, scope, non-goals, and contracts.
+2. **Minimal but sufficient guidance** — Bob should use existing code patterns instead of blindly copying large code blocks from the spec.
+3. **Explicit context boundary** — each spec lists files Bob may create or modify.
+4. **Contracts over snippets** — input/output schemas, runtime behavior, and acceptance criteria are treated as the source of truth.
+5. **Testable acceptance criteria** — each spec defines automated tests and manual verification.
+6. **Safe-by-default integrations** — missing credentials or external API failures should not break the core Kafka pipeline unless the integration process itself is being tested.
+7. **Secrets stay out of source control** — `.env.example` gets placeholders only.
+8. **External systems are mocked in tests** — APIs, webhooks, cloud connectors, and observability tools must not be required for unit tests.
 
 ---
 
-## Reference assets used by these specs
+## What These Specs Cover
 
-| File | Used by |
-|------|---------|
-| [`docs/assets/sample_risk_event.json`](../assets/sample_risk_event.json) | All specs — use to test integration payloads without running the full stack |
-| [`docs/assets/opensearch-index-template.json`](../assets/opensearch-index-template.json) | SPEC-02 — apply before starting the OpenSearch consumer |
-
----
-
-## Structure of every spec
-
-Every spec follows the same eight-section structure:
-
-1. **Purpose** — what business problem this integration solves and which layer of the architecture it extends
-2. **Input** — the exact Kafka topic name, consumer group, and message schema it reads from
-3. **Output** — what the integration produces (API call, index document, webhook payload, connector config, file)
-4. **Prerequisites** — all accounts, credentials, packages, and tools required before writing a line of code
-5. **Implementation steps** — numbered, copy-pasteable steps from zero to working integration
-6. **Complete code** — full source for every new file to create and every existing file to modify
-7. **New `.env` variables** — exact variable names and example values to add to `.env` and `.env.example`
-8. **Verification** — step-by-step instructions to confirm the integration works end to end
+| Spec | Integration | Effort | Primary Pattern |
+|---|---|---:|---|
+| [SPEC-01](SPEC-01-watsonx-ai-live.md) | watsonx.ai live API for executive summaries and supplier emails on CRITICAL events | Low | Optional AI enrichment |
+| [SPEC-02](SPEC-02-opensearch-consumer.md) | OpenSearch consumer for live operational search and dashboards | Low | Kafka consumer + index writer |
+| [SPEC-03](SPEC-03-teams-alerts.md) | Microsoft Teams webhook alerts for HIGH and CRITICAL events | Low | Notification adapter |
+| [SPEC-04](SPEC-04-servicenow-itsm.md) | ServiceNow incident workflow from `control_tower_alerts` | Medium | Kafka consumer + ticket creation |
+| [SPEC-05](SPEC-05-ibm-cos-data-lake.md) | IBM COS archive through Confluent S3-compatible sink connector | Medium | Managed connector / IaC |
+| [SPEC-06](SPEC-06-watsonxdata-tableflow.md) | watsonx.data / Confluent Tableflow governed Iceberg tables | Medium | Governed analytics configuration |
+| [SPEC-07](SPEC-07-ibm-maximo.md) | IBM Maximo work order automation from CRITICAL alerts | High | Kafka consumer + work order creation |
+| [SPEC-08](SPEC-08-instana-dashboard.md) | IBM Instana observability with EUM, tracing, and custom dashboard | Low | Observability instrumentation |
 
 ---
 
-## How to use a spec
+## Standard Spec Structure
 
-1. **Read Purpose** — confirm this spec solves the problem you are trying to solve.
-2. **Complete Prerequisites** — do not skip this. Missing credentials mid-implementation is the most common blocker.
-3. **Follow Implementation steps in order** — each step is independently testable.
-4. **Use Complete code as the source of truth** — the code is written to integrate with the existing `code/scrc/` modules and Kafka topic schemas. Do not deviate from the file structure.
-5. **Add `.env` variables** — add every variable listed in the spec to your `.env` before running.
-6. **Run Verification** — confirm each check passes before moving on.
+Each spec follows this SDD structure:
+
+1. Spec Classification
+2. Business Goal
+3. Scope
+4. Non-Goals
+5. Files to Create or Modify
+6. Input Contract
+7. Output Contract
+8. Functional Requirements
+9. Configuration and Secrets
+10. Runtime Behavior
+11. Failure Handling and Idempotency
+12. Security, Privacy, and Governance
+13. Testing Requirements
+14. Acceptance Criteria
+15. Implementation Notes for Bob
+16. Verification
+17. Open Questions
+18. Definition of Ready
+19. Bob / SDD Execution Guardrails
 
 ---
 
-## Combining specs
+## How Bob Should Use These Specs
 
-Specs are independent but some combinations make sense in a single demo:
+1. Parse the spec and restate the intended change in 3–5 bullets.
+2. Ask clarifying questions only when a required contract is missing or contradictory.
+3. Create the smallest implementation that satisfies the acceptance criteria.
+4. Keep common integration behavior in reusable helpers when appropriate.
+5. Add tests with mocked external dependencies.
+6. Run focused tests first, then the relevant dry-run or integration verification.
+7. Summarize changed files, tests run, and any open risks before PR creation.
 
-- **SPEC-01 + SPEC-03**: watsonx.ai generates the summary, Teams posts it as a card — gives the audience a complete AI-to-notification loop.
-- **SPEC-02 + SPEC-05**: OpenSearch provides the live operational dashboard, IBM COS holds the historical data lake — covers both hot and cold analytics paths.
-- **SPEC-04 + SPEC-07**: ServiceNow handles procurement escalation, Maximo handles the physical asset work order — covers the full enterprise response workflow.
+---
+
+## Combining Specs
+
+Specs are independent, but these combinations work well for demos:
+
+- **SPEC-01 + SPEC-03**: watsonx.ai generates the summary, and Teams posts it as a card.
+- **SPEC-02 + SPEC-05**: OpenSearch provides hot operational analytics, while COS provides a cold historical archive.
+- **SPEC-04 + SPEC-07**: ServiceNow handles procurement escalation, and Maximo handles physical response work orders.
+- **SPEC-05 + SPEC-06**: COS stores durable event history, and Tableflow/watsonx.data exposes governed Iceberg tables.

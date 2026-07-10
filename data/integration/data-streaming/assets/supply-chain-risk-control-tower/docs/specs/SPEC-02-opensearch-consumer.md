@@ -4,286 +4,194 @@ Back to [specs index](README.md) | [main README](../../README.md)
 
 ---
 
-## 1. Purpose
+## Spec Classification
 
-The risk engine publishes scored events to three output Kafka topics. This spec adds a dedicated consumer that reads all three topics and writes every event into OpenSearch, enabling:
-
-- A live operational risk dashboard in OpenSearch Dashboards / Kibana.
-- Full-text search across risk root causes and recommended actions.
-- Time-series visualisations of risk score trends by component, supplier, and risk band.
-- Alerting rules in OpenSearch that notify operations teams when CRITICAL events appear.
-
-**Architecture layer extended:** Layer 5 — Downstream applications and integrations.
-
-**New file:** `code/scrc/opensearch_consumer.py`
+| Field | Value |
+|---|---|
+| Spec type | SDD implementation spec |
+| Status | Ready for Bob implementation |
+| Primary actor | Bob / developer implementing with Bob |
+| Target asset | Supply Chain Risk Control Tower |
+| Architecture layer | Layer 5 — Downstream applications and operational analytics |
 
 ---
 
-## 2. Input
+## 1. Business Goal
 
-| Property | Value |
-|----------|-------|
-| Topics consumed | `supply_chain_risk_scores`, `supply_chain_recommendations`, `control_tower_alerts` |
+The risk engine publishes scored events to three output Kafka topics. This spec adds a dedicated OpenSearch consumer that indexes those events so operations teams can search root causes, inspect recommendations, analyze risk score trends, and build live dashboards.
+
+---
+
+## 2. Scope
+
+Create a standalone consumer process that reads the three output topics and writes date-partitioned documents into OpenSearch. Keep this separate from the risk scoring path so indexing failures do not affect risk generation.
+
+---
+
+## 3. Non-Goals
+
+- Do not change topic schemas.
+- Do not modify the risk scoring algorithm.
+- Do not require OpenSearch for the base demo to run.
+- Do not build the final dashboard visuals in code; only provide enough indexed data and verification guidance.
+
+---
+
+## 4. Files to Create or Modify
+
+- `pyproject.toml`
+- `code/scrc/opensearch_consumer.py`
+- `.env.example`
+- `docs/assets/opensearch-index-template.json if template changes are required`
+- `tests/` or the existing test location for `scrc` modules
+
+---
+
+## 5. Input Contract
+
+| Item | Requirement |
+|---|---|
+| Topics | `supply_chain_risk_scores`, `supply_chain_recommendations`, `control_tower_alerts` |
 | Consumer group | `scrc-opensearch-consumer` |
-| Message format | JSON, deserialised by `kafka_utils.json_deserializer` |
+| Message format | JSON from `kafka_utils.json_deserializer` |
 | Index pattern | `supply-chain-risk-scores-YYYY-MM`, `supply-chain-recommendations-YYYY-MM`, `control-tower-alerts-YYYY-MM` |
-| Index template | [`docs/assets/opensearch-index-template.json`](../assets/opensearch-index-template.json) |
+| Index template | `docs/assets/opensearch-index-template.json` |
 
 ---
 
-## 3. Output
+## 6. Output Contract
 
-| Output | Description |
-|--------|-------------|
-| OpenSearch documents | One document per Kafka message, written to a date-partitioned index |
-| Index | `supply-chain-risk-scores-YYYY-MM` for risk scores, `supply-chain-recommendations-YYYY-MM` for recommendations, `control-tower-alerts-YYYY-MM` for alerts |
-
----
-
-## 4. Prerequisites
-
-| Requirement | Details |
-|-------------|---------|
-| OpenSearch or IBM OpenSearch | Local: `docker run -p 9200:9200 -e "discovery.type=single-node" opensearchproject/opensearch:2` |
-| OpenSearch Dashboards | Local: `docker run -p 5601:5601 opensearchproject/opensearch-dashboards:2` |
-| Python package | `opensearch-py>=2.0` — add to `pyproject.toml` |
-| Kafka running | Risk engine must be producing events to the three output topics |
+| Item | Requirement |
+|---|---|
+| OpenSearch documents | One document per consumed Kafka message |
+| Index partitioning | Monthly index names based on event timestamp or processing time fallback |
+| Search fields | Severity/risk band, component, supplier, root cause, recommendation, event time |
+| Dashboard support | Indexed data supports Discover, visualizations, and alerting rules |
 
 ---
 
-## 5. Implementation steps
+## 7. Functional Requirements
 
-### Step 1: Add the dependency
-
-In [`pyproject.toml`](../../pyproject.toml), add `opensearch-py>=2.0` to `[project] dependencies`:
-
-```toml
-dependencies = [
-    ...
-    "opensearch-py>=2.0",
-]
-```
-
-Reinstall:
-
-```bash
-source .venv/bin/activate
-pip install -e .
-```
-
-### Step 2: Start OpenSearch locally
-
-```bash
-docker run -d --name opensearch \
-  -p 9200:9200 -p 9600:9600 \
-  -e "discovery.type=single-node" \
-  -e "DISABLE_SECURITY_PLUGIN=true" \
-  opensearchproject/opensearch:2
-
-docker run -d --name opensearch-dashboards \
-  -p 5601:5601 \
-  -e "OPENSEARCH_HOSTS=http://host.docker.internal:9200" \
-  -e "DISABLE_SECURITY_DASHBOARDS_PLUGIN=true" \
-  opensearchproject/opensearch-dashboards:2
-```
-
-### Step 3: Apply the index template
-
-```bash
-curl -X PUT "http://localhost:9200/_index_template/supply_chain_risk" \
-  -H "Content-Type: application/json" \
-  -d @docs/assets/opensearch-index-template.json
-```
-
-### Step 4: Add `.env` variables
-
-Add the variables from section 7 to `.env`.
-
-### Step 5: Create `code/scrc/opensearch_consumer.py`
-
-Create the new file with the complete code from section 6.
-
-### Step 6: Run the consumer
-
-```bash
-source .venv/bin/activate
-python -m scrc.opensearch_consumer
-```
-
-Leave it running alongside the risk engine and producer.
+- Create `code/scrc/opensearch_consumer.py` as a standalone long-running process.
+- Subscribe to all three output topics with the configured consumer group.
+- Map topic names to deterministic index prefixes.
+- Use stable document IDs where an event ID exists to avoid duplicate documents on reprocessing.
+- Apply or document the OpenSearch index template before indexing.
+- Log consumed, indexed, skipped, and failed message counts.
 
 ---
 
-## 6. Complete code
+## 8. Configuration and Secrets
 
-### `code/scrc/opensearch_consumer.py` — new file
-
-```python
-from __future__ import annotations
-
-"""
-OpenSearch consumer — reads supply_chain_risk_scores, supply_chain_recommendations,
-and control_tower_alerts from Kafka and indexes each message into OpenSearch.
-
-Run:
-    python -m scrc.opensearch_consumer
-"""
-
-import json
-from datetime import datetime, timezone
-from typing import Any
-
-import typer
-from opensearchpy import OpenSearch, RequestsHttpConnection
-from rich.console import Console
-
-from .kafka_utils import consume_loop, consumer_config
-from .settings import TOPICS, load_settings
-
-app = typer.Typer(help="Index risk engine output topics into OpenSearch.")
-console = Console()
-
-OUTPUT_TOPIC_KEYS = ["risk_scores", "recommendations", "alerts"]
-
-INDEX_MAP = {
-    TOPICS["risk_scores"]: "supply-chain-risk-scores",
-    TOPICS["recommendations"]: "supply-chain-recommendations",
-    TOPICS["alerts"]: "control-tower-alerts",
-}
-
-
-def _opensearch_client(url: str, username: str | None, password: str | None) -> OpenSearch:
-    host = url.replace("http://", "").replace("https://", "")
-    use_ssl = url.startswith("https://")
-    host_part, _, port_str = host.partition(":")
-    port = int(port_str) if port_str else (443 if use_ssl else 9200)
-
-    kwargs: dict[str, Any] = {
-        "hosts": [{"host": host_part, "port": port}],
-        "use_ssl": use_ssl,
-        "verify_certs": use_ssl,
-        "connection_class": RequestsHttpConnection,
-        "timeout": 10,
-    }
-    if username and password:
-        kwargs["http_auth"] = (username, password)
-
-    return OpenSearch(**kwargs)
-
-
-def _index_name(base: str) -> str:
-    month = datetime.now(tz=timezone.utc).strftime("%Y-%m")
-    return f"{base}-{month}"
-
-
-def _index_event(client: OpenSearch, topic: str, doc_id: str | None, event: dict[str, Any]) -> None:
-    base = INDEX_MAP.get(topic)
-    if base is None:
-        return
-    index = _index_name(base)
-    client.index(index=index, id=doc_id, body=event)
-    console.print(f"[green]Indexed[/green] {index} id={doc_id} score={event.get('risk_score', event.get('severity', ''))}")
-
-
-@app.command()
-def main() -> None:
-    settings = load_settings()
-
-    if not settings.kafka.is_configured:
-        console.print("[red]ERROR: Kafka credentials missing. Check .env.[/red]")
-        raise typer.Exit(1)
-
-    opensearch_url = settings.opensearch_url or "http://localhost:9200"
-    username = __import__("os").getenv("OPENSEARCH_USERNAME") or None
-    password = __import__("os").getenv("OPENSEARCH_PASSWORD") or None
-
-    client = _opensearch_client(opensearch_url, username, password)
-
-    try:
-        info = client.info()
-        console.print(f"Connected to OpenSearch: {info['version']['number']} at {opensearch_url}")
-    except Exception as exc:
-        console.print(f"[red]ERROR: Cannot connect to OpenSearch at {opensearch_url}: {exc}[/red]")
-        raise typer.Exit(1) from exc
-
-    from confluent_kafka import Consumer
-    consumer = Consumer(consumer_config(settings.kafka, group_id="scrc-opensearch-consumer"))
-    topics = [TOPICS[key] for key in OUTPUT_TOPIC_KEYS]
-    console.print(f"Subscribing to: {', '.join(topics)}")
-
-    consume_loop(
-        consumer,
-        topics,
-        lambda topic, key, event: _index_event(client, topic, key, event),
-    )
-
-
-if __name__ == "__main__":
-    app()
-```
-
----
-
-## 7. New `.env` variables
-
-Add to `.env` and `.env.example`:
+Add placeholders to `.env.example`. Add real values only to local `.env`, CI/CD secret stores, or the relevant managed connector configuration.
 
 ```dotenv
 # OpenSearch — operational risk dashboard (SPEC-02)
 OPENSEARCH_URL=http://localhost:9200
 OPENSEARCH_USERNAME=
 OPENSEARCH_PASSWORD=
+OPENSEARCH_VERIFY_TLS=true
 ```
-
-For IBM OpenSearch (managed service), set `OPENSEARCH_URL` to the service endpoint and populate username and password from the service credentials.
 
 ---
 
-## 8. Verification
+## 9. Runtime Behavior
 
-1. Start the risk engine and producer in separate terminals:
+- The consumer runs independently of the risk engine.
+- Each valid Kafka message is indexed into the topic-specific monthly index.
+- If authentication values are blank, support local unauthenticated OpenSearch for development.
+- If a message has malformed JSON or missing expected fields, skip it and log the reason without stopping the process.
+- Use batching only if it does not hide per-record failures from logs/tests.
 
-   ```bash
-   source .venv/bin/activate
-   python -m scrc.risk_engine
-   ```
+---
 
-   ```bash
-   source .venv/bin/activate
-   python -m scrc.producer --scenario supplier_delay --count 20
-   ```
+## 10. Failure Handling and Idempotency
 
-2. Start the OpenSearch consumer:
+- Use deterministic document IDs such as `alert_id`, `risk_id`, recommendation ID, or a topic/partition/offset fallback.
+- On OpenSearch transient errors, retry with bounded backoff.
+- On permanent mapping errors, log the failed document metadata and continue.
+- Consumer restart should not create duplicate documents when deterministic IDs are available.
+- OpenSearch being down should not affect Kafka producers.
 
-   ```bash
-   python -m scrc.opensearch_consumer
-   ```
+---
 
-3. Confirm documents are being written:
+## 11. Security, Privacy, and Governance
 
-   ```bash
-   curl -s "http://localhost:9200/supply-chain-risk-scores-*/_count" | python -m json.tool
-   ```
+- Do not log OpenSearch passwords.
+- Support TLS verification for managed OpenSearch endpoints.
+- Avoid indexing secrets or credentials if they appear in upstream payloads.
+- Use least-privilege OpenSearch credentials with index write permissions only for the consumer.
 
-   The `count` field should increase with each risk score event.
+---
 
-4. Query for CRITICAL events:
+## 12. Testing Requirements
 
-   ```bash
-   curl -s -X GET "http://localhost:9200/supply-chain-risk-scores-*/_search" \
-     -H "Content-Type: application/json" \
-     -d '{"query": {"term": {"risk_band": "CRITICAL"}}}' | python -m json.tool
-   ```
+- Unit test topic-to-index mapping.
+- Unit test document ID selection and timestamp fallback.
+- Unit test malformed message handling.
+- Unit test OpenSearch client calls with the client mocked.
+- Integration verification may use local OpenSearch, but unit tests must not require it.
 
-5. Open OpenSearch Dashboards at [http://localhost:5601](http://localhost:5601), create an index pattern `supply-chain-risk-scores-*`, and use the Discover view to browse risk events.
+---
 
-### Creating a dashboard
+## 13. Acceptance Criteria
 
-In OpenSearch Dashboards:
+- [ ] `opensearch-py` is added to dependencies.
+- [ ] `.env.example` contains OpenSearch placeholders.
+- [ ] The consumer subscribes to all three output topics.
+- [ ] Documents are written to the expected monthly index names.
+- [ ] Malformed messages are skipped without stopping the consumer.
+- [ ] A duplicate event does not create duplicate documents when the same deterministic ID is present.
+- [ ] Automated tests pass with OpenSearch mocked.
 
-1. Go to **Management → Index Patterns → Create index pattern** → `supply-chain-risk-scores-*`, time field `event_time`.
-2. Go to **Visualize → Create visualization**:
-   - **Metric**: count of CRITICAL events using a filter on `risk_band: CRITICAL`.
-   - **Line chart**: average `risk_score` over time, split by `component_id`.
-   - **Data table**: top 10 records sorted by `risk_score` descending.
-3. Add all three visualisations to a new **Dashboard** named `Supply Chain Risk Control Tower`.
+---
+
+## 14. Implementation Notes for Bob
+
+- Reuse existing Kafka settings and deserializer utilities.
+- Keep OpenSearch connection setup isolated from the consume loop.
+- Keep index naming and payload transformation pure and testable.
+- Do not introduce dashboard-specific assumptions into the event schema.
+- Keep local Docker commands as verification notes, not as required implementation logic.
+
+---
+
+## 15. Verification
+
+1. Start local or managed OpenSearch and apply the index template if used.
+2. Start the risk engine and producer so output topics receive messages.
+3. Start `python -m scrc.opensearch_consumer`.
+4. Query `GET /supply-chain-risk-scores-*/_count` and confirm the count increases.
+5. Query CRITICAL alerts in `control-tower-alerts-*` and confirm matching documents appear.
+6. Open OpenSearch Dashboards and create an index pattern such as `supply-chain-risk-scores-*` with `event_time` as the time field.
+
+---
+
+## 16. Open Questions
+
+None at this time.
+
+---
+
+## Definition of Ready
+
+Bob may start implementation only when all of the following are known:
+
+- The integration target and trigger are clear.
+- Input topic, payload contract, filtering rules, and expected output are defined.
+- Required files to create or modify are listed.
+- Required environment variables are named and have placeholder-safe examples.
+- Failure behavior is defined for missing credentials, API errors, timeouts, malformed messages, and retry/idempotency concerns.
+- Acceptance criteria are testable without relying only on a manual UI check.
+
+---
+
+## Bob / SDD Execution Guardrails
+
+- Treat this document as the implementation contract, not as a tutorial. Use the existing application patterns and shared utilities where they already exist.
+- Keep changes limited to the files listed in **Files to create or modify** unless the implementation cannot compile or pass tests without a clearly justified additional change.
+- Do not commit secrets, tokens, webhook URLs, passwords, API keys, generated credentials, or tenant-specific endpoints.
+- Prefer small, reviewable changes. Keep connector/API-specific logic isolated behind a dedicated module or consumer.
+- External systems must be optional at runtime. If credentials are missing, the core Kafka demo must still run unless this spec explicitly requires the integration process to be started.
+- Add or update tests before marking the spec complete. Mock external APIs, webhooks, and cloud services in automated tests.
+- Log enough metadata for troubleshooting, but never log secret values or full credentials.

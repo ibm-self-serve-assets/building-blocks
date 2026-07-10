@@ -4,241 +4,86 @@ Back to [specs index](README.md) | [main README](../../README.md)
 
 ---
 
-## 1. Purpose
+## Spec Classification
 
-The risk engine publishes events in real time but does not persist them. This spec adds a long-term data lake by configuring the **Confluent Cloud S3-compatible Sink Connector** to continuously archive all three output topics to IBM Cloud Object Storage (COS) in newline-delimited JSON format.
-
-The result is a queryable, cost-effective event archive that enables:
-
-- Historical trend analysis across risk scores, recommendations, and alerts.
-- Model training data for future predictive risk models.
-- Audit trail for compliance and governance requirements.
-- Input for the watsonx.data / Tableflow integration in [SPEC-06](SPEC-06-watsonxdata-tableflow.md).
-
-**Architecture layer extended:** Layer 5 — Data persistence and archival.
-
-**Implementation approach:** Confluent Cloud managed connector (no code required). Configuration is HMAC key-based — IBM COS provides an S3-compatible API.
+| Field | Value |
+|---|---|
+| Spec type | SDD implementation spec |
+| Status | Ready for implementation as managed connector configuration |
+| Primary actor | Bob / developer implementing with Bob |
+| Target asset | Supply Chain Risk Control Tower |
+| Architecture layer | Layer 5 — Data persistence and archival |
 
 ---
 
-## 2. Input
+## 1. Business Goal
 
-| Property | Value |
-|----------|-------|
-| Topics archived | `supply_chain_risk_scores`, `supply_chain_recommendations`, `control_tower_alerts` |
-| Format | Newline-delimited JSON (one Kafka message per line) |
-| Partitioning | `TimeBasedPartitioner` — files partitioned by `yyyy/MM/dd/HH` |
-| File rotation | Every 1,000 records or 10 minutes, whichever comes first |
+The risk engine publishes useful operational events but does not persist them long term. This spec adds a durable data lake by configuring a Confluent Cloud S3-compatible sink connector to archive output topic events into IBM Cloud Object Storage in newline-delimited JSON.
 
 ---
 
-## 3. Output
+## 2. Scope
 
-| Output | Description |
-|--------|-------------|
-| COS bucket path | `s3://YOUR_BUCKET/supply_chain_risk_scores/yyyy/MM/dd/HH/*.json` |
-| File format | Newline-delimited JSON, one event per line |
-| Compression | `gzip` (configurable) |
+Configure a managed connector/IaC path for archiving `supply_chain_risk_scores`, `supply_chain_recommendations`, and `control_tower_alerts` to IBM COS.
 
 ---
 
-## 4. Prerequisites
+## 3. Non-Goals
 
-| Requirement | Details |
-|-------------|---------|
-| IBM Cloud account | [https://cloud.ibm.com](https://cloud.ibm.com) |
-| IBM Cloud Object Storage instance | Create a Standard tier COS instance |
-| COS bucket | Create a bucket in the same region as your Confluent cluster |
-| HMAC credentials | COS service credentials with HMAC enabled — gives `access_key_id` and `secret_access_key` |
-| COS endpoint | Regional endpoint, e.g. `s3.us-east.cloud-object-storage.appdomain.cloud` |
-| Confluent Cloud | Stream Governance or a Confluent Cloud environment with connector access |
-| Confluent CLI or Cloud UI | To create and manage the connector |
-
-### Creating HMAC credentials for COS
-
-1. In IBM Cloud, open your COS instance.
-2. Go to **Service credentials → New credential**.
-3. Enable **Include HMAC Credential** (toggle on).
-4. Click **Add**. Expand the credential and copy `cos_hmac_keys.access_key_id` and `cos_hmac_keys.secret_access_key`.
+- Do not add Python code for this integration.
+- Do not transform event schemas during archival.
+- Do not make COS archival required for the live demo.
+- Do not commit HMAC access keys or secret keys.
 
 ---
 
-## 5. Implementation steps
+## 4. Files to Create or Modify
 
-### Step 1: Create the COS bucket
-
-1. In the IBM Cloud console, open your COS instance.
-2. Click **Create bucket → Quickly get started**.
-3. Name it `scrc-data-lake` (or your preference).
-4. Select **Cross Region** or **Regional** matching your Confluent cluster region.
-5. Leave versioning and encryption at defaults. Click **Create bucket**.
-
-### Step 2: Note the COS endpoint
-
-1. In the COS instance, go to **Endpoints**.
-2. Copy the **public** endpoint for your bucket's region, e.g. `s3.us-east.cloud-object-storage.appdomain.cloud`.
-
-### Step 3: Add `.env` variables
-
-Add the variables from section 7. These are used to populate the connector config in the next step.
-
-### Step 4: Create the Confluent connector
-
-Using the Confluent Cloud UI:
-
-1. In your Confluent Cloud environment, open the cluster.
-2. Go to **Connectors → Add connector → Amazon S3 Sink**.
-3. Fill in the connector configuration using the values from section 6 (Connector configuration).
-4. Click **Continue → Launch connector**.
-
-Using the Confluent CLI:
-
-```bash
-confluent connect cluster create \
-  --cluster YOUR_CLUSTER_ID \
-  --environment YOUR_ENV_ID \
-  --config-file code/terraform/cos-sink-connector.json
-```
-
-The connector config file is the JSON from section 6.
-
-### Step 5: Verify data flow
-
-After 2–3 minutes of the connector running, files should appear in the COS bucket.
+- `code/terraform/cos-sink-connector.json or equivalent connector config`
+- `code/terraform/main.tf if managed through Terraform`
+- `code/terraform/variables.tf if managed through Terraform`
+- `.env.example or connector variable documentation`
+- `docs/specs/SPEC-05-ibm-cos-data-lake.md`
 
 ---
 
-## 6. Complete code
+## 5. Input Contract
 
-### Connector configuration — save as `code/terraform/cos-sink-connector.json`
-
-Replace all `YOUR_*` placeholders with your actual values before applying.
-
-```json
-{
-  "name": "scrc-cos-sink",
-  "config": {
-    "connector.class": "io.confluent.connect.s3.S3SinkConnector",
-    "tasks.max": "1",
-    "topics": "supply_chain_risk_scores,supply_chain_recommendations,control_tower_alerts",
-
-    "s3.region": "us-east-1",
-    "s3.bucket.name": "scrc-data-lake",
-    "s3.part.size": "5242880",
-    "store.url": "https://s3.us-east.cloud-object-storage.appdomain.cloud",
-
-    "aws.access.key.id": "YOUR_COS_HMAC_ACCESS_KEY_ID",
-    "aws.secret.access.key": "YOUR_COS_HMAC_SECRET_ACCESS_KEY",
-
-    "storage.class": "io.confluent.connect.s3.storage.S3Storage",
-    "format.class": "io.confluent.connect.s3.format.json.JsonFormat",
-    "flush.size": "1000",
-    "rotate.interval.ms": "600000",
-
-    "partitioner.class": "io.confluent.connect.storage.partitioner.TimeBasedPartitioner",
-    "path.format": "'year'=YYYY/'month'=MM/'day'=dd/'hour'=HH",
-    "locale": "en_US",
-    "timezone": "UTC",
-    "timestamp.extractor": "RecordField",
-    "timestamp.field": "event_time",
-
-    "schema.compatibility": "NONE",
-    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
-    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "value.converter.schemas.enable": "false",
-
-    "confluent.topic.bootstrap.servers": "YOUR_BOOTSTRAP_ENDPOINT",
-    "confluent.topic.security.protocol": "SASL_SSL",
-    "confluent.topic.sasl.mechanism": "PLAIN",
-    "confluent.topic.sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"YOUR_KAFKA_API_KEY\" password=\"YOUR_KAFKA_API_SECRET\";"
-  }
-}
-```
-
-### Terraform resource (optional) — add to `code/terraform/main.tf`
-
-If you prefer to manage the connector as infrastructure code, add this resource after the topic block:
-
-```hcl
-resource "confluent_connector" "cos_sink" {
-  environment {
-    id = local.environment_id
-  }
-  kafka_cluster {
-    id = confluent_kafka_cluster.scrc.id
-  }
-
-  config_sensitive = {
-    "aws.access.key.id"     = var.cos_hmac_access_key_id
-    "aws.secret.access.key" = var.cos_hmac_secret_access_key
-  }
-
-  config_nonsensitive = {
-    "connector.class"         = "io.confluent.connect.s3.S3SinkConnector"
-    "name"                    = "scrc-cos-sink"
-    "tasks.max"               = "1"
-    "topics"                  = "supply_chain_risk_scores,supply_chain_recommendations,control_tower_alerts"
-    "s3.region"               = "us-east-1"
-    "s3.bucket.name"          = var.cos_bucket_name
-    "store.url"               = var.cos_endpoint
-    "storage.class"           = "io.confluent.connect.s3.storage.S3Storage"
-    "format.class"            = "io.confluent.connect.s3.format.json.JsonFormat"
-    "flush.size"              = "1000"
-    "rotate.interval.ms"      = "600000"
-    "partitioner.class"       = "io.confluent.connect.storage.partitioner.TimeBasedPartitioner"
-    "path.format"             = "'year'=YYYY/'month'=MM/'day'=dd/'hour'=HH"
-    "locale"                  = "en_US"
-    "timezone"                = "UTC"
-    "timestamp.extractor"     = "RecordField"
-    "timestamp.field"         = "event_time"
-    "schema.compatibility"    = "NONE"
-    "key.converter"           = "org.apache.kafka.connect.storage.StringConverter"
-    "value.converter"         = "org.apache.kafka.connect.json.JsonConverter"
-    "value.converter.schemas.enable" = "false"
-  }
-
-  depends_on = [
-    confluent_kafka_topic.topics,
-    confluent_role_binding.scrc_env_admin,
-  ]
-}
-```
-
-Add the corresponding variables to `code/terraform/variables.tf`:
-
-```hcl
-variable "cos_hmac_access_key_id" {
-  description = "IBM COS HMAC access key ID for the S3 sink connector."
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "cos_hmac_secret_access_key" {
-  description = "IBM COS HMAC secret access key for the S3 sink connector."
-  type        = string
-  sensitive   = true
-  default     = ""
-}
-
-variable "cos_bucket_name" {
-  description = "IBM COS bucket name for the data lake."
-  type        = string
-  default     = "scrc-data-lake"
-}
-
-variable "cos_endpoint" {
-  description = "IBM COS S3-compatible endpoint URL."
-  type        = string
-  default     = "https://s3.us-east.cloud-object-storage.appdomain.cloud"
-}
-```
+| Item | Requirement |
+|---|---|
+| Topics | `supply_chain_risk_scores`, `supply_chain_recommendations`, `control_tower_alerts` |
+| Format | Newline-delimited JSON, one Kafka message per line |
+| Partitioning | Time-based partitioning by `yyyy/MM/dd/HH` |
+| Rotation | Every 1,000 records or 10 minutes, whichever occurs first |
+| Connector | Confluent Cloud S3-compatible sink connector targeting IBM COS |
 
 ---
 
-## 7. New `.env` variables
+## 6. Output Contract
 
-Add to `.env` and `.env.example` for reference. These values are used in the connector config, not read by the Python application directly.
+| Item | Requirement |
+|---|---|
+| COS path | `s3://<bucket>/<topic>/yyyy/MM/dd/HH/*.json` |
+| File format | NDJSON |
+| Compression | gzip unless environment chooses otherwise |
+| Consumers | Historical analytics, compliance/audit review, model training, and SPEC-06 |
+
+---
+
+## 7. Functional Requirements
+
+- Create a connector configuration that archives all three output topics.
+- Use IBM COS HMAC credentials with the S3-compatible endpoint.
+- Keep bucket name, endpoint, credentials, and rotation settings configurable.
+- Preserve event payloads without schema-altering transformation.
+- Provide Terraform-compatible variables if the project manages Confluent resources as IaC.
+- Document the expected bucket layout for downstream analytics.
+
+---
+
+## 8. Configuration and Secrets
+
+Add placeholders to `.env.example`. Add real values only to local `.env`, CI/CD secret stores, or the relevant managed connector configuration.
 
 ```dotenv
 # IBM Cloud Object Storage — S3 sink connector (SPEC-05)
@@ -250,34 +95,103 @@ IBM_COS_ENDPOINT=https://s3.us-east.cloud-object-storage.appdomain.cloud
 
 ---
 
-## 8. Verification
+## 9. Runtime Behavior
 
-1. Start the producer to generate events:
+- The connector runs outside the Python application.
+- The connector consumes all configured output topics continuously.
+- Data lands in topic-specific, time-partitioned COS prefixes.
+- Connector configuration should support local documentation and Terraform-based deployment.
+- The Python application should not read these environment variables at runtime unless future specs require it.
 
-   ```bash
-   source .venv/bin/activate
-   python -m scrc.producer --scenario supplier_delay --count 50
-   ```
+---
 
-2. In the Confluent Cloud UI, open **Connectors → scrc-cos-sink**. The connector status should show **Running** with messages being consumed.
+## 10. Failure Handling and Idempotency
 
-3. After 2–3 minutes (before the flush interval), browse the COS bucket in the IBM Cloud console. You should see a folder structure like:
+- Connector retries and error handling should use managed connector defaults unless overridden deliberately.
+- Authentication failures must be visible in connector logs.
+- Duplicate files may occur after connector restarts; downstream queries should tolerate replay/at-least-once semantics.
+- Changing rotation or partition settings after launch must be treated as a migration decision.
+- If the connector is down, Kafka producers must continue unaffected.
 
-   ```
-   supply_chain_risk_scores/year=2026/month=01/day=15/hour=10/
-     supply_chain_risk_scores+0+0000000000.json
-   ```
+---
 
-4. Download one file and inspect it:
+## 11. Security, Privacy, and Governance
 
-   ```bash
-   # Using IBM Cloud CLI
-   ibmcloud cos download --bucket scrc-data-lake \
-     --key "supply_chain_risk_scores/year=2026/month=01/day=15/hour=10/supply_chain_risk_scores+0+0000000000.json" \
-     --output risk_events.json
-   head -5 risk_events.json
-   ```
+- Never commit HMAC secret keys.
+- Use least-privilege COS service credentials scoped to the target bucket where possible.
+- Enable bucket encryption and lifecycle policies according to environment governance.
+- Do not archive secrets if upstream payloads accidentally include them; validate payload contracts before production.
+- Document retention expectations for audit and cost control.
 
-   Each line should be a JSON object matching the `RiskResult` schema.
+---
 
-5. If no files appear after 10 minutes, check the connector logs in the Confluent Cloud UI for authentication errors. The most common cause is an incorrect `store.url` — it must include `https://` and match the COS regional endpoint exactly.
+## 12. Testing Requirements
+
+- Validate connector config JSON structure if a config file is generated.
+- Validate Terraform formatting if Terraform resources are modified.
+- Manual integration test confirms files appear in COS after events are produced.
+- Verify downloaded objects contain valid NDJSON and expected topic payload fields.
+- No Python unit tests are required unless helper scripts are added.
+
+---
+
+## 13. Acceptance Criteria
+
+- [ ] Connector configuration exists and contains placeholders, not real secrets.
+- [ ] All three output topics are configured.
+- [ ] COS endpoint includes the correct `https://` regional endpoint.
+- [ ] Files appear under topic-specific time partitions.
+- [ ] A downloaded file contains one valid JSON object per line.
+- [ ] Connector logs show successful consumption without authentication errors.
+- [ ] No application code was unnecessarily changed.
+
+---
+
+## 14. Implementation Notes for Bob
+
+- Treat this as a configuration/IaC spec, not an application-code spec.
+- If adding Terraform, keep variables clearly named and sensitive values marked sensitive where supported.
+- Keep connector config placeholders obvious with `YOUR_*` or variable references.
+- Preserve compatibility with SPEC-06, which expects durable Iceberg/Tableflow storage patterns.
+
+---
+
+## 15. Verification
+
+1. Produce events using the existing risk engine scenario.
+2. Confirm the Confluent connector status is Running.
+3. After the flush interval, browse the IBM COS bucket.
+4. Confirm paths follow `<topic>/yyyy/MM/dd/HH/`.
+5. Download a file, decompress if needed, and confirm each line is valid JSON matching the topic payload.
+6. If no files appear after 10 minutes, check connector authentication and `store.url` endpoint configuration.
+
+---
+
+## 16. Open Questions
+
+None at this time.
+
+---
+
+## Definition of Ready
+
+Bob may start implementation only when all of the following are known:
+
+- The integration target and trigger are clear.
+- Input topic, payload contract, filtering rules, and expected output are defined.
+- Required files to create or modify are listed.
+- Required environment variables are named and have placeholder-safe examples.
+- Failure behavior is defined for missing credentials, API errors, timeouts, malformed messages, and retry/idempotency concerns.
+- Acceptance criteria are testable without relying only on a manual UI check.
+
+---
+
+## Bob / SDD Execution Guardrails
+
+- Treat this document as the implementation contract, not as a tutorial. Use the existing application patterns and shared utilities where they already exist.
+- Keep changes limited to the files listed in **Files to create or modify** unless the implementation cannot compile or pass tests without a clearly justified additional change.
+- Do not commit secrets, tokens, webhook URLs, passwords, API keys, generated credentials, or tenant-specific endpoints.
+- Prefer small, reviewable changes. Keep connector/API-specific logic isolated behind a dedicated module or consumer.
+- External systems must be optional at runtime. If credentials are missing, the core Kafka demo must still run unless this spec explicitly requires the integration process to be started.
+- Add or update tests before marking the spec complete. Mock external APIs, webhooks, and cloud services in automated tests.
+- Log enough metadata for troubleshooting, but never log secret values or full credentials.

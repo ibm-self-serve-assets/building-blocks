@@ -4,225 +4,83 @@ Back to [specs index](README.md) | [main README](../../README.md)
 
 ---
 
-## 1. Purpose
+## Spec Classification
 
-The existing [`code/scrc/slack_alerts.py`](../../code/scrc/slack_alerts.py) sends HIGH and CRITICAL alerts to Slack. This spec adds a parallel Teams integration using the same trigger logic and the same `Alert` payload, so organisations that use Microsoft Teams instead of (or alongside) Slack receive the same real-time notifications.
-
-Alerts are delivered as an **Adaptive Card** in a Teams channel, showing the severity, component, risk score, root cause, and recommended action in a structured, scannable format.
-
-**Architecture layer extended:** Layer 5 — Downstream applications and integrations.
-
-**Pattern:** Mirrors `slack_alerts.py` exactly — the risk engine calls both if both webhooks are configured.
-
----
-
-## 2. Input
-
-| Property | Value |
-|----------|-------|
-| Trigger | `Alert.severity in {"HIGH", "CRITICAL"}` — evaluated in `RiskPublisher.publish()` |
-| Alert schema | `Alert` dataclass fields: `alert_id`, `risk_id`, `severity`, `title`, `message`, `recommended_action`, `event_time` |
-| Risk score (for card) | `RiskResult.risk_score`, `RiskResult.component_id`, `RiskResult.supplier_id` |
+| Field | Value |
+|---|---|
+| Spec type | SDD implementation spec |
+| Status | Ready for Bob implementation |
+| Primary actor | Bob / developer implementing with Bob |
+| Target asset | Supply Chain Risk Control Tower |
+| Architecture layer | Layer 5 — Downstream applications and notifications |
 
 ---
 
-## 3. Output
+## 1. Business Goal
 
-| Output | Description |
-|--------|-------------|
-| Teams Adaptive Card | Posted to the configured Teams channel via incoming webhook |
-| Card fields | Severity badge, risk score, component ID, supplier ID, root cause, recommended action, timestamp |
+The existing Slack alerting path sends HIGH and CRITICAL events to Slack. This spec adds a parallel Microsoft Teams adapter so organizations using Teams receive equivalent real-time notifications through Adaptive Cards.
 
 ---
 
-## 4. Prerequisites
+## 2. Scope
 
-| Requirement | Details |
-|-------------|---------|
-| Microsoft Teams | Any Teams workspace |
-| Incoming Webhook connector | Add to a channel: Channel settings → Connectors → Incoming Webhook → Configure → Copy URL |
-| No new Python packages | Uses `requests`, which is already a dependency |
-
-### Creating the Teams incoming webhook
-
-1. In Teams, open the target channel.
-2. Click the three-dot menu (ellipsis) next to the channel name → **Connectors**.
-3. Find **Incoming Webhook** → **Configure**.
-4. Give it a name (e.g. `Supply Chain Risk Tower`) and optionally upload an icon.
-5. Click **Create** and copy the webhook URL.
-6. Click **Done**.
-
-The URL looks like: `https://YOUR_ORG.webhook.office.com/webhookb2/...`
+Implement Teams webhook notification as an optional adapter that mirrors the existing Slack trigger logic. The risk engine should call Slack, Teams, both, or neither depending on configured webhooks.
 
 ---
 
-## 5. Implementation steps
+## 3. Non-Goals
 
-### Step 1: Add the webhook URL to `.env`
-
-Add the variable from section 7 to `.env`.
-
-### Step 2: Update `code/scrc/settings.py`
-
-Add `teams_webhook_url` to `AppSettings`.
-
-### Step 3: Create `code/scrc/teams_alerts.py`
-
-Create the new file with the complete code from section 6.
-
-### Step 4: Update `code/scrc/risk_engine.py`
-
-Add the Teams call alongside the Slack call in `RiskPublisher.publish()`.
-
-### Step 5: Test
-
-Run a dry-run scenario that produces CRITICAL events and verify the card appears in Teams.
+- Do not remove or alter Slack behavior.
+- Do not create Microsoft Graph integrations in this spec.
+- Do not store webhook URLs in source control.
+- Do not send LOW or MEDIUM alerts to Teams.
 
 ---
 
-## 6. Complete code
+## 4. Files to Create or Modify
 
-### `code/scrc/teams_alerts.py` — new file
-
-```python
-from __future__ import annotations
-
-"""
-Microsoft Teams alert integration.
-Posts an Adaptive Card to a Teams channel for HIGH and CRITICAL severity events.
-
-Mirror of slack_alerts.py — same trigger, different delivery format.
-"""
-
-from typing import Any
-
-import requests
-
-
-def send_teams_alert(webhook_url: str, alert: dict[str, Any], risk: dict[str, Any] | None = None) -> None:
-    """Post an Adaptive Card to a Teams channel via incoming webhook.
-
-    Args:
-        webhook_url: Teams incoming webhook URL.
-        alert: Alert dict with severity, title, message, recommended_action, event_time.
-        risk: Optional RiskResult dict for additional card fields (risk_score, component_id, supplier_id).
-    """
-    severity = alert.get("severity", "UNKNOWN")
-    colour = "attention" if severity == "CRITICAL" else "warning"
-
-    facts = [
-        {"title": "Severity", "value": severity},
-        {"title": "Alert", "value": alert.get("title", "")},
-        {"title": "Recommended action", "value": alert.get("recommended_action", "")},
-        {"title": "Time", "value": alert.get("event_time", "")},
-    ]
-
-    if risk:
-        facts.insert(1, {"title": "Risk score", "value": str(risk.get("risk_score", ""))})
-        facts.insert(2, {"title": "Component", "value": risk.get("component_id", "")})
-        facts.insert(3, {"title": "Supplier", "value": risk.get("supplier_id", "")})
-
-    payload = {
-        "type": "message",
-        "attachments": [
-            {
-                "contentType": "application/vnd.microsoft.card.adaptive",
-                "content": {
-                    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
-                    "type": "AdaptiveCard",
-                    "version": "1.4",
-                    "body": [
-                        {
-                            "type": "TextBlock",
-                            "text": f"Supply Chain Risk — {severity}",
-                            "weight": "Bolder",
-                            "size": "Medium",
-                            "color": colour,
-                        },
-                        {
-                            "type": "TextBlock",
-                            "text": alert.get("message", ""),
-                            "wrap": True,
-                        },
-                        {
-                            "type": "FactSet",
-                            "facts": facts,
-                        },
-                    ],
-                },
-            }
-        ],
-    }
-
-    response = requests.post(webhook_url, json=payload, timeout=10)
-    response.raise_for_status()
-```
-
-### Changes to `code/scrc/settings.py`
-
-Add `teams_webhook_url` to `AppSettings`:
-
-```python
-@dataclass(frozen=True)
-class AppSettings:
-    kafka: KafkaSettings
-    schema_registry: SchemaRegistrySettings
-    slack_webhook_url: str | None
-    teams_webhook_url: str | None    # add this line
-    opensearch_url: str | None
-    watsonx_url: str | None
-```
-
-In `load_settings()`:
-
-```python
-return AppSettings(
-    ...
-    teams_webhook_url=os.getenv("TEAMS_WEBHOOK_URL") or None,
-    ...
-)
-```
-
-### Changes to `code/scrc/risk_engine.py`
-
-In `RiskPublisher.__init__`, add `teams_webhook_url`:
-
-```python
-class RiskPublisher:
-    def __init__(
-        self,
-        producer: Any | None,
-        slack_webhook_url: str | None,
-        teams_webhook_url: str | None = None,
-    ) -> None:
-        self.producer = producer
-        self.slack_webhook_url = slack_webhook_url
-        self.teams_webhook_url = teams_webhook_url
-```
-
-In `RiskPublisher.publish()`, add after the Slack block:
-
-```python
-        if self.teams_webhook_url and alert.get("severity") in {"HIGH", "CRITICAL"}:
-            from .teams_alerts import send_teams_alert
-            send_teams_alert(self.teams_webhook_url, alert, risk)
-```
-
-In `main()`, pass `teams_webhook_url` to `RiskPublisher`:
-
-```python
-    publisher = RiskPublisher(
-        producer=producer,
-        slack_webhook_url=settings.slack_webhook_url,
-        teams_webhook_url=settings.teams_webhook_url,
-    )
-```
+- `code/scrc/teams_alerts.py`
+- `code/scrc/settings.py`
+- `code/scrc/risk_engine.py`
+- `.env.example`
+- `tests/` or the existing test location for `scrc` modules
 
 ---
 
-## 7. New `.env` variables
+## 5. Input Contract
 
-Add to `.env` and `.env.example`:
+| Item | Requirement |
+|---|---|
+| Trigger | `Alert.severity in {"HIGH", "CRITICAL"}` inside `RiskPublisher.publish()` |
+| Alert fields | `alert_id`, `risk_id`, `severity`, `title`, `message`, `recommended_action`, `event_time` |
+| Risk fields | `risk_score`, `component_id`, `supplier_id` when available |
+| Existing pattern | Mirror the structure of `code/scrc/slack_alerts.py` |
+
+---
+
+## 6. Output Contract
+
+| Item | Requirement |
+|---|---|
+| Teams card | Adaptive Card posted to configured channel |
+| Card content | Severity, risk score, component, supplier, root cause/message, recommended action, timestamp |
+| Runtime output | Log success/failure without interrupting Kafka publishing |
+
+---
+
+## 7. Functional Requirements
+
+- Create `teams_alerts.py` with a single clear send function.
+- Add `TEAMS_WEBHOOK_URL` to settings.
+- Call Teams after or alongside Slack when configured.
+- Use consistent severity formatting and colors between Slack and Teams where possible.
+- Validate that empty or missing webhook configuration disables Teams without errors.
+
+---
+
+## 8. Configuration and Secrets
+
+Add placeholders to `.env.example`. Add real values only to local `.env`, CI/CD secret stores, or the relevant managed connector configuration.
 
 ```dotenv
 # Microsoft Teams — webhook alerts (SPEC-03)
@@ -231,26 +89,100 @@ TEAMS_WEBHOOK_URL=https://YOUR_ORG.webhook.office.com/webhookb2/...
 
 ---
 
-## 8. Verification
+## 9. Runtime Behavior
 
-1. Run the risk engine in dry-run mode with a scenario that produces CRITICAL events:
+- Teams notification is attempted only for HIGH and CRITICAL alerts.
+- If both Slack and Teams are configured, both are attempted independently.
+- A Teams failure must not prevent Slack or Kafka publishing.
+- The card payload should be generated by a pure function that can be unit tested.
+- The webhook call should use a reasonable timeout.
 
-   ```bash
-   source .venv/bin/activate
-   python -m scrc.risk_engine --dry-run --scenario inventory_drop --count 6
-   ```
+---
 
-2. Open the Teams channel. Within a few seconds of the terminal printing a CRITICAL alert, a card should appear with the severity badge, risk score, component, recommended action, and timestamp.
+## 10. Failure Handling and Idempotency
 
-3. To test the card payload without running the full engine, send it directly:
+- Wrap webhook calls in exception handling.
+- Log non-2xx responses with status code and alert ID, not the webhook URL.
+- Do not retry indefinitely; keep retries bounded or skip retry for the demo implementation.
+- Sending the same alert twice is acceptable only if the publisher is called twice; do not add hidden background sends.
 
-   ```python
-   import os, json, pathlib
-   from code.scrc.teams_alerts import send_teams_alert
-   sample = json.loads(pathlib.Path("docs/assets/sample_risk_event.json").read_text())
-   alert = {"severity": "CRITICAL", "title": "Test alert", "message": "Integration test.",
-            "recommended_action": "Review immediately.", "event_time": "2026-01-01T00:00:00Z"}
-   send_teams_alert(os.getenv("TEAMS_WEBHOOK_URL"), alert, sample)
-   ```
+---
 
-4. If the card does not appear, check the webhook URL is correct and the connector has not been disabled in the Teams admin centre.
+## 11. Security, Privacy, and Governance
+
+- Never log the Teams webhook URL.
+- Treat webhook URL as a secret.
+- Only include operational fields needed by responders.
+- Avoid exposing customer-sensitive or supplier-sensitive data beyond the intended Teams channel.
+
+---
+
+## 12. Testing Requirements
+
+- Unit test Adaptive Card payload construction.
+- Unit test that HIGH and CRITICAL alerts call `requests.post`.
+- Unit test that LOW and MEDIUM alerts do not call `requests.post`.
+- Unit test non-2xx and timeout behavior with `requests.post` mocked.
+- Regression test that Slack behavior remains unchanged.
+
+---
+
+## 13. Acceptance Criteria
+
+- [ ] `.env.example` contains `TEAMS_WEBHOOK_URL` placeholder.
+- [ ] Teams card sender is isolated in `teams_alerts.py`.
+- [ ] Risk engine can call Slack and Teams independently.
+- [ ] HIGH and CRITICAL events create Teams card payloads.
+- [ ] LOW and MEDIUM events are skipped.
+- [ ] Webhook errors are logged and do not stop the pipeline.
+- [ ] Automated tests pass without a real Teams webhook.
+
+---
+
+## 14. Implementation Notes for Bob
+
+- Reuse the Slack alert module style, but do not duplicate unnecessary logic if a small shared helper is cleaner.
+- Keep payload construction separate from HTTP send.
+- Preserve the existing `RiskPublisher` constructor style.
+- Do not include actual webhook URLs in tests or docs.
+
+---
+
+## 15. Verification
+
+1. Configure a real Teams incoming webhook only in local `.env`.
+2. Run `python -m scrc.risk_engine --dry-run --scenario supplier_delay --count 10`.
+3. Confirm a Teams card appears for HIGH/CRITICAL alerts.
+4. Unset `TEAMS_WEBHOOK_URL` and confirm the risk engine still runs.
+5. Run tests with `requests.post` mocked.
+
+---
+
+## 16. Open Questions
+
+None at this time.
+
+---
+
+## Definition of Ready
+
+Bob may start implementation only when all of the following are known:
+
+- The integration target and trigger are clear.
+- Input topic, payload contract, filtering rules, and expected output are defined.
+- Required files to create or modify are listed.
+- Required environment variables are named and have placeholder-safe examples.
+- Failure behavior is defined for missing credentials, API errors, timeouts, malformed messages, and retry/idempotency concerns.
+- Acceptance criteria are testable without relying only on a manual UI check.
+
+---
+
+## Bob / SDD Execution Guardrails
+
+- Treat this document as the implementation contract, not as a tutorial. Use the existing application patterns and shared utilities where they already exist.
+- Keep changes limited to the files listed in **Files to create or modify** unless the implementation cannot compile or pass tests without a clearly justified additional change.
+- Do not commit secrets, tokens, webhook URLs, passwords, API keys, generated credentials, or tenant-specific endpoints.
+- Prefer small, reviewable changes. Keep connector/API-specific logic isolated behind a dedicated module or consumer.
+- External systems must be optional at runtime. If credentials are missing, the core Kafka demo must still run unless this spec explicitly requires the integration process to be started.
+- Add or update tests before marking the spec complete. Mock external APIs, webhooks, and cloud services in automated tests.
+- Log enough metadata for troubleshooting, but never log secret values or full credentials.
