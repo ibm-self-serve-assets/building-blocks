@@ -43,11 +43,12 @@ Bob maintains semantic understanding of repositories, dependencies, and project 
 
 ### 🎛️ Agentic Modes with Explicit Control
 Purpose-driven modes define reasoning depth, tool access, and execution scope for each development task:
-- **Code Mode** - Write, modify, and refactor code
-- **Ask Mode** - Get explanations and documentation
-- **Plan Mode** - Design and strategize before implementation
-- **Advanced Mode** - Access additional tools like MCP and Browser
-- **Orchestrator Mode** - Coordinate complex, multi-step projects
+| Mode | Purpose | Use When |
+|------|---------|----------|
+| **Agent** | Takes action and completes tasks with full agentic capabilities — writes, edits, runs commands, and drives the work end-to-end | Building features, fixing bugs, generating code, or any hands-on development task |
+| **Plan** | Gathers requirements, discovers context, checks understanding, and produces an actionable plan — without touching the codebase | Designing architecture, breaking down complex changes, or preparing before Agent executes |
+| **Ask** | Read-only explanation mode — analyzes architecture, explains logic, and answers questions without modifying any files | Understanding existing code, reviewing design decisions, or onboarding to a codebase |
+
 
 ### 🔍 Live Code Analysis & Findings
 Performs continuous inline analysis to surface complexity issues, anti-patterns, and refactoring opportunities before they reach production. Catch issues early, fix them automatically.
