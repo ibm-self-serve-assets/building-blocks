@@ -1,0 +1,165 @@
+#!/usr/bin/env python3
+"""
+Self-contained cross-reference validator for explore-BBs/bb-catalog/.
+
+The catalog is the source of truth for the Building Blocks Explorer MCP
+server: markdown files with YAML frontmatter describing capabilities,
+groups, building blocks, and docs pages. This script catches structural
+drift before it reaches the live server.
+
+Checks performed:
+  1. Frontmatter parses and required fields are present per block
+  2. Block id matches its filename (blocks/<id>.md)
+  3. Block ids are unique
+  4. Every block's `group` exists in groups.md
+  5. Every group's `capability` exists in capabilities.md
+  6. Block capability matches its group's capability
+  7. Every block's `repo_path` exists as a directory in this repository
+     (catches renamed/moved domain folders, e.g. the build-and-deploy/Iaas bug)
+  8. Every block's `docs_path` is listed in docs-pages.md
+  9. Docs page paths are unique
+
+Usage (from the repo root or anywhere inside it):
+    python3 explore-BBs/bb-catalog/scripts/validate_catalog.py
+
+Requires: PyYAML. Exits 0 if clean, 1 on any error.
+"""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import yaml
+
+CATALOG_DIR = Path(__file__).resolve().parents[1]   # explore-BBs/bb-catalog
+REPO_ROOT = CATALOG_DIR.parents[1]                  # repository root
+
+REQUIRED_BLOCK_FIELDS = (
+    "id", "name", "group", "capability", "description", "repo_path", "docs_path",
+)
+
+
+def parse_frontmatter(path: Path) -> dict:
+    """Return the YAML frontmatter of a markdown file as a dict."""
+    text = path.read_text(encoding="utf-8")
+    if not text.startswith("---"):
+        raise ValueError(f"{path}: no frontmatter delimiter at start of file")
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        raise ValueError(f"{path}: unterminated frontmatter block")
+    data = yaml.safe_load(parts[1])
+    if not isinstance(data, dict):
+        raise ValueError(f"{path}: frontmatter is not a YAML mapping")
+    return data
+
+
+def load_catalog() -> tuple[dict, dict, list, dict]:
+    """Load capabilities, groups, docs pages, and blocks from the catalog."""
+    capabilities = {
+        c["id"]: c for c in parse_frontmatter(CATALOG_DIR / "capabilities.md")["capabilities"]
+    }
+    groups = {
+        g["id"]: g for g in parse_frontmatter(CATALOG_DIR / "groups.md")["groups"]
+    }
+    docs_pages = parse_frontmatter(CATALOG_DIR / "docs-pages.md")["pages"]
+
+    blocks: dict[str, dict] = {}
+    errors: list[str] = []
+    for path in sorted((CATALOG_DIR / "blocks").glob("*.md")):
+        try:
+            fm = parse_frontmatter(path)
+        except ValueError as exc:
+            errors.append(str(exc))
+            continue
+        missing = [f for f in REQUIRED_BLOCK_FIELDS if not fm.get(f)]
+        if missing:
+            errors.append(f"{path.name}: missing required field(s): {missing}")
+            continue
+        bid = fm["id"]
+        if bid != path.stem:
+            errors.append(f"{path.name}: id {bid!r} does not match filename stem {path.stem!r}")
+        if bid in blocks:
+            errors.append(f"{path.name}: duplicate block id {bid!r}")
+            continue
+        blocks[bid] = fm
+
+    if errors:
+        for e in errors:
+            print(f"  - {e}")
+        print(f"\nVALIDATION FAILED while loading blocks — {len(errors)} issue(s).")
+        sys.exit(1)
+
+    return capabilities, groups, docs_pages, blocks
+
+
+def main() -> int:
+    print(f"Validating catalog at {CATALOG_DIR}")
+    capabilities, groups, docs_pages, blocks = load_catalog()
+
+    errors: list[str] = []
+
+    # group -> capability references
+    for gid, group in groups.items():
+        if group.get("capability") not in capabilities:
+            errors.append(
+                f"group {gid!r} references unknown capability {group.get('capability')!r} "
+                f"(valid: {sorted(capabilities)})"
+            )
+
+    # block -> group/capability references + consistency
+    for bid, block in blocks.items():
+        if block["group"] not in groups:
+            errors.append(
+                f"block {bid!r} references unknown group {block['group']!r} "
+                f"(valid: {sorted(groups)})"
+            )
+        elif block["capability"] != groups[block["group"]].get("capability"):
+            errors.append(
+                f"block {bid!r} has capability={block['capability']!r} but its group "
+                f"{block['group']!r} belongs to capability "
+                f"{groups[block['group']].get('capability')!r}"
+            )
+        if block["capability"] not in capabilities:
+            errors.append(
+                f"block {bid!r} references unknown capability {block['capability']!r}"
+            )
+
+    # block repo_path must exist as a directory in this repository
+    for bid, block in blocks.items():
+        if not (REPO_ROOT / block["repo_path"]).is_dir():
+            errors.append(
+                f"block {bid!r} repo_path {block['repo_path']!r} does not exist in the repo"
+            )
+
+    # block docs_path must be listed in docs-pages.md
+    known_paths = {p["path"] for p in docs_pages}
+    for bid, block in blocks.items():
+        if block["docs_path"] not in known_paths:
+            errors.append(
+                f"block {bid!r} docs_path {block['docs_path']!r} is not listed in docs-pages.md"
+            )
+
+    # docs page path uniqueness
+    seen: dict[str, list[str]] = {}
+    for page in docs_pages:
+        seen.setdefault(page["path"], []).append(page["title"])
+    for path, titles in seen.items():
+        if len(titles) > 1:
+            errors.append(f"docs page path {path!r} appears under multiple titles: {titles}")
+
+    if errors:
+        print(f"\nVALIDATION FAILED — {len(errors)} issue(s):")
+        for e in errors:
+            print(f"  - {e}")
+        return 1
+
+    print(
+        f"VALIDATION PASSED — {len(capabilities)} capabilities, {len(groups)} groups, "
+        f"{len(blocks)} blocks, {len(docs_pages)} docs pages."
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

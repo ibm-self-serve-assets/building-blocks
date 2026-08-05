@@ -1,0 +1,33 @@
+name: Validate bb-catalog
+
+# Cross-reference validation for the Building Blocks Explorer catalog
+# (explore-BBs/bb-catalog/). Fails PRs that introduce dangling references,
+# broken repo paths, or docs-page drift. The catalog is live-fetched by the
+# Explorer MCP server, so errors here reach users within minutes of merge.
+
+on:
+  pull_request:
+    paths:
+      - 'explore-BBs/bb-catalog/**'
+      - '.github/workflows/validate-bb-catalog.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'explore-BBs/bb-catalog/**'
+      - '.github/workflows/validate-bb-catalog.yml'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Validate catalog
+        run: python3 explore-BBs/bb-catalog/scripts/validate_catalog.py
