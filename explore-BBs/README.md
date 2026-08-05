@@ -1,20 +1,23 @@
-# Building Blocks Explorer — Bob Mode
+# Building Blocks Explorer
 
-A custom mode for Bob (IBM's code assistant) that guides you from a business idea to the right IBM Technology Building Blocks, then merges a recommended builder Bob mode into your workspace so you can start implementing.
+A **Bob mode + MCP server pair** that helps users discover and adopt IBM Technology Building Blocks. The Bob mode walks users through a Discover → Clarify → Design → Confirm → Build flow; the MCP server is the backing catalog/code-fetch API.
 
-## Install
+```
+explore-BBs/
+├── mcp-server/                  # FastMCP server (deployed to IBM Code Engine)
+├── building-blocks-explorer.zip # Bob mode (download + drop into a workspace)
+└── README.md                    # you are here
+```
 
-1. Download `building-blocks-explorer.zip` from this repo.
-2. Unzip it anywhere convenient. You'll get a `building-blocks-explorer/` folder containing a hidden `.bob/` config directory.
-3. Open that folder as your workspace in Bob (so Bob picks up `.bob/`).
-4. In Bob's mode picker, select **🧱 IBM Building Blocks Explorer**.
-5. Start with a prompt like:
-   - "I want to build an insurance claims assistant agent"
-   - "What building blocks are available?"
-   - "What Bob Modes can I install?"
+## Install the Bob mode
 
-## What this mode does
+1. Download [building-blocks-explorer.zip](building-blocks-explorer.zip).
+2. Unzip it; open the resulting folder as your workspace in Bob.
+3. Select **🧱 IBM Building Blocks Explorer** from the mode picker.
+4. Try: *"I want to build an insurance claims assistant agent"*.
 
-A 5-step Discover → Clarify → Design → Confirm → Hand-off flow. It uses a remote MCP server to pull the live Building Blocks catalog, READMEs, docs, and sample assets. When you confirm a recommendation, the chosen builder Bob Mode is downloaded and merged into your workspace's `.bob/` folder; after a Bob reload, the new mode is in the picker alongside this one.
+The mode is pre-wired to the production MCP server on Code Engine — no extra setup needed.
 
-For technical details (file layout, MCP server URL, how the merge works), see the README inside the unzipped folder.
+## MCP server
+
+See [mcp-server/README.md](mcp-server/README.md) for tool reference, local-dev setup, and Code Engine deploy/redeploy commands. The server is stateless and the static catalog lives in `mcp-server/src/building_blocks_mcp_remote/registry.py` — update that file whenever a new building block lands upstream.

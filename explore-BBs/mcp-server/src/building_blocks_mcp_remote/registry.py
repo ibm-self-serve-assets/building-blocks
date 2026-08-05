@@ -1,7 +1,7 @@
 """
 Static catalog of IBM Technology Building Blocks and documentation pages.
 
-Hierarchy: 3 Core Capabilities -> 8 Groups -> 24 Building Blocks.
+Hierarchy: 3 Core Capabilities -> 8 Groups -> 25 Building Blocks.
 
 Enables instant responses for discovery tools (zero API calls).
 Update this file when new building blocks are added to the repository.
@@ -233,6 +233,16 @@ BUILDING_BLOCKS: dict[str, dict] = {
         "products": ["watsonx.ai"],
         "tags": ["data", "vector", "search", "milvus", "opensearch", "embeddings", "rag"],
     },
+    "rag": {
+        "name": "RAG",
+        "group": "retrieval",
+        "capability": "data",
+        "description": "Retrieval-Augmented Generation pipeline: document ingestion from IBM COS, watsonx.ai embeddings, vector storage in Milvus or OpenSearch, and hybrid semantic + BM25 search. Ships with a FastAPI service plus ingestion and retrieval MCP servers.",
+        "repo_path": "data/retrieval/RAG",
+        "docs_path": "data-core/retrieval/rag/index.md",
+        "products": ["watsonx.ai", "watsonx.data"],
+        "tags": ["data", "rag", "retrieval", "embeddings", "milvus", "opensearch", "watsonx", "ibm-cos", "hybrid-search", "bob-modes"],
+    },
     "no-sql-database": {
         "name": "No SQL Database",
         "group": "retrieval",
@@ -370,6 +380,7 @@ DOCS_PAGES: list[dict] = [
     {"title": "Text2SQL", "section": "Data > Intelligence", "path": "data-core/intelligence/text2sql/index.md"},
     # Data > Retrieval
     {"title": "Retrieval Overview", "section": "Data > Retrieval", "path": "data-core/retrieval/index.md"},
+    {"title": "RAG", "section": "Data > Retrieval", "path": "data-core/retrieval/rag/index.md"},
     {"title": "Vector Search Overview", "section": "Data > Retrieval > Vector Search", "path": "data-core/retrieval/vector-search/index.md"},
     {"title": "Vector Search (Milvus)", "section": "Data > Retrieval > Vector Search", "path": "data-core/retrieval/vector-search/milvus.md"},
     {"title": "Vector Search (OpenSearch)", "section": "Data > Retrieval > Vector Search", "path": "data-core/retrieval/vector-search/opensearch.md"},
