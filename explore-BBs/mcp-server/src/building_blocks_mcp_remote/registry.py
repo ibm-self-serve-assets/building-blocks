@@ -279,7 +279,7 @@ BUILDING_BLOCKS: dict[str, dict] = {
         "group": "build",
         "capability": "automation",
         "description": "Terraform and Ansible for automated, consistent environment provisioning and deployment",
-        "repo_path": "build-and-deploy/Iaas",
+        "repo_path": "build-and-deploy/infrastructure-as-code",
         "docs_path": "automation-core/build/infrastructure-as-code.md",
         "products": ["Terraform", "Ansible"],
         "tags": ["iac", "terraform", "ansible", "deployment", "infrastructure"],

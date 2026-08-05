@@ -4,7 +4,7 @@ name: Infrastructure as Code
 group: build
 capability: automation
 description: Terraform and Ansible for automated, consistent environment provisioning and deployment
-repo_path: build-and-deploy/Iaas
+repo_path: build-and-deploy/infrastructure-as-code
 docs_path: automation-core/build/infrastructure-as-code.md
 products:
   - Terraform
@@ -22,7 +22,7 @@ tags:
 
 Terraform and Ansible for automated, consistent environment provisioning and deployment
 
-- **Repo**: [build-and-deploy/Iaas](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/Iaas)
+- **Repo**: [build-and-deploy/infrastructure-as-code](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/infrastructure-as-code)
 - **Docs**: [automation-core/build/infrastructure-as-code.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/build/infrastructure-as-code)
 
 <!--
