@@ -365,7 +365,7 @@ Other local emulation examples:
 export WXO_SECURITY_SCHEMA_foo=basic_auth
 export WXO_CONNECTION_foo_url=https://api.example.com
 export WXO_CONNECTION_foo_username=username
-export WXO_CONNECTION_foo_password=password
+export WXO_CONNECTION_foo_password=<YOUR_PASSWORD>
 
 # Bearer
 export WXO_SECURITY_SCHEMA_foo=bearer_token
