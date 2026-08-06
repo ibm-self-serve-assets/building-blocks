@@ -5,7 +5,7 @@ group: secure
 capability: automation
 description: Identity and secrets management for non-human entities including service accounts, APIs, and machine identities, with HashiCorp Vault integration
 repo_path: secure/non-human-identity
-docs_path: automation-core/secure/authentication-management.md
+docs_path: automation-core/secure/non-human-identity.md
 products:
   - IBM Verify
   - HashiCorp Vault

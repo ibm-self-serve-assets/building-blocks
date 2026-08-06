@@ -301,7 +301,7 @@ BUILDING_BLOCKS: dict[str, dict] = {
         "capability": "automation",
         "description": "Identity and secrets management for non-human entities including service accounts, APIs, and machine identities, with HashiCorp Vault integration",
         "repo_path": "secure/non-human-identity",
-        "docs_path": "automation-core/secure/authentication-management.md",
+        "docs_path": "automation-core/secure/non-human-identity.md",
         "products": ["IBM Verify", "HashiCorp Vault"],
         "tags": ["identity", "auth", "non-human", "security", "machine-identity", "secrets"],
     },
@@ -394,7 +394,7 @@ DOCS_PAGES: list[dict] = [
     {"title": "Code Modernization", "section": "Automation > Build and Deploy", "path": "automation-core/build/middleware-modernization.md"},
     # Automation > Secure
     {"title": "Secure Overview", "section": "Automation > Secure", "path": "automation-core/secure/index.md"},
-    {"title": "Authentication Management", "section": "Automation > Secure", "path": "automation-core/secure/authentication-management.md"},
+    {"title": "Non-Human Identity", "section": "Automation > Secure", "path": "automation-core/secure/non-human-identity.md"},
     {"title": "Quantum-Safe Cryptography", "section": "Automation > Secure", "path": "automation-core/secure/quantum-safe.md"},
     # Automation > Optimize
     {"title": "Optimize Overview", "section": "Automation > Optimize", "path": "automation-core/optimize/index.md"},

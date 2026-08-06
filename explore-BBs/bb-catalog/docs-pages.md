@@ -3,6 +3,9 @@ pages:
   - title: Home
     section: Home
     path: index.md
+  - title: AI Overview
+    section: AI
+    path: ai-core/index.md
   - title: Agents Overview
     section: "AI > Agents"
     path: ai-core/agents/index.md
@@ -30,6 +33,33 @@ pages:
   - title: AI Compliance
     section: "AI > AI Trust"
     path: ai-core/ai-trust/ai-compliance.md
+  - title: AI Data Overview
+    section: "AI > Data"
+    path: ai-core/data/index.md
+  - title: Data Ingestion
+    section: "AI > Data"
+    path: ai-core/data/data-ingestion.md
+  - title: Data Security and Encryption
+    section: "AI > Data"
+    path: ai-core/data/data-security-and-encryption.md
+  - title: Q&A
+    section: "AI > Data"
+    path: ai-core/data/q-and-a.md
+  - title: Vector Search Overview (AI)
+    section: "AI > Data > Vector Search"
+    path: ai-core/data/vector-search/index.md
+  - title: Vector Search (Milvus, AI)
+    section: "AI > Data > Vector Search"
+    path: ai-core/data/vector-search/milvus.md
+  - title: Vector Search (OpenSearch, AI)
+    section: "AI > Data > Vector Search"
+    path: ai-core/data/vector-search/opensearch.md
+  - title: Vector Search (DataStax Astra DB, AI)
+    section: "AI > Data > Vector Search"
+    path: ai-core/data/vector-search/datastax-astra-db.md
+  - title: Zero Copy Lakehouse
+    section: "AI > Data"
+    path: ai-core/data/zero-copy-lakehouse.md
   - title: Data Overview
     section: Data
     path: data-core/index.md
@@ -81,6 +111,9 @@ pages:
   - title: Zero Copy
     section: "Data > Retrieval"
     path: data-core/retrieval/zero-copy/index.md
+  - title: Automation Overview
+    section: Automation
+    path: automation-core/index.md
   - title: Build and Deploy Overview
     section: "Automation > Build and Deploy"
     path: automation-core/build/index.md
@@ -93,12 +126,15 @@ pages:
   - title: Code Modernization
     section: "Automation > Build and Deploy"
     path: automation-core/build/middleware-modernization.md
+  - title: Asset Management
+    section: "Automation > Build and Deploy"
+    path: automation-core/build/asset-management.md
   - title: Secure Overview
     section: "Automation > Secure"
     path: automation-core/secure/index.md
-  - title: Authentication Management
+  - title: Non-Human Identity
     section: "Automation > Secure"
-    path: automation-core/secure/authentication-management.md
+    path: automation-core/secure/non-human-identity.md
   - title: Quantum-Safe Cryptography
     section: "Automation > Secure"
     path: automation-core/secure/quantum-safe.md
@@ -114,9 +150,18 @@ pages:
   - title: Automated Resource Management
     section: "Automation > Optimize"
     path: automation-core/optimize/automated-resource-management.md
+  - title: Budget and Forecasting
+    section: "Automation > Optimize"
+    path: automation-core/optimize/budget-and-forecasting.md
   - title: IBM Bob and Building Blocks
     section: IBM Bob
     path: ibm-bob/index.md
+  - title: Bob Skills
+    section: IBM Bob
+    path: ibm-bob/skills/index.md
+  - title: Contributing to Bob Skills
+    section: IBM Bob
+    path: ibm-bob/skills/contributing_to_skills.md
   - title: Build with Bob Workshops
     section: IBM Bob
     path: workshop/index.md
