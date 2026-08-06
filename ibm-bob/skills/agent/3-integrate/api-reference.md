@@ -29,7 +29,7 @@ Content-Type: application/json
 **Response:**
 ```json
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "token": "<JWT_ACCESS_TOKEN>",
   "expires_in": 7200
 }
 ```
