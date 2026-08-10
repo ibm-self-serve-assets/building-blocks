@@ -16,7 +16,7 @@ langchain-text-splitters
 
 # Document loaders (notebook)
 pypdf
-unstructured==0.17.2
+unstructured==0.18.18
 docx2txt
 python-docx
 beautifulsoup4
