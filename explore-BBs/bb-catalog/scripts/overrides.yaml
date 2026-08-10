@@ -1,0 +1,40 @@
+# Corrections for known-bad upstream skill metadata.
+# Never edit other teams' skill files directly — add an entry here instead.
+# Keys are skill ids (the skill's directory name inside its zip or under
+# ibm-bob/skills/), except `aliases` whose keys are variant ids.
+
+# Same skill published under two different ids -> fold into one canonical id.
+# Verified 2026-08: identical description, same content modulo the name line.
+aliases:
+  data-streaming-confluent-terraform: confluent-iac-terraform
+
+# Sources that must not enter the catalog.
+exclude:
+  # Byte-identical accidental copy of code-modernization-expert
+  # (diff -r shows no differences; SKILL.md even declares the expert's name).
+  - code-modernization-java
+
+# Display-name corrections where the SKILL.md `name:` field is wrong.
+names:
+  # SKILL.md declares "automated-resource-mgmt-turbonomic" — copy-paste error.
+  non-human-identity-vault: non-human-identity-vault
+  # SKILL.md declares "ibmcloud-cli"; keep the more descriptive id as the name.
+  ibm-cloud: ibm-cloud
+  # SKILL.md declares "code-modernization-expert" — copy-paste error; this
+  # skill is Maximo Java-to-automation-script modernization.
+  maximo-modernization-java: maximo-modernization-java
+
+# Block assignment for skills whose location doesn't resolve to a catalog
+# block (cross-cutting skills, or blocks not yet published).
+blocks:
+  # Central-only lifecycle skill for watsonx Orchestrate agents — spans the
+  # whole agents group; assign to its closest blocks.
+  agent: [agent-builder, multi-agent-orchestration]
+  # Cross-cutting CLI skill — belongs to no single block.
+  ibm-cloud: []
+  # Zip filename says application-observability, inner skill is Instana.
+  # Block `application-observability` is not in the catalog yet (decision D1
+  # pending with the Optimize owner) — unowned until that lands.
+  instana-observability: []
+  # Quantum-safe zip uses generic `skills.zip` name with inner dir `qse`.
+  qse: [quantum-safe]
