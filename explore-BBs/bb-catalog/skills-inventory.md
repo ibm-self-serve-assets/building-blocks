@@ -6,7 +6,7 @@
 
 | Skill | Blocks | Status | Sources | Download |
 |---|---|---|---|---|
-| `agent` | agent-builder, multi-agent-orchestration | active | central | **none** |
+| `agent` | agent-builder, multi-agent-orchestration | active | central | zip (generated) |
 | `agent-ops` | agent-ops | active | block, central | zip |
 | `automated-resilience-concert` | automated-resilience | active | block | zip |
 | `automated-resource-mgmt-turbonomic` | automated-resource-mgmt | divergent | block, central | zip |
@@ -18,7 +18,7 @@
 | `data-quality-rules` | data-quality | active | block | zip |
 | `data-streaming-confluent` | data-streaming | active | block, central | zip |
 | `databand-pipeline-setup` | data-observability | active | block | zip |
-| `ibm-cloud` | — | active | central | **none** |
+| `ibm-cloud` | — | active | central | zip (generated) |
 | `infrastructure-as-code-ansible` | infrastructure-as-code | active | block, central | zip |
 | `infrastructure-as-code-terraform` | infrastructure-as-code | active | block, central | zip |
 | `instana-observability` | — | active | block | zip |
@@ -47,10 +47,10 @@
 - `ibm-cloud` — sources: ibm-bob/skills/ibm-cloud
 - `instana-observability` — sources: optimize/application-observability/bob-skills/application-observability.zip
 
-## No download available (unpacked source only — pending per-skill archive)
+## Generated archives (zip-less upstream sources, zipped into skill-archives/)
 
-- `agent`
-- `ibm-cloud`
+- `agent` ← ibm-bob/skills/agent
+- `ibm-cloud` ← ibm-bob/skills/ibm-cloud
 
 ## Excluded by override
 

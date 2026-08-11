@@ -52,6 +52,8 @@ SCRIPTS_DIR = Path(__file__).resolve().parent
 CATALOG_DIR = SCRIPTS_DIR.parent                  # explore-BBs/bb-catalog
 REPO_ROOT = CATALOG_DIR.parents[1]                # repository root
 SKILLS_OUT_DIR = CATALOG_DIR / "skills"
+ARCHIVES_DIR = CATALOG_DIR / "skill-archives"     # generated zips for zip-less skills
+ARCHIVES_REL = "explore-BBs/bb-catalog/skill-archives"
 INVENTORY_PATH = CATALOG_DIR / "skills-inventory.md"
 OVERRIDES_PATH = SCRIPTS_DIR / "overrides.yaml"
 
@@ -320,12 +322,18 @@ def reconcile(
             owning = sorted(block_fixes[cid])
 
         download = None
+        archive_from = None
         if primary.path.endswith(".zip"):
             download = f"{RAW_BASE}/{primary.path}"
         else:
             zips = [s for s in grp if s.path.endswith(".zip")]
             if zips:
                 download = f"{RAW_BASE}/{zips[0].path}"
+            else:
+                # No zip anywhere upstream — we archive the unpacked source
+                # ourselves into skill-archives/ (built deterministically below).
+                download = f"{RAW_BASE}/{ARCHIVES_REL}/{cid}.zip"
+                archive_from = primary.path
 
         skills.append({
             "id": cid,
@@ -339,6 +347,7 @@ def reconcile(
             ],
             "subskills": meta.subskills,
             "download": download,
+            **({"archive_from": archive_from} if archive_from else {}),
         })
 
     report = {
@@ -353,6 +362,26 @@ def reconcile(
 # ---------------------------------------------------------------------------
 # Output
 # ---------------------------------------------------------------------------
+
+def build_archive(source_dir: Path, inner: str) -> bytes:
+    """Deterministic zip of an unpacked skill dir (bare layout: <inner>/...).
+
+    Byte-stable across runs and platforms: fixed 1980 timestamps, sorted
+    entries, STORED (no compression — deflate output varies by zlib build).
+    Stability matters because --check compares committed archives by content.
+    """
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w", zipfile.ZIP_STORED) as zf:
+        for p in sorted(source_dir.rglob("*")):
+            if not p.is_file() or any(j.strip("/") in p.parts for j in _JUNK):
+                continue
+            info = zipfile.ZipInfo(
+                f"{inner}/{p.relative_to(source_dir)}", date_time=(1980, 1, 1, 0, 0, 0)
+            )
+            info.external_attr = 0o644 << 16
+            zf.writestr(info, p.read_bytes())
+    return buf.getvalue()
+
 
 def render_skill_md(skill: dict) -> str:
     fm = yaml.safe_dump(skill, sort_keys=False, allow_unicode=True, width=100).strip()
@@ -387,7 +416,7 @@ def render_inventory(skills: list[dict], report: dict, errors: list[str]) -> str
     for s in skills:
         blocks = ", ".join(s["blocks"]) or "—"
         srcs = ", ".join(f"{x['location']}" for x in s["sources"])
-        dl = "zip" if s["download"] else "**none**"
+        dl = "zip (generated)" if s.get("archive_from") else ("zip" if s["download"] else "**none**")
         lines.append(f"| `{s['id']}` | {blocks} | {s['status']} | {srcs} | {dl} |")
 
     def section(title: str, items: list[str], empty: str) -> None:
@@ -399,8 +428,9 @@ def render_inventory(skills: list[dict], report: dict, errors: list[str]) -> str
     section("Skills without an owning block (block missing from catalog, or cross-cutting)",
             [f"`{s['id']}` — sources: " + ", ".join(x["path"] for x in s["sources"])
              for s in unowned], "None")
-    section("No download available (unpacked source only — pending per-skill archive)",
-            [f"`{s['id']}`" for s in skills if not s["download"]], "None")
+    section("Generated archives (zip-less upstream sources, zipped into skill-archives/)",
+            [f"`{s['id']}` ← {s['archive_from']}" for s in skills if s.get("archive_from")],
+            "None")
     section("Excluded by override", report["excluded"], "None")
     section("Aliases applied", report["aliases"], "None")
     section("Name-field corrections / mismatches", report["name_fixes"], "None")
@@ -409,8 +439,8 @@ def render_inventory(skills: list[dict], report: dict, errors: list[str]) -> str
     return "\n".join(lines)
 
 
-def generate() -> tuple[dict[str, str], str]:
-    """Return ({relative filename -> content}, inventory content)."""
+def generate() -> tuple[dict[str, str], dict[str, bytes], str]:
+    """Return ({skill filename -> content}, {archive filename -> bytes}, inventory)."""
     errors: list[str] = []
     overrides = {}
     if OVERRIDES_PATH.is_file():
@@ -419,8 +449,12 @@ def generate() -> tuple[dict[str, str], str]:
     sources = collect_sources(errors)
     skills, report = reconcile(sources, overrides, blocks)
     files = {f"{s['id']}.md": render_skill_md(s) for s in skills}
+    archives = {
+        f"{s['id']}.zip": build_archive(REPO_ROOT / s["archive_from"], s["id"])
+        for s in skills if s.get("archive_from")
+    }
     inventory = render_inventory(skills, report, errors)
-    return files, inventory
+    return files, archives, inventory
 
 
 def main() -> int:
@@ -429,7 +463,7 @@ def main() -> int:
                         help="Exit 1 if committed output differs from a fresh run (CI staleness gate)")
     args = parser.parse_args()
 
-    files, inventory = generate()
+    files, archives, inventory = generate()
 
     if args.check:
         stale = []
@@ -439,6 +473,12 @@ def main() -> int:
             if current.get(name) != content:
                 stale.append(f"skills/{name}")
         stale += [f"skills/{n} (orphaned)" for n in current if n not in files]
+        cur_zips = {p.name: p.read_bytes()
+                    for p in ARCHIVES_DIR.glob("*.zip")} if ARCHIVES_DIR.is_dir() else {}
+        for name, data in archives.items():
+            if cur_zips.get(name) != data:
+                stale.append(f"skill-archives/{name}")
+        stale += [f"skill-archives/{n} (orphaned)" for n in cur_zips if n not in archives]
         if INVENTORY_PATH.is_file():
             if INVENTORY_PATH.read_text(encoding="utf-8") != inventory:
                 stale.append("skills-inventory.md")
@@ -450,7 +490,7 @@ def main() -> int:
                 print(f"  - {s}")
             print("\nRun: python3 explore-BBs/bb-catalog/scripts/sync_skills.py")
             return 1
-        print(f"UP TO DATE — {len(files)} skills, inventory current.")
+        print(f"UP TO DATE — {len(files)} skills, {len(archives)} archives, inventory current.")
         return 0
 
     SKILLS_OUT_DIR.mkdir(exist_ok=True)
@@ -460,8 +500,15 @@ def main() -> int:
             print(f"removed {existing.name}")
     for name, content in sorted(files.items()):
         (SKILLS_OUT_DIR / name).write_text(content, encoding="utf-8")
+    ARCHIVES_DIR.mkdir(exist_ok=True)
+    for existing in ARCHIVES_DIR.glob("*.zip"):
+        if existing.name not in archives:
+            existing.unlink()
+            print(f"removed skill-archives/{existing.name}")
+    for name, data in sorted(archives.items()):
+        (ARCHIVES_DIR / name).write_bytes(data)
     INVENTORY_PATH.write_text(inventory, encoding="utf-8")
-    print(f"Wrote {len(files)} skills to {SKILLS_OUT_DIR} and {INVENTORY_PATH.name}.")
+    print(f"Wrote {len(files)} skills, {len(archives)} archives, and {INVENTORY_PATH.name}.")
     return 0
 
 
