@@ -1,86 +1,80 @@
-# Automated Resilience and Compliance Skills
+# Application Observability Skills
 
-This directory contains Bob skills for Automated Resilience and Compliance using IBM Concert.
+This directory contains Bob skills for Application Observability using IBM Instana.
 
 ## 🎯 Overview
 
-The `automated-resilience-concert.zip` skill empowers Bob to help you build, deploy, and manage IBM Concert resilience and compliance dashboards and integrations. This skill provides comprehensive capabilities for creating production-ready monitoring solutions that track vulnerabilities, applications, and certificate lifecycles across your infrastructure.
+The `application-observability.zip` skill empowers Bob to help you build, deploy, and manage IBM Instana observability dashboards and integrations. This skill provides comprehensive capabilities for creating production-ready monitoring solutions that track service health, incidents, and performance metrics across your application infrastructure.
 
 ## 📦 Available Skill
 
-### automated-resilience-concert
+### application-observability
 
-A comprehensive skill for working with IBM Concert, providing capabilities for:
+A comprehensive skill for working with IBM Instana, providing capabilities for:
 
-#### 1. 🎨 **Concert Dashboard Development**
-Build production-ready Dash applications with IBM Carbon Design System for monitoring and managing Concert data:
-- Multi-tab dashboards (CVE Insights, Application Insights, Certificate Insights)
-- Real-time data visualization with Plotly charts
-- Interactive filtering and drill-down capabilities
-- Responsive design with professional UI components
-- Comprehensive analytics and statistics
+#### 1. 🎨 **Instana Dashboard Development**
+Build production-ready Dash applications for monitoring application health through IBM Instana:
+- Real-time service health monitoring with composite health scores
+- Interactive visualizations with Plotly charts
+- Service metrics tables with error rate and latency data
+- Auto-refresh capabilities for live monitoring
+- Responsive design with Bootstrap UI components
 
-#### 2. 🔌 **IBM Concert API Integration**
-Create robust API clients for IBM Concert REST API:
-- Session-based authentication with credential management
-- Pagination support for large datasets
-- Response normalization and error handling
-- Support for all major endpoints (CVEs, applications, certificates, artifacts)
-- Server-side filtering and search capabilities
+#### 2. 🔌 **IBM Instana API Integration**
+Create robust API clients for IBM Instana REST API:
+- Token-based authentication with secure credential management
+- Application and service metrics retrieval
+- Event and incident data fetching
+- Support for major endpoints (applications, services, metrics, events, traces)
+- Rate limit handling and error management
 
-#### 3. 🔒 **Vulnerability Management**
-Implement comprehensive CVE tracking and analysis:
-- CVE severity categorization (Critical, High, Medium, Low, Informational)
-- Risk score analysis and distribution
-- Priority-based vulnerability tracking
-- Top 10 highest risk CVE identification
-- Total findings and impact assessment
-- Severity distribution visualization
+#### 3. 🏥 **Service Health Monitoring**
+Implement comprehensive service health tracking and analysis:
+- Composite health score calculation (error rate, latency, call volume)
+- Real-time service call count monitoring
+- Error rate tracking with trend analysis
+- Latency monitoring and response time analysis
+- Service availability and uptime tracking
 
-#### 4. 📱 **Application Security Monitoring**
-Build interfaces for application portfolio security:
-- Portfolio overview with status distribution
-- Multi-level drill-down (Portfolio → Application → Build Artifacts → CVEs)
-- Application-specific CVE analytics
-- Build artifact vulnerability tracking
-- Vulnerability comparison across builds
-- Application criticality assessment
+#### 4. 🚨 **Incident & Event Management**
+Build interfaces for AI-powered incident response:
+- Kubernetes event analysis with detailed insights
+- Agent monitoring event tracking and frequency analysis
+- Issue and incident lifecycle management
+- Change event monitoring and correlation
+- Automated root cause analysis
 
-#### 5. 🔐 **Certificate Lifecycle Management**
-Track and manage certificate lifecycles:
-- Valid, expired, and expiring certificate tracking
-- Expiry timeline visualization
-- Algorithm and key size distribution analysis
-- Expiry alerts (Critical: ≤7 days, Warning: 8-30 days, Info: 31-90 days)
-- Certificate status monitoring
-- Proactive renewal planning
+#### 5. 📈 **Performance Analytics**
+Track and analyze application performance metrics:
+- Latency distribution and percentile analysis
+- Call volume trends and traffic patterns
+- Error rate analysis and anomaly detection
+- Service dependency mapping and visualization
+- Performance regression detection across deployments
 
-#### 6. 📊 **Data Processing & Analytics**
-Implement sophisticated data processing:
-- Risk score calculation and severity mapping
-- UNIX timestamp conversion and formatting
-- JSON metadata parsing
-- Statistical analysis and aggregation
-- Interactive chart generation
-- Export-ready data formatting
+#### 6. 📊 **Data Processing & Visualization**
+Implement sophisticated data processing for observability data:
+- Health score calculation with weighted algorithms
+- Time-series data processing and aggregation
+- Natural language time range parsing ("last 24 hours")
+- Interactive chart generation with Plotly
+- Export-ready metrics formatting
 
-#### 7. 🏗️ **Production-Ready Deployment**
-Deploy Concert integrations with enterprise standards:
+#### 7. 🤖 **MCP Server Integration**
+Deploy and configure the Instana MCP server for AI-powered observability:
+- Model Context Protocol server setup and configuration
+- Docker containerized deployment
+- IBM Cloud Code Engine deployment
+- AI assistant integration for natural language observability queries
+- Automated event summarization and problem identification
+
+#### 8. 🏗️ **Production-Ready Deployment**
+Deploy Instana integrations with enterprise standards:
 - Python virtual environment setup
 - Automated setup scripts (Unix/Windows)
-- Environment variable management
+- Environment variable management for Instana credentials
 - Comprehensive logging and error handling
-- Configuration validation
-- Health checks and monitoring
-
-#### 8. 🔒 **Security & Compliance**
-Implement secure Concert integrations:
-- Secure credential storage and session management
-- API authentication with C_API_KEY format
-- SSL/TLS certificate handling
-- No persistent data storage (memory-only)
-- Secure API communication patterns
-- Compliance reporting capabilities
+- Configuration validation and health checks
 
 ## 🚀 Installation and Setup
 
@@ -98,7 +92,7 @@ cd /path/to/your/bob/workspace/.bob/skills
 unzip /path/to/application-observability.zip
 ```
 
-After extraction, you should see an `aapplication-observability` folder in your `.bob/skills` directory.
+After extraction, you should see an `application-observability` folder in your `.bob/skills` directory.
 
 ### Step 3: Verify Installation
 Check that the skill is properly installed:
@@ -120,50 +114,50 @@ To use the skill:
 Once activated, you can ask Bob to help with tasks like:
 
 ### Dashboard Development
-- *"Create a Concert dashboard with CVE insights and application monitoring"*
-- *"Add a certificate lifecycle tracking tab to the dashboard"*
-- *"Implement drill-down from applications to build artifacts"*
-- *"Create interactive charts for vulnerability severity distribution"*
+- *"Create an Instana observability dashboard with service health monitoring"*
+- *"Add real-time error rate and latency charts to the dashboard"*
+- *"Implement a composite health score visualization for my services"*
+- *"Create interactive charts for service call volume trends"*
 
 ### API Integration
-- *"Create a Concert API client with authentication"*
-- *"Add pagination support for fetching large datasets"*
-- *"Implement error handling for Concert API requests"*
-- *"Add server-side filtering for application search"*
+- *"Create an IBM Instana API client with token authentication"*
+- *"Add pagination support for fetching large event datasets from Instana"*
+- *"Implement error handling for Instana REST API requests"*
+- *"Add rate limiting and retry logic for Instana API calls"*
 
-### Vulnerability Management
-- *"Build a CVE tracking interface with severity categorization"*
-- *"Create charts for risk score distribution"*
-- *"Implement filtering for critical and high severity CVEs"*
-- *"Add top 10 highest risk CVE visualization"*
+### Service Health Monitoring
+- *"Build a service health monitoring dashboard using Instana metrics"*
+- *"Create a composite health score algorithm for my microservices"*
+- *"Implement error rate tracking with trend visualization"*
+- *"Add latency monitoring with percentile distribution charts"*
 
-### Application Monitoring
-- *"Create an application portfolio overview dashboard"*
-- *"Implement multi-level drill-down for application CVEs"*
-- *"Add build artifact vulnerability tracking"*
-- *"Create comparison views for vulnerabilities across builds"*
+### Incident Management
+- *"Create an incident response workflow using the Instana MCP server"*
+- *"Build a Kubernetes event monitoring interface with Instana"*
+- *"Implement automated root cause analysis for application issues"*
+- *"Create change event correlation for deployment tracking"*
 
-### Certificate Management
-- *"Build a certificate lifecycle monitoring interface"*
-- *"Create expiry alerts for certificates expiring soon"*
-- *"Add algorithm and key size distribution charts"*
-- *"Implement certificate renewal planning dashboard"*
+### MCP Server Setup
+- *"Set up the Instana MCP server for IBM Bob integration"*
+- *"Configure the MCP server for Docker deployment"*
+- *"Deploy the Instana MCP server to IBM Cloud Code Engine"*
+- *"Configure natural language time ranges for Instana event queries"*
 
 ### Deployment
-- *"Create automated setup scripts for the Concert dashboard"*
-- *"Configure environment variables for Concert credentials"*
-- *"Add comprehensive logging and error handling"*
-- *"Implement configuration validation"*
+- *"Create automated setup scripts for the Instana observability dashboard"*
+- *"Configure environment variables for Instana API credentials"*
+- *"Add comprehensive logging and error handling to the Instana integration"*
+- *"Implement configuration validation for Instana connectivity"*
 
 ## 🎓 What Bob Can Help You Build
 
 With this skill, Bob can assist you in creating:
 
-1. **Complete Dashboards**: Full-featured Concert monitoring dashboards with multiple tabs and visualizations
-2. **API Clients**: Robust Python clients for IBM Concert REST API with comprehensive error handling
-3. **Custom Integrations**: Tailored solutions for specific Concert use cases
-4. **Monitoring Tools**: Specialized tools for CVE tracking, application security, and certificate management
-5. **Analytics Solutions**: Data processing and visualization for compliance reporting
+1. **Complete Dashboards**: Full-featured Instana monitoring dashboards with real-time service health visualizations
+2. **API Clients**: Robust Python clients for IBM Instana REST API with comprehensive error handling
+3. **MCP Servers**: Model Context Protocol servers for AI-powered observability automation
+4. **Custom Integrations**: Tailored solutions for specific Instana observability use cases
+5. **Monitoring Tools**: Specialized tools for service health, incident tracking, and performance analysis
 6. **Deployment Configurations**: Automated setup scripts and production deployment configurations
 
 ## 📋 Prerequisites
@@ -171,82 +165,68 @@ With this skill, Bob can assist you in creating:
 To work with this skill effectively, you should have:
 
 - Python 3.8 or higher installed
-- Access to an IBM Concert instance
-- Valid IBM Concert credentials with API access:
-  - Base URL
-  - API Key (C_API_KEY format)
-  - Instance ID
-- Network connectivity to your IBM Concert instance
+- Access to an IBM Instana instance
+- Valid IBM Instana API token with read permissions:
+  - Instana Base URL
+  - Instana API Token
+  - (Optional) Application name filter
+- Network connectivity to your IBM Instana instance
 - Basic understanding of REST APIs (Bob will guide you through the details)
 
 ## 🔧 Key Technologies
 
 This skill helps you work with:
 
-- **IBM Concert REST API**: Vulnerability management and compliance platform
-- **Dash by Plotly**: Interactive web applications
-- **Plotly**: Data visualization and charting
-- **IBM Carbon Design System**: Professional UI components
+- **IBM Instana REST API**: Application performance monitoring and observability platform
+- **Dash by Plotly**: Interactive web applications for monitoring dashboards
+- **Plotly**: Data visualization and charting for metrics
+- **Dash Bootstrap Components**: Professional UI components
 - **Python**: Backend development and API integration
-- **pandas**: Data processing and analysis
-- **requests**: HTTP client for API integration
+- **pandas**: Data processing and metrics analysis
+- **requests**: HTTP client for Instana API integration
 - **python-dotenv**: Environment variable management
+- **Docker**: Container-based MCP server deployment
 
-## 🔍 IBM Concert API Endpoints
+## 🔍 IBM Instana API Endpoints
 
-The skill helps you work with these IBM Concert REST API endpoints:
-
-### CVE Endpoints
-- `GET /core/api/v1/vulnerability/cves` - List all CVEs
+The skill helps you work with these IBM Instana REST API endpoints:
 
 ### Application Endpoints
-- `GET /core/api/v1/applications` - List applications
-- `GET /core/api/v1/applications/{name}` - Application details
-- `GET /core/api/v1/applications/{name}/vulnerability_details` - Application CVEs
-- `GET /core/api/v1/applications/{name}/build_artifacts` - Build artifacts
-- `GET /core/api/v1/applications/{name}/build_artifacts/{artifact_id}/cves` - Artifact CVEs
+- `GET /api/application-monitoring/applications` - List monitored applications
+- `GET /api/application-monitoring/metrics/services` - Service metrics data
+- `GET /api/application-monitoring/calls/groups` - Call group analysis
 
-### Certificate Endpoints
-- `GET /core/api/v1/certificates` - List certificates
-- `GET /core/api/v1/certificates/{id}` - Certificate details
-- `GET /core/api/v1/certificate_issuers` - List certificate issuers
+### Event Endpoints
+- `GET /api/events` - List all events
+- `GET /api/events/{eventId}` - Get specific event by ID
+- `POST /api/events/batch` - Batch event retrieval
 
-## 📊 Data Processing Features
+### Incident Endpoints
+- `GET /api/incidents` - List all incidents
+- `GET /api/issues` - List all issues
 
-### CVE Severity Calculation
+### Infrastructure Endpoints
+- `GET /api/infrastructure-monitoring/snapshots` - Infrastructure snapshots
+- `GET /api/infrastructure-monitoring/metrics` - Infrastructure metrics
 
-The skill implements severity mapping based on risk scores:
+## 📊 Health Score Algorithm
 
-| Risk Score | Severity |
-|------------|----------|
-| 9.0 - 10.0 | CRITICAL |
-| 7.0 - 8.9  | HIGH |
-| 4.0 - 6.9  | MEDIUM |
-| 0.1 - 3.9  | LOW |
-| 0          | INFORMATIONAL |
+The skill implements a composite health scoring algorithm:
 
-### Field Mappings
+| Metric | Weight | Scoring |
+|--------|--------|---------|
+| Error Rate | 40% | Lower is better |
+| Latency | 30% | Lower is better |
+| Call Volume | 30% | Higher indicates activity |
 
-**CVE Fields:**
-- CVE ID: `cve` field
-- Risk Score: `highest_finding_risk_score`
-- Description: `wx_details` or `wx_recommendation`
-- Priority: `highest_finding_priority`
-- Findings: `total_findings`
+### Health Score Interpretation
 
-**Application Fields:**
-- Name: `name`
-- Status: `resilience_status`
-- Last Updated: `last_updated_on` (UNIX timestamp)
-- Owner: `last_updated_by`
-- Vulnerabilities: `criticality`
-
-**Certificate Fields:**
-- ID: `id`
-- Subject: `subject`
-- Dates: `validity_start_date`, `validity_end_date` (UNIX timestamps)
-- Status: `status`
-- Metadata: `metadata` (JSON string)
+| Score Range | Status |
+|-------------|--------|
+| 80 - 100 | 🟢 Healthy |
+| 60 - 79 | 🟡 Warning |
+| 40 - 59 | 🟠 Degraded |
+| 0 - 39 | 🔴 Critical |
 
 ## 🐛 Troubleshooting
 
@@ -257,59 +237,60 @@ The skill implements severity mapping based on risk scores:
 4. Ensure you've enabled the Skills button in your current mode
 5. Review Bob logs for any error messages
 
-### Skill is active but Bob doesn't understand Concert requests
-1. Be specific in your requests (mention "Concert" or "IBM Concert" explicitly)
-2. Reference specific features (e.g., "CVE tracking", "certificate lifecycle")
+### Skill is active but Bob doesn't understand Instana requests
+1. Be specific in your requests (mention "Instana" or "IBM Instana" explicitly)
+2. Reference specific features (e.g., "service health monitoring", "incident tracking")
 3. Provide context about what you're trying to build
 4. Ask Bob to explain the skill's capabilities if unsure
 
-### Need help with Concert API specifics
+### Need help with Instana API specifics
 1. Ask Bob about specific API endpoints or data structures
 2. Request examples of API integration patterns
-3. The skill includes knowledge of common API issues and solutions
+3. The skill includes knowledge of common Instana API issues and solutions
 
 ### Authentication Issues
 - **Problem**: "Authentication failed"
-  - **Solution**: Verify `C_API_KEY` is correct (without the "C_API_KEY" prefix in configuration)
+  - **Solution**: Verify the `INSTANA_API_TOKEN` is correct and has read permissions
 - **Problem**: "Access forbidden"
-  - **Solution**: Verify `INSTANCE_ID` matches your IBM Concert instance
+  - **Solution**: Confirm the token has access to the required Instana endpoints
 
 ### API Issues
 - **Problem**: "No data returned from API"
-  - **Solution**: Check API endpoint availability and permissions
+  - **Solution**: Check API endpoint availability and verify `INSTANA_BASE_URL` is correct
 - **Problem**: "Request timeout"
-  - **Solution**: Increase API timeout or check network connectivity
+  - **Solution**: Increase API timeout or check network connectivity to Instana
 
 ## 📚 Related Resources
 
-- [IBM Concert Documentation](https://www.ibm.com/docs/en/concert)
+- [IBM Instana Documentation](https://www.ibm.com/docs/en/instana-observability)
+- [IBM Instana REST API Reference](https://instana.github.io/openapi/)
 - [Parent Directory README](../README.md) - Complete building block documentation
-- [Concert Dashboard Implementation](../assets/automate-resilience/README.md) - Full dashboard example
-- [Quick Start Guide](../assets/automate-resilience/QUICKSTART.md) - Getting started quickly
+- [Bob Modes README](../bob-modes/README.md) - Application Observability Bob mode
 - [Dash Documentation](https://dash.plotly.com/)
-- [IBM Carbon Design System](https://carbondesignsystem.com/)
+- [Plotly Documentation](https://plotly.com/python/)
 
 ## 🎯 Skill Capabilities Summary
 
 | Capability | Description |
 |------------|-------------|
-| **Dashboard Creation** | Build multi-tab monitoring dashboards with professional UI |
-| **API Integration** | Implement robust Concert REST API clients with pagination |
-| **CVE Management** | Track and analyze vulnerabilities with severity categorization |
-| **Application Monitoring** | Monitor application security with multi-level drill-down |
-| **Certificate Lifecycle** | Track certificate expiry and manage renewals proactively |
-| **Data Visualization** | Create interactive charts for CVEs, applications, and certificates |
-| **Risk Analysis** | Calculate risk scores and identify highest priority issues |
-| **Compliance Reporting** | Generate compliance reports and analytics |
+| **Dashboard Creation** | Build real-time monitoring dashboards with service health visualizations |
+| **API Integration** | Implement robust Instana REST API clients with authentication |
+| **Service Health Monitoring** | Track composite health scores across microservices |
+| **Incident Management** | Monitor and analyze incidents, issues, and change events |
+| **Performance Analytics** | Analyze latency, error rates, and call volume trends |
+| **MCP Server Setup** | Deploy Instana MCP server for AI-powered observability |
+| **Event Analysis** | Process and summarize Kubernetes and agent monitoring events |
+| **Root Cause Analysis** | Automated problem detection and fix suggestions |
 | **Production Deployment** | Deploy with automated setup scripts and configuration |
-| **Security** | Implement secure authentication and credential management |
+| **CI/CD Integration** | Pre/post-deployment health checks and performance regression detection |
 
 ## 📊 Performance
 
 Typical response times:
 
-- **Dashboard Generation**: ~10-20 seconds (complete multi-tab dashboard)
+- **Dashboard Generation**: ~10-20 seconds (complete monitoring dashboard)
 - **API Client Creation**: ~5-10 seconds (with authentication and error handling)
+- **MCP Server Setup**: ~5-10 seconds (Docker or Code Engine configuration)
 - **Data Processing**: ~3-8 seconds (depends on data volume)
 - **Visualization**: ~5-15 seconds (interactive charts and tables)
 - **Setup Scripts**: ~2-5 seconds (automated configuration)
@@ -319,19 +300,18 @@ Typical response times:
 For issues or questions about this skill:
 1. Check the troubleshooting section above
 2. Review the [parent directory README](../README.md) for implementation examples
-3. Review the [Concert Dashboard README](../assets/automate-resilience/README.md) for detailed usage
-4. Ask Bob directly - the skill includes comprehensive knowledge
-5. Refer to IBM Concert documentation for API-specific questions
+3. Ask Bob directly — the skill includes comprehensive Instana knowledge
+4. Refer to [IBM Instana documentation](https://www.ibm.com/docs/en/instana-observability) for API-specific questions
 
 ## 📝 Version Information
 
 - **Skill Version**: 1.0.0
-- **Compatible with**: IBM Concert (all versions with REST API support)
-- **Last Updated**: 2026-06-22
+- **Compatible with**: IBM Instana (all versions with REST API support)
+- **Last Updated**: 2025-06-22
 - **Status**: Production Ready ✅
 
 ---
 
-**Note**: This skill is designed to work with IBM Concert. Ensure you have proper access and credentials before starting development.
+**Note**: This skill is designed to work with IBM Instana. Ensure you have proper access and API token credentials before starting development.
 
-Made with ❤️ for IBM Concert automation
+Made with ❤️ for IBM Instana observability automation
