@@ -85,7 +85,7 @@ Implement secure Concert integrations:
 ## 🚀 Installation and Setup
 
 ### Step 1: Download the Skill
-Download the `automated-resilience-concert.zip` file from this directory.
+Download the `application-observability.zip` file from this directory.
 
 ### Step 2: Extract the Skill to Bob Workspace
 Extract the contents to your Bob workspace skills directory:
@@ -95,16 +95,16 @@ Extract the contents to your Bob workspace skills directory:
 cd /path/to/your/bob/workspace/.bob/skills
 
 # Extract the skill
-unzip /path/to/automated-resilience-concert.zip
+unzip /path/to/application-observability.zip
 ```
 
-After extraction, you should see an `automated-resilience-concert` folder in your `.bob/skills` directory.
+After extraction, you should see an `aapplication-observability` folder in your `.bob/skills` directory.
 
 ### Step 3: Verify Installation
 Check that the skill is properly installed:
 
 ```bash
-ls -la .bob/skills/automated-resilience-concert
+ls -la .bob/skills/application-observability
 ```
 
 You should see the skill files and configuration.
@@ -113,7 +113,7 @@ You should see the skill files and configuration.
 To use the skill:
 1. Open Bob and select any mode you want to work in
 2. Enable the **Skills** button in that mode
-3. The `automated-resilience-concert` skill will be available for use within that mode
+3. The `application-observability` skill will be available for use within that mode
 
 ## 💡 Usage Examples
 
