@@ -13,6 +13,9 @@ sources:
 - location: block
   path: data/retrieval/RAG/bob-skills/rag-pipeline-builder.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/rag-pipeline-builder
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/retrieval/RAG/bob-skills/rag-pipeline-builder.zip
 ---
@@ -24,3 +27,4 @@ Expert guidance for designing end-to-end IBM RAG pipelines — covers chunking s
 
 Sources in this repo:
 - `data/retrieval/RAG/bob-skills/rag-pipeline-builder.zip` (block, layout: bob)
+- `ibm-bob/skills/rag-pipeline-builder` (central, layout: dir)

@@ -11,6 +11,9 @@ sources:
 - location: block
   path: data/intelligence/text2sql/bob-skills/text2sql-query-optimizer.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/text2sql-query-optimizer
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/text2sql/bob-skills/text2sql-query-optimizer.zip
 ---
@@ -22,3 +25,4 @@ Expert guidance for evaluating and improving IBM watsonx.data Intelligence Text2
 
 Sources in this repo:
 - `data/intelligence/text2sql/bob-skills/text2sql-query-optimizer.zip` (block, layout: bob)
+- `ibm-bob/skills/text2sql-query-optimizer` (central, layout: dir)

@@ -12,6 +12,9 @@ sources:
 - location: block
   path: data/retrieval/RAG/bob-skills/rag-mcp-server-builder.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/rag-mcp-server-builder
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/retrieval/RAG/bob-skills/rag-mcp-server-builder.zip
 ---
@@ -23,3 +26,4 @@ Expert guidance for building IBM RAG MCP servers (SSE and stdio transport) using
 
 Sources in this repo:
 - `data/retrieval/RAG/bob-skills/rag-mcp-server-builder.zip` (block, layout: bob)
+- `ibm-bob/skills/rag-mcp-server-builder` (central, layout: dir)

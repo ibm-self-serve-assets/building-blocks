@@ -12,6 +12,9 @@ sources:
 - location: block
   path: data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/data-ingestion-unstructured
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip
 ---
@@ -23,3 +26,4 @@ Expert guidance for IBM UDI (Unstructured Data Ingestion) and IBM Docling-based 
 
 Sources in this repo:
 - `data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip` (block, layout: bob)
+- `ibm-bob/skills/data-ingestion-unstructured` (central, layout: dir)

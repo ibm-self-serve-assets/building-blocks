@@ -12,6 +12,9 @@ sources:
 - location: block
   path: data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/data-ingestion-structured
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip
 ---
@@ -23,3 +26,4 @@ Expert guidance for building IBM watsonx.data structured data ingestion pipeline
 
 Sources in this repo:
 - `data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip` (block, layout: bob)
+- `ibm-bob/skills/data-ingestion-structured` (central, layout: dir)

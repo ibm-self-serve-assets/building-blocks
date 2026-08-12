@@ -12,6 +12,9 @@ sources:
   path: data/integration/data-streaming/bob-skills/confluent-iac-terraform.zip
   layout: bob
 - location: central
+  path: ibm-bob/skills/confluent-iac-terraform
+  layout: dir
+- location: central
   path: ibm-bob/skills/data-streaming-confluent-terraform
   layout: dir
 subskills: []
@@ -25,4 +28,5 @@ Expert guidance for building real-time streaming systems on Confluent Cloud usin
 
 Sources in this repo:
 - `data/integration/data-streaming/bob-skills/confluent-iac-terraform.zip` (block, layout: bob)
+- `ibm-bob/skills/confluent-iac-terraform` (central, layout: dir)
 - `ibm-bob/skills/data-streaming-confluent-terraform` (central, layout: dir)

@@ -13,6 +13,9 @@ sources:
 - location: block
   path: data/intelligence/data-quality/bob-skills/data-quality-rules.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/data-quality-rules
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/data-quality/bob-skills/data-quality-rules.zip
 ---
@@ -24,3 +27,4 @@ Expert guidance for implementing IBM watsonx.data Intelligence data quality rule
 
 Sources in this repo:
 - `data/intelligence/data-quality/bob-skills/data-quality-rules.zip` (block, layout: bob)
+- `ibm-bob/skills/data-quality-rules` (central, layout: dir)

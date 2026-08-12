@@ -11,6 +11,9 @@ sources:
 - location: block
   path: data/intelligence/text2sql/bob-skills/text2sql-metadata-enrichment.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/text2sql-metadata-enrichment
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/text2sql/bob-skills/text2sql-metadata-enrichment.zip
 ---
@@ -22,3 +25,4 @@ Expert guidance for enriching IBM watsonx.data Intelligence metadata to maximise
 
 Sources in this repo:
 - `data/intelligence/text2sql/bob-skills/text2sql-metadata-enrichment.zip` (block, layout: bob)
+- `ibm-bob/skills/text2sql-metadata-enrichment` (central, layout: dir)

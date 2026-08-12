@@ -12,6 +12,9 @@ sources:
 - location: block
   path: data/integration/data-pipeline-ai-generated/bob-skills/udi-opensearch.zip
   layout: bob
+- location: central
+  path: ibm-bob/skills/udi-opensearch
+  layout: dir
 subskills: []
 download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-pipeline-ai-generated/bob-skills/udi-opensearch.zip
 ---
@@ -23,3 +26,4 @@ Use when the user wants to create a UDI flow, ingest documents into OpenSearch, 
 
 Sources in this repo:
 - `data/integration/data-pipeline-ai-generated/bob-skills/udi-opensearch.zip` (block, layout: bob)
+- `ibm-bob/skills/udi-opensearch` (central, layout: dir)
