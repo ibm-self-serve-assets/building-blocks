@@ -1,90 +1,42 @@
-# Automated Hardcoded Secret Detection and Vault Migration
+# Secrets Management — Bob Custom Modes
 
-A comprehensive solution for detecting hardcoded secrets in source code, encrypting them with HashiCorp Vault Transit engine, storing them securely in Vault KV, and automatically refactoring code to use Vault API calls.
+This directory contains custom Bob modes for the Secrets Management building block.
 
-## 🎯 Features
+---
 
-- **Automated Secret Detection**: Scans source code for 40+ types of hardcoded secrets
-- **Transit Encryption**: Encrypts sensitive secrets using Vault Transit engine (AES256-GCM96)
-- **Secure Storage**: Stores encrypted secrets in Vault KV v2 with metadata
-- **Code Refactoring**: Automatically replaces hardcoded secrets with Vault API calls
-- **Multi-Language Support**: Generates code examples in Python, Node.js, Go, CLI, and cURL
-- **Production-Ready**: Complete Ansible deployment automation for Vault
-- **Interactive UI**: Python Dash web application with professional IBM Carbon Design
+## 📦 Available Modes
 
-## 📋 Architecture
+### Vault Secret Migrator
 
-```
-├── ansible/                    # Vault deployment automation
-│   ├── inventory/             # Server inventory
-│   ├── roles/vault/           # Vault installation role
-│   └── site.yml               # Main playbook
-├── secret_scanner_app/        # Python Dash application
-│   ├── app.py                 # Main application
-│   ├── vault_client.py        # Vault API wrapper
-│   ├── secret_patterns.py     # Detection patterns
-│   ├── code_refactor.py       # Code refactoring engine
-│   └── assets/                # Static files
-└── docs/                      # Documentation
-```
+A custom Bob mode that equips Bob with the knowledge and workflow to:
 
-## 🚀 Quick Start
+- Scan a codebase for hardcoded secrets (API keys, passwords, tokens, cloud credentials, private keys).
+- Migrate detected secrets to HashiCorp Vault via the Vault MCP server.
+- Replace hardcoded values in source code with Vault SDK references.
+- Generate a `SECURITY_REPORT.md` and `VAULT_MIGRATION_GUIDE.md` on completion.
 
-### 1. Deploy Vault with Ansible
+| Property | Value |
+|----------|-------|
+| Mode zip | `base-modes/vault-secret-migrator.zip` |
+| Requires | HashiCorp Vault + Vault MCP server configured in Bob |
 
-```bash
-cd ansible
-# Configure inventory
-vim inventory/hosts.ini
-# Run deployment
-ansible-playbook site.yml
-```
+---
 
-### 2. Start Secret Scanner Application
+## 🚀 Installation
 
-```bash
-cd secret_scanner_app
-# Configure environment
-cp .env.example .env
-vim .env  # Set VAULT_ADDR and VAULT_TOKEN
-# Start application
-./start.sh
-```
+See the step-by-step installation guide in [`base-modes/README.md`](base-modes/README.md) for instructions on importing this mode into a new or existing Bob project.
 
-### 3. Access Application
-
-Open http://localhost:8050 in your browser.
+---
 
 ## 🔧 Requirements
 
-- Python 3.9+
-- Ansible 2.9+
+- Bob UI with custom modes support
 - HashiCorp Vault 1.12+
-- Linux/macOS (Windows supported via WSL)
+- Vault MCP server configured and connected to Bob
 
-## 📖 Documentation
+---
 
-- [Installation Guide](docs/INSTALLATION.md)
-- [User Guide](docs/USER_GUIDE.md)
-- [API Reference](docs/API_REFERENCE.md)
-- [Security Best Practices](docs/SECURITY.md)
+## 🔗 Related
 
-## 🔐 Security Features
-
-- Transit encryption for sensitive secrets
-- No secrets in logs or error messages
-- Secure token management
-- Audit logging support
-- TLS support for production
-
-## 📝 License
-
-MIT License - See LICENSE file for details
-
-## 🤝 Contributing
-
-Contributions welcome! Please read CONTRIBUTING.md first.
-
-## 📧 Support
-
-For issues and questions, please open a GitHub issue.
+- [Bob Skills for Secrets Management](../bob-skills/README.md) — skills that complement these modes
+- [Secrets Management Overview](../README.md) — building block overview and architecture
