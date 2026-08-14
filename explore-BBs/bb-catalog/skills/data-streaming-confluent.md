@@ -7,7 +7,7 @@ description: Expert Confluent Cloud architect specializing in creating complete,
   streaming architectures.
 blocks:
 - data-streaming
-status: active
+status: divergent
 sources:
 - location: block
   path: data/integration/data-streaming/bob-skills/data-streaming-confluent.zip
