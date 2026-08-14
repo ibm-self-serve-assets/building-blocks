@@ -5,7 +5,7 @@ description: Expert Confluent Cloud architect specializing in creating complete,
 
 # Data Streaming Confluent Skill
 
-## ⚠️ Critical Configuration Requirements
+## Critical Configuration Requirements
 
 **MANDATORY: These configurations MUST be included in all generated solutions to prevent deployment failures.**
 
