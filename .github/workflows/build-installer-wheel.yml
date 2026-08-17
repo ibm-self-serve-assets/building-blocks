@@ -1,0 +1,46 @@
+name: Build installer wheel
+
+# Rebuilds the local-installer wheel whenever its source changes and commits
+# it to dist/. The Explorer mode's mcp.json points partners at a specific
+# wheel by commit-SHA raw URL, so main-branch rebuilds never change what
+# already-shipped modes execute.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'explore-BBs/local-installer/src/**'
+      - 'explore-BBs/local-installer/pyproject.toml'
+      - '.github/workflows/build-installer-wheel.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: build-installer-wheel
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+      - name: Build wheel
+        working-directory: explore-BBs/local-installer
+        run: |
+          rm -rf dist
+          uv build
+          rm -f dist/.gitignore   # uv drops a '*' .gitignore that would hide the wheel
+      - name: Commit wheel if changed
+        run: |
+          git add -f explore-BBs/local-installer/dist
+          if git diff --cached --quiet; then
+            echo "wheel unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: rebuild installer wheel [skip ci]"
+          git push

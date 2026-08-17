@@ -1,0 +1,22 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "building-blocks-installer"
+version = "0.1.1"
+description = "Local companion MCP server for the IBM Building Blocks Explorer Bob mode — installs Bob skills and modes into the current workspace (scoped: IBM repo downloads only, workspace-confined writes, no shell)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # Pinned exactly: this wheel runs on partner machines where we cannot
+    # observe or hotfix — no floating dependency versions.
+    "mcp==1.15.0",
+    "pyyaml==6.0.2",
+]
+
+[project.scripts]
+building-blocks-installer = "building_blocks_installer.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/building_blocks_installer"]
