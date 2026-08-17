@@ -150,18 +150,36 @@ def _scan_zip(zip_path: Path) -> SkillSource:
         )
         if not skill_mds:
             raise ValueError(f"{rel}: no SKILL.md anywhere in zip")
-        first = skill_mds[0]
 
-        # Layout + inner skill dir from the shallowest SKILL.md's path
-        parts = first.split("/")
-        if parts[0] == ".bob" and len(parts) >= 4 and parts[1] == "skills":
-            layout, inner, root = "bob", parts[2], f".bob/skills/{parts[2]}/"
-        elif parts[0] == "skills" and len(parts) >= 3:
-            layout, inner, root = "skills", parts[1], f"skills/{parts[1]}/"
-        elif len(parts) >= 2:
-            layout, inner, root = "bare", parts[0], f"{parts[0]}/"
+        # Layout-agnostic root: the common ancestor directory of every
+        # SKILL.md in the zip. Handles all observed layouts — .bob/skills/
+        # -prefixed, skills/-wrapped, bare, wrapper-around-skills/ (e.g.
+        # vault-secret-migrator/skills/<name>/), and composite zips whose
+        # sub-skills share a parent.
+        import posixpath
+        dirs = [posixpath.dirname(n) for n in skill_mds]
+        root_dir = dirs[0]
+        for d in dirs[1:]:
+            root_dir = posixpath.commonpath([root_dir, d])
+        # If the common ancestor IS a structural wrapper folder (a zip
+        # carrying multiple skills under skills/ or .bob/skills/), step up
+        # to the wrapper that names the skill (composite zips, e.g.
+        # automated-resource-mgmt-turbonomic/skills/{backend,frontend,...}).
+        while root_dir and posixpath.basename(root_dir) in ("skills", ".bob"):
+            root_dir = posixpath.dirname(root_dir)
+        if not root_dir:
+            raise ValueError(f"{rel}: multiple top-level skills in one zip — unsupported")
+        inner = posixpath.basename(root_dir)
+        root = root_dir + "/"
+        rparts = root_dir.split("/")
+        if rparts[:2] == [".bob", "skills"]:
+            layout = "bob"
+        elif rparts[0] == "skills":
+            layout = "skills"
+        elif "skills" in rparts:
+            layout = "nested"
         else:
-            raise ValueError(f"{rel}: unrecognized zip layout (SKILL.md at {first!r})")
+            layout = "bare"
 
         # Metadata comes from the skill-root SKILL.md if there is one; some
         # composite zips ship only sub-skill SKILL.mds (no root), in which
@@ -241,9 +259,13 @@ def _owning_block(source_path: str, blocks: dict[str, str]) -> str | None:
 
 def collect_sources(errors: list[str]) -> list[SkillSource]:
     sources: list[SkillSource] = []
-    for zp in sorted(REPO_ROOT.glob("*/bob-skills/**/*.zip")) + sorted(
-        REPO_ROOT.glob("*/*/bob-skills/**/*.zip")
-    ) + sorted(REPO_ROOT.glob("*/*/*/bob-skills/**/*.zip")):
+    # Any-depth scan: bob-skills/ folders nest up to 4+ levels deep
+    # (e.g. data/retrieval/vector-search/opensearch/bob-skills/). Fixed
+    # depth patterns silently missed the deepest ones.
+    for zp in sorted(
+        p for p in REPO_ROOT.glob("**/bob-skills/**/*.zip")
+        if ".git" not in p.parts and "explore-BBs" not in p.parts
+    ):
         try:
             sources.append(_scan_zip(zp))
         except Exception as exc:

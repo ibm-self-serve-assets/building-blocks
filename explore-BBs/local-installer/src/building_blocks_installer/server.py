@@ -41,7 +41,7 @@ ALLOWED_URL_PREFIX = (
 MERMAID_INK = "https://mermaid.ink/img/"
 MAX_DOWNLOAD_BYTES = 100 * 1024 * 1024  # 100 MB safety cap
 HTTP_TIMEOUT = 60
-USER_AGENT = "building-blocks-installer/0.1.1"
+USER_AGENT = "building-blocks-installer/0.1.2"
 
 _JUNK_PARTS = {"__MACOSX", ".DS_Store"}
 
@@ -167,15 +167,22 @@ def install_skill(skill_id: str, download_url: str, workspace_root: str = "") ->
         )
         if not skill_mds:
             return {"status": "error", "error": "zip contains no SKILL.md — not a skill package"}
-        parts = skill_mds[0].split("/")
 
-        # Layout detection mirrors the catalog generator (sync_skills.py).
-        if parts[0] == ".bob" and len(parts) >= 4 and parts[1] == "skills":
-            inner, strip = parts[2], f".bob/skills/{parts[2]}/"
-        elif parts[0] == "skills" and len(parts) >= 3:
-            inner, strip = parts[1], f"skills/{parts[1]}/"
-        else:
-            inner, strip = parts[0], f"{parts[0]}/"
+        # Layout-agnostic root (mirrors the catalog generator): the common
+        # ancestor of every SKILL.md, stepped up out of structural wrapper
+        # folders. Handles all observed layouts including nested wrappers
+        # and composite multi-sub-skill zips.
+        import posixpath
+        dirs = [posixpath.dirname(n) for n in skill_mds]
+        root_dir = dirs[0]
+        for d in dirs[1:]:
+            root_dir = posixpath.commonpath([root_dir, d])
+        while root_dir and posixpath.basename(root_dir) in ("skills", ".bob"):
+            root_dir = posixpath.dirname(root_dir)
+        if not root_dir:
+            return {"status": "error", "error": "zip carries multiple top-level skills — unsupported"}
+        inner = posixpath.basename(root_dir)
+        strip = root_dir + "/"
 
         dest = _workspace_path(ws, ".bob", "skills", skill_id)
         if dest.exists():
@@ -183,11 +190,13 @@ def install_skill(skill_id: str, download_url: str, workspace_root: str = "") ->
         dest.mkdir(parents=True)
         count = _extract_tree(zf, names, strip, dest)
 
-        if not (dest / "SKILL.md").is_file():
+        # Root SKILL.md for normal skills; composite skills carry their
+        # SKILL.mds one level down — either satisfies verification.
+        if not (dest / "SKILL.md").is_file() and not any(dest.rglob("SKILL.md")):
             shutil.rmtree(dest)
             return {
                 "status": "error",
-                "error": f"install verification failed: no SKILL.md at .bob/skills/{skill_id}/ after extraction",
+                "error": f"install verification failed: no SKILL.md under .bob/skills/{skill_id}/ after extraction",
             }
         return {
             "status": "success",
@@ -348,7 +357,12 @@ def verify_install(workspace_root: str = "") -> dict:
             import json
 
             servers = list(json.loads(mj.read_text(encoding="utf-8")).get("mcpServers", {}))
-        problems = [f"skill {s['id']!r} missing SKILL.md" for s in skills if not s["has_skill_md"]]
+        problems = []
+        if skills_dir.is_dir():
+            for sk in skills:
+                d = skills_dir / sk["id"]
+                if not sk["has_skill_md"] and not any(d.rglob("SKILL.md")):
+                    problems.append(f"skill {sk['id']!r} has no SKILL.md anywhere")
         return {
             "status": "success",
             "skills": skills,

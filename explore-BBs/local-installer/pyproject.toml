@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "building-blocks-installer"
-version = "0.1.1"
+version = "0.1.2"
 description = "Local companion MCP server for the IBM Building Blocks Explorer Bob mode — installs Bob skills and modes into the current workspace (scoped: IBM repo downloads only, workspace-confined writes, no shell)."
 readme = "README.md"
 requires-python = ">=3.10"

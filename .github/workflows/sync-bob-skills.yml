@@ -78,7 +78,9 @@ jobs:
       - name: Validate catalog
         id: validate
         continue-on-error: true
-        run: python3 explore-BBs/bb-catalog/scripts/validate_catalog.py 2>&1 | tee validation.log
+        run: |
+          set -o pipefail
+          python3 explore-BBs/bb-catalog/scripts/validate_catalog.py 2>&1 | tee validation.log
 
       - name: Detect catalog changes
         id: diff

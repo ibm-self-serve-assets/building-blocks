@@ -26,7 +26,7 @@ always run exactly the reviewed bytes:
   "command": "uvx",
   "args": [
     "--from",
-    "building-blocks-installer @ https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/<COMMIT_SHA>/explore-BBs/local-installer/dist/building_blocks_installer-0.1.1-py3-none-any.whl",
+    "building-blocks-installer @ https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/<COMMIT_SHA>/explore-BBs/local-installer/dist/building_blocks_installer-0.1.2-py3-none-any.whl",
     "building-blocks-installer"
   ]
 }
