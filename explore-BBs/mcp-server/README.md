@@ -30,7 +30,7 @@ Uses **Streamable HTTP** transport. No authentication required (read-only, publi
 ### Request flow
 
 ```
-MCP client (Bob / Claude / etc.)
+MCP client (Bob / any MCP client)
    │  POST /mcp  (Streamable HTTP, JSON-RPC)
    ▼
 server.py — FastMCP app on port 9247
