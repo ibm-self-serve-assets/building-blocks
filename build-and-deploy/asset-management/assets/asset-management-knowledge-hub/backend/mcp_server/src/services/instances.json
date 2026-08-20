@@ -1,0 +1,16 @@
+{
+  "activeId": "env-default",
+  "instances": [
+    {
+      "id": "env-default",
+      "name": "Production Maximo",
+      "url": "CHANGE_ME",
+      "api_key": "CHANGE_ME",
+      "username": "CHANGE_ME",
+      "password": "CHANGE_ME",
+      "version": "9.1",
+      "status": "unknown",
+      "primary": true
+    }
+  ]
+}
