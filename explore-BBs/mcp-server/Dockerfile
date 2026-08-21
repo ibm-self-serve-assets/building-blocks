@@ -8,6 +8,6 @@ COPY . .
 
 RUN uv sync --frozen --no-dev
 
-EXPOSE 9247
+EXPOSE 9248
 
-CMD ["uv", "run", "building-blocks-mcp-remote"]
+CMD ["uv", "run", "building-blocks-mcp-remote-marketplace"]

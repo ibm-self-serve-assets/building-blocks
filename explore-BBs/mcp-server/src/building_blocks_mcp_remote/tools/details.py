@@ -5,12 +5,12 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from building_blocks_mcp_remote.server import mcp
-from building_blocks_mcp_remote.registry import (
-    BUILDING_BLOCKS,
-    REPO_BASE_URL,
+from building_blocks_mcp_remote.data_loader import (
     DOCS_SITE_URL,
+    REPO_BASE_URL,
+    load_registry,
 )
+from building_blocks_mcp_remote.server import mcp
 
 logger = logging.getLogger(__name__)
 
@@ -22,24 +22,21 @@ def get_building_block(
 ) -> dict:
     """Get comprehensive details about a specific IBM Building Block.
 
-    Returns the building block's metadata, README documentation, available
-    assets, and links. This is the primary tool for understanding what a
-    building block does and how to use it.
-
-    Use list_building_blocks first to discover available block IDs.
+    Returns metadata, README content, available assets, and links. Use
+    list_building_blocks first to discover available block IDs.
 
     Args:
-        block_id: Building block identifier. Examples: "agent-builder",
-            "model-evaluation", "vector-search", "ipaas",
-            "automated-resilience", "finops".
-            Use list_building_blocks to see all valid IDs.
-        include_readme: If True (default), fetch and include the full README
-            content from the repo. Set to False for a faster metadata-only response.
+        block_id: Building block identifier (e.g., "agent-builder").
+        include_readme: If True, fetch and include the full README from the repo.
+            Set False for a faster metadata-only response.
     """
     try:
-        block = BUILDING_BLOCKS.get(block_id)
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+
+        block = blocks.get(block_id)
         if not block:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",
@@ -81,8 +78,7 @@ def get_building_block(
             items = fetch_contents(repo_path)
             if isinstance(items, list):
                 result["contents"] = [
-                    {"name": i["name"], "type": i["type"]}
-                    for i in items
+                    {"name": i["name"], "type": i["type"]} for i in items
                 ]
         except Exception:
             result["contents"] = []
@@ -100,23 +96,22 @@ def get_building_block_readme(
 ) -> dict:
     """Get the README content for a building block or one of its sub-components.
 
-    Fetches the raw markdown README from the GitHub repository. Use this to
-    read detailed documentation, architecture diagrams, prerequisites, and
-    setup instructions for specific sub-components.
-
     Args:
-        block_id: Building block identifier (e.g., "agent-builder", "multi-agent-orchestration").
+        block_id: Building block identifier (e.g., "agent-builder").
         sub_path: Optional sub-path within the building block directory to fetch
             a nested README. Examples:
             - "assets/contextual-knowledge-hub" for an asset's README
             - "bob-modes" for the Bob Modes README
             - "assets/AI-Travel-Planner" for a reference implementation
-            If omitted, fetches the top-level README for the building block.
+            If omitted, fetches the top-level README.
     """
     try:
-        block = BUILDING_BLOCKS.get(block_id)
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+
+        block = blocks.get(block_id)
         if not block:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",

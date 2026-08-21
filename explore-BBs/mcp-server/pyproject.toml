@@ -3,19 +3,22 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "building-blocks-mcp-remote"
-version = "0.1.0"
-description = "Remote MCP server for IBM Technology Building Blocks (Streamable HTTP, Code Engine)"
+name = "building-blocks-mcp-remote-marketplace"
+version = "0.3.0"
+description = "Remote MCP server for the IBM Building Blocks Bob marketplace mode (markdown-driven catalog, Streamable HTTP, Code Engine)"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
 dependencies = [
-    "mcp>=1.26.0",
+    "mcp==1.27.1",  # pinned exactly — newer releases removed mcp.server.fastmcp
     "httpx>=0.27.0",
     "uvicorn>=0.30.0",
+    "python-frontmatter>=1.1.0",
+    "pydantic>=2.7.0",
+    "pyjwt[crypto]>=2.8.0",
 ]
 
 [project.scripts]
-building-blocks-mcp-remote = "building_blocks_mcp_remote.server:main"
+building-blocks-mcp-remote-marketplace = "building_blocks_mcp_remote.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/building_blocks_mcp_remote"]

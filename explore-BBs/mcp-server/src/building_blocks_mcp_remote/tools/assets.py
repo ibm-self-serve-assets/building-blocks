@@ -6,8 +6,8 @@ import logging
 import os
 from typing import Optional
 
+from building_blocks_mcp_remote.data_loader import REPO_BASE_URL, load_registry
 from building_blocks_mcp_remote.server import mcp
-from building_blocks_mcp_remote.registry import BUILDING_BLOCKS, REPO_BASE_URL
 
 logger = logging.getLogger(__name__)
 
@@ -30,22 +30,21 @@ def list_assets(
 ) -> dict:
     """List code assets, configs, and reference implementations for a building block.
 
-    Browse the file tree within a building block's directory. Returns file names,
-    types, sizes, and paths for each item.
-
     Args:
-        block_id: Building block identifier (e.g., "agent-builder", "multi-agent-orchestration").
-        path: Optional sub-path within the building block directory.
-            Omit to list the top-level directory.
-            Examples:
+        block_id: Building block identifier (e.g., "agent-builder").
+        path: Optional sub-path within the building block directory. Omit to
+            list the top level. Examples:
             - "assets" to list the assets directory
             - "assets/contextual-knowledge-hub/tools" to browse tool implementations
             - "bob-modes" to list Bob Mode packages
     """
     try:
-        block = BUILDING_BLOCKS.get(block_id)
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+
+        block = blocks.get(block_id)
         if not block:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",
@@ -93,14 +92,9 @@ def get_asset_file(
 ) -> dict:
     """Retrieve the content of a specific code file or config from a building block.
 
-    Fetches the raw content of a file from the building block's repository directory.
-    Use list_assets first to discover available files and their paths.
-
-    Supports any text file: Python (.py), YAML (.yaml/.yml), JSON (.json),
-    Terraform (.tf), Markdown (.md), shell scripts (.sh), Jupyter notebooks (.ipynb),
-    and configuration files.
-
-    Files larger than 100KB return a download URL instead of inline content.
+    Supports any text file: Python, YAML, JSON, Terraform, Markdown, shell
+    scripts, notebooks, and config files. Files larger than 100KB return a
+    download URL instead of inline content.
 
     Args:
         block_id: Building block identifier (e.g., "agent-builder").
@@ -111,15 +105,18 @@ def get_asset_file(
             - "assets/AI-Travel-Planner/agents/travel_planner_agent.yaml"
     """
     try:
-        block = BUILDING_BLOCKS.get(block_id)
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+
+        block = blocks.get(block_id)
         if not block:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",
             }
 
-        from building_blocks_mcp_remote.github_client import fetch_raw_file, fetch_contents
+        from building_blocks_mcp_remote.github_client import fetch_contents, fetch_raw_file
 
         repo_path = block["repo_path"]
         full_path = f"{repo_path}/{file_path}"

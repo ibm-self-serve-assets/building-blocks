@@ -1,18 +1,16 @@
-"""Discovery tools — list and search building blocks."""
+"""Discovery tools — list and search building blocks. Backed by data_loader (markdown catalog)."""
 
 from __future__ import annotations
 
 import logging
 from typing import Optional
 
-from building_blocks_mcp_remote.server import mcp
-from building_blocks_mcp_remote.registry import (
-    BUILDING_BLOCKS,
-    GROUPS,
-    DOCS_PAGES,
-    REPO_BASE_URL,
+from building_blocks_mcp_remote.data_loader import (
     DOCS_SITE_URL,
+    REPO_BASE_URL,
+    load_registry,
 )
+from building_blocks_mcp_remote.server import mcp
 
 logger = logging.getLogger(__name__)
 
@@ -25,34 +23,24 @@ def list_building_blocks(
 ) -> dict:
     """List all available IBM Technology Building Blocks, optionally filtered.
 
-    Building Blocks are pre-built, embeddable capabilities organized as:
-
-      AI:
-        - "agents"       : Agent Builder, Multi-Agent Orchestration, Agentic SDLC
-        - "ai-trust"     : Model Evaluation, Agent Ops, Real-Time Guardrails, AI Compliance
-
-      Data:
-        - "integration"  : Data Pipeline (AI Generated), Data Streaming, Data Observability
-        - "intelligence" : Data Quality, Data Lineage, Text2SQL
-        - "retrieval"    : Vector Search, No SQL Database, Zero Copy
-
-      Automation:
-        - "build"        : iPaaS, Infrastructure as Code, Code Modernization
-        - "secure"       : Non-Human Identity, Quantum-Safe Cryptography
-        - "optimize"     : Automated Resource Management, FinOps, Automated Resilience & Compliance
-
-    Returns a list of building block summaries with id, name, group, description,
-    and links to docs and repo.
+    Building Blocks are pre-built, embeddable capabilities organized as
+    3 core capabilities → 8 groups → individual blocks. The response is the
+    source of truth for which blocks exist — the catalog changes over time.
 
     Args:
-        group: Filter by group. Allowed: "agents", "ai-trust", "integration",
-            "intelligence", "retrieval", "build", "secure", "optimize". Omit to list all.
-        capability: Filter by core capability. Allowed: "ai", "data", "automation". Omit for all.
-        tag: Filter by tag keyword (e.g., "rag", "agents", "terraform"). Case-insensitive partial match.
+        group: Filter by group. Valid values: "agents", "ai-trust" (AI);
+            "integration", "intelligence", "retrieval" (Data);
+            "build", "secure", "optimize" (Automation). Omit to list all.
+        capability: Filter by core capability ("ai", "data", "automation"). Omit for all.
+        tag: Case-insensitive partial match against any tag (e.g., "rag", "terraform").
     """
     try:
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+        groups = reg["GROUPS"]
+
         results = []
-        for bid, block in BUILDING_BLOCKS.items():
+        for bid, block in blocks.items():
             if group and block["group"] != group:
                 continue
             if capability and block["capability"] != capability:
@@ -75,8 +63,8 @@ def list_building_blocks(
             })
 
         group_info = None
-        if group and group in GROUPS:
-            g = GROUPS[group]
+        if group and group in groups:
+            g = groups[group]
             group_info = {"id": group, "name": g["name"], "description": g["description"]}
 
         return {
@@ -97,48 +85,68 @@ def search_building_blocks(
 ) -> dict:
     """Search across IBM Building Blocks documentation and code.
 
-    Searches through building block names, descriptions, documentation content,
-    and README files to find relevant building blocks and content.
+    Searches names, descriptions, docs page titles, and optionally code files.
 
     Args:
-        query: Search query string. Examples: "RAG pipeline", "Terraform",
-            "guardrails", "Milvus vector search", "multi-agent".
-        scope: Where to search. Allowed:
-            - "all"      : Search names, descriptions, and docs page titles (default)
-            - "registry" : Search only building block names/descriptions (no API call)
-            - "docs"     : Search documentation page titles and sections
-            - "code"     : Search code files in the repo (requires GITHUB_TOKEN)
+        query: Search query string. Examples: "RAG pipeline", "Terraform", "multi-agent".
+        scope: One of:
+            - "all"      : names + descriptions + docs page titles (default)
+            - "registry" : only block names/descriptions (no API call)
+            - "docs"     : docs page titles and sections
+            - "code"     : code files in the repo (requires GITHUB_TOKEN)
     """
     try:
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+        docs_pages = reg["DOCS_PAGES"]
+
+        # Token-based matching: a multi-word query matches if ANY word hits,
+        # ranked by how many words hit (exact-phrase matches rank highest).
+        # Literal substring-only matching made e.g. "RAG agent guardrails"
+        # return zero results even though three blocks matched individually.
         query_lower = query.lower()
-        results = []
+        tokens = query_lower.split()
+
+        def score(searchable: str) -> int:
+            s = sum(1 for t in tokens if t in searchable)
+            if len(tokens) > 1 and query_lower in searchable:
+                s += len(tokens)  # phrase match beats scattered words
+            return s
+
+        scored: list[tuple[int, dict]] = []
 
         if scope in ("all", "registry"):
-            for bid, block in BUILDING_BLOCKS.items():
-                searchable = f"{block['name']} {block['description']} {' '.join(block['tags'])} {' '.join(block['products'])}".lower()
-                if query_lower in searchable:
-                    results.append({
+            for bid, block in blocks.items():
+                searchable = (
+                    f"{block['name']} {block['description']} "
+                    f"{' '.join(block['tags'])} {' '.join(block['products'])}"
+                ).lower()
+                if (s := score(searchable)):
+                    scored.append((s, {
                         "type": "building_block",
                         "id": bid,
                         "title": block["name"],
                         "description": block["description"],
                         "group": block["group"],
                         "url": f"{REPO_BASE_URL}/tree/main/{block['repo_path']}",
-                    })
+                    }))
 
         if scope in ("all", "docs"):
-            for page in DOCS_PAGES:
+            for page in docs_pages:
                 searchable = f"{page['title']} {page['section']}".lower()
-                if query_lower in searchable:
-                    results.append({
+                if (s := score(searchable)):
+                    scored.append((s, {
                         "type": "docs_page",
                         "title": page["title"],
                         "section": page["section"],
                         "path": page["path"],
                         "url": f"{DOCS_SITE_URL}/{page['path'].replace('.md', '/')}",
-                    })
+                    }))
 
-        if scope in ("code",):
+        scored.sort(key=lambda x: -x[0])
+        results = [r for _, r in scored]
+
+        if scope == "code":
             from building_blocks_mcp_remote.github_client import search_code
             code_results = search_code(query)
             for item in code_results:

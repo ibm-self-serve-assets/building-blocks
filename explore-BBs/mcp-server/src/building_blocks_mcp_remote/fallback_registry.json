@@ -1,0 +1,1471 @@
+{
+ "BUILDING_BLOCKS": {
+  "agent-builder": {
+   "bob_modes": [],
+   "capability": "ai",
+   "description": "Build autonomous, task-driven AI agents using watsonx Orchestrate ADK",
+   "docs_path": "ai-core/agents/agent-builder.md",
+   "group": "agents",
+   "name": "Agent Builder",
+   "products": [
+    "watsonx Orchestrate"
+   ],
+   "repo_path": "agents/agent-builder",
+   "tags": [
+    "agents",
+    "adk",
+    "orchestration",
+    "bob-modes"
+   ]
+  },
+  "agent-ops": {
+   "bob_modes": [],
+   "capability": "ai",
+   "description": "Operational monitoring and management of AI agents in production environments",
+   "docs_path": "ai-core/ai-trust/agent-ops.md",
+   "group": "ai-trust",
+   "name": "Agent Ops",
+   "products": [
+    "watsonx.governance"
+   ],
+   "repo_path": "ai-trust/agent-ops",
+   "tags": [
+    "trust",
+    "monitoring",
+    "agents",
+    "operations",
+    "production"
+   ]
+  },
+  "agentic-sdlc": {
+   "bob_modes": [],
+   "capability": "ai",
+   "description": "Agentic software development lifecycle for building, testing, and deploying AI-powered applications",
+   "docs_path": "ai-core/agents/agentic-sdlc.md",
+   "group": "agents",
+   "name": "Agentic SDLC",
+   "products": [
+    "watsonx Orchestrate"
+   ],
+   "repo_path": "agents/agentic-sdlc",
+   "tags": [
+    "agents",
+    "sdlc",
+    "development",
+    "agentic"
+   ]
+  },
+  "ai-compliance": {
+   "bob_modes": [],
+   "capability": "ai",
+   "description": "Streamline regulatory alignment and industry compliance standards for AI systems",
+   "docs_path": "ai-core/ai-trust/ai-compliance.md",
+   "group": "ai-trust",
+   "name": "AI Compliance",
+   "products": [
+    "watsonx.governance"
+   ],
+   "repo_path": "ai-trust/ai-compliance",
+   "tags": [
+    "trust",
+    "compliance",
+    "regulation",
+    "governance"
+   ]
+  },
+  "asset-management": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "AI-powered IBM Maximo modernization \u2014 automation script analysis and optimization, plus Java-to-automation-script conversion with security scanning and deployment support",
+   "docs_path": "automation-core/build/asset-management.md",
+   "group": "build",
+   "name": "Asset Management",
+   "products": [
+    "IBM Maximo Application Suite"
+   ],
+   "repo_path": "build-and-deploy/asset-management",
+   "tags": [
+    "maximo",
+    "asset-management",
+    "modernization",
+    "automation-scripts",
+    "java-conversion",
+    "bob-skills"
+   ]
+  },
+  "automated-resilience": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "CVE monitoring, compliance drift detection, certificate lifecycle management, and security posture assessment via IBM Concert",
+   "docs_path": "automation-core/optimize/automated-resilience.md",
+   "group": "optimize",
+   "name": "Automated Resilience & Compliance",
+   "products": [
+    "IBM Concert"
+   ],
+   "repo_path": "optimize/automated-resilience-and-compliance",
+   "tags": [
+    "resilience",
+    "compliance",
+    "cve",
+    "security",
+    "concert"
+   ]
+  },
+  "automated-resource-mgmt": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Real-time resource scaling, workload placement, bottleneck prevention, SLA protection, and cost-performance optimization via IBM Turbonomic",
+   "docs_path": "automation-core/optimize/automated-resource-management.md",
+   "group": "optimize",
+   "name": "Automated Resource Management",
+   "products": [
+    "IBM Turbonomic"
+   ],
+   "repo_path": "optimize/automated-resource-mgmt",
+   "tags": [
+    "resources",
+    "scaling",
+    "turbonomic",
+    "workload",
+    "optimization"
+   ]
+  },
+  "budget-and-forecasting": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Budgeting, planning, and forecasting solutions built on IBM Planning Analytics",
+   "docs_path": "automation-core/optimize/budget-and-forecasting.md",
+   "group": "optimize",
+   "name": "Budget and Forecasting",
+   "products": [
+    "IBM Planning Analytics"
+   ],
+   "repo_path": "optimize/budget-and-forecasting",
+   "tags": [
+    "planning-analytics",
+    "budgeting",
+    "forecasting",
+    "planning",
+    "finance",
+    "bob-skills"
+   ]
+  },
+  "code-modernization": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Modernize legacy middleware and application code for cloud-native architectures",
+   "docs_path": "automation-core/build/middleware-modernization.md",
+   "group": "build",
+   "name": "Code Modernization",
+   "products": [],
+   "repo_path": "build-and-deploy/code-modernisation",
+   "tags": [
+    "modernize",
+    "middleware",
+    "migration",
+    "cloud-native",
+    "legacy"
+   ]
+  },
+  "data-lineage": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust",
+   "docs_path": "data-core/intelligence/data-lineage/index.md",
+   "group": "intelligence",
+   "name": "Data Lineage",
+   "products": [
+    "watsonx.data"
+   ],
+   "repo_path": "data/intelligence/data-lineage",
+   "tags": [
+    "data",
+    "lineage",
+    "governance",
+    "intelligence",
+    "traceability"
+   ]
+  },
+  "data-observability": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time",
+   "docs_path": "data-core/integration/data-observability/index.md",
+   "group": "integration",
+   "name": "Data Observability",
+   "products": [
+    "watsonx.data"
+   ],
+   "repo_path": "data/integration/data-observability",
+   "tags": [
+    "data",
+    "observability",
+    "monitoring",
+    "profiling",
+    "quality"
+   ]
+  },
+  "data-pipeline-ai-generated": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "AI-assisted data pipeline generation for ingesting unstructured and structured data via batch, streaming, or hybrid patterns",
+   "docs_path": "data-core/integration/data-pipeline-ai-generated/index.md",
+   "group": "integration",
+   "name": "Data Pipeline (AI Generated)",
+   "products": [
+    "watsonx.data"
+   ],
+   "repo_path": "data/integration/data-pipeline-ai-generated",
+   "tags": [
+    "data",
+    "ingestion",
+    "pipeline",
+    "etl",
+    "streaming"
+   ]
+  },
+  "data-quality": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Data quality management with automated validation, profiling, and rule-based checks across data sources",
+   "docs_path": "data-core/intelligence/data-quality/index.md",
+   "group": "intelligence",
+   "name": "Data Quality",
+   "products": [
+    "watsonx.data"
+   ],
+   "repo_path": "data/intelligence/data-quality",
+   "tags": [
+    "data",
+    "quality",
+    "validation",
+    "profiling",
+    "intelligence"
+   ]
+  },
+  "data-streaming": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Real-time data streaming capabilities for continuous data processing and event-driven architectures",
+   "docs_path": "data-core/integration/data-streaming/index.md",
+   "group": "integration",
+   "name": "Data Streaming",
+   "products": [
+    "watsonx.data"
+   ],
+   "repo_path": "data/integration/data-streaming",
+   "tags": [
+    "data",
+    "streaming",
+    "real-time",
+    "events"
+   ]
+  },
+  "finops": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Cost visibility across teams, budget forecasting, spend anomaly detection, cost allocation, and ROI evaluation via Apptio",
+   "docs_path": "automation-core/optimize/finops.md",
+   "group": "optimize",
+   "name": "FinOps",
+   "products": [
+    "Apptio"
+   ],
+   "repo_path": "optimize/finops",
+   "tags": [
+    "finops",
+    "cost",
+    "budget",
+    "optimization",
+    "apptio"
+   ]
+  },
+  "infrastructure-as-code": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Terraform and Ansible for automated, consistent environment provisioning and deployment",
+   "docs_path": "automation-core/build/infrastructure-as-code.md",
+   "group": "build",
+   "name": "Infrastructure as Code",
+   "products": [
+    "Terraform",
+    "Ansible"
+   ],
+   "repo_path": "build-and-deploy/infrastructure-as-code",
+   "tags": [
+    "iac",
+    "terraform",
+    "ansible",
+    "deployment",
+    "infrastructure"
+   ]
+  },
+  "ipaas": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Cloud-native integration with 600+ pre-built connectors, low-code model, API lifecycle management, and event-driven integration via IBM webMethods",
+   "docs_path": "automation-core/build/ipaas.md",
+   "group": "build",
+   "name": "iPaaS",
+   "products": [
+    "IBM webMethods"
+   ],
+   "repo_path": "build-and-deploy/ipaas",
+   "tags": [
+    "integration",
+    "ipaas",
+    "api",
+    "connectors"
+   ]
+  },
+  "model-evaluation": {
+   "bob_modes": [],
+   "capability": "ai",
+   "description": "Evaluation approaches for generative AI and predictive ML models measuring quality, retrieval, safety, and performance",
+   "docs_path": "ai-core/ai-trust/model-evaluation.md",
+   "group": "ai-trust",
+   "name": "Model Evaluation",
+   "products": [
+    "watsonx.governance"
+   ],
+   "repo_path": "ai-trust/model-evaluation",
+   "tags": [
+    "trust",
+    "evaluation",
+    "metrics",
+    "safety",
+    "quality"
+   ]
+  },
+  "multi-agent-orchestration": {
+   "bob_modes": [],
+   "capability": "ai",
+   "description": "Enable specialized agents to collaborate on complex workflows through context sharing, task routing, and feedback loops via MCP and A2A protocols",
+   "docs_path": "ai-core/agents/multi-agent-orchestration.md",
+   "group": "agents",
+   "name": "Multi-Agent Orchestration",
+   "products": [
+    "watsonx Orchestrate"
+   ],
+   "repo_path": "agents/multi-agent-orchestration",
+   "tags": [
+    "agents",
+    "multi-agent",
+    "orchestration",
+    "mcp",
+    "a2a"
+   ]
+  },
+  "no-sql-database": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "NoSQL database capabilities for flexible, scalable data storage and retrieval",
+   "docs_path": "data-core/retrieval/no-sql-database/index.md",
+   "group": "retrieval",
+   "name": "No SQL Database",
+   "products": [],
+   "repo_path": "data/retrieval/no-sql-database",
+   "tags": [
+    "data",
+    "nosql",
+    "database",
+    "astradb",
+    "retrieval"
+   ]
+  },
+  "non-human-identity": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Identity and secrets management for non-human entities including service accounts, APIs, and machine identities, with HashiCorp Vault integration",
+   "docs_path": "automation-core/secure/non-human-identity.md",
+   "group": "secure",
+   "name": "Non-Human Identity",
+   "products": [
+    "IBM Verify",
+    "HashiCorp Vault"
+   ],
+   "repo_path": "secure/non-human-identity",
+   "tags": [
+    "identity",
+    "auth",
+    "non-human",
+    "security",
+    "machine-identity",
+    "secrets"
+   ]
+  },
+  "quantum-safe": {
+   "bob_modes": [],
+   "capability": "automation",
+   "description": "Quantum-safe cryptographic algorithms and migration tools for post-quantum security",
+   "docs_path": "automation-core/secure/quantum-safe.md",
+   "group": "secure",
+   "name": "Quantum-Safe Cryptography",
+   "products": [],
+   "repo_path": "secure/quantum-safe",
+   "tags": [
+    "quantum",
+    "cryptography",
+    "security",
+    "post-quantum"
+   ]
+  },
+  "rag": {
+   "bob_modes": [
+    {
+     "name": "rag-builder",
+     "type": "base-modes"
+    },
+    {
+     "name": "data-generator",
+     "type": "base-modes"
+    }
+   ],
+   "capability": "data",
+   "description": "Retrieval-Augmented Generation pipeline: document ingestion from IBM COS, watsonx.ai embeddings, vector storage in Milvus or OpenSearch, and hybrid semantic + BM25 search. Ships with a FastAPI service plus ingestion and retrieval MCP servers.",
+   "docs_path": "data-core/retrieval/rag/index.md",
+   "group": "retrieval",
+   "name": "RAG",
+   "products": [
+    "watsonx.ai",
+    "watsonx.data"
+   ],
+   "repo_path": "data/retrieval/RAG",
+   "tags": [
+    "data",
+    "rag",
+    "retrieval",
+    "embeddings",
+    "milvus",
+    "opensearch",
+    "watsonx",
+    "ibm-cos",
+    "hybrid-search",
+    "bob-modes"
+   ]
+  },
+  "real-time-guardrails": {
+   "bob_modes": [
+    {
+     "name": "real-time-guardrails",
+     "type": "base-modes"
+    }
+   ],
+   "capability": "ai",
+   "description": "Real-time validation and guardrails for AI model inputs and outputs in production",
+   "docs_path": "ai-core/ai-trust/real-time-guardrails.md",
+   "group": "ai-trust",
+   "name": "Real-Time Guardrails",
+   "products": [
+    "watsonx.governance"
+   ],
+   "repo_path": "ai-trust/real-time-guardrails",
+   "tags": [
+    "trust",
+    "guardrails",
+    "real-time",
+    "safety",
+    "runtime",
+    "bob-modes"
+   ]
+  },
+  "text2sql": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Natural language to SQL conversion using watsonx.data Intelligence with metadata enrichment for accurate query generation",
+   "docs_path": "data-core/intelligence/text2sql/index.md",
+   "group": "intelligence",
+   "name": "Text2SQL",
+   "products": [
+    "watsonx.data",
+    "watsonx.ai"
+   ],
+   "repo_path": "data/intelligence/text2sql",
+   "tags": [
+    "data",
+    "text-to-sql",
+    "natural-language",
+    "intelligence",
+    "query"
+   ]
+  },
+  "vector-search": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Semantic similarity search with Milvus, OpenSearch, and DataStax Astra DB for unstructured data retrieval",
+   "docs_path": "data-core/retrieval/vector-search/index.md",
+   "group": "retrieval",
+   "name": "Vector Search",
+   "products": [
+    "watsonx.ai"
+   ],
+   "repo_path": "data/retrieval/vector-search",
+   "tags": [
+    "data",
+    "vector",
+    "search",
+    "milvus",
+    "opensearch",
+    "embeddings",
+    "rag"
+   ]
+  },
+  "zero-copy": {
+   "bob_modes": [],
+   "capability": "data",
+   "description": "Query across data sources without duplication using open table formats and federated query engines for lakehouse access",
+   "docs_path": "data-core/retrieval/zero-copy/index.md",
+   "group": "retrieval",
+   "name": "Zero Copy",
+   "products": [
+    "watsonx.data"
+   ],
+   "repo_path": "data/retrieval/zero-copy",
+   "tags": [
+    "data",
+    "zero-copy",
+    "lakehouse",
+    "iceberg",
+    "federated",
+    "retrieval"
+   ]
+  }
+ },
+ "CORE_CAPABILITIES": {
+  "ai": {
+   "description": "AI agents, multi-agent orchestration, AI trust, model evaluation, and governance",
+   "name": "AI"
+  },
+  "automation": {
+   "description": "Build and deploy, secure, and optimize enterprise applications and infrastructure",
+   "name": "Automation"
+  },
+  "data": {
+   "description": "Data integration, intelligence, and retrieval capabilities for AI-powered applications",
+   "name": "Data"
+  }
+ },
+ "DOCS_PAGES": [
+  {
+   "path": "index.md",
+   "section": "Home",
+   "title": "Home"
+  },
+  {
+   "path": "ai-core/index.md",
+   "section": "AI",
+   "title": "AI Overview"
+  },
+  {
+   "path": "ai-core/agents/index.md",
+   "section": "AI > Agents",
+   "title": "Agents Overview"
+  },
+  {
+   "path": "ai-core/agents/agent-builder.md",
+   "section": "AI > Agents",
+   "title": "Agent Builder"
+  },
+  {
+   "path": "ai-core/agents/multi-agent-orchestration.md",
+   "section": "AI > Agents",
+   "title": "Multi-Agent Orchestration"
+  },
+  {
+   "path": "ai-core/agents/agentic-sdlc.md",
+   "section": "AI > Agents",
+   "title": "Agentic SDLC"
+  },
+  {
+   "path": "ai-core/ai-trust/index.md",
+   "section": "AI > AI Trust",
+   "title": "AI Trust Overview"
+  },
+  {
+   "path": "ai-core/ai-trust/model-evaluation.md",
+   "section": "AI > AI Trust",
+   "title": "Model Evaluation"
+  },
+  {
+   "path": "ai-core/ai-trust/agent-ops.md",
+   "section": "AI > AI Trust",
+   "title": "Agent Ops"
+  },
+  {
+   "path": "ai-core/ai-trust/real-time-guardrails.md",
+   "section": "AI > AI Trust",
+   "title": "Real-Time Guardrails"
+  },
+  {
+   "path": "ai-core/ai-trust/ai-compliance.md",
+   "section": "AI > AI Trust",
+   "title": "AI Compliance"
+  },
+  {
+   "path": "ai-core/data/index.md",
+   "section": "AI > Data",
+   "title": "AI Data Overview"
+  },
+  {
+   "path": "ai-core/data/data-ingestion.md",
+   "section": "AI > Data",
+   "title": "Data Ingestion"
+  },
+  {
+   "path": "ai-core/data/data-security-and-encryption.md",
+   "section": "AI > Data",
+   "title": "Data Security and Encryption"
+  },
+  {
+   "path": "ai-core/data/q-and-a.md",
+   "section": "AI > Data",
+   "title": "Q&A"
+  },
+  {
+   "path": "ai-core/data/vector-search/index.md",
+   "section": "AI > Data > Vector Search",
+   "title": "Vector Search Overview (AI)"
+  },
+  {
+   "path": "ai-core/data/vector-search/milvus.md",
+   "section": "AI > Data > Vector Search",
+   "title": "Vector Search (Milvus, AI)"
+  },
+  {
+   "path": "ai-core/data/vector-search/opensearch.md",
+   "section": "AI > Data > Vector Search",
+   "title": "Vector Search (OpenSearch, AI)"
+  },
+  {
+   "path": "ai-core/data/vector-search/datastax-astra-db.md",
+   "section": "AI > Data > Vector Search",
+   "title": "Vector Search (DataStax Astra DB, AI)"
+  },
+  {
+   "path": "ai-core/data/zero-copy-lakehouse.md",
+   "section": "AI > Data",
+   "title": "Zero Copy Lakehouse"
+  },
+  {
+   "path": "data-core/index.md",
+   "section": "Data",
+   "title": "Data Overview"
+  },
+  {
+   "path": "data-core/integration/index.md",
+   "section": "Data > Integration",
+   "title": "Integration Overview"
+  },
+  {
+   "path": "data-core/integration/data-pipeline-ai-generated/index.md",
+   "section": "Data > Integration",
+   "title": "Data Pipeline (AI Generated)"
+  },
+  {
+   "path": "data-core/integration/data-streaming/index.md",
+   "section": "Data > Integration",
+   "title": "Data Streaming"
+  },
+  {
+   "path": "data-core/integration/data-observability/index.md",
+   "section": "Data > Integration",
+   "title": "Data Observability"
+  },
+  {
+   "path": "data-core/intelligence/index.md",
+   "section": "Data > Intelligence",
+   "title": "Intelligence Overview"
+  },
+  {
+   "path": "data-core/intelligence/data-quality/index.md",
+   "section": "Data > Intelligence",
+   "title": "Data Quality"
+  },
+  {
+   "path": "data-core/intelligence/data-lineage/index.md",
+   "section": "Data > Intelligence",
+   "title": "Data Lineage"
+  },
+  {
+   "path": "data-core/intelligence/text2sql/index.md",
+   "section": "Data > Intelligence",
+   "title": "Text2SQL"
+  },
+  {
+   "path": "data-core/retrieval/index.md",
+   "section": "Data > Retrieval",
+   "title": "Retrieval Overview"
+  },
+  {
+   "path": "data-core/retrieval/rag/index.md",
+   "section": "Data > Retrieval",
+   "title": "RAG"
+  },
+  {
+   "path": "data-core/retrieval/vector-search/index.md",
+   "section": "Data > Retrieval > Vector Search",
+   "title": "Vector Search Overview"
+  },
+  {
+   "path": "data-core/retrieval/vector-search/milvus.md",
+   "section": "Data > Retrieval > Vector Search",
+   "title": "Vector Search (Milvus)"
+  },
+  {
+   "path": "data-core/retrieval/vector-search/opensearch.md",
+   "section": "Data > Retrieval > Vector Search",
+   "title": "Vector Search (OpenSearch)"
+  },
+  {
+   "path": "data-core/retrieval/vector-search/datastax-astra-db.md",
+   "section": "Data > Retrieval > Vector Search",
+   "title": "Vector Search (DataStax Astra DB)"
+  },
+  {
+   "path": "data-core/retrieval/no-sql-database/index.md",
+   "section": "Data > Retrieval",
+   "title": "No SQL Database"
+  },
+  {
+   "path": "data-core/retrieval/zero-copy/index.md",
+   "section": "Data > Retrieval",
+   "title": "Zero Copy"
+  },
+  {
+   "path": "automation-core/index.md",
+   "section": "Automation",
+   "title": "Automation Overview"
+  },
+  {
+   "path": "automation-core/build/index.md",
+   "section": "Automation > Build and Deploy",
+   "title": "Build and Deploy Overview"
+  },
+  {
+   "path": "automation-core/build/ipaas.md",
+   "section": "Automation > Build and Deploy",
+   "title": "iPaaS"
+  },
+  {
+   "path": "automation-core/build/infrastructure-as-code.md",
+   "section": "Automation > Build and Deploy",
+   "title": "Infrastructure as Code"
+  },
+  {
+   "path": "automation-core/build/middleware-modernization.md",
+   "section": "Automation > Build and Deploy",
+   "title": "Code Modernization"
+  },
+  {
+   "path": "automation-core/build/asset-management.md",
+   "section": "Automation > Build and Deploy",
+   "title": "Asset Management"
+  },
+  {
+   "path": "automation-core/secure/index.md",
+   "section": "Automation > Secure",
+   "title": "Secure Overview"
+  },
+  {
+   "path": "automation-core/secure/non-human-identity.md",
+   "section": "Automation > Secure",
+   "title": "Non-Human Identity"
+  },
+  {
+   "path": "automation-core/secure/quantum-safe.md",
+   "section": "Automation > Secure",
+   "title": "Quantum-Safe Cryptography"
+  },
+  {
+   "path": "automation-core/optimize/index.md",
+   "section": "Automation > Optimize",
+   "title": "Optimize Overview"
+  },
+  {
+   "path": "automation-core/optimize/automated-resilience.md",
+   "section": "Automation > Optimize",
+   "title": "Automated Resilience & Compliance"
+  },
+  {
+   "path": "automation-core/optimize/finops.md",
+   "section": "Automation > Optimize",
+   "title": "FinOps"
+  },
+  {
+   "path": "automation-core/optimize/automated-resource-management.md",
+   "section": "Automation > Optimize",
+   "title": "Automated Resource Management"
+  },
+  {
+   "path": "automation-core/optimize/budget-and-forecasting.md",
+   "section": "Automation > Optimize",
+   "title": "Budget and Forecasting"
+  },
+  {
+   "path": "ibm-bob/index.md",
+   "section": "IBM Bob",
+   "title": "IBM Bob and Building Blocks"
+  },
+  {
+   "path": "ibm-bob/skills/index.md",
+   "section": "IBM Bob",
+   "title": "Bob Skills"
+  },
+  {
+   "path": "ibm-bob/skills/contributing_to_skills.md",
+   "section": "IBM Bob",
+   "title": "Contributing to Bob Skills"
+  },
+  {
+   "path": "workshop/index.md",
+   "section": "IBM Bob",
+   "title": "Build with Bob Workshops"
+  },
+  {
+   "path": "build-with-bob/index.md",
+   "section": "IBM Bob",
+   "title": "Build with Bob Webinars"
+  }
+ ],
+ "GROUPS": {
+  "agents": {
+   "capability": "ai",
+   "description": "Build and orchestrate AI agents using watsonx Orchestrate ADK, multi-agent patterns, and agentic SDLC",
+   "name": "Agents"
+  },
+  "ai-trust": {
+   "capability": "ai",
+   "description": "Model evaluation, agent operations monitoring, real-time guardrails, and AI compliance",
+   "name": "AI Trust"
+  },
+  "build": {
+   "capability": "automation",
+   "description": "iPaaS integration, Infrastructure as Code, and code modernization",
+   "name": "Build and Deploy"
+  },
+  "integration": {
+   "capability": "data",
+   "description": "AI-generated data pipelines, data streaming, and data observability for ingestion and processing",
+   "name": "Integration"
+  },
+  "intelligence": {
+   "capability": "data",
+   "description": "Data quality, lineage tracking, and natural-language to SQL query generation",
+   "name": "Intelligence"
+  },
+  "optimize": {
+   "capability": "automation",
+   "description": "Automated resource management, FinOps cost optimization, and resilience/compliance",
+   "name": "Optimize"
+  },
+  "retrieval": {
+   "capability": "data",
+   "description": "Vector search, NoSQL databases, and zero-copy lakehouse access for unified data retrieval",
+   "name": "Retrieval"
+  },
+  "secure": {
+   "capability": "automation",
+   "description": "Non-human identity management and quantum-safe cryptography",
+   "name": "Secure"
+  }
+ },
+ "SKILLS": {
+  "agent": {
+   "archive_from": "ibm-bob/skills/agent",
+   "blocks": [
+    "agent-builder",
+    "multi-agent-orchestration"
+   ],
+   "description": "Complete watsonx Orchestrate agent lifecycle skill \u2014 build single and multi-agent systems with the ADK, orchestrate complex workflows with MCP/A2A/AI Gateway integration, integrate agents into applications via REST API, and add voice capabilities with STT/TTS channels. MANDATORY: Search ADK MCP docs before implementing any agents, tools, workflows, or integrations.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/explore-BBs/bb-catalog/skill-archives/agent.zip",
+   "name": "agent",
+   "sources": [
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/agent"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "agent-ops": {
+   "archive_from": null,
+   "blocks": [
+    "agent-ops"
+   ],
+   "description": "Plan and run evaluations, red-teaming, and runtime observability for watsonx Orchestrate (WXO) agents across Developer Edition and SaaS. Use when validating WXO agents pre-deploy, authoring benchmark JSON DAGs, interpreting Journey Success / Tool Call Recall / Agent Routing F1 / RAG Faithfulness, diagnosing agent failures, running adversarial red-teaming (Instruction Override, Jailbreaking, Crescendo Attack), searching runtime traces, exporting traces via the Python SDK, wiring Langfuse for cost & latency analysis, or registering model pricing in Langfuse. Interview-first; emits bash commands for the user to run in their IDE terminal.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai-trust/agent-ops/bob-skills/agent-ops.zip",
+   "name": "agent-ops",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "ai-trust/agent-ops/bob-skills/agent-ops.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/agent-ops"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "automated-resilience-concert": {
+   "archive_from": null,
+   "blocks": [
+    "automated-resilience"
+   ],
+   "description": "Build resilient, secure, and observable systems with API integration patterns, comprehensive monitoring, and security automation for Concert API and production applications",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/optimize/automated-resilience-and-compliance/bob-skills/automated-resilience-concert.zip",
+   "name": "automate-resilience",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "optimize/automated-resilience-and-compliance/bob-skills/automated-resilience-concert.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "automated-resource-mgmt-turbonomic": {
+   "archive_from": null,
+   "blocks": [
+    "automated-resource-mgmt"
+   ],
+   "description": "Reusable skills for the Turbonomic Resource Dashboard project. Each skill is a specialized workflow that Bob can activate to help with specific development tasks.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/optimize/automated-resource-mgmt/bob-skills/automated-resource-mgmt-turbonomic.zip",
+   "name": "automated-resource-mgmt-turbonomic",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "optimize/automated-resource-mgmt/bob-skills/automated-resource-mgmt-turbonomic.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/automated-resource-mgmt-turbonomic"
+    }
+   ],
+   "status": "divergent",
+   "subskills": [
+    "backend-development",
+    "devops-deployment",
+    "frontend-development",
+    "testing"
+   ]
+  },
+  "build-time-gen-ai-evals": {
+   "archive_from": null,
+   "blocks": [
+    "model-evaluation"
+   ],
+   "description": "Evaluate GenAI applications \u2014 RAG pipelines, LLM/chatbot outputs, and AI agents with tool-calling \u2014 before deployment using IBM watsonx.governance metrics. Use when scoring RAG faithfulness / answer relevance / context relevance / retrieval precision, screening LLM outputs for HAP / PII / social bias / jailbreak / prompt safety risk, evaluating agentic tool-call accuracy / parameter accuracy / relevance / syntactic validity, authoring custom LLM-as-judge metrics (criteria_judge or prompt_template styles) for domain-specific concerns, preparing eval datasets in the watsonx-gov SDK format, interpreting results against pass/fail thresholds, or producing prioritized [CRITICAL]/[WARNING]/[INFO] recommendations. Partners install `ibm-watsonx-gov[metrics,agentic,tools,llmaj]` directly and call the SDK in-process; no MCP server, no hosted dependency.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai-trust/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip",
+   "name": "build-time-gen-ai-evals",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "ai-trust/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/build-time-gen-ai-evals"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "code-modernization-expert": {
+   "archive_from": null,
+   "blocks": [
+    "code-modernization"
+   ],
+   "description": "Modernize legacy code using enterprise patterns, automated refactoring, technical debt analysis, and incremental migration with zero downtime",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/build-and-deploy/code-modernisation/bob-skills/code-modernization-expert.zip",
+   "name": "code-modernization-expert",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "build-and-deploy/code-modernisation/bob-skills/code-modernization-expert.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/code-modernization-expert"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "confluent-iac-terraform": {
+   "archive_from": null,
+   "blocks": [
+    "data-streaming"
+   ],
+   "description": "Expert guidance for building real-time streaming systems on Confluent Cloud using Infrastructure-as-Code (Terraform), Apache Flink SQL, and Python producers. Adapts to any streaming use case (IoT, finance, retail, healthcare, logistics) while maintaining production-ready quality.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-streaming/bob-skills/confluent-iac-terraform.zip",
+   "name": "confluent-iac-terraform",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/integration/data-streaming/bob-skills/confluent-iac-terraform.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/data-streaming-confluent-terraform"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "data-ingestion-structured": {
+   "archive_from": null,
+   "blocks": [
+    "data-pipeline-ai-generated"
+   ],
+   "description": "Expert guidance for building IBM watsonx.data structured data ingestion pipelines \u2014 covers DB2, PostgreSQL, MySQL, Oracle connectors via IBM DataStage and StreamSets, CDC with log-based capture, batch and incremental load patterns, schema evolution handling, and IBM Cloud IAM authentication. Generates production-ready Python 3.12 scripts and DataStage job configurations.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip",
+   "name": "data-ingestion-structured",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-structured.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "data-ingestion-unstructured": {
+   "archive_from": null,
+   "blocks": [
+    "data-pipeline-ai-generated"
+   ],
+   "description": "Expert guidance for IBM UDI (Unstructured Data Ingestion) and IBM Docling-based pipeline design \u2014 covers PDF, DOCX, HTML, image (OCR) parsing, IBM COS document source, watsonx.data target, metadata extraction, chunking strategy selection, and IBM Cloud IAM authentication. Generates production-ready Python 3.12 ingestion scripts.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip",
+   "name": "data-ingestion-unstructured",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/integration/data-pipeline-ai-generated/bob-skills/data-ingestion-unstructured.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "data-quality-rules": {
+   "archive_from": null,
+   "blocks": [
+    "data-quality"
+   ],
+   "description": "Expert guidance for implementing IBM watsonx.data Intelligence data quality rules on IBM Cloud \u2014 covers IAM authentication, DQ rule creation (completeness, uniqueness, validity, consistency, accuracy), rule execution via the DAI REST API, quality score interpretation, data profiling job submission, and IBM COS report archiving. Generates production-ready Python 3.12 code following IBM building-blocks conventions.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/data-quality/bob-skills/data-quality-rules.zip",
+   "name": "data-quality-rules",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/intelligence/data-quality/bob-skills/data-quality-rules.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "data-streaming-confluent": {
+   "archive_from": null,
+   "blocks": [
+    "data-streaming"
+   ],
+   "description": "Expert Confluent Cloud architect specializing in creating complete, production-ready streaming solutions with Infrastructure-as-Code (Terraform), Apache Flink SQL, and Python producers. Generates structured artifacts organized by domain (code, scripts, documentation) for repeatable, business-focused streaming architectures.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-streaming/bob-skills/data-streaming-confluent.zip",
+   "name": "data-streaming-confluent",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/integration/data-streaming/bob-skills/data-streaming-confluent.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/data-streaming-confluent"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "databand-pipeline-setup": {
+   "archive_from": null,
+   "blocks": [
+    "data-observability"
+   ],
+   "description": "Expert guidance for onboarding IBM data pipelines to IBM Databand on IBM Cloud \u2014 covers IAM authentication, pipeline registration, OpenLineage event emission from Python/DataStage/Spark, alert policy creation via Databand REST API v1, quality score interpretation, and COS report archiving. Adapts to any IBM Cloud pipeline topology while generating production-ready Python 3.12 code.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-observability/bob-skills/databand-pipeline-setup.zip",
+   "name": "databand-pipeline-setup",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/integration/data-observability/bob-skills/databand-pipeline-setup.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "ibm-cloud": {
+   "archive_from": "ibm-bob/skills/ibm-cloud",
+   "blocks": [],
+   "description": "Use this skill to learn hot to use the IBM Cloud CLI (`ibmcloud`) commands, flags, command patterns, or troubleshooting guidance. Covers core CLI workflows: install/verify/update, login with SSO or API keys, select account/region/resource group targets, inspect and configure CLI output, manage plug-ins (e.g. `vpc-infrastructure` / `ibmcloud is ...` for VPC infrastructure.).",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/explore-BBs/bb-catalog/skill-archives/ibm-cloud.zip",
+   "name": "ibm-cloud",
+   "sources": [
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/ibm-cloud"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "infrastructure-as-code-ansible": {
+   "archive_from": null,
+   "blocks": [
+    "infrastructure-as-code"
+   ],
+   "description": "Use for any Ansible-related tasks including playbook development, shell script conversion, debugging failures, or interactive setup. This is the parent skill that provides access to specialized Ansible workflows.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/build-and-deploy/infrastructure-as-code/bob-skills/infrastructure-as-code-ansible/infrastructure-as-code-ansible.zip",
+   "name": "infrastructure-as-code-ansible",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "build-and-deploy/infrastructure-as-code/bob-skills/infrastructure-as-code-ansible/infrastructure-as-code-ansible.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/infrastructure-as-code-ansible"
+    }
+   ],
+   "status": "active",
+   "subskills": [
+    "convert",
+    "debug",
+    "interactive",
+    "playbook"
+   ]
+  },
+  "infrastructure-as-code-terraform": {
+   "archive_from": null,
+   "blocks": [
+    "infrastructure-as-code"
+   ],
+   "description": "Use when writing, reviewing, or debugging Terraform/OpenTofu modules, tests, CI/CD pipelines, or state operations. Diagnoses failure modes (identity churn, secrets, blast radius, CI drift, state corruption) with version-aware guidance.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/build-and-deploy/infrastructure-as-code/bob-skills/infrastructure-as-code-terraform/infrastructure-as-code-terraform.zip",
+   "name": "infrastructure-as-code-terraform",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "build-and-deploy/infrastructure-as-code/bob-skills/infrastructure-as-code-terraform/infrastructure-as-code-terraform.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/infrastructure-as-code-terraform"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "instana-observability": {
+   "archive_from": null,
+   "blocks": [],
+   "description": "Use when the user wants to work with Instana application monitoring \u2014 building or modifying TypeScript API clients, creating React observability dashboards with trace visualizations, analyzing service errors and latency, setting up monitoring integrations, handling pagination and retries, or investigating performance bottlenecks using Instana REST APIs.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/optimize/application-observability/bob-skills/application-observability.zip",
+   "name": "instana-observability",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "optimize/application-observability/bob-skills/application-observability.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "maximo-code-optimization": {
+   "archive_from": null,
+   "blocks": [
+    "asset-management",
+    "code-modernization"
+   ],
+   "description": "Expert skill for fetching, analyzing, optimizing, and securing IBM Maximo automation scripts with comprehensive best practices. Fetches scripts from Maximo environments via REST API and provides detailed optimization reports.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/build-and-deploy/asset-management/bob-skills/maximo-code-optimization.zip",
+   "name": "maximo-script-optimizer",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "build-and-deploy/asset-management/bob-skills/maximo-code-optimization.zip"
+    },
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "build-and-deploy/code-modernisation/bob-skills/maximo-code-optimization.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/maximo-code-optimization"
+    }
+   ],
+   "status": "divergent",
+   "subskills": []
+  },
+  "maximo-java-conversion": {
+   "archive_from": null,
+   "blocks": [
+    "asset-management"
+   ],
+   "description": "Production-grade IBM Bob skill for converting legacy Maximo Java classes into automation scripts in Python, Jython, JavaScript, Nashorn, ECMAScript, or MBR while preserving business logic, enforcing target-language syntax, and applying comprehensive Maximo best practices including security, performance, and resource management.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/build-and-deploy/asset-management/bob-skills/maximo_java_conversion.zip",
+   "name": "maximo-java-conversion",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "build-and-deploy/asset-management/bob-skills/maximo_java_conversion.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "maximo-modernization-java": {
+   "archive_from": null,
+   "blocks": [
+    "code-modernization"
+   ],
+   "description": "Modernize legacy code using enterprise patterns, automated refactoring, technical debt analysis, and incremental migration with zero downtime",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/build-and-deploy/code-modernisation/bob-skills/maximo-modernization-java.zip",
+   "name": "maximo-modernization-java",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "build-and-deploy/code-modernisation/bob-skills/maximo-modernization-java.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "non-human-identity-vault": {
+   "archive_from": null,
+   "blocks": [
+    "non-human-identity"
+   ],
+   "description": "Deploy and manage HashiCorp Vault using Ansible automation with proper configuration, permissions, and security setup.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/secure/non-human-identity/secrets-management/bob-skills/non-human-identity-vault.zip",
+   "name": "non-human-identity-vault",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "secure/non-human-identity/secrets-management/bob-skills/non-human-identity-vault.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/non-human-identity-vault"
+    }
+   ],
+   "status": "divergent",
+   "subskills": [
+    "ansible-automation",
+    "backend-development",
+    "deployment-operations",
+    "frontend-development",
+    "troubleshooting"
+   ]
+  },
+  "openlineage-instrumentation": {
+   "archive_from": null,
+   "blocks": [
+    "data-lineage"
+   ],
+   "description": "Expert guidance for instrumenting IBM data pipelines (Python ETL, IBM DataStage, Apache Spark) with OpenLineage, forwarding events to IBM Databand, and querying the Manta data lineage graph via watsonx.data Intelligence REST API. Generates production-ready Python 3.12 code with IAM auth, dataset URI conventions, and COS report archiving.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/data-lineage/bob-skills/openlineage-instrumentation.zip",
+   "name": "openlineage-instrumentation",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/intelligence/data-lineage/bob-skills/openlineage-instrumentation.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "planning-analytics": {
+   "archive_from": null,
+   "blocks": [
+    "budget-and-forecasting"
+   ],
+   "description": "Expert IBM Planning Analytics and TM1 specialist with deep knowledge of financial planning, budgeting, forecasting, and multidimensional analysis. Provides business-focused insights, variance analysis, and executive-ready reporting using natural language queries on TM1 cubes.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/optimize/budget-and-forecasting/bob-skills/planning-analytics-skill.zip",
+   "name": "planning-analytics",
+   "sources": [
+    {
+     "layout": "bare",
+     "location": "block",
+     "path": "optimize/budget-and-forecasting/bob-skills/planning-analytics-skill.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "qse": {
+   "archive_from": null,
+   "blocks": [
+    "quantum-safe"
+   ],
+   "description": "Analyze codebases for quantum computing readiness and cryptographic vulnerabilities using the Quantum Safe Explorer (QSE) CLI. Use when scanning Java, Go, Python, Dart, or C++ projects for quantum-safe cryptography compliance, running cryptographic analytics or API discovery scans, or uploading findings to IBM Guardium Cryptographic Manager (QCM).",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/secure/quantum-safe/bob-skills/skills.zip",
+   "name": "qse",
+   "sources": [
+    {
+     "layout": "skills",
+     "location": "block",
+     "path": "secure/quantum-safe/bob-skills/skills.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "rag-mcp-server-builder": {
+   "archive_from": null,
+   "blocks": [
+    "rag"
+   ],
+   "description": "Expert guidance for building IBM RAG MCP servers (SSE and stdio transport) using the building-blocks mcp-server pattern \u2014 covers registerTool for ingest/retrieve/search operations, IBM watsonx.ai embedding calls, Milvus/OpenSearch connections, IBM COS source integration, SSE server deployment on IBM Code Engine, and integration with IBM Bob.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/retrieval/RAG/bob-skills/rag-mcp-server-builder.zip",
+   "name": "rag-mcp-server-builder",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/retrieval/RAG/bob-skills/rag-mcp-server-builder.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "rag-pipeline-builder": {
+   "archive_from": null,
+   "blocks": [
+    "rag"
+   ],
+   "description": "Expert guidance for designing end-to-end IBM RAG pipelines \u2014 covers chunking strategy selection, IBM watsonx.ai embedding model choice (ibm/slate-125m-english-rtrvr), vector DB selection (IBM watsonx.data Milvus vs OpenSearch), hybrid search tuning, IBM COS document source, reranking with IBM watsonx.ai cross-encoder models, and RAG pipeline evaluation. Generates production-ready Python 3.12 code following IBM building-blocks patterns.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/retrieval/RAG/bob-skills/rag-pipeline-builder.zip",
+   "name": "rag-pipeline-builder",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/retrieval/RAG/bob-skills/rag-pipeline-builder.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "real-time-guardrails": {
+   "archive_from": null,
+   "blocks": [
+    "real-time-guardrails"
+   ],
+   "description": "Add IBM watsonx.governance-backed runtime safety and quality guardrails to AI/RAG agents. Use when shipping LLM apps to production, designing 4-choke-point Pass/Flag/Block pipelines (input \u2192 retrieval \u2192 generation \u2192 output), picking metric sets from the 28-metric catalog, wiring guardrails into FastAPI / Flask / LangChain / watsonx Orchestrate, authoring custom LLM-as-judge metrics, building compliance audit logs, integrating chat widgets with backend proxies, or tuning per-tenant threshold policies. Covers Python library, REST sidecar, and MCP tool deployment modes.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai-trust/real-time-guardrails/bob-skills/real-time-guardrails.zip",
+   "name": "real-time-guardrails",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "ai-trust/real-time-guardrails/bob-skills/real-time-guardrails.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/real-time-guardrails"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "text2sql-metadata-enrichment": {
+   "archive_from": null,
+   "blocks": [
+    "text2sql"
+   ],
+   "description": "Expert guidance for enriching IBM watsonx.data Intelligence metadata to maximise Text2SQL accuracy \u2014 covers adding business descriptions, column synonyms, table relationships, and semantic hints via the DAI REST API, and using the metadata_enrichment Python scripts in the building-blocks repository.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/text2sql/bob-skills/text2sql-metadata-enrichment.zip",
+   "name": "text2sql-metadata-enrichment",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/intelligence/text2sql/bob-skills/text2sql-metadata-enrichment.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "text2sql-query-optimizer": {
+   "archive_from": null,
+   "blocks": [
+    "text2sql"
+   ],
+   "description": "Expert guidance for evaluating and improving IBM watsonx.data Intelligence Text2SQL generated SQL quality \u2014 covers model selection (Granite vs Llama), dialect tuning, prompt engineering for SQL, SQL validation patterns, feedback loop design, error diagnosis, and metadata-driven accuracy improvement.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/intelligence/text2sql/bob-skills/text2sql-query-optimizer.zip",
+   "name": "text2sql-query-optimizer",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/intelligence/text2sql/bob-skills/text2sql-query-optimizer.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "udi-opensearch": {
+   "archive_from": null,
+   "blocks": [
+    "data-pipeline-ai-generated"
+   ],
+   "description": "Use when the user wants to create a UDI flow, ingest documents into OpenSearch, set up a UDI data ingestion pipeline, run UDI document processing, configure UDI embeddings, or manage the UDI (Unstructured Data Integration) lifecycle on IBM Cloud watsonx \u2014 including registering COS and OpenSearch connections and running the pipeline.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/integration/data-pipeline-ai-generated/bob-skills/udi-opensearch.zip",
+   "name": "udi-opensearch",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "data/integration/data-pipeline-ai-generated/bob-skills/udi-opensearch.zip"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  }
+ }
+}

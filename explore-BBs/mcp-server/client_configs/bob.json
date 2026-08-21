@@ -1,7 +1,0 @@
-{
-  "mcpServers": {
-    "building-blocks": {
-      "url": "https://<your-app>.<project-id>.codeengine.appdomain.cloud/mcp"
-    }
-  }
-}

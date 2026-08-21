@@ -5,30 +5,10 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
+from building_blocks_mcp_remote.data_loader import REPO_BASE_URL, load_registry
 from building_blocks_mcp_remote.server import mcp
-from building_blocks_mcp_remote.registry import BUILDING_BLOCKS, REPO_BASE_URL
 
 logger = logging.getLogger(__name__)
-
-# Blocks known to have bob-modes directories with shipped content in the repo.
-# Verified by inspecting each /bob-modes folder; "Coming soon" placeholders are excluded.
-_BLOCKS_WITH_BOB_MODES = {
-    "agent-builder",
-    "multi-agent-orchestration",
-    "agent-ops",
-    "model-evaluation",
-    "real-time-guardrails",
-    "infrastructure-as-code",
-    "automated-resilience",
-    "automated-resource-mgmt",
-    "data-pipeline-ai-generated",
-    "text2sql",
-    "vector-search",
-    "rag",
-    "zero-copy",
-    "non-human-identity",
-}
-
 
 @mcp.tool()
 def list_bob_modes(
@@ -36,34 +16,33 @@ def list_bob_modes(
 ) -> dict:
     """List available Bob Modes (watsonx Orchestrate custom configuration packages).
 
-    Bob Modes are pre-configured profiles that guide AI assistants through
-    building block workflows. They include YAML rules, instructions, and
-    tool configurations packaged as downloadable ZIP files.
-
     A "Bob Mode" is any directory inside a `bob-modes/` subtree that contains
-    one or more .zip files. The discovery walks every nesting level under each
-    building block's repo path, so modes packaged inside sub-component folders
-    (e.g., `vector-search/milvus/bob-modes/...`) are surfaced too.
+    one or more .zip files. Discovery walks every nesting level under each
+    building block's repo path.
 
     Args:
-        block_id: Filter by building block. Omit to list Bob Modes across all blocks.
-            Examples: "agent-builder", "model-evaluation", "vector-search".
+        block_id: Filter by building block (e.g., "agent-builder"). Omit to list across all blocks.
     """
     try:
-        from building_blocks_mcp_remote.github_client import fetch_tree
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
 
-        if block_id and block_id not in BUILDING_BLOCKS:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+        if block_id and block_id not in blocks:
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",
             }
 
-        target_blocks = {block_id} if block_id else _BLOCKS_WITH_BOB_MODES
+        from building_blocks_mcp_remote.github_client import fetch_tree
+
+        # The full git tree is already in hand — every block is checked
+        # against it directly, so blocks that ship modes are discovered
+        # without any hardcoded list to maintain.
+        target_blocks = {block_id} if block_id else set(blocks)
         tree = fetch_tree()
 
         # Group every .zip under any */bob-modes/* path by its containing directory.
-        # Each unique directory == one Bob Mode (may contain multiple zips).
         modes_by_dir: dict[str, list[str]] = {}
         for item in tree:
             if item.get("type") != "blob":
@@ -78,7 +57,7 @@ def list_bob_modes(
 
         all_modes = []
         for bid in sorted(target_blocks):
-            block = BUILDING_BLOCKS.get(bid)
+            block = blocks.get(bid)
             if not block:
                 continue
             rp = block["repo_path"]
@@ -121,10 +100,6 @@ def get_bob_mode_info(
 ) -> dict:
     """Get detailed information about a specific Bob Mode, including its README.
 
-    Retrieves the README and file listing for a Bob Mode package. The README
-    typically contains installation instructions, configuration details, and
-    usage examples.
-
     Args:
         block_id: Building block identifier (e.g., "agent-builder").
         mode_name: Name of the Bob Mode (e.g., "agent-builder-base-mode",
@@ -132,9 +107,12 @@ def get_bob_mode_info(
             Use list_bob_modes to see all available modes.
     """
     try:
-        block = BUILDING_BLOCKS.get(block_id)
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+
+        block = blocks.get(block_id)
         if not block:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",
@@ -175,7 +153,6 @@ def get_bob_mode_info(
             if item["path"].startswith(f"{mode_path}/") and item["type"] == "blob"
         ]
 
-        # Find ZIP download URL
         zip_url = None
         for f in files:
             if f["name"].endswith(".zip"):
@@ -204,19 +181,17 @@ def download_bob_mode(
 ) -> dict:
     """Get the direct download URL for a Bob Mode ZIP file.
 
-    Returns a URL that can be used to download the Bob Mode package directly.
-    The ZIP contains the mode's YAML rules, instructions, and configuration files.
-
     Args:
         block_id: Building block identifier (e.g., "agent-builder").
-        mode_name: Name of the Bob Mode (e.g., "agent-builder-base-mode",
-            "domain-agent-builder", "voice-agent-builder").
-            Use list_bob_modes to see all available modes.
+        mode_name: Name of the Bob Mode. Use list_bob_modes to see available modes.
     """
     try:
-        block = BUILDING_BLOCKS.get(block_id)
+        reg = load_registry()
+        blocks = reg["BUILDING_BLOCKS"]
+
+        block = blocks.get(block_id)
         if not block:
-            valid_ids = sorted(BUILDING_BLOCKS.keys())
+            valid_ids = sorted(blocks.keys())
             return {
                 "status": "error",
                 "error": f"Unknown block_id '{block_id}'. Valid IDs: {valid_ids}",
@@ -227,7 +202,6 @@ def download_bob_mode(
         repo_path = block["repo_path"]
         tree = fetch_tree()
 
-        # Find the mode directory
         mode_path = None
         for item in tree:
             if (
@@ -245,7 +219,6 @@ def download_bob_mode(
                 "error": f"Bob Mode '{mode_name}' not found under '{block_id}'. Use list_bob_modes to see available modes.",
             }
 
-        # Find ZIP files in the mode directory
         zip_files = [
             item["path"]
             for item in tree
@@ -270,7 +243,7 @@ def download_bob_mode(
             "mode_name": mode_name,
             "zip_file": zip_name,
             "download_url": download_url,
-            "instructions": f"Download the ZIP from the URL above, then extract and install the Bob Mode in watsonx Orchestrate.",
+            "instructions": "Download the ZIP from the URL above, then extract and install the Bob Mode in watsonx Orchestrate.",
         }
     except Exception as exc:
         logger.error("download_bob_mode failed: %s", exc, exc_info=True)
