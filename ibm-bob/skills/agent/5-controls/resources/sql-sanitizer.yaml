@@ -1,0 +1,34 @@
+# SQL Sanitizer control — blocks dangerous SQL on tool inputs
+# Apply with: orchestrate controls import -f sql-sanitizer.yaml
+# Edit tool_names to match your deployment.
+#
+# Artifact: SQLSanitizer (tool only)
+# Hook: tool_pre_invoke (fires before tool executes)
+# Priority: 1 (blocking — runs first)
+
+spec_version: v1
+kind: control
+control:
+  artifact_name: SQLSanitizer
+  name: sql_injection_guard
+  display_name: SQL Injection Guard
+  description: Blocks DROP/TRUNCATE/ALTER/GRANT/REVOKE and unscoped DELETE/UPDATE on tool inputs
+  hooks:
+    - tool_pre_invoke
+  priority: 1
+  config:
+    block_on_violation: true
+    strip_comments: true
+    block_delete_without_where: true
+    block_update_without_where: true
+    require_parameterization: false
+    blocked_statements:
+      - "\\bDROP\\b"
+      - "\\bTRUNCATE\\b"
+      - "\\bALTER\\b"
+      - "\\bGRANT\\b"
+      - "\\bREVOKE\\b"
+  # agent_names: []
+  tool_names:
+    - my-db-tool    # replace with your tool's name
+  # model_names: []

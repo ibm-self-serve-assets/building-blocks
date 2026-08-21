@@ -17,14 +17,13 @@ Queries: "MCP toolkit YAML schema", "orchestrate toolkits add", etc.
 
 ## ADK Version Compatibility
 
-### Current Version (ADK v1.15.0)
+### Current Version (ADK v2.15.0)
 ```bash
-orchestrate toolkits import -f toolkit.yaml
-```
+# Canonical command — use this
+orchestrate toolkits add -f toolkit.yaml
 
-### Future Version (ADK v2.0)
-```bash
-orchestrate toolkits add -f toolkit.yaml  # "import" renamed to "add"
+# Legacy alias — still works but 'add' is preferred
+orchestrate toolkits import -f toolkit.yaml
 ```
 
 **Always check your version:**

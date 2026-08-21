@@ -1,0 +1,40 @@
+# PII Filter control — redacts SSN, email, phone, credit card, bank account
+# Apply with: orchestrate controls import -f pii-filter.yaml
+# Edit agent_names to match your deployment (use agent display_name).
+#
+# Artifact: pii_filter (agent only)
+# Hooks: agent_pre_invoke + agent_post_invoke (double-guard)
+# Priority: 50 (runs after any blocking controls at priority 1-10)
+
+spec_version: v1
+kind: control
+control:
+  artifact_name: PII Filter
+  name: pii_filter_guard
+  display_name: PII Filter Guard
+  description: Redacts SSN, email, phone, credit card, and bank account numbers on agent input and output
+  hooks:
+    - agent_pre_invoke
+    - agent_post_invoke
+  priority: 50
+  config:
+    detect_ssn: true
+    detect_email: true
+    detect_phone: true
+    detect_credit_card: true
+    detect_bank_account: true
+    detect_passport: false
+    detect_driver_license: false
+    detect_ip_address: false
+    detect_date_of_birth: false
+    detect_medical_record: false
+    detect_bsn: false
+    default_mask_strategy: redact
+    redaction_text: "[REDACTED]"
+    block_on_detection: false
+    log_detections: true
+    include_detection_details: false
+  agent_names:
+    - my-agent    # replace with your agent's display_name
+  # tool_names: []
+  # model_names: []

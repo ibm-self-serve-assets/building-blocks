@@ -19,11 +19,9 @@ Comprehensive checklist for verifying agent development quality and completeness
 ### Planning Phase
 - [ ] Searched MCP docs for relevant patterns
 - [ ] Created IBM-recommended project structure
-- [ ] Switched to Plan mode
 - [ ] Created comprehensive plan.md
 - [ ] Included all required plan sections
 - [ ] Got explicit plan approval from user
-- [ ] Switched back to Agent Builder mode
 
 ## Implementation Checklist
 
@@ -134,6 +132,18 @@ Comprehensive checklist for verifying agent development quality and completeness
 - [ ] Verified KB retrieval
 - [ ] Verified connection authentication
 - [ ] All issues resolved
+
+## Controls Gate Checklist
+
+- [ ] Ran Controls Recommendation Engine (Phase 5.5) before presenting deliverables
+- [ ] Analysed agent purpose, data sensitivity, and tools for control signals
+- [ ] Presented specific named recommendations with reasons (not a generic yes/no)
+- [ ] Used ✅ RECOMMENDED / ⚪ OPTIONAL format
+- [ ] Waited for user response before proceeding
+- [ ] If controls selected: generated `controls/` folder with one YAML per control
+- [ ] If controls selected: used correct `spec_version: v1` / `artifact_name:` / `agent_names:` schema
+- [ ] If controls selected: added `orchestrate controls import` lines to `deploy.sh`
+- [ ] Did NOT embed controls in the agent YAML `plugins` field
 
 ## Deployment Checklist
 

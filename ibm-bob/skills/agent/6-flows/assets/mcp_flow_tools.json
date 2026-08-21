@@ -1,0 +1,134 @@
+{
+  "_comment": "MCP Flow Server — tool schema reference for the purchase_approval flow example.",
+  "_docs": "https://developer.watson-orchestrate.ibm.com/tools/flows/mcp",
+  "_connection": {
+    "endpoint": "https://api.<hostname>/instances/<tenant_id>/v1/orchestrate/flows/mcp",
+    "auth": "Bearer <access_token derived from API key>",
+    "note": "Access token has limited validity — refresh and re-register on expiry."
+  },
+
+  "tools": {
+    "synchronous_execution": {
+      "name": "run_flow__purchase_approval",
+      "description": "Process a purchase approval request through the approval workflow. Waits for completion or user input.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "item":          { "type": "string",  "title": "Item Name" },
+          "amount":        { "type": "number",  "title": "Amount" },
+          "justification": { "type": "string",  "title": "Business Justification" },
+          "_context": {
+            "type": "object",
+            "description": "Optional execution context",
+            "properties": {
+              "thread_id":            { "type": "string", "description": "Agent thread ID" },
+              "environment_id":       { "type": "string", "enum": ["draft", "live"] },
+              "channel_id":           { "type": "string" },
+              "channel_capabilities": { "type": "array", "items": { "type": "string" } },
+              "agent_id":             { "type": "string" },
+              "agent_version":        { "type": "number" }
+            }
+          }
+        },
+        "required": ["item", "amount"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "output": {
+            "type": "object",
+            "properties": {
+              "approval_status": { "type": "string", "enum": ["approved", "rejected"] },
+              "approver":        { "type": "string" },
+              "comments":        { "type": "string" }
+            }
+          },
+          "status": {
+            "type": "object",
+            "required": ["instance_id", "state"],
+            "properties": {
+              "instance_id": { "type": "string", "description": "Flow run ID" },
+              "name":        { "type": "string" },
+              "state":       { "type": "string", "enum": ["working", "input_required", "completed", "failed"] },
+              "created_at":  { "type": "string", "description": "ISO 8601" },
+              "updated_at":  { "type": "string", "description": "ISO 8601" }
+            }
+          }
+        },
+        "required": ["status"]
+      }
+    },
+
+    "asynchronous_execution": {
+      "name": "run_flow_async__purchase_approval",
+      "description": "Start the purchase approval flow and return immediately with instance_id (claim-check pattern).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "item":          { "type": "string" },
+          "amount":        { "type": "number" },
+          "justification": { "type": "string" },
+          "_context":      { "type": "object" }
+        },
+        "required": ["item", "amount"]
+      },
+      "outputSchema": {
+        "type": "object",
+        "required": ["instance_id"],
+        "properties": {
+          "instance_id": { "type": "string", "description": "Started flow instance ID — use with query tool" }
+        }
+      }
+    },
+
+    "status_query": {
+      "name": "query_flow__purchase_approval",
+      "description": "Query status and output of a running flow instance by instance_id.",
+      "inputSchema": {
+        "type": "object",
+        "required": ["instance_id"],
+        "properties": {
+          "instance_id": { "type": "string", "description": "Flow run ID from async start" }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "output": {
+            "type": "object",
+            "description": "Present only when state = completed"
+          },
+          "status": {
+            "type": "object",
+            "required": ["instance_id", "name", "state", "created_at", "updated_at"],
+            "properties": {
+              "instance_id": { "type": "string" },
+              "name":        { "type": "string" },
+              "state":       { "type": "string", "enum": ["working", "input_required", "completed", "failed"] },
+              "created_at":  { "type": "string" },
+              "updated_at":  { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "management_tools": ["subscribe_flow", "replay_flow_pending_elicitation", "submit_flow_elicitation", "list_flows", "cancel_flow"],
+
+  "elicitation": {
+    "default_timeout_seconds": 300,
+    "recovery": {
+      "description": "If elicitation times out, submit response with submit_flow_elicitation",
+      "payload": {
+        "instance_id":     "<flow-instance-id>",
+        "elicitation_id":  "<task-id from elicitation>",
+        "response": {
+          "action":  "accept",
+          "content": { "...user response fields...": "" }
+        }
+      }
+    }
+  }
+}

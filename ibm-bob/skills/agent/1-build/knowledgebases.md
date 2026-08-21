@@ -66,6 +66,8 @@ Built-in constraints:
 - `.docx`, `.pdf`, `.pptx`: max 25 MB.
 - `.csv`, `.html`, `.txt`: max 5 MB.
 - If `embeddings_model_name` is omitted, the default is `ibm/slate-125m-english-rtrvr-v2`.
+- Embedding model can be an IBM-hosted model (`ibm/slate-125m-english-rtrvr-v2`) or a virtual model for third-party providers using the `virtual-model/<provider>/<model>` pattern — for example, `virtual-model/openai/text-embedding-3-small`.
+- `vector_index` also supports `extraction_strategy: standard` and the `chunk_size` / `chunk_overlap` fields for document chunking control.
 
 ## Attach a knowledge base to an agent
 
@@ -104,12 +106,13 @@ Use when content is already embedded and indexed in Milvus.
 
 | Field | Note |
 |---|---|
-| `grpc_host` / `grpc_port` | Use GRPC host/port, not HTTP host/port. |
+| `grpc_host` / `grpc_port` | Use GRPC host/port, not HTTP host/port. Connection URL must be the GRPC URL set via `--server-url`. |
 | `database` | Milvus database name. |
 | `collection` | Collection containing the indexed content. |
 | `index` | Milvus index name, if required. |
 | `embedding_model_id` | Must match the model used for ingestion. |
 | `filter` | Optional provider-side filter expression. |
+| `server_cert` | Optional. Custom TLS/server certificate for self-signed cert Milvus deployments. |
 | `field_mapping` | Required so Orchestrate can identify title/body/url fields. |
 
 ### Elasticsearch external KB fields
@@ -229,6 +232,18 @@ orchestrate knowledge-bases import -f knowledgebases/contract_playbook_kb.yaml -
 
 Import external KB with credentials:
 
+The `--category` value depends on the provider:
+
+| `--category` | Provider |
+|---|---|
+| `milvus` | Milvus |
+| `elastic_search` | Elasticsearch |
+| `custom_service` | Custom search |
+| `astra_db` | AstraDB |
+| `open_search` | OpenSearch |
+
+The `--server-url` flag on `connections configure` is **required** for all external KB providers — it sets the URL (including port) that Orchestrate uses to reach your content source. If omitted, you will get a `Connection credential validation failed:` error on import.
+
 ```bash
 orchestrate connections add \
   -a elastic_credentials \
@@ -239,7 +254,8 @@ orchestrate connections configure \
   -a elastic_credentials \
   --env draft \
   --kind basic \
-  --type team
+  --type team \
+  --server-url "https://my.elasticsearch-host.com:9200"
 
 orchestrate connections set-credentials \
   -a elastic_credentials \
@@ -252,10 +268,36 @@ orchestrate knowledge-bases import \
   -a elastic_credentials
 ```
 
+For Milvus, use the GRPC URL and port (not HTTP):
+
+```bash
+orchestrate connections add \
+  -a milvus_credentials \
+  --component knowledge \
+  --category milvus
+
+orchestrate connections configure \
+  -a milvus_credentials \
+  --env draft \
+  --kind basic \
+  --type team \
+  --server-url "grpcs://my.milvus-host.com:19530"
+
+orchestrate connections set-credentials \
+  -a milvus_credentials \
+  --env draft \
+  -u "$MILVUS_USER" \
+  -p "$MILVUS_PASSWORD"
+
+orchestrate knowledge-bases import \
+  -f knowledgebases/milvus_kb.yaml \
+  -a milvus_credentials
+```
+
 Check ingestion/index status:
 
 ```bash
-orchestrate knowledge-bases status --name contract_playbook_kb
+orchestrate knowledge-bases get-status --name contract_playbook_kb
 ```
 
 Update by re-importing the same KB name:
@@ -273,10 +315,18 @@ orchestrate knowledge-bases list
 Export KB spec:
 
 ```bash
+# Export by name
 orchestrate knowledge-bases export \
   -n contract_playbook_kb \
   -o contract_playbook_kb.yaml
+
+# Export by ID
+orchestrate knowledge-bases export \
+  -i <knowledge-base-id> \
+  -o contract_playbook_kb.yaml
 ```
+
+> **Note:** Documents cannot be exported. The watsonx Orchestrate platform does not store documents in a non-indexed state — only the KB specification (metadata, configuration) is exported.
 
 Remove:
 
@@ -298,4 +348,4 @@ When generating a knowledge base file:
 8. Use `query_source: Agent` for dynamic mode.
 9. Use `idk_message` and confidence thresholds when hallucination risk matters.
 10. Attach the KB to agents by adding its exact name under `knowledge_base`.
-11. Verify indexing with `orchestrate knowledge-bases status --name <kb_name>` before relying on it in an agent.
+11. Verify indexing with `orchestrate knowledge-bases get-status --name <kb_name>` before relying on it in an agent.

@@ -184,16 +184,26 @@ def wait_for_run_completion(host, instance_id, token, run_id, max_wait=30):
 ```python
 def wait_with_backoff(host, instance_id, token, run_id, max_wait=30):
     """Poll with exponential backoff: 0.5s, 1s, 2s, 4s, 8s"""
+    url = f"https://{host}/instances/{instance_id}/v1/orchestrate/runs/{run_id}"
+    headers = {"Authorization": f"Bearer {token}"}
     wait_time = 0.5
     max_wait_time = 8
-    
+    start_time = time.time()  # initialise before the loop
+
     while time.time() - start_time < max_wait:
-        # Check status...
+        response = requests.get(url, headers=headers)
+        run_details = response.json()
+        status = run_details.get('status')
+
         if status == 'completed':
             return run_details
-        
+        elif status in ('failed', 'cancelled'):
+            raise RuntimeError(f"Run {status}: {run_details.get('last_error')}")
+
         time.sleep(wait_time)
         wait_time = min(wait_time * 2, max_wait_time)
+
+    raise TimeoutError(f"Run did not complete within {max_wait} seconds")
 ```
 
 ## Quick Diagnostic Checklist

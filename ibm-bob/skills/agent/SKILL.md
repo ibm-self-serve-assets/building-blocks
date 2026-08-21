@@ -47,11 +47,64 @@ Detect intent and navigate to the correct domain:
 | User intent | Domain | Folder |
 |---|---|---|
 | "create agent", "build tool", "knowledge base", "deploy agent", "connections", "embedded chat" | **Build** | `1-build/` |
-| "multi-agent", "workflow", "A2A", "AI Gateway", "agentic flow", "MCP server", "agent swarm" | **Orchestrate** | `2-orchestrate/` |
+| "multi-agent", "A2A", "AI Gateway", "MCP server", "agent swarm", "agent collaboration" | **Orchestrate** | `2-orchestrate/` |
+| "agentic workflow", "@flow", "flow decorator", "foreach", "parallel flow", "loop", "script node", "prompt node", "timer node", "decisions node", "docext", "docproc", "docclassifier", "userflow", "form", "callbacks", "masking", "multi-language flow" | **Flows** | `6-flows/` — start at `getting-started.md` |
 | "integrate into app", "REST API", "Python client", "Node.js", "call agent from code" | **Integrate** | `3-integrate/` |
 | "voice agent", "phone channel", "STT", "TTS", "WhatsApp", "SMS", "Slack channel" | **Voice** | `4-voice/` |
+| "controls", "guardrails", "PII filter", "policy", "rate limit", "SQL sanitizer", "content safety", "secrets detector", "regex filter", "model fallback", "load balance" | **Controls** | `5-controls/` — start at `getting-started.md` |
+| "evaluate", "agent evaluation", "benchmark agent", "test agent performance" | **Evaluations** | See `orchestrate evaluations --help` |
+| "observability", "traces", "trace export", "monitoring" | **Observability** | See `orchestrate observability --help` |
 
 Tasks that span multiple domains (e.g., build then integrate) simply use both domains in sequence.
+
+### Controls — 3-path routing decision
+
+When controls intent is detected, or when building an agent (Domain 1), apply this decision tree:
+
+```
+Is the user building a new agent from scratch?
+│
+├── YES (Domain 1 + controls gate)
+│     → Complete agent build files first
+│     → MANDATORY: Before presenting final deliverables, run the
+│       Controls Recommendation Engine (see 5-controls/getting-started.md):
+│          1. Analyse what was built (purpose, data sensitivity, tools)
+│          2. Recommend specific controls with reasons
+│          3. Let user pick which to add (all / some / none)
+│          ├── User picks some → Path A: generate controls import
+│          │   YAML files + CLI commands (controls are standalone,
+│          │   NOT embedded in agent YAML)
+│          └── User skips → present final deliverables
+│
+└── NO — is the user asking about controls only?
+      │
+      ├── Does an agent/tool/model already exist in WXO?
+      │     ├── YES → Path C: inspect existing controls with
+      │     │         'orchestrate controls list --agent <name>'
+      │     │         then generate create/update commands
+      │     └── NO  → Path B: controls-only workflow
+      │               generate CLI commands / import YAML files
+      │               and hand to user to execute
+      └── (either way) → open 5-controls/getting-started.md
+```
+
+**Path A** (new agent + controls): `1-build/getting-started.md` Phase 5.5 → `5-controls/getting-started.md`
+**Path B** (controls only): `5-controls/getting-started.md` → `5-controls/recipes.md`
+**Path C** (existing agent + controls): `5-controls/getting-started.md` → `5-controls/cli-reference.md`
+
+> ⚠️ **Controls are always standalone resources** — they are NEVER embedded inside the agent YAML. The agent YAML `plugins` field is a different system (built-in plugins only). Controls are imported separately via `orchestrate controls import` and bound to agents by display name.
+
+### Additional First-Class CLI Commands (not domain-specific)
+
+These `orchestrate` commands are available but not covered by the 4 domains above:
+
+| Command | Purpose |
+|---|---|
+| `orchestrate controls` | Bind policy artifacts (PII filter, guardrails, rate limiter, SQL sanitizer, secrets detector, regex pattern, model fallback/retry/load-balance) to agents, tools, and models |
+| `orchestrate evaluations` | Evaluate agent performance against benchmark datasets in your active environment |
+| `orchestrate observability` | Search and export trace data from the observability platform for analysis in third-party tools |
+| `orchestrate settings` | Configure environment-level settings for your active env |
+| `orchestrate partners` | Generate a submission-ready agent artifact package for partner-built agents |
 
 ---
 
@@ -68,12 +121,22 @@ Create individual agents, Python tools, knowledge bases, connections, and channe
 - **Embedded chat** for web integration
 
 ### Domain 2 — Orchestrate (`2-orchestrate/`)
-Build sophisticated multi-agent systems, agentic workflows, and cross-framework integrations.
+Build sophisticated multi-agent systems and cross-framework integrations.
 - **Multi-agent architectures**: supervisor-worker, agent swarms, hierarchical systems
-- **Agentic workflows**: `@flow` decorator, conditional branching, loops, parallel execution, human-in-the-loop
 - **MCP server integration**: local and remote MCP toolkits
 - **AI Gateway**: connect OpenAI, Anthropic, Google Gemini, Azure OpenAI, AWS Bedrock, and 8+ more providers
 - **Agent communication**: native collaboration, A2A protocol v0.3.0, external chat API
+
+### Domain 6 — Flows (`6-flows/`)
+Build agentic workflows — Python-code-first orchestration of agents, tools, and humans with the `@flow` decorator.
+- **14 node types**: agent, tool, script, conditions, parallel, parallel_conditions, foreach, loop, timer, prompt, decisions, userflow, docext/docproc/docclassifier
+- **Forms and user activity**: `userflow()`, `form()` with 15+ field types, dynamic forms, multi-user assignment
+- **Data mapping**: `map_input()`/`map_output()`, `DataMap`, `private_schema`, sensitive data masking (`MaskingPolicy`)
+- **Document processing** (Public Preview): field extraction (`docext`), text extraction + KVP (`docproc`), classification (`docclassifier`)
+- **Callbacks**: `aflow.add_callback()` with 8 `FlowCallbackEventKind` events for audit/monitoring
+- **MCP Flow Server** (Public Preview): expose flows as MCP tools with sync/async/query patterns and elicitation handling
+- **Error handling**: `NodeErrorHandlerConfig` with retry, show_message, and branch patterns
+- **Multi-language**: `target_locales()`, `source_locale()`, translation CSV import/export
 
 ### Domain 3 — Integrate (`3-integrate/`)
 Integrate deployed agents into applications via REST APIs across all platforms.
@@ -86,6 +149,16 @@ Add voice capabilities to agents with STT/TTS and channel integrations.
 - **Voice configuration**: Watson STT/TTS, Google Cloud, Azure Cognitive Services
 - **Channels**: Phone (Genesys), WhatsApp (Twilio), SMS (Twilio), Slack (BYO), Webchat (built-in)
 - **Voice optimization**: response length, conversational language, SSML, pacing, confirmation patterns
+
+### Domain 5 — Controls (`5-controls/`)
+Protect agents, tools, and models with policy controls — no code changes required.
+- **13 artifact types** across 3 asset categories (agent, tool, model)
+- **Agent controls**: Guardrails (content safety), pii_filter, SecretsDetection, RegexPattern, OutputLengthGuardPlugin
+- **Tool controls**: SQLSanitizer, RateLimiterPlugin (+ Guardrails, SecretsDetection, OutputLengthGuardPlugin)
+- **Model controls**: fallback (provider failover), load_balance (weighted distribution), retry_mode
+- **Execution hooks**: `agent_pre_invoke`, `agent_post_invoke`, `tool_pre_invoke`, `tool_post_invoke`, `prompt_pre_fetch`, `prompt_post_fetch`
+- **Priority ordering**: lower number = fires first (blocking controls at 1–10, redaction at 50–90, logging at 100+)
+- **Deployment**: YAML import/export for version control and cross-env deployment
 
 ---
 
@@ -129,7 +202,6 @@ orchestrate env activate MY_ENV -a WXO_API_KEY
 
 ### Domain 2 — Orchestrate (`2-orchestrate/`)
 - `discovery-workflow.md` — Requirements gathering, architecture questionnaire, ADK doc search
-- `workflow-patterns.md` — `@flow` decorator, agent/tool/branch/foreach/loop/human nodes
 - `agent-communication.md` — A2A v0.3.0, external chat protocol, LangGraph integration, native collaboration
 - `mcp-integration.md` — Local/remote MCP toolkits, ADK version compatibility, tool naming
 - `ai-gateway-integration.md` — Provider templates (OpenAI, Anthropic, Google, Azure, AWS Bedrock, Mistral, Groq, Ollama), model policies
@@ -141,6 +213,26 @@ orchestrate env activate MY_ENV -a WXO_API_KEY
 - `resources/data_processing_workflow.py` — Sequential workflow with validation
 - `resources/approval_workflow.py` — Human-in-the-loop approval workflow
 - `resources/deploy_orchestration.sh` — Complete deployment automation script
+
+### Domain 6 — Flows (`6-flows/`)
+- `getting-started.md` — `@flow` decorator (all params incl. `private_schema`, `schedulable`), import CLI, testing, key concepts, expression reference, `FlowContextWindow`
+- `node-reference.md` — All 14 node types: agent, tool, script, conditions (branch), parallel, parallel_conditions, foreach, loop, timer, prompt, decisions, userflow, docext, docproc, docclassifier
+- `forms-and-userflow.md` — `userflow()`, `form()`, all 15+ field types, dynamic forms (visibility/label/value-source behaviours), multi-user assignment, multi-language support
+- `data-mapping.md` — `map_input()`, `map_output()`, `DataMap`+`Assignment`, `private_schema`, `aflow.mask_property()` with `MaskingPolicy`/`InputPolicy`, expression reference
+- `document-processing.md` — `docproc()` (text extraction, KVP schemas, `PageRange`), `docext()` (`DocExtConfigField`, `DocExtConfigTableField`, `available_options`, OCR language), `docclassifier()`, file limits
+- `callbacks-and-mcp.md` — `aflow.add_callback()`, `FlowCallbackEventKind` (8 events), callback payload schema, MCP Flow Server (sync/async/query tools, elicitation handling)
+- `error-handling.md` — `NodeErrorHandlerConfig` (`on_error: branch/show_message`, `max_retries`, `retry_interval`, `error_edge_id`)
+- `assets/hello_flow.py` — Minimal @flow + tool sequence + test harness
+- `assets/approval_flow.py` — Human-in-the-loop form, multi-user assignment, error branching
+- `assets/masking_flow.py` — Masking across all node types (input, private, script, tool, userflow)
+- `assets/document_extraction_flow.py` — docproc KVP, docext with tables + available_options, docclassifier, OCR language
+- `assets/multi_language_flow.py` — target_locales, source_locale, translation CLI workflow
+- `assets/parallel_flow.py` — parallel() + parallel_conditions() multi-phase delivery
+- `assets/foreach_flow.py` — foreach + ForeachPolicy.SEQUENTIAL / PARALLEL
+- `assets/callback_flow.py` — add_callback() with flow and task lifecycle events
+- `assets/decisions_flow.py` — Decision table with programmatically built rules
+- `assets/timer_loop_flow.py` — Polling loop with timer node
+- `assets/mcp_flow_tools.json` — MCP Flow Server tool schema reference
 
 ### Domain 3 — Integrate (`3-integrate/`)
 - `getting-started.md` — Platform detection, credential setup, connection testing
@@ -165,6 +257,20 @@ orchestrate env activate MY_ENV -a WXO_API_KEY
 - `resources/credentials.sample.yaml` — YAML credential template
 - `resources/.env.sample` — Environment variables template
 
+### Domain 5 — Controls (`5-controls/`)
+- `getting-started.md` — Discovery questionnaire, asset-type matrix, hook cheat-sheet, pitfalls
+- `cli-reference.md` — All 10 commands with every flag and live output examples
+- `artifact-types.md` — Full config schemas for all 13 artifact types (verified live)
+- `hooks-and-priority.md` — Execution flow diagram, priority rules, hook selection guide
+- `recipes.md` — 16 copy-paste recipes covering PII, guardrails, secrets, SQL, rate limits, model resilience
+- `import-export.md` — YAML file schema, cross-env deployment workflow
+- `troubleshooting.md` — Common errors (422, unbound controls, 2.8.0 binary, --type flag)
+- `resources/pii-filter.yaml` — Ready-made PII filter control
+- `resources/content-guardrails.yaml` — Jailbreak + secrets + regex guard stack
+- `resources/sql-sanitizer.yaml` — SQL sanitizer + rate limiter for tools
+- `resources/model-resilience.yaml` — Model fallback + retry controls
+- `resources/apply-controls.sh` — Deployment script for all resource files
+
 ---
 
 ## Critical Principles
@@ -176,10 +282,9 @@ orchestrate env activate MY_ENV -a WXO_API_KEY
 - Search multiple times with different queries if needed
 
 ### 2. Version Awareness
-- **ADK v1.15.0**: uses `orchestrate toolkits import`
-- **ADK v2.0**: will use `orchestrate toolkits add`
+- **ADK v2.15.0 (current)**: uses `orchestrate toolkits add` — `toolkits import` is the legacy alias, still works but `add` is the canonical command
 - **A2A protocol**: use v0.3.0 (v0.2.1 is deprecated)
-- **`@flow` decorator**: current workflow API (FlowBuilder is deprecated)
+- **`@flow` decorator**: the ONLY current workflow API — `FlowBuilder` class-based API is fully deprecated and removed
 - **API version**: use v1 orchestrate endpoints (v2 does not exist)
 - Always check: `orchestrate --version`
 
@@ -200,6 +305,14 @@ Never run `orchestrate import/deploy/configure/delete` directly. Always create d
 - Keep responses under 30 seconds when spoken
 - No visual formatting (bullets, tables) in voice responses
 - Always test STT/TTS quality early
+
+### 7. Controls Principles (Domain 5)
+- `--hook` is required on `create` — omitting it causes `422 Unprocessable Entity`
+- `--agent` takes the **display_name**, not the internal name or UUID
+- Creating without `--agent`/`--tool`/`--model` creates an unbound control (no effect)
+- `--agent`/`--hook` in `update` **replace** existing values — re-specify everything you want to keep
+- All detection flags in Guardrails / pii_filter / SecretsDetection default to `false` — must opt in
+- `orchestrate --version` must show `2.15.0` — if it shows `2.8.0`, activate the venv first
 
 ---
 

@@ -1,0 +1,45 @@
+# Model fallback control — route to Granite when primary model returns 429/500/503/504
+# Apply with: orchestrate controls import -f model-resilience.yaml
+# Edit model_names to match your deployment.
+#
+# Artifact: fallback (model only)
+# Note: model controls use no hooks (hooks field omitted or empty)
+# Priority: 100 (default)
+#
+# For retry-only (no fallback), use retry_mode artifact instead:
+#   artifact_name: Retry
+#   config: { Retry: { strategy: { mode: single }, retry: { attempts: 3, on_status_codes: [429,500,502] }, targets: [{ provider: watsonx, override_params: { model: ibm/granite-3-8b-instruct } }] } }
+
+spec_version: v1
+kind: control
+control:
+  artifact_name: Fallback
+  name: primary_model_fallback
+  display_name: Primary Model Fallback
+  description: Fails over to IBM Granite 3 8B when primary model returns error codes 429/500/502/503/504
+  hooks: []
+  priority: 100
+  config:
+    fallBack:
+      strategy:
+        mode: fallback
+        on_status_codes:
+          - 429
+          - 500
+          - 502
+          - 503
+          - 504
+      retry:
+        attempts: 1
+        on_status_codes:
+          - 429
+          - 500
+          - 502
+      targets:
+        - provider: watsonx
+          override_params:
+            model: ibm/granite-3-8b-instruct
+  # agent_names: []
+  # tool_names: []
+  model_names:
+    - gpt-4o    # replace with your primary model name

@@ -10,11 +10,11 @@ Step-by-step workflows for building new voice agents and migrating existing text
 #### Step 1: Explore Environment
 Check existing resources in watsonx Orchestrate:
 ```bash
-wxo agent list
-wxo voice-config list
-wxo channel list
-wxo phone-config list
-wxo tool list
+orchestrate agents list
+orchestrate voice-configs list
+orchestrate channels list
+orchestrate phone list
+orchestrate tools list
 ```
 
 Search ADK documentation:

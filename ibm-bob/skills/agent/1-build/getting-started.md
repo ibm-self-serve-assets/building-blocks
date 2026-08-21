@@ -238,11 +238,13 @@ Query: "deployment best practices"
 ## Critical Rules
 
 1. **MANDATORY UNBYPASSABLE:** Search MCP docs before implementing ANY component
-2. **NEVER skip the discovery questionnaire** - understanding requirements is essential
-3. **NEVER start implementation without approved plan** - planning prevents rework
+2. **NEVER skip the discovery questionnaire** — understanding requirements is essential
+3. **NEVER start implementation without approved plan** — planning prevents rework
 4. **ALWAYS use snake_case** for all names (agents, tools, files)
 5. **ALWAYS test in draft** before promoting to live
 6. **ALWAYS cite MCP documentation** sources in responses
+7. **NEVER skip Phase 5.5** — always run the Controls Recommendation Engine before handing over deliverables. Present specific contextual recommendations, never a generic yes/no question
+8. **Controls are NEVER in agent YAML** — generate them as standalone `controls/*.yaml` files and import separately
 
 ## When User Says "Don't Use Tools"
 

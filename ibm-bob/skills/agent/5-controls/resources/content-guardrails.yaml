@@ -1,0 +1,37 @@
+# Content Guardrails control — jailbreak, HAP, harm, violence, sexual content, social bias
+# Apply with: orchestrate controls import -f content-guardrails.yaml
+# Edit agent_names to match your deployment (use agent display_name).
+#
+# Artifact: Content Guardrails (agent + tool)
+# Hooks: agent_pre_invoke + agent_post_invoke (double-guard)
+# Priority: 1 (blocking — runs first before any redaction controls)
+#
+# To add secrets detection or regex filtering, import the separate files:
+#   orchestrate controls import -f secrets-detector.yaml
+#   orchestrate controls import -f regex-pattern.yaml
+
+spec_version: v1
+kind: control
+control:
+  artifact_name: Content Guardrails
+  name: content_guardrails
+  display_name: Content Guardrails
+  description: Blocks jailbreak attempts, hate/abuse/profanity, harmful content, violence, sexual content, and social bias
+  hooks:
+    - agent_pre_invoke
+    - agent_post_invoke
+  priority: 1
+  config:
+    enabled:
+      jailbreak: true
+      hap: true
+      harm: true
+      violence: true
+      sexual_content: true
+      social_bias: true
+    block_message: Content blocked by guardrails controls
+  agent_names:
+    - my-agent    # replace with your agent's display_name
+  # tool_names:
+  #   - my-tool
+  # model_names: []
