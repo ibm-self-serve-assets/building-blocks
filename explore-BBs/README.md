@@ -24,9 +24,12 @@ install helper (`curl -LsSf https://astral.sh/uv/install.sh | sh` or
 2. Open the resulting `building-blocks-explorer/` folder as your workspace in Bob.
 3. Select **🧱 IBM Building Blocks Explorer** from Bob's mode picker.
 
-Try: *"I'm meeting an insurance client about a claims assistant — it needs
-to answer from their policy documents and be safe for production."* — or
-simply *"What skills are there for Terraform?"*
+Try:
+
+- *"Are there any Bob skills related to real-time data streaming?"*
+- *"I want help with access management and secrets for a client — can you help?"*
+- *"A retail client wants an in-store assistant that answers product and
+  policy questions from their documents — what should we build this with?"*
 
 ## How it works
 
