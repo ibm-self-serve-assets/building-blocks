@@ -5,7 +5,7 @@ description: Expert Confluent Cloud architect specializing in creating complete,
 
 # Data Streaming Confluent Skill
 
-## Critical Configuration Requirements
+## ⚠️ Critical Configuration Requirements
 
 **MANDATORY: These configurations MUST be included in all generated solutions to prevent deployment failures.**
 
@@ -47,6 +47,26 @@ resource "confluent_api_key" "kafka_producer" {
   }
 }
 ```
+
+### 3. Flink Table / Kafka Topic Ownership
+**Problem:** Creating a Kafka topic with Terraform and then running `CREATE TABLE IF NOT EXISTS` for the same name can leave Flink using the already-inferred table (including raw `VARBINARY` columns when schemas are not registered yet). `IF NOT EXISTS` does not redefine the existing inferred table.
+
+**MANDATORY Solution:** Pick exactly one ownership pattern for each Flink-visible stream:
+
+- **Default — Flink-owned typed stream:** do **not** create that topic with `confluent_kafka_topic`. Use Flink `CREATE TABLE`; Confluent creates the backing topic and Schema Registry subjects.
+- **Terraform-owned existing topic:** create the topic and register compatible key/value schemas first, then use the **inferred Flink table**. Do **not** run `CREATE TABLE` for the same topic. Use `ALTER TABLE` only for supported metadata/watermark/property changes.
+
+Never generate both `confluent_kafka_topic.<x>` and a Flink `CREATE TABLE <same-topic>` unless the generated design explicitly documents why they are not competing owners.
+
+### 4. Deterministic Continuous Flink SQL
+**Problem:** Continuous joins and keyed tables can emit updates/retractions (`UB`/`UA`/`D`), not only inserts. Non-deterministic functions in those pipelines can be rejected by the Flink planner with errors such as `can not satisfy the determinism requirement`.
+
+**MANDATORY Solution:** In continuous `INSERT INTO ... SELECT` jobs that can process updates:
+
+- Do **not** derive IDs, severity, status, `detected_at`, `assessed_at`, or filters from processing-time/random functions such as `LOCALTIMESTAMP`, `CURRENT_TIMESTAMP`, `NOW()`, `CURRENT_DATE`, `CURRENT_TIME`, `CURRENT_ROW_TIMESTAMP`, `UNIX_TIMESTAMP()`, `UUID()`, `RAND()` or `RAND_INTEGER()`.
+- Derive timestamps from source event-time columns (`occurred_at`, `event_time`, `reading_time`) or deterministic window boundaries (`window_start`, `window_end`).
+- Derive sink keys/IDs from stable business keys, source event IDs, and/or deterministic window boundaries.
+- If a rule truly must change only because wall-clock time passes, generate an explicit timer/tick event stream or use an event-time timer/process-table-function pattern. Do not hide wall-clock logic inside `NOW()`/`LOCALTIMESTAMP` in an updating join.
 
 ---
 
@@ -161,6 +181,38 @@ solution-name/
    - What does a successful deployment look like?
    - What queries validate the solution?
    - What metrics indicate proper operation?
+
+### Mandatory Flink SQL Generation Gate
+
+Before returning any generated Terraform/Flink solution, perform these checks on the generated artifacts. If any check fails, revise the solution before presenting it.
+
+1. **Build a stream ownership matrix** with one row per Kafka/Flink stream:
+   - stream/topic name;
+   - owner = `FLINK_CREATE_TABLE` or `TERRAFORM_TOPIC_INFERRED_TABLE`;
+   - key schema/key columns;
+   - value schema;
+   - append vs upsert intent.
+
+2. **Reject ownership collisions:** the intersection between Terraform `confluent_kafka_topic.topic_name` values and Flink `CREATE TABLE` names must be empty for Flink-owned typed streams. Existing Terraform-owned streams must use registered schemas + inferred tables instead of duplicate `CREATE TABLE` DDL.
+
+3. **Build a job determinism matrix** for every continuous `INSERT INTO ... SELECT`:
+   - source tables and whether they can emit updates/retractions;
+   - sink primary key;
+   - output/event timestamp source;
+   - ID/key derivation;
+   - time-based rule reference timestamp;
+   - join state strategy;
+   - forbidden/dynamic functions found = **NONE**.
+
+4. **Static forbidden-function scan for continuous jobs:** reject executable job SQL containing `LOCALTIMESTAMP`, `CURRENT_TIMESTAMP`, `CURRENT_TIME`, `CURRENT_DATE`, `CURRENT_ROW_TIMESTAMP`, `NOW(`, `UNIX_TIMESTAMP(`, `UUID(`, `RAND(` or `RAND_INTEGER(` unless the statement is explicitly a one-off/ad-hoc query rather than a continuous materialization job.
+
+5. **Key validation:** confirm every declared primary key is actually unique at the business grain. Use composite keys when needed. Confirm the sink key stays identical when the same logical result is updated/replayed.
+
+6. **Event-time validation:** output timestamps such as `detected_at`, `assessed_at`, `alert_time`, and deadline/severity calculations must come from source event time or deterministic window boundaries. If wall-clock progression is required, generate an explicit tick/timer-event design.
+
+7. **State validation:** every regular join/non-windowed aggregation must either be intentionally unbounded with explicit justification, have an acceptable TTL, or be redesigned as interval/window/temporal processing. Generate `EXPLAIN` SQL files for stateful jobs.
+
+8. **Deployment ordering:** processing statements depend on the Flink DDL or schema/inferred-table resources they reference, plus RBAC readiness. Never add a dependency from Flink DDL to a Terraform topic of the same name when Flink owns the stream.
 
 ### Phase 2: Infrastructure Generation
 
@@ -323,7 +375,33 @@ resource "time_sleep" "wait_for_rbac" {
 
 **Critical Flink SQL Rules:**
 
-❌ **NEVER Use:**
+### A. Topic/Table Ownership — choose one owner
+
+❌ **NEVER generate both of these for the same typed stream by default:**
+```hcl
+resource "confluent_kafka_topic" "orders" {
+  topic_name = "orders"
+}
+```
+```sql
+CREATE TABLE orders (...);
+```
+
+✅ **Preferred for a new typed Flink stream:** let Flink own it.
+```sql
+CREATE TABLE orders (...)
+WITH (
+  'key.format' = 'json-registry',
+  'value.format' = 'json-registry'
+);
+```
+Do not create `orders` separately with `confluent_kafka_topic`.
+
+✅ **For an existing/Terraform-owned topic:** create/register the topic and key/value schemas first and consume the inferred Flink table. Use `ALTER TABLE` when a supported table property or watermark needs changing; do not try to redefine it with `CREATE TABLE IF NOT EXISTS`.
+
+### B. Connector/table options
+
+❌ **NEVER use Apache Kafka connector properties in Confluent Cloud Flink SQL:**
 ```sql
 'connector' = 'kafka'
 'topic' = 'my-topic'
@@ -331,28 +409,80 @@ resource "time_sleep" "wait_for_rbac" {
 'bootstrap.servers' = '...'
 ```
 
-✅ **ALWAYS Use:**
+✅ **Use Schema Registry formats for typed tables:**
 ```sql
--- 1. Specify BOTH formats
 'key.format' = 'json-registry',
 'value.format' = 'json-registry'
-
--- 2. Use DISTRIBUTED BY for tables without PRIMARY KEY
-DISTRIBUTED BY (key_column) INTO 4 BUCKETS
-
--- 3. Key columns FIRST in schema
-CREATE TABLE example (
-  key_col STRING,        -- Distribution key FIRST
-  other_col STRING,
-  value_col INT
-) DISTRIBUTED BY (key_col) INTO 4 BUCKETS
-
--- 4. Set consumer isolation level on ALL tables
-'kafka.consumer.isolation-level' = 'read-uncommitted'
-
--- 5. Use ARRAY_AGG(DISTINCT column) for collecting distinct values
-ARRAY_AGG(DISTINCT hazard_type) as hazard_types
 ```
+
+- Use `DISTRIBUTED BY` for append tables without a declared primary key.
+- Use `PRIMARY KEY (...) NOT ENFORCED` only when it represents the real business/upsert key. Use composite keys when uniqueness requires multiple columns.
+- Keep key columns first in generated schemas for clarity and serializer alignment.
+- Default to `'kafka.consumer.isolation-level' = 'read-committed'`. Use `read-uncommitted` only when the user explicitly accepts possible duplicate/aborted transactional visibility in exchange for lower latency.
+
+### C. Determinism — mandatory for continuous update pipelines
+
+❌ **Do not use these to create keys, timestamps, severity/status, or predicates in continuous updating jobs:**
+```sql
+LOCALTIMESTAMP
+CURRENT_TIMESTAMP
+NOW()
+CURRENT_DATE
+CURRENT_TIME
+CURRENT_ROW_TIMESTAMP
+UNIX_TIMESTAMP()
+UUID()
+RAND()
+RAND_INTEGER(...)
+```
+
+✅ **Use source event time and stable keys instead:**
+```sql
+-- Stable ID for the same logical risk across replay/update
+CONCAT('RISK-', shipment_id, '-', requirement_id) AS risk_id
+
+-- Deterministic event-time timestamp
+CASE
+  WHEN shipment_occurred_at >= requirement_occurred_at THEN shipment_occurred_at
+  ELSE requirement_occurred_at
+END AS detected_at
+```
+
+For threshold logic that previously used `NOW()`/`LOCALTIMESTAMP`, evaluate relative to the latest relevant event time:
+```sql
+TIMESTAMPDIFF(
+  HOUR,
+  CASE
+    WHEN s.occurred_at >= r.occurred_at THEN s.occurred_at
+    ELSE r.occurred_at
+  END,
+  r.required_by
+)
+```
+
+If no new input arrives, that expression intentionally does not "wake up" as wall-clock time passes. If automatic time-based escalation is required, generate a timer/tick event stream or use an event-time timer pattern.
+
+### D. Joins and state
+
+- Assume regular joins between keyed/upsert tables can emit insert/update-before/update-after/delete changelogs.
+- Prefer interval joins, windowed joins, or temporal joins when business semantics permit.
+- If a regular join is unavoidable, define a defensible state-retention strategy. Generate `STATE_TTL` hints or `sql.state-ttl` only when expiry semantics are acceptable, and document that expired state can change later match behavior.
+- Use `EXPLAIN` for every non-trivial continuous `INSERT` before production deployment and review determinism and unbounded-state warnings.
+
+Example TTL hint:
+```sql
+SELECT /*+ STATE_TTL('s'='30d', 'r'='90d') */
+  ...
+FROM shipments s
+JOIN requirements r
+  ON s.material_id = r.material_id;
+```
+
+### E. Sink identity
+
+- Every upsert sink must have a stable, deterministic primary key.
+- Never use a generated current timestamp or random UUID as the logical primary key of a continuously updated result.
+- Windowed results should normally use business key + deterministic `window_start`/`window_end`.
 
 **Source Table Pattern:**
 ```sql
@@ -367,22 +497,23 @@ CREATE TABLE transactions (
 WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
 **Destination Table Pattern:**
 ```sql
 CREATE TABLE fraud_alerts (
-  customer_id STRING,              -- PRIMARY KEY columns FIRST
-  alert_time TIMESTAMP(3),
+  alert_id STRING,                 -- Stable deterministic key FIRST
+  customer_id STRING,
+  alert_time TIMESTAMP(3),         -- Source event time or window boundary
   alert_type STRING,
   risk_score DECIMAL(5, 2),
-  PRIMARY KEY (customer_id, alert_time) NOT ENFORCED
+  PRIMARY KEY (alert_id) NOT ENFORCED
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -417,7 +548,7 @@ CREATE TABLE orders (
 WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 
 -- Unnesting arrays with CROSS JOIN UNNEST
@@ -451,13 +582,16 @@ GROUP BY segment_id, window_start, window_end
 HAVING MIN(quality_score) < 0.8;
 ```
 
-4. **String Concatenation and Functions:**
+4. **Deterministic IDs and String Functions:**
 ```sql
--- Generate unique IDs
-CONCAT('ALERT-', CAST(UNIX_TIMESTAMP() AS STRING), '-', device_id) as alert_id
+-- Stable ID from business/event identity. Safe across replay and updates.
+CONCAT('ALERT-', device_id, '-', event_id) AS alert_id
 
--- Build messages
-CONCAT('Temperature alert: ', CAST(temperature AS STRING), '°C at ', device_id) as message
+-- For a window result, use the deterministic window boundary.
+CONCAT('ALERT-', device_id, '-', CAST(window_end AS STRING)) AS window_alert_id
+
+-- Build messages with deterministic source fields.
+CONCAT('Temperature alert: ', CAST(temperature AS STRING), '°C at ', device_id) AS message
 ```
 
 5. **Array Aggregation:**
@@ -507,6 +641,11 @@ resource "confluent_flink_statement" "create_source_table" {
 ```
 
 **Important:** Do NOT rely on partial provider-level Flink configuration. Always specify `rest_endpoint`, `properties`, and inline `credentials` on every `confluent_flink_statement`.
+
+**Statement ordering:**
+- A processing job must `depends_on` every Flink table/DDL statement it references.
+- Do not make a Flink `CREATE TABLE` depend on a Terraform topic of the same name when Flink is supposed to own that stream.
+- For Terraform-owned topics, make schema registration complete before any job that relies on the inferred table schema.
 
 #### Step 3: Environment Configuration
 
@@ -816,12 +955,18 @@ echo "✅ Cleanup complete!"
 - [ ] All outputs defined
 
 ### Flink SQL Validation
-- [ ] No forbidden properties
-- [ ] Both key.format and value.format specified
-- [ ] DISTRIBUTED BY or PRIMARY KEY present
-- [ ] Key columns first in schema
-- [ ] Consumer isolation level set on all tables
-- [ ] Statements depend on time_sleep
+- [ ] No forbidden Apache Kafka connector properties
+- [ ] Exactly one owner per stream: Flink `CREATE TABLE` **or** Terraform topic + registered schema/inferred table
+- [ ] Both `key.format` and `value.format` specified for Flink-owned typed tables
+- [ ] `DISTRIBUTED BY` or a business-correct `PRIMARY KEY` present
+- [ ] Composite primary keys used where one column is not truly unique
+- [ ] Sink keys/IDs are deterministic and stable across replay/update
+- [ ] Continuous updating jobs contain no processing-time/random functions (`LOCALTIMESTAMP`, `CURRENT_TIMESTAMP`, `NOW`, `UNIX_TIMESTAMP`, `UUID`, `RAND`, etc.) in keys, output timestamps, severity/status, or predicates
+- [ ] `detected_at` / `assessed_at` / alert timestamps come from source event time or deterministic window boundaries
+- [ ] Regular joins have bounded-state design (interval/window/temporal join preferred; otherwise documented TTL strategy)
+- [ ] `EXPLAIN` generated/reviewed for joins, aggregations, and other stateful jobs
+- [ ] Default consumer isolation is `read-committed`; any `read-uncommitted` use is explicitly justified
+- [ ] Statements depend on required RBAC/table/schema resources
 - [ ] Correct TVF syntax for windows
 
 ### Python Validation
@@ -862,11 +1007,17 @@ echo "✅ Cleanup complete!"
 9. ❌ Partial provider-level Flink settings
 
 ### Flink SQL Pitfalls
-1. ❌ Using forbidden connector properties
-2. ❌ Specifying only value.format
-3. ❌ Missing DISTRIBUTED BY
-4. ❌ Key columns not first
-5. ❌ Missing consumer isolation level
+1. ❌ Creating a Terraform Kafka topic and then trying to redefine the same inferred table with Flink `CREATE TABLE IF NOT EXISTS`
+2. ❌ Using `LOCALTIMESTAMP`, `CURRENT_TIMESTAMP`, `NOW()`, `UNIX_TIMESTAMP()`, `UUID()`, `RAND()` or similar functions in continuous update/retraction pipelines
+3. ❌ Generating sink IDs from wall-clock time or randomness instead of stable business/event keys
+4. ❌ Using a primary key that is not actually unique (for example `supplier_id` when state is really per `supplier_id + material_id`)
+5. ❌ Regular stream-stream joins with no interval/window/temporal bound and no documented TTL strategy
+6. ❌ Assuming a `NOW()`-based rule will automatically re-evaluate when no new event arrives
+7. ❌ Using forbidden Apache Kafka connector properties
+8. ❌ Specifying only `value.format` for a keyed typed table
+9. ❌ Missing `DISTRIBUTED BY` on append tables or missing a correct primary key on upsert tables
+10. ❌ Forcing `read-uncommitted` everywhere without understanding the delivery trade-off
+11. ❌ Deploying a stateful job without reviewing `EXPLAIN` warnings
 
 ### Python Pitfalls
 1. ❌ String key instead of object
@@ -896,7 +1047,7 @@ terraform >= 1.0     # Modern syntax
 ```sql
 'key.format' = 'json-registry',
 'value.format' = 'json-registry',
-'kafka.consumer.isolation-level' = 'read-uncommitted'
+'kafka.consumer.isolation-level' = 'read-committed'
 ```
 
 ### Python Dependencies
@@ -917,6 +1068,35 @@ solution-name/
 ├── config/         # Configuration
 └── README.md       # Quick start
 ```
+
+## Flink Determinism Failure Playbook
+
+If deployment reports a message similar to:
+
+```text
+column(s) ... generated by non-deterministic function ...
+can not satisfy the determinism requirement for correctly processing update message
+```
+
+apply this sequence:
+
+1. Read the relational plan and confirm whether the query emits updates/retractions (`UB`, `UA`, `D`).
+2. Remove dynamic/random functions from projected values, keys, timestamps, severity/status calculations, and filters.
+3. Replace processing-time values with source event-time columns or deterministic window boundaries.
+4. Replace random/time-based IDs with stable business keys or source event IDs.
+5. Check that the sink primary key represents the same logical result across updates.
+6. Run `EXPLAIN` again and review determinism plus state warnings before re-applying Terraform.
+
+Do **not** "fix" `LOCALTIMESTAMP` by swapping it for `CURRENT_TIMESTAMP` or `NOW()`; those are also dynamic in streaming execution.
+
+## Confluent Cloud References for These Rules
+
+The generation rules above follow current Confluent Cloud for Apache Flink behavior:
+
+- Determinism and non-deterministic updates: `https://docs.confluent.io/cloud/current/flink/concepts/determinism.html`
+- Confluent Cloud vs Apache Flink table/topic behavior: `https://docs.confluent.io/cloud/current/flink/concepts/comparison-with-apache-flink.html`
+- SQL hints and `STATE_TTL`: `https://docs.confluent.io/cloud/current/flink/reference/statements/hints.html`
+- Query profiler / unbounded state guidance: `https://docs.confluent.io/cloud/current/flink/operate-and-deploy/query-profiler.html`
 
 ## Usage Instructions
 

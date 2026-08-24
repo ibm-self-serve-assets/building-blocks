@@ -115,6 +115,10 @@ graph TB
 
 ### 3. Flink SQL Processing
 
+> **Ownership:** The tables below are Flink-owned typed streams. Do not also create Kafka topics with the same names through Terraform. Flink `CREATE TABLE` creates the backing topics/schemas. If adapting this example to existing Terraform-owned topics, register schemas first and use the inferred Flink tables instead.
+>
+> **Determinism:** Continuous jobs use event timestamps and stable source/business keys. They do not generate IDs or rule timestamps from the processing clock.
+
 #### Create Source Table
 ```sql
 CREATE TABLE sensor_readings (
@@ -129,7 +133,7 @@ CREATE TABLE sensor_readings (
 WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -149,7 +153,7 @@ CREATE TABLE sensor_metrics (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -169,7 +173,7 @@ CREATE TABLE alerts (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -186,7 +190,7 @@ CREATE TABLE device_status (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -213,7 +217,7 @@ GROUP BY device_id, warehouse_id, window_start, window_end;
 ```sql
 INSERT INTO alerts
 SELECT 
-  CONCAT('ALERT-', CAST(UNIX_TIMESTAMP() AS STRING), '-', device_id) as alert_id,
+  CONCAT('TEMP-', device_id, '-', CAST(reading_time AS STRING)) AS alert_id,
   device_id,
   warehouse_id,
   CASE 
@@ -257,22 +261,48 @@ FROM sensor_readings
 GROUP BY device_id, warehouse_id;
 ```
 
-#### Sensor Connectivity Alert Job
+#### Sensor Connectivity Alert Job — deterministic heartbeat pattern
+
+Do **not** use `CURRENT_TIMESTAMP`/`NOW()` against `device_status` in a continuous updating query. A current-time predicate is non-deterministic under changelog replay and does not provide a reliable timer by itself.
+
+Create an explicit per-device health-check event stream (for example, a lightweight producer emits one check per device every minute):
+
+```sql
+CREATE TABLE device_health_checks (
+  check_id STRING,
+  device_id STRING,
+  warehouse_id STRING,
+  check_time TIMESTAMP(3),
+  WATERMARK FOR check_time AS check_time - INTERVAL '10' SECONDS
+) DISTRIBUTED BY (device_id) INTO 4 BUCKETS
+WITH (
+  'key.format' = 'json-registry',
+  'value.format' = 'json-registry',
+  'kafka.consumer.isolation-level' = 'read-committed'
+);
+```
+
+Then evaluate offline state using the **check event time**:
+
 ```sql
 INSERT INTO alerts
-SELECT 
-  CONCAT('ALERT-', CAST(UNIX_TIMESTAMP() AS STRING), '-', device_id) as alert_id,
-  device_id,
-  warehouse_id,
-  'SENSOR_OFFLINE' as alert_type,
-  'HIGH' as severity,
-  0.0 as temperature,
-  0.0 as threshold,
-  CURRENT_TIMESTAMP as alert_time,
-  CONCAT('Sensor has not reported for over 5 minutes. Last seen: ', CAST(last_seen AS STRING)) as message
-FROM device_status
-WHERE TIMESTAMPDIFF(MINUTE, last_seen, CURRENT_TIMESTAMP) > 5;
+SELECT /*+ STATE_TTL('hc'='30m', 'ds'='7d') */
+  CONCAT('OFFLINE-', hc.device_id, '-', hc.check_id) AS alert_id,
+  hc.device_id,
+  hc.warehouse_id,
+  'SENSOR_OFFLINE' AS alert_type,
+  'HIGH' AS severity,
+  CAST(0.0 AS DECIMAL(5,2)) AS temperature,
+  CAST(0.0 AS DECIMAL(5,2)) AS threshold,
+  hc.check_time AS alert_time,
+  CONCAT('Sensor has not reported for over 5 minutes. Last seen: ', CAST(ds.last_seen AS STRING)) AS message
+FROM device_health_checks hc
+JOIN device_status ds
+  ON hc.device_id = ds.device_id
+WHERE TIMESTAMPDIFF(MINUTE, ds.last_seen, hc.check_time) > 5;
 ```
+
+`check_time` and `check_id` are source-event fields, so the same logical check produces the same result under replay. For high-scale deployments, prefer a timer/process-table-function or temporal design instead of a long-running regular join.
 
 ### 4. Sample Data
 
@@ -534,7 +564,7 @@ SELECT
   MIN(min_temperature) as warehouse_min_temp,
   MAX(max_temperature) as warehouse_max_temp
 FROM sensor_metrics
-WHERE window_start >= CURRENT_TIMESTAMP - INTERVAL '1' HOUR
+WHERE window_start >= TIMESTAMP '2024-01-01 11:00:00'
 GROUP BY warehouse_id
 ORDER BY warehouse_id;
 ```

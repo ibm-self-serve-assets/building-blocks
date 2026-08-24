@@ -8,8 +8,10 @@ A comprehensive BOB skill for creating production-ready Confluent Cloud streamin
 
 1. **Schema Registry Timing**: 60-second wait for auto-provisioning after Kafka cluster creation
 2. **API Key Environment Blocks**: All API keys include environment blocks in managed_resource
+3. **Single Topic/Table Owner**: Never pre-create a Terraform topic and then try to redefine the same Flink inferred table
+4. **Deterministic Continuous SQL**: No wall-clock/random functions in updating joins or upsert pipelines; use event time and stable business keys
 
-These are automatically included in all generated Terraform configurations. See SKILL.md for implementation details.
+These are automatically included in all generated Terraform configurations and Flink SQL. See SKILL.md for implementation details.
 
 ## Overview
 
@@ -91,7 +93,7 @@ Topics are named based on **your business entities**, not generic names:
 
 ### 4. Production-Ready Code
 - **Terraform**: Infrastructure as Code with proper dependencies
-- **Flink SQL**: Stream processing with correct syntax and patterns
+- **Flink SQL**: Deterministic, changelog-safe stream processing with correct topic/table ownership and bounded-state patterns
 - **Python**: Schema-aware producers with error handling
 - **Scripts**: Automated deployment, testing, and cleanup
 
@@ -224,6 +226,15 @@ GROUP BY window_start, window_end, customer_id;
 ```bash
 ./scripts/cleanup.sh
 ```
+
+## Flink SQL Safety Update (2026-08-24)
+
+The skill now treats Confluent Cloud Flink tables as first-class Kafka resources and enforces two rules that prevent common deployment failures:
+
+- **One owner per stream:** new typed Flink streams are normally created with Flink `CREATE TABLE` and are not duplicated as Terraform `confluent_kafka_topic` resources. Existing/Terraform-owned topics use registered schemas plus inferred Flink tables.
+- **Deterministic updating queries:** continuous jobs do not use `LOCALTIMESTAMP`, `CURRENT_TIMESTAMP`, `NOW()`, `UNIX_TIMESTAMP()`, `UUID()`, or random functions for keys, rule evaluation, or output timestamps when the query can emit updates/retractions. Event timestamps, source event IDs, business keys, and window boundaries are used instead.
+
+Stateful joins are also reviewed for interval/window/temporal semantics or a documented state TTL, and `EXPLAIN` is part of validation.
 
 ## Technical Highlights
 

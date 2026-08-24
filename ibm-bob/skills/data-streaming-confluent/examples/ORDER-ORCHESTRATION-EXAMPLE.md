@@ -187,6 +187,10 @@ graph TB
 
 ### 3. Flink SQL Processing
 
+> **Ownership:** The tables below are Flink-owned typed streams. Do not also manage Kafka topics with the same names through Terraform. For existing Terraform-owned topics, register schemas first and use the inferred Flink tables.
+>
+> **Determinism:** IDs in continuous jobs are derived from order/update identity, never `UNIX_TIMESTAMP()` or random UUIDs.
+
 #### Create Orders Source Table
 ```sql
 CREATE TABLE orders (
@@ -204,7 +208,7 @@ CREATE TABLE orders (
 WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -224,7 +228,7 @@ CREATE TABLE inventory_updates (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -244,7 +248,7 @@ CREATE TABLE order_status (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -252,7 +256,7 @@ CREATE TABLE order_status (
 ```sql
 INSERT INTO inventory_updates
 SELECT 
-  CONCAT('INV-', CAST(UNIX_TIMESTAMP() AS STRING), '-', order_id) as update_id,
+  CONCAT('INV-', order_id, '-', item.sku, '-RESERVE') AS update_id,
   order_id,
   item.sku as sku,
   'WH-001' as warehouse_id,
@@ -287,7 +291,7 @@ WHERE status = 'PLACED';
 ```sql
 INSERT INTO notifications
 SELECT 
-  CONCAT('NOTIF-', CAST(UNIX_TIMESTAMP() AS STRING), '-', sku) as notification_id,
+  CONCAT('NOTIF-', update_id, '-LOW') AS notification_id,
   'SYSTEM' as order_id,
   'INVENTORY_MANAGER' as customer_id,
   'LOW_INVENTORY_ALERT' as notification_type,
@@ -313,7 +317,7 @@ CREATE TABLE order_analytics (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 
 INSERT INTO order_analytics

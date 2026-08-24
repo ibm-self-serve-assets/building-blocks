@@ -119,6 +119,10 @@ graph TB
 
 ### 3. Flink SQL Processing
 
+> **Ownership:** The tables below are Flink-owned typed streams. Do not also create Kafka topics with the same names through Terraform. For existing Terraform-owned topics, register schemas first and use inferred Flink tables.
+>
+> **Determinism:** Window boundaries and source event timestamps are used for result identity/timestamps; avoid processing-clock/random values in continuously updated results.
+
 #### Create Source Table
 ```sql
 CREATE TABLE road_conditions (
@@ -138,7 +142,7 @@ CREATE TABLE road_conditions (
 WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
@@ -157,7 +161,7 @@ CREATE TABLE road_quality_alerts (
 ) WITH (
   'key.format' = 'json-registry',
   'value.format' = 'json-registry',
-  'kafka.consumer.isolation-level' = 'read-uncommitted'
+  'kafka.consumer.isolation-level' = 'read-committed'
 );
 ```
 
