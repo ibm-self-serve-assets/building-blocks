@@ -47,6 +47,14 @@ Follow the patterns in `instana-api-client/api-patterns.md`.
 - Return structured response objects, not raw HTTP responses.
 - Handle the Instana pagination envelope (`{ items, page, pageSize, totalHits }`) using the pagination helper in `instana-api-client/api-patterns.md`.
 
+> ⚠️ **Application scoping — the traces endpoint behaves differently from metrics:**
+> - `POST /metrics/services` and `POST /metrics/endpoints` accept `"applicationId"` as a top-level field and correctly scope results.
+> - `POST /analyze/traces` **silently ignores** the top-level `"applicationId"` field and returns traces from **all applications**.
+>   To scope traces correctly, fetch the app perspective config once (`GET /api/application-monitoring/settings/application/{id}`), extract its `tagFilterExpression`, and pass that in the traces request body.
+>   For erroneous-only filtering, wrap the app filter and the erroneous filter in an `EXPRESSION` node with `logicalOperator: "AND"`.
+>   Cache the app config — it changes rarely and does not need to be re-fetched on every trace call.
+>   See `instana-api-client/endpoint-reference.md` → "Application Perspective Scoping" for the full code pattern.
+
 See `instana-api-client/endpoint-reference.md` for common endpoint shapes.
 </Step>
 
@@ -145,6 +153,41 @@ src/
 ```
 
 Refer to `instana-dashboard/dashboard-patterns.md` for component and hook skeletons.
+
+> **CRA (react-scripts) users — critical setup notes:**
+>
+> **1. Environment variables (`REACT_APP_*` prefix required)**
+> CRA only exposes variables prefixed `REACT_APP_` to the browser bundle. Use `.env.local` (not `.env.example`). Values are baked in at `npm start` time — **restart the dev server after every `.env.local` change**.
+> ```
+> REACT_APP_INSTANA_URL=https://unit0-techzone.150-240-162-27.nip.io
+> REACT_APP_INSTANA_TOKEN=<real-token>
+> REACT_APP_APPLICATION_ID=<real-app-id>
+> ```
+> ⚠️ **Placeholder trap:** If `.env.local` still contains `your-api-token-here`, Instana returns **401 Unauthorized** — the literal string is sent as the token. Always verify: `grep "your-" .env.local` should return nothing.
+>
+> **2. CORS — use the CRA proxy**
+> Browsers block cross-origin requests. Add a `"proxy"` field to `package.json` (not `.env`) pointing to the Instana host. The dev server then forwards all `/api/*` requests to Instana server-side:
+> ```json
+> "proxy": "https://unit0-techzone.150-240-162-27.nip.io"
+> ```
+> In `src/api/instana.js`, use relative paths (no hostname) so the proxy intercepts them:
+> ```js
+> fetch('/api/application-monitoring/metrics/applications', ...)
+> ```
+> Restart the dev server after adding or changing the proxy.
+>
+> **3. Authentication header**
+> Instana does **not** use Basic auth or Bearer tokens. The only valid format is:
+> ```
+> Authorization: apiToken <token>
+> ```
+>
+> **4. Source map warnings**
+> Add `GENERATE_SOURCEMAP=false` to the `start` and `build` scripts to suppress `source-map-loader` warnings from prebuilt CSS in `@carbon/charts-react` and similar packages:
+> ```json
+> "start": "GENERATE_SOURCEMAP=false react-scripts start",
+> "build": "GENERATE_SOURCEMAP=false react-scripts build"
+> ```
 </Step>
 
 <Step>
@@ -267,7 +310,19 @@ Never hard-code API tokens. Always read from environment variables or a secrets 
 
 <Step>
 **Set up configuration and environment.**
-Create a `.env` from the template at `instana-monitoring-setup/env-template.env` and a `src/lib/config.ts` that reads `import.meta.env` (Vite) or `process.env` (Node) and throws a clear error on missing values. Add `.env` to `.gitignore` immediately.
+Copy the correct section from `instana-monitoring-setup/env-template.env` into the active env file for your build tool:
+
+- **CRA:** copy to `.env.local`; use `REACT_APP_*` prefix; read via `process.env.REACT_APP_*`
+- **Vite:** copy to `.env.local`; use `VITE_*` prefix; read via `import.meta.env.VITE_*`
+- **Node.js:** copy to `.env`; use plain names; read via `process.env.*` (with `dotenv`)
+
+Replace every placeholder value immediately — a literal `your-api-token-here` string causes **401 Unauthorized**. Add the env file to `.gitignore`. Restart the dev server after any edit.
+
+For React (CRA or Vite) apps also configure the dev-server proxy to avoid CORS:
+- **CRA:** add `"proxy": "<instana-url>"` to `package.json`
+- **Vite:** add a `server.proxy` entry in `vite.config.ts`
+
+Then use **relative paths** in all `fetch()` calls (e.g. `/api/application-monitoring/...`) so the proxy intercepts them.
 </Step>
 
 <Step>

@@ -6,12 +6,15 @@ Work through this list top-to-bottom before considering the integration producti
 
 ## Environment & Secrets
 
-- [ ] `VITE_INSTANA_BASE_URL` / `INSTANA_BASE_URL` is set and points to the correct unit
-- [ ] `VITE_INSTANA_API_TOKEN` / `INSTANA_API_TOKEN` is set and contains a valid token
-- [ ] `.env` is present in `.gitignore` — run `git check-ignore -v .env` to confirm
+- [ ] The active env file (`.env.local` for CRA, `.env` for Vite/Node) exists — **not just the `.env.example` template**
+- [ ] All placeholder values (`your-api-token-here`, `your-instana-host.example.com`, etc.) have been replaced with real values — run `grep "your-" .env.local` and confirm no output
+- [ ] `REACT_APP_INSTANA_TOKEN` (CRA) or `VITE_INSTANA_API_TOKEN` (Vite) is set and contains a valid token — a missing/placeholder token produces a 401 "Unauthorized request" from Instana
+- [ ] `REACT_APP_INSTANA_URL` (CRA) or `VITE_INSTANA_BASE_URL` (Vite) points to the correct Instana host, no trailing slash
+- [ ] The dev server was **restarted after any `.env` change** — CRA/Vite bake env vars at start time; editing `.env.local` has no effect on a running server
+- [ ] `.env.local` / `.env` is present in `.gitignore` — run `git check-ignore -v .env.local` to confirm
 - [ ] No API token appears in any tracked file — run `git grep -r "apiToken"` and verify no results
 - [ ] A read-only API token is used (never an admin token in automated scripts)
-- [ ] For production React apps: token is NOT embedded in the Vite bundle — a backend proxy is used instead
+- [ ] For production React apps: token is NOT embedded in the browser bundle — a backend proxy is used instead
 
 ---
 
@@ -53,6 +56,7 @@ Work through this list top-to-bottom before considering the integration producti
 - [ ] React hook tests cover `isLoading` → `isSuccess` and `isError` states
 - [ ] All tests pass: `npm test`
 - [ ] No new lint/type errors: `npm run lint` and `tsc --noEmit`
+- [ ] Source map warnings from `node_modules` CSS are suppressed (`GENERATE_SOURCEMAP=false` in start/build scripts, or `SKIP_PREFLIGHT_CHECK=true` if using CRA with custom webpack config)
 
 ---
 
