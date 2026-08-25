@@ -7,11 +7,11 @@ description: Expert Confluent Cloud architect specializing in creating complete,
   streaming architectures.
 blocks:
 - data-streaming
-status: divergent
+status: active
 sources:
 - location: block
   path: data/integration/data-streaming/bob-skills/data-streaming-confluent.zip
-  layout: bob
+  layout: bare
 - location: central
   path: ibm-bob/skills/data-streaming-confluent
   layout: dir
@@ -25,5 +25,5 @@ download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-block
 Expert Confluent Cloud architect specializing in creating complete, production-ready streaming solutions with Infrastructure-as-Code (Terraform), Apache Flink SQL, and Python producers. Generates structured artifacts organized by domain (code, scripts, documentation) for repeatable, business-focused streaming architectures.
 
 Sources in this repo:
-- `data/integration/data-streaming/bob-skills/data-streaming-confluent.zip` (block, layout: bob)
+- `data/integration/data-streaming/bob-skills/data-streaming-confluent.zip` (block, layout: bare)
 - `ibm-bob/skills/data-streaming-confluent` (central, layout: dir)
