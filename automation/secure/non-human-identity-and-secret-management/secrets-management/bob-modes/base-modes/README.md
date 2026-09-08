@@ -11,10 +11,10 @@ You can directly add the Secrets Management mode.
 
 ### 📁 Add Mode Configuration
 
-1. Download and extract the `vault-secret-migrator.zip` file from this folder.
+1. Download and extract the `vault-secret-migrator.zip` file.
 2. Open your project in **Bob UI**.
 3. Navigate to the project workspace (file explorer).
-4. Copy the contents of the `.bob` folder extracted in Step 1:
+4. Copy the contents of the `.bob` folder extracted as part of Step 1:
 
 ```
 .bob/
@@ -24,7 +24,10 @@ You can directly add the Secrets Management mode.
         └── [mode rules files]
 ```
 
-5. Paste them into the `.bob/` directory of your project.
+5. Copy the provided:
+   - `custom_modes.yaml`
+   - `rules/*/` folder
+6. Paste them into the `.bob/` directory of your project.
 
 ------------------------------------------------------------------------
 
@@ -53,7 +56,7 @@ carefully to avoid breaking existing setups.
 
 ### ✏️ Append New Mode Configuration
 
-1. Download and extract the `vault-secret-migrator.zip` file from this folder.
+1. Download and extract the `vault-secret-migrator.zip` file.
 2. Open `.bob/custom_modes.yaml` in the Bob UI editor.
 3. Add the Secrets Management mode at the end of the file.
 
@@ -80,7 +83,7 @@ carefully to avoid breaking existing setups.
 ### 📂 Maintain Rules Folder Structure
 
 1. Navigate to `.bob/rules/`.
-2. Add the new rules folder extracted from the zip:
+2. Add the new rules folder:
 
 ```
 vault-secret-migrator/

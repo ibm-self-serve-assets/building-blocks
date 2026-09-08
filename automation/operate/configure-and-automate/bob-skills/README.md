@@ -6,8 +6,6 @@ Configure & Automate building blocks enable automated configuration management, 
 
 ### `configure-and-automate.zip`
 
-Located in [`bob-skills/configure-and-automate.zip`](bob-skills/configure-and-automate.zip).
-
 A comprehensive skill and automation package for configuration management and automation, providing capabilities for:
 
 - **Playbook & Role Development**: Developing and maintaining declarative automation playbooks, reusable roles, and dynamic inventories.
@@ -25,7 +23,7 @@ Extract the `configure-and-automate.zip` archive into your Bob workspace skills 
 cd /path/to/your/bob/workspace/.bob/skills
 
 # Extract the package
-unzip /path/to/automation/operate/configure-and-automate/bob-skills/configure-and-automate.zip
+unzip /path/to/automation/operate/configure-and-automate/configure-and-automate.zip
 ```
 
 ### Step 2: Verify Installation
