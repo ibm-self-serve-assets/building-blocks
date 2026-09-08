@@ -42,8 +42,9 @@ Raw schemas contain abbreviations, numeric codes and technical names that only o
 
 - **IBM Cloud API key** — [create at IBM Cloud IAM](https://cloud.ibm.com/iam/apikeys)
 - **Python 3.10+**
-- **IBM watsonx.data intelligence** instance (for data-quality and enrichment)
-- **IBM Databand** access (for data-lineage OpenLineage emission and Manta lineage graph queries)
+- **IBM watsonx.data intelligence** instance (for data-quality, enrichment, and lineage graph capabilities)
+
+> **Prerequisite note**: IBM Databand is required only when you are also using pipeline observability features. It is not a prerequisite for metadata enrichment, data quality or Manta lineage graph capabilities, which are provided directly by IBM watsonx.data intelligence. See the [Data Observability](../data-observability/README.md) building block for Databand-specific observability patterns.
 
 ### Common Setup Pattern
 

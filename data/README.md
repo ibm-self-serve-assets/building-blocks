@@ -4,7 +4,7 @@
 
 IBM's **Data Building Blocks** provide a practical, composable foundation for making enterprise data **connected, contextual, trusted, and ready for analytics and AI**. The building blocks are organized around three use-case groups from the IBM Data sales play: **Context**, **Pipelines**, and **Query Engines**.
 
-Every building block ships with **runnable assets** (FastAPI services, Python scripts), **Bob Modes** (AI assistant configurations), and **Bob Skills** (expert knowledge zips).
+Depending on the capability, a building block may include runnable assets (FastAPI services, Python scripts), reference implementations, Bob Modes (AI assistant configurations), Bob Skills (expert knowledge zips), architecture guidance, or implementation examples.
 
 > **AI-tool agnostic**: All runnable assets work independently of any AI assistant. Bob modes and skills are optimised for IBM Bob but the patterns apply equally when using Claude, GitHub Copilot, or any other coding assistant.
 
@@ -61,7 +61,7 @@ Each building block lists its required IBM services at the top of its README. En
 
 ### Step 3 — Run the asset
 
-Every building block with a runnable asset follows the same pattern:
+Building blocks that include runnable assets follow this pattern:
 
 ```bash
 # 1. Navigate to the asset directory
@@ -81,7 +81,7 @@ python main.py        # or: uvicorn app.server:app --host 0.0.0.0 --port 8080
 
 ### Step 4 — IBM Bob, Your Fellow Developer
 
-**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant, purpose-built for IBM Cloud and watsonx development. Every building block ships **Bob Modes** and **Bob Skills** that give Bob deep expertise in that specific capability.
+**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant, purpose-built for IBM Cloud and watsonx development. Where available, building blocks ship **Bob Modes** and **Bob Skills** that give Bob deep expertise in that specific capability.
 
 - **Bob Mode** — a pre-built expert persona scoped to a single capability. Switch modes to get focused, context-aware assistance.
 - **Bob Skill** — a reusable knowledge pack Bob loads into its context. Skills teach Bob the exact API calls, environment variable patterns, and IBM service integration details for this building block.
@@ -177,7 +177,7 @@ Emit OpenLineage events from any Python ETL, IBM DataStage, or Apache Spark pipe
 **IBM Products**: IBM Databand
 **Bob Mode**: `data-observability-builder.zip` · **Bob Skills**: `databand-pipeline-setup.zip`
 
-Monitor pipeline run health, surface data quality anomalies, enforce SLA thresholds, and maintain a complete OpenLineage lineage graph for all IBM Cloud data assets.
+Monitor pipeline run health, surface data quality anomalies, enforce SLA thresholds, and emit OpenLineage events for operational observability. Databand provides pipeline and dataset monitoring — for end-to-end lineage graphs, see the Data Lineage building block.
 
 | Asset | Description |
 |---|---|
@@ -195,12 +195,12 @@ Monitor pipeline run health, surface data quality anomalies, enforce SLA thresho
 
 ### [RAG — Retrieval-Augmented Generation](pipelines/rag/README.md)
 
-> Complete end-to-end RAG pipeline with MCP server integration
+> Custom/reference RAG accelerator — COS to OpenSearch to Q&A, with MCP server integration
 
 **IBM Products**: IBM watsonx.ai · IBM watsonx.data (OpenSearch) · IBM COS
-**Bob Modes**: `rag-builder.zip`, `rag-ingestion.zip`, `rag-retrieval.zip` · **Bob Skills**: `rag-pipeline-builder.zip`, `rag-mcp-server-builder.zip`
+**Bob Modes**: `rag-builder.zip`, `rag-ingestion.zip`, `rag-retrieval.zip`, `opensearch-builder.zip` · **Bob Skills**: `rag-pipeline-builder.zip`, `rag-mcp-server-builder.zip`, `opensearch-vector-search.zip`
 
-Ingest documents from IBM COS, generate dense embeddings with IBM watsonx.ai, store in OpenSearch, and serve hybrid search (vector + BM25) and Q&A via REST API or MCP server.
+Custom/reference RAG pipeline — ingest documents from IBM COS, generate dense embeddings with IBM watsonx.ai, store in OpenSearch, and serve hybrid search (vector + BM25) and Q&A via REST API or MCP server. IBM watsonx.data also includes managed OpenRAG; availability depends on deployment and region.
 
 | Asset | Description |
 |---|---|
@@ -213,12 +213,12 @@ Ingest documents from IBM COS, generate dense embeddings with IBM watsonx.ai, st
 
 ### [UDI — Unstructured Data Integration](pipelines/udi/README.md)
 
-> AI-generated DataStage and Docling pipelines for structured and unstructured data
+> Governed document ingestion pipelines for PDFs, DOCX, HTML and images — preparing unstructured content for AI, RAG and search
 
-**IBM Products**: IBM DataStage · IBM UDI · IBM Docling · IBM COS
-**Bob Mode**: `data-ingestion.zip` · **Bob Skills**: `data-ingestion-structured.zip`, `data-ingestion-unstructured.zip`
+**IBM Products**: IBM watsonx.data integration (UDI) · Docling for IBM watsonx · IBM COS
+**Bob Mode**: `data-ingestion.zip` · **Bob Skills**: `data-ingestion-unstructured.zip`, `udi-opensearch.zip`
 
-Describe your source and target in plain English — IBM Bob generates the complete ingestion pipeline. Covers relational databases via DataStage CDC connectors and unstructured documents (PDFs, DOCX, HTML, images) via IBM Docling and UDI.
+Ingest, parse, chunk, embed and index unstructured documents — PDFs, presentations, DOCX, HTML — from IBM COS into OpenSearch for RAG and semantic search. Uses IBM UDI visual flow designer and Docling for complex document extraction. For structured relational database batch ingestion, see ETL / ELT below.
 
 | Asset | Description |
 |---|---|
@@ -255,12 +255,12 @@ Build visual ETL/ELT flows with enterprise connectors, transformation stages, an
 
 ### [Data Sync with IBM Aspera](pipelines/data-sync/README.md)
 
-> High-speed WAN file and repository synchronization
+> WAN-optimized file and repository synchronization
 
 **IBM Products**: IBM Aspera Sync
 **Bob Mode**: `aspera-sync-builder.zip` · **Bob Skills**: `aspera-sync-configuration.zip`
 
-Synchronize large file sets and repositories securely across WAN and hybrid environments using IBM Aspera's FASP transport protocol — maintaining near-wire-speed regardless of distance or latency.
+Synchronize large file sets and repositories securely across WAN and hybrid environments using IBM Aspera's FASP transport protocol — designed for high-throughput transfers over high-latency and lossy WAN connections. Actual throughput depends on network capacity, endpoints, storage and workload characteristics.
 
 ---
 
@@ -289,10 +289,10 @@ Register storage buckets and databases once, then query across all sources with 
 
 > Elastic vector storage for semantic search, RAG and agent memory
 
-**IBM Products**: IBM watsonx.data + Astra DB Serverless
-**Bob Mode**: `astradb-vector-builder.zip` · **Bob Skills**: `astradb-vector-setup.zip`
+**IBM Products**: IBM watsonx.data + Astra DB Serverless (IBM HCD)
+**Bob Modes**: `astradb-vector-builder.zip`, `nosql-astradb-builder.zip` · **Bob Skills**: `astradb-vector-setup.zip`, `astradb-nosql-design.zip`
 
-Provision Astra DB Serverless directly from the IBM watsonx.data infrastructure experience. Store embeddings and run vector similarity search without managing clusters. Includes a runnable FastAPI ingestion service.
+Store embeddings and run vector similarity search or NoSQL document storage via Astra DB Serverless. Includes runnable FastAPI ingestion and CRUD services. Availability depends on the watsonx.data deployment type, cloud provider and region — verify service availability for the target environment.
 
 | Asset | Description |
 |---|---|

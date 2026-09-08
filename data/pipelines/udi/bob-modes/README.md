@@ -1,6 +1,8 @@
-# Bob Mode for Data Ingestion
+# Bob Mode for UDI — Unstructured Data Integration
 
-Custom IBM Bob mode configuration for AI-generated data ingestion pipelines using **IBM DataStage**, **IBM UDI (Unstructured Data Integration)**, and **IBM Docling** on IBM Cloud.
+Custom IBM Bob mode configuration for **unstructured document ingestion** using **IBM UDI (Unstructured Data Integration)** and **IBM Docling** on IBM Cloud.
+
+> **Scope note**: This mode focuses on unstructured document ingestion (PDFs, DOCX, HTML, images). For structured relational database batch integration patterns, use the ETL/ELT building block's Bob Mode instead.
 
 ---
 
@@ -8,47 +10,45 @@ Custom IBM Bob mode configuration for AI-generated data ingestion pipelines usin
 
 This Bob mode provides specialized assistance for:
 
-- **AI-Generated Pipelines**: Describe your ingestion requirement and Bob generates the full DataStage flow or Python ingestion script
-- **Structured Data Ingestion**: IBM DataStage connector configuration for DB2, PostgreSQL, MySQL, Oracle, and SQL Server with CDC support
-- **Unstructured Data Ingestion**: IBM Docling + UDI pipeline design for PDFs, DOCX, HTML, images, and email
-- **IBM COS Integration**: Source document download via `ibm-cos-sdk` and target data archiving
-- **Schema Mapping**: Source-to-target type conversion and Iceberg schema design
+- **Unstructured Data Ingestion**: IBM UDI visual flow configuration and IBM Docling document pipeline design for PDFs, DOCX, HTML, images
+- **IBM COS Integration**: Source document download from IBM COS via HMAC credentials
+- **Watson Data API**: Connection registration, UDI flow creation, job execution
+- **Document Processing**: Chunking strategy design, embedding generation, metadata extraction
+- **OpenSearch Indexing**: Preparing and indexing document chunks for vector search and RAG
 
 ---
 
 ## What's Included
 
-- **[`base-modes/data-ingestion.zip`](base-modes/data-ingestion.zip)**: Bob mode configuration for AI-generated data ingestion development
+- **[`base-modes/data-ingestion.zip`](base-modes/data-ingestion.zip)**: Bob mode configuration for UDI unstructured document ingestion development
 
 ---
 
 ## Mode Capabilities
 
-- IBM Cloud IAM authentication with automatic token refresh
-- IBM DataStage batch and parallel job flow generation
-- IBM Data Replication CDC (Change Data Capture) log-mining setup
-- Schema mapping to Apache Iceberg data types
-- IBM UDI (Unstructured Data Integration) DataStage connector configuration
+- IBM Cloud IAM authentication (API key → bearer token)
+- IBM watsonx.ai project setup for UDI flows
+- Watson Machine Learning instance activation (required for OCR extraction)
+- IBM UDI (Unstructured Data Integration) flow configuration via Watson Data API
 - IBM Docling PDF and DOCX parsing with structure and table preservation
-- `unstructured` library multi-format document parsing (HTML, PPTX, Excel, email)
 - OCR configuration for scanned PDFs and image-based documents
-- IBM COS source integration with `ibm-cos-sdk` IAM OAuth
+- IBM COS source integration with HMAC credentials
 - Chunking strategy selection: fixed-size, semantic, sentence-based
-- Metadata extraction design (title, source, page number, chunk_seq)
-- `.env.example` and `requirements.txt` generation following building-blocks conventions
-- Docker containerization for IBM Code Engine deployment
+- IBM watsonx.ai embedding generation for vectorised chunks
+- OpenSearch target index configuration and vector ingestion
+- Metadata extraction design (document_name, document_id, chunk hash)
+- `.env.example` generation following building-blocks conventions
+- Troubleshooting UDI flow failures and WML instance status errors
 
 ---
 
 ## When to Use This Mode
 
-- Generating a new IBM DataStage ingestion pipeline from a plain-English description
-- Configuring CDC (Change Data Capture) from IBM Db2, PostgreSQL, or Oracle
-- Building document ingestion pipelines with IBM Docling for AI workloads
-- Designing schema mappings from relational sources to Apache Iceberg
-- Troubleshooting IBM DataStage connector or UDI configuration issues
-- Implementing batch or incremental ingestion with validation and error handling
-- Setting up IBM COS as a document source for unstructured ingestion
+- Configuring an IBM UDI flow to ingest documents from IBM COS into OpenSearch
+- Building document parsing pipelines with IBM Docling for AI/RAG workloads
+- Setting up WML instance linkage and OCR extraction for UDI flows
+- Designing chunking strategies and embedding configurations for document content
+- Troubleshooting UDI flow configuration, connection registration, or OCR failures
 
 ---
 
@@ -56,7 +56,7 @@ This Bob mode provides specialized assistance for:
 
 ### Installing the Custom Bob Mode
 
-The custom Bob mode ([`base-modes/data-ingestion.zip`](base-modes/data-ingestion.zip)) defines the behavior, expertise, and capabilities of IBM Bob when working with data ingestion tasks.
+The custom Bob mode ([`base-modes/data-ingestion.zip`](base-modes/data-ingestion.zip)) defines the behavior, expertise, and capabilities of IBM Bob when working with UDI unstructured data integration tasks.
 
 For detailed information about custom modes, see the [IBM Bob Custom Modes Documentation](https://internal.bob.ibm.com/docs/ide/features/custom-modes).
 

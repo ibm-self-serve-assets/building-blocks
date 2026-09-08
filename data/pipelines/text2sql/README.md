@@ -4,9 +4,29 @@
 **IBM Products**: IBM watsonx.data intelligence
 **Product Components**: Text2SQL API; DAI Metadata Enrichment API; IBM Cloud IAM; FastAPI application
 
-## Overview
+## What Is This Building Block?
 
-Convert natural language questions to SQL queries using **IBM watsonx.data Intelligence** Text2SQL capability. Enrich database metadata (table descriptions, column synonyms, query examples) via the DAI REST API to maximize query accuracy, then submit natural language questions and receive validated, executable SQL — all without writing a single line of SQL manually.
+Convert natural language questions to SQL queries using the **IBM watsonx.data intelligence** Text2SQL capability. Enrich database metadata (table descriptions, column synonyms, query examples) via the DAI REST API to maximize query accuracy, then submit natural language questions and receive validated, executable SQL.
+
+---
+
+## Enterprise Safety Principles
+
+Text2SQL translates natural language into executable database queries. Before deploying to production or exposing to users, consider the following safety principles:
+
+| Principle | Guidance |
+|---|---|
+| **Schema/metadata grounding** | Enrich table and column metadata before enabling Text2SQL. Undescribed schemas produce inaccurate and potentially unsafe SQL. Run the metadata enrichment toolkit first. |
+| **SQL inspection before execution** | Where possible, return generated SQL to a responsible party for review before execution, especially for write operations. |
+| **Read-only execution** | Unless write access is explicitly required, configure the database connection used by Text2SQL with read-only permissions. |
+| **Query restrictions** | Restrict the SQL dialect and query types available to the Text2SQL endpoint. Disallow DDL (`CREATE`, `DROP`, `ALTER`) and DML (`INSERT`, `UPDATE`, `DELETE`) unless your use case specifically requires them. |
+| **Row-level and column-level security** | Apply row-level security and column masking at the database or catalog layer — do not rely solely on the Text2SQL layer to enforce access restrictions. |
+| **Authorization** | Authenticate users before exposing the `/query` endpoint. Apply authorization controls to limit which users can query which data. |
+| **Governance** | Connect Text2SQL to governed data assets in IBM watsonx.data intelligence. Leverage business glossary terms and data classifications to guide query generation. |
+| **Evaluation** | Test the Text2SQL endpoint with representative question sets before production deployment. Evaluate both accuracy (does it return the right data?) and safety (does it avoid unintended queries?). |
+| **Model awareness** | The generation model produces SQL based on your metadata. Better metadata produces more accurate SQL. Review generated SQL for queries that may be technically valid but logically incorrect. |
+
+> These principles apply to the implementation in this repository. Apply them in proportion to the sensitivity of the data and the breadth of user access in your deployment.
 
 ---
 

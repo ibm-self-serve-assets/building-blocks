@@ -12,6 +12,7 @@ These skills empower IBM Bob to help you design, build, and deploy end-to-end IB
 |---|---|---|
 | `rag-pipeline-builder` | [`rag-pipeline-builder.zip`](rag-pipeline-builder.zip) | Designing or building a complete RAG pipeline — ingestion, embedding, indexing, hybrid search, Q&A |
 | `rag-mcp-server-builder` | [`rag-mcp-server-builder.zip`](rag-mcp-server-builder.zip) | Building MCP servers that expose RAG ingestion or retrieval as AI tools for Bob/Claude |
+| `opensearch-vector-search` | [`opensearch-vector-search.zip`](opensearch-vector-search.zip) | IBM watsonx.data OpenSearch k-NN index design, HNSW tuning, hybrid search, embedding integration |
 
 ---
 
@@ -20,7 +21,7 @@ These skills empower IBM Bob to help you design, build, and deploy end-to-end IB
 A comprehensive skill for designing end-to-end IBM RAG pipelines:
 
 - IBM watsonx.ai embedding generation (`ibm/slate-125m-english-rtrvr`, dim=768)
-- IBM watsonx.ai LLM generation (Granite, Llama) with `langchain_ibm.WatsonxLLM`
+- IBM watsonx.ai LLM generation (configurable model — select a currently supported watsonx.ai generation model for your deployment and region) with `langchain_ibm.WatsonxLLM`
 - Chunking strategy optimisation for PDF, DOCX, HTML, Markdown, TXT
 - IBM watsonx.data OpenSearch hybrid search design (vector + BM25 with score fusion)
 - RAG evaluation metrics (RAGAS: faithfulness, answer relevancy, context precision)
@@ -39,6 +40,18 @@ A comprehensive skill for building RAG MCP servers:
 - IBM Bob and Claude MCP integration configuration
 - Pydantic v2 input validation for MCP tool arguments
 
+### `opensearch-vector-search`
+
+A focused skill for IBM watsonx.data OpenSearch vector search patterns:
+
+- IBM watsonx.data OpenSearch k-NN index design (HNSW, cosine/l2/innerproduct)
+- HNSW parameter tuning (`ef_construction`, `m`) for recall-vs-latency trade-offs
+- Hybrid search design: dense vector + BM25 with score normalization and fusion
+- IBM watsonx.ai embedding model integration for ingestion and query embedding
+- Index mapping, settings and pipeline configuration for RAG workloads
+- Bulk indexing patterns via `opensearch-py.helpers.bulk()`
+- Troubleshooting k-NN plugin configuration and index errors
+
 ---
 
 ## Installation
@@ -51,12 +64,14 @@ The zip files are pre-structured with `.bob/skills/<skill-folder>/` internally. 
 # From the root of your Bob workspace project
 unzip rag-pipeline-builder.zip
 unzip rag-mcp-server-builder.zip
+unzip opensearch-vector-search.zip
 ```
 
 This will create:
 ```
 .bob/skills/rag-pipeline-builder/SKILL.md
 .bob/skills/rag-mcp-server-builder/SKILL.md
+.bob/skills/opensearch-vector-search/SKILL.md
 ```
 
 ### Step 2 — Enable in IBM Bob
@@ -103,16 +118,17 @@ With these skills, Bob can generate:
 
 ## Skill Capabilities Summary
 
-| Capability | rag-pipeline-builder | rag-mcp-server-builder |
-|---|---|---|
-| Embedding generation (IBM watsonx.ai) | ✅ | ✅ |
-| OpenSearch k-NN index creation | ✅ | ✅ |
-| Hybrid search (vector + BM25) | ✅ | ✅ |
-| LLM generation (Granite, Llama) | ✅ | — |
-| MCP tool registration | — | ✅ |
-| SSE transport server | — | ✅ |
-| IBM Code Engine deployment | — | ✅ |
-| RAG evaluation (RAGAS) | ✅ | — |
+| Capability | rag-pipeline-builder | rag-mcp-server-builder | opensearch-vector-search |
+|---|---|---|---|
+| Embedding generation (IBM watsonx.ai) | ✅ | ✅ | ✅ |
+| OpenSearch k-NN index creation | ✅ | ✅ | ✅ |
+| Hybrid search (vector + BM25) | ✅ | ✅ | ✅ |
+| HNSW parameter tuning | — | — | ✅ |
+| LLM generation (configurable model) | ✅ | — | — |
+| MCP tool registration | — | ✅ | — |
+| SSE transport server | — | ✅ | — |
+| IBM Code Engine deployment | — | ✅ | — |
+| RAG evaluation (RAGAS) | ✅ | — | — |
 
 ## Troubleshooting
 
@@ -127,6 +143,6 @@ With these skills, Bob can generate:
 
 ## Related
 
-- [`../bob-modes/`](../bob-modes/) — Bob Modes for RAG (RAG Builder, Ingestion Builder, Retrieval Builder)
+- [`../bob-modes/`](../bob-modes/) — Bob Modes for RAG (RAG Builder, Ingestion Builder, Retrieval Builder, OpenSearch Builder)
 - [`../README.md`](../README.md) — RAG building block overview and Getting Started guide
 - [`../assets/`](../assets/) — Deployable RAG server assets (FastAPI, MCP servers)

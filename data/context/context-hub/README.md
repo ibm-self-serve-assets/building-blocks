@@ -93,24 +93,9 @@ Start with the smallest combination that solves the immediate use case:
 
 ### IBM Bob — Your Fellow Developer
 
-**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The Context Hub building block ships a **Bob Mode** and **Bob Skills** to assist with architecture, connector configuration, Flink SQL, Iceberg sink setup, and watsonx.data intelligence integration.
+**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The Context Hub building block documents **Bob Mode** and **Bob Skill** assets for architecture, connector configuration, Flink SQL, Iceberg sink setup, and watsonx.data intelligence integration.
 
-**Install the Bob Mode**:
-```powershell
-# Windows
-Copy-Item bob-modes/base-modes/context-hub-builder.zip "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
-```
-```bash
-# Linux / macOS
-cp bob-modes/base-modes/context-hub-builder.zip ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
-```
-Restart IBM Bob — **Context Hub Builder** mode appears in the mode selector.
-
-**Install Bob Skills**:
-```bash
-unzip bob-skills/confluent-watsonxdata-context.zip
-```
-Open IBM Bob → Skills panel → enable the skill.
+> **Asset availability note**: The `context-hub-builder.zip` Bob Mode and `confluent-watsonxdata-context.zip` Bob Skill are defined in the building block READMEs. Check [`bob-modes/base-modes/`](bob-modes/base-modes/) and [`bob-skills/`](bob-skills/) for current file availability.
 
 ---
 

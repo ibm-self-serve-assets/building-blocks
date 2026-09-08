@@ -49,25 +49,9 @@ IBM DataStage supports both **ETL** (transform then load) and **ELT** (load raw 
 
 ### IBM Bob — Your Fellow Developer
 
-**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The ETL/ELT building block ships a **Bob Mode** and **Bob Skills** that give Bob expert knowledge of DataStage flow design, connector configuration, transformation patterns, and watsonx.data integration.
+**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The ETL/ELT building block documents **Bob Mode** and **Bob Skill** assets for DataStage flow design, connector configuration, transformation patterns, and watsonx.data integration.
 
-**Install the Bob Mode** — give Bob an ETL/ELT specialist persona:
-```powershell
-# Windows
-Copy-Item bob-modes/base-modes/datastage-etl-builder.zip "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
-```
-```bash
-# Linux / macOS
-cp bob-modes/base-modes/datastage-etl-builder.zip ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
-```
-Restart IBM Bob — **DataStage ETL Builder** mode appears in the mode selector. Describe your source, transformation, and target requirements and Bob assists with flow design, connector configuration and troubleshooting.
-
-**Install Bob Skills** — teach Bob the DataStage and watsonx.data patterns:
-```bash
-unzip bob-skills/datastage-flow-design.zip
-unzip bob-skills/datastage-watsonxdata-integration.zip
-```
-Open IBM Bob → Skills panel → enable the skill(s).
+> **Asset availability note**: The `datastage-etl-builder.zip` Bob Mode and DataStage Bob Skills are defined in this building block. Check [`bob-modes/base-modes/`](bob-modes/base-modes/) and [`bob-skills/`](bob-skills/) for current file availability.
 
 ---
 

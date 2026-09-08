@@ -4,9 +4,25 @@
 **IBM Products**: IBM watsonx.data integration, IBM Data Observability by Databand
 **Product Components**: watsonx.data integration Data Observability; Databand REST API v1; OpenLineage HTTP Transport; IBM Cloud IAM; IBM Cloud Object Storage
 
-## Overview
+## What Is This Building Block?
 
-Detect, investigate and resolve data incidents before unreliable data affects downstream analytics or AI using **IBM watsonx.data integration Data Observability** and **IBM Data Observability by Databand**. IBM watsonx.data integration provides the Data Observability capability for monitoring integration processes and investigating incidents. IBM Databand adds pipeline, run, task and dataset monitoring, anomaly detection and alerting — including integration with watsonx.data Spark monitoring. Track every pipeline run, surface data quality anomalies, enforce SLA thresholds, and maintain a complete OpenLineage-compliant lineage graph for all IBM Cloud data assets.
+**Data Observability** provides operational visibility into your data pipelines — monitoring pipeline run health, detecting data quality anomalies, enforcing SLA thresholds and surfacing alertable conditions before unreliable data affects downstream analytics or AI.
+
+This building block is centred on **IBM Data Observability by Databand** and **IBM watsonx.data integration Data Observability**. IBM watsonx.data integration provides the observability capability for monitoring integration processes and investigating incidents. IBM Databand adds pipeline, run, task and dataset monitoring, anomaly detection and alerting — including integration with watsonx.data Spark monitoring.
+
+> **Scope note — Observability vs Enterprise Lineage**: Data Observability / Databand focuses on pipeline operational health: runs, tasks, datasets, anomaly detection, SLA monitoring and operational quality signals. Databand is not, by itself, a complete enterprise lineage repository for all IBM Cloud data assets. Broader lineage capabilities — including Manta-powered end-to-end lineage graphs — are part of **IBM watsonx.data intelligence**. OpenLineage events emitted from pipelines can flow into both Databand (for operational monitoring) and watsonx.data intelligence (for lineage governance). See the **[Data Lineage](../metadata-enrichment/data-lineage/README.md)** building block for lineage graph scenarios.
+
+---
+
+## What Problem Does It Solve?
+
+| Problem | What This Building Block Provides |
+|---|---|
+| Silent pipeline failures go undetected | Databand monitors every pipeline run and surfaces failures immediately |
+| Data quality degrades without warning | Anomaly detection on row counts, null rates, schema drift and quality scores |
+| SLA violations are discovered too late | Threshold-based alerts for run duration and data freshness |
+| Incident investigation requires manual log trawling | REST API access to run history, task metrics and alert policies |
+| Pipeline health reports need archiving for compliance | COS archiving of run reports via the included pipeline monitor |
 
 ---
 
@@ -18,6 +34,13 @@ Detect, investigate and resolve data incidents before unreliable data affects do
 | Emit OpenLineage events from a Python ETL, DataStage, or Spark job | [`assets/openlineage-emitter/`](assets/openlineage-emitter/) |
 | Apply pre-built alert policies (null-rate, schema-drift, SLA-breach) to a pipeline | [`assets/databand-alert-templates/`](assets/databand-alert-templates/) |
 | Archive pipeline run reports to IBM COS for audit compliance | [`assets/databand-pipeline-monitor/`](assets/databand-pipeline-monitor/) — COS archiving |
+
+## When NOT to Use
+
+| Scenario | Use Instead |
+|---|---|
+| End-to-end data lineage governance (column-level, cross-platform) | [`../metadata-enrichment/data-lineage/`](../metadata-enrichment/data-lineage/README.md) — IBM watsonx.data intelligence (Manta) |
+| Metadata enrichment, business glossary, quality rules | [`../metadata-enrichment/`](../metadata-enrichment/README.md) — IBM watsonx.data intelligence |
 
 ---
 
@@ -83,7 +106,7 @@ Open IBM Bob → Skills panel → enable `databand-pipeline-setup`.
 ### 1. Databand Pipeline Monitor
 **Location**: `assets/databand-pipeline-monitor/`
 **IBM Products**: IBM Databand, IBM Cloud IAM, IBM COS
-**Description**: FastAPI service that wraps the Databand REST API v1 — list pipelines, inspect run health, retrieve quality metrics, and manage alert policies programmatically.
+**Description**: FastAPI service that wraps the Databand REST API v1 — list pipelines, inspect run health, retrieve quality metrics, and manage alert policies programmatically. Supports optional archiving of run reports to IBM COS.
 
 **Quick Start**:
 ```bash
@@ -107,7 +130,7 @@ python main.py
 ### 2. OpenLineage Emitter
 **Location**: `assets/openlineage-emitter/`
 **IBM Products**: IBM Databand, IBM Cloud IAM
-**Description**: Python library and CLI that instruments any Python ETL script, IBM DataStage job, or Apache Spark application to emit OpenLineage events (START / COMPLETE / FAIL) to IBM Databand's `/api/v1/lineage` endpoint.
+**Description**: Python library and CLI that instruments any Python ETL script, IBM DataStage job, or Apache Spark application to emit OpenLineage events (START / COMPLETE / FAIL) to IBM Databand's `/api/v1/lineage` endpoint. OpenLineage events forwarded to Databand are used for operational pipeline observability. For consumption in a lineage graph (impact analysis, governance), see the [Data Lineage](../metadata-enrichment/data-lineage/README.md) building block.
 
 **Quick Start**:
 ```bash
@@ -166,6 +189,18 @@ python apply_alert_templates.py --all --pipeline customer_pipeline --dry-run
 
 ---
 
+## What Assets Are Included
+
+| Asset | Type | Description |
+|---|---|---|
+| [`assets/databand-pipeline-monitor/`](assets/databand-pipeline-monitor/) | Runnable FastAPI service | REST API client for pipeline run health and COS archiving |
+| [`assets/openlineage-emitter/`](assets/openlineage-emitter/) | Python library + CLI | Emit OpenLineage events from Python / DataStage / Spark to Databand |
+| [`assets/databand-alert-templates/`](assets/databand-alert-templates/) | YAML templates + CLI | Pre-built alert policies: null-rate, schema-drift, SLA-breach |
+| [`bob-modes/base-modes/data-observability-builder.zip`](bob-modes/base-modes/data-observability-builder.zip) | Bob Mode | Data Observability specialist persona |
+| [`bob-skills/databand-pipeline-setup.zip`](bob-skills/databand-pipeline-setup.zip) | Bob Skill | Databand pipeline onboarding and alert policy authoring |
+
+---
+
 ## Bob Modes
 
 - **[`bob-modes/`](./bob-modes/)**: AI assistant mode for data observability development
@@ -194,11 +229,20 @@ IBM Data Pipeline (DataStage / Spark / Python)
         ▼
 IBM Databand  ←─── Databand Pipeline Monitor (REST API)
   /api/v1/lineage          │
-  /api/v1/runs             │  Metrics / Alerts
+  /api/v1/runs             │  Metrics / Alerts / Run Health
   /api/v1/alert_defs       ▼
-                    IBM Cloud Object Storage
-                    (archived run reports)
+                     IBM Cloud Object Storage
+                     (archived run reports)
+
+Note: OpenLineage events can also be forwarded to IBM watsonx.data intelligence
+for lineage graph consumption — see the Data Lineage building block.
 ```
+
+## Limitations and Considerations
+
+- IBM Databand provides operational pipeline observability and anomaly detection. It is not a complete enterprise lineage repository for all IBM Cloud data assets.
+- For end-to-end lineage graphs (column-level, cross-platform, impact analysis), use the **[Data Lineage](../metadata-enrichment/data-lineage/README.md)** building block with IBM watsonx.data intelligence (Manta).
+- Databand availability and specific API capabilities may vary by deployment version. Verify your instance version against the [Databand documentation](https://www.ibm.com/docs/en/databand).
 
 ## IBM Cloud References
 

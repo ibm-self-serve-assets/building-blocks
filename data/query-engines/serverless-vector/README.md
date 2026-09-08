@@ -4,15 +4,17 @@
 **IBM Products**: IBM watsonx.data, Astra DB Serverless (DataStax)
 **Product Components**: Astra DB Serverless (vector + NoSQL document); Astra DB Data API; astrapy SDK; IBM watsonx.ai embeddings; IBM COS
 
-## Overview
+> ⚠️ **Availability caveat**: Astra DB Serverless availability through IBM watsonx.data depends on the watsonx.data deployment type, cloud provider and region. Not all watsonx.data deployments include the IBM HCD (Hyper Converged Database) service that provides Astra DB. Verify service availability for the target environment before deploying this building block.
+
+> **Implementation note**: The runnable assets in this building block use the Astra DB Data API (`astrapy` SDK). The provisioning path (directly from the IBM watsonx.data infrastructure experience) reflects the current documented pattern — see [IBM watsonx.data documentation](https://www.ibm.com/docs/en/watsonxdata/saas?topic=watsonxdata-adding-astra-db-service). If the integration pattern has changed in your version of watsonx.data, consult the product documentation rather than assuming the API surface documented here is current.
+
+## What Is This Building Block?
 
 Use **Astra DB Serverless through IBM watsonx.data** for elastic vector storage and NoSQL document storage on the same platform. This building block covers both the **vector similarity search** pattern (for RAG and semantic search) and the **NoSQL document CRUD** pattern (for schema-flexible JSON document workloads) — both are native capabilities of Astra DB running inside IBM HCD.
 
-Astra DB Serverless can be provisioned directly from the **IBM watsonx.data infrastructure experience** — add an Astra DB service and provision a **Serverless (vector)** or **Serverless (tables)** database. This makes Astra DB available as a managed service inside the watsonx.data environment without requiring separate cluster provisioning.
+Astra DB Serverless can be provisioned directly from the **IBM watsonx.data infrastructure experience** — add an Astra DB service and provision a **Serverless (vector)** or **Serverless (tables)** database.
 
 The building block also includes a runnable FastAPI ingestion service that downloads documents from **IBM COS**, generates **IBM watsonx.ai** embeddings, stores them in Astra DB vector collections, and performs ANN similarity search.
-
-> **Architecture note**: The Astra DB Vector ingestion asset may reflect an earlier integration pattern. Current watsonx.data documentation supports provisioning Astra DB Serverless **directly from the watsonx.data infrastructure experience**. See [IBM watsonx.data documentation](https://www.ibm.com/docs/en/watsonxdata/saas?topic=watsonxdata-adding-astra-db-service) for the current product integration.
 
 ---
 

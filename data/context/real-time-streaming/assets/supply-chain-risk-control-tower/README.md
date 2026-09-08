@@ -989,7 +989,7 @@ The [`docs/agents/`](docs/agents/) folder contains three prompt templates for IB
 3. Open [IBM watsonx.ai Prompt Lab](https://dataplatform.cloud.ibm.com/wx/prompts) in your Confluent Cloud environment.
 4. Paste the prompt template text from the `.md` file into the **System prompt** or **Freeform** input.
 5. Replace the `{{risk_event}}`, `{{recommendation_event}}`, and `{{alert_event}}` placeholders with the copied JSON.
-6. Select a foundation model (recommended: `ibm/granite-13b-instruct-v2` or `meta-llama/llama-3-1-70b-instruct`).
+6. Select a currently supported foundation model appropriate for your watsonx.ai deployment and region (e.g. `meta-llama/llama-3-1-70b-instruct` or a current Granite model). Consult [IBM watsonx.ai Foundation Models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html) for the current supported list.
 7. Click **Generate**.
 
 The output is ready to send or use in a slide deck. For live API integration — where watsonx.ai is called automatically each time the risk engine emits a CRITICAL event — see [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md).

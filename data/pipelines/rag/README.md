@@ -4,9 +4,11 @@
 **IBM Products**: IBM watsonx.ai, IBM watsonx.data (OpenSearch), IBM Cloud Object Storage
 **Product Components**: RAG Accelerator; IBM watsonx.ai Embeddings; MCP Servers (SSE transport); FastAPI; OpenSearch k-NN indexing; IBM COS
 
-## Overview
+## What Is This Building Block?
 
-Complete end-to-end RAG pipeline — ingest documents from **IBM Cloud Object Storage**, generate dense embeddings with **IBM watsonx.ai**, store in **IBM watsonx.data OpenSearch**, and serve **hybrid search** (vector + BM25 keyword) and Q&A queries via REST API or MCP server. Includes focused Bob modes for ingestion and retrieval specialists, plus MCP server assets for AI assistant integration.
+This building block provides a **custom/reference RAG accelerator** — a runnable, self-hosted pipeline that ingests documents from **IBM Cloud Object Storage**, generates dense embeddings with **IBM watsonx.ai**, stores them in **IBM watsonx.data OpenSearch**, and serves **hybrid search** (vector + BM25 keyword) and Q&A queries via REST API or MCP server.
+
+> **IBM watsonx.data OpenRAG vs this accelerator**: IBM watsonx.data includes a managed **OpenRAG** capability that provides RAG as a governed platform service. OpenRAG availability depends on the watsonx.data deployment type, cloud provider and region — verify availability for your target environment. This building block is a **custom/reference implementation** of a RAG pipeline using OpenSearch and watsonx.ai components, suitable for teams that want a directly deployable, customizable accelerator rather than the managed OpenRAG product. Use managed OpenRAG where it is available and meets your governance requirements; use this accelerator when you need more direct control or where OpenRAG is not yet available in your region.
 
 > **AI-tool agnostic**: MCP servers work with **IBM Bob**, **Claude**, and other MCP-compatible AI assistants.
 
@@ -79,7 +81,7 @@ uvicorn app.server:app --host 0.0.0.0 --port 8080
 
 ### IBM Bob — Your Fellow Developer
 
-**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The RAG building block ships **three focused Bob Modes** — each scoped to a different stage of the RAG lifecycle — plus **two Bob Skills** that teach Bob the exact watsonx.ai embedding calls, OpenSearch indexing patterns, and MCP server tool design used in these assets.
+**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The RAG building block ships **four focused Bob Modes** — each scoped to a different stage of the RAG lifecycle — plus **three Bob Skills** that teach Bob the exact watsonx.ai embedding calls, OpenSearch indexing patterns, and MCP server tool design used in these assets.
 
 **Install a Bob Mode** — give Bob a RAG specialist persona:
 ```powershell
@@ -281,11 +283,19 @@ See [`bob-skills/README.md`](./bob-skills/README.md) for full installation instr
 
 ## Embedding Models
 
-| Model ID | Dimension | Language | Use Case |
+The embedding model is configurable via the `EMBEDDING_MODEL_ID` environment variable. Select a model supported in your watsonx.ai region and deployment. The following models are referenced in this accelerator and were available at time of writing — verify current model availability in your watsonx.ai instance:
+
+| Model ID | Dimension | Language | Notes |
 |---|---|---|---|
-| `ibm/slate-125m-english-rtrvr` | 768 | English | Recommended for English RAG |
-| `ibm/slate-30m-english-rtrvr` | 384 | English | Lightweight English RAG |
-| `intfloat/multilingual-e5-large` | 1024 | Multi | Multilingual RAG |
+| `ibm/slate-125m-english-rtrvr` | 768 | English | English retrieval |
+| `ibm/slate-30m-english-rtrvr` | 384 | English | Lightweight English retrieval |
+| `intfloat/multilingual-e5-large` | 1024 | Multi | Multilingual retrieval |
+
+> Model availability varies by watsonx.ai region and plan. Consult [IBM watsonx.ai Embedding Models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-embed.html) for the current supported list.
+
+## Generation Model Selection
+
+The generation model used for Q&A (`/qna` endpoint) is configured via `RAG_WATSONX_DEPLOYMENT_ID` in the accelerator's environment. Select a currently supported watsonx.ai foundation model appropriate for your deployment and region. Do not rely on a hard-coded model name — model availability changes over time. Consult [IBM watsonx.ai Foundation Models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html) for currently supported generation models.
 
 ## Search Mode Comparison
 
@@ -309,7 +319,7 @@ RAG Ingestion (FastAPI / MCP Server)
         │   (PDF, DOCX, PPTX, HTML, MD, TXT)
         │
         ├─ IBM watsonx.ai embed_documents()
-        │   (ibm/slate-125m-english-rtrvr → 768-dim)
+        │   (configurable embedding model, e.g. ibm/slate-125m-english-rtrvr)
         │
         └─ OpenSearch bulk index
                 │
@@ -322,11 +332,17 @@ RAG Ingestion (FastAPI / MCP Server)
                 ├─ BM25 keyword search
                 │
                 └─ IBM watsonx.ai text generation
-                    (ibm/granite-13b-instruct-v2)
+                    (configurable generation model — set via deployment ID)
                         │
                         ▼
                 Generated Answer + Source Citations
 ```
+
+## Availability and Deployment Notes
+
+- **IBM watsonx.data OpenRAG**: Availability depends on the watsonx.data deployment type, cloud provider and region. Verify OpenRAG availability for your target environment before relying on managed OpenRAG capabilities.
+- **This accelerator**: Runs against any IBM watsonx.ai project and IBM watsonx.data OpenSearch instance. Deployable on any platform where Python runs.
+- **Embedding and generation models**: Model availability in watsonx.ai varies by region and plan. Always verify model availability before deployment rather than assuming a specific model is present.
 
 ## IBM Cloud References
 

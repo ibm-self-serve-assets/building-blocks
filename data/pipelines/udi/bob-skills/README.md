@@ -1,45 +1,45 @@
-# Data Pipeline AI-Generated Bob Skills
+# UDI Bob Skills
 
-Bob skills for AI-generated **structured** and **unstructured** data ingestion pipelines using **IBM DataStage**, **IBM UDI (Unstructured Data Integration)**, and **IBM Docling** on IBM Cloud.
+Bob skills for **Unstructured Data Integration (UDI)** pipelines using **IBM UDI**, **IBM Docling**, and **IBM Cloud Object Storage** on IBM Cloud.
+
+> **Scope note**: This building block covers unstructured document ingestion. For structured relational database batch patterns, see the [`../etl/`](../etl/) building block and its associated Bob skills.
 
 ## Overview
 
-These skills empower IBM Bob to generate production-ready data ingestion pipelines — ingesting structured relational data (Db2, PostgreSQL, MySQL, Oracle) and unstructured documents (PDF, DOCX, images) into **IBM watsonx.data** Iceberg tables and OpenSearch vector stores.
+These skills empower IBM Bob to configure UDI flows, parse complex documents with Docling, chunk and embed content, and index prepared document chunks into OpenSearch for downstream AI and RAG use.
 
-## Available Skills
+## Available Skills for This Building Block
 
 | Skill | Zip | Use When |
 |---|---|---|
-| `data-ingestion-structured` | [`data-ingestion-structured.zip`](data-ingestion-structured.zip) | Ingesting structured relational data into IBM watsonx.data using IBM DataStage, CDC, and batch patterns |
 | `data-ingestion-unstructured` | [`data-ingestion-unstructured.zip`](data-ingestion-unstructured.zip) | Ingesting unstructured documents (PDF, DOCX, images) from IBM COS using IBM UDI and Docling |
+| `udi-opensearch` | [`udi-opensearch.zip`](udi-opensearch.zip) | UDI + OpenSearch pipeline setup: connection registration, flow creation, ingestion execution |
+
+> **Also present — not for UDI**: The `data-ingestion-structured.zip` skill (IBM DataStage batch ingestion, CDC patterns) is in this directory for convenience. It covers structured relational data ingestion, not unstructured document integration. Use it alongside the [ETL / ELT](../etl/README.md) building block.
 
 ---
 
-### `data-ingestion-structured`
-
-A comprehensive skill for building structured data ingestion pipelines:
-
-- IBM Cloud IAM authentication with automatic token refresh
-- IBM DataStage batch and incremental load job configuration
-- IBM Data Replication CDC (Change Data Capture) for Db2, PostgreSQL, Oracle, MySQL
-- RDBMS-to-Iceberg type mapping and schema evolution handling
-- IBM COS staging area patterns for bulk Parquet loads
-- Presto `INSERT INTO ... SELECT` from COS staging to Iceberg
-- Error handling, retry logic, and dead-letter queue patterns
-- IBM watsonx.data REST API v2 integration
-
 ### `data-ingestion-unstructured`
 
-A comprehensive skill for building unstructured document ingestion pipelines:
+A skill for building unstructured document ingestion pipelines:
 
-- IBM UDI (Unstructured Data Integration) DataStage connector configuration
+- IBM UDI (Unstructured Data Integration) flow configuration
 - IBM Docling document parsing for PDF, DOCX, images (OCR)
-- `unstructured.io` multi-format parsing (HTML, PPTX, email, Excel) as fallback
 - Chunking strategies: fixed-size, semantic, sentence-based
 - IBM watsonx.ai embedding generation for vectorised chunks
 - IBM COS document source with `ibm-cos-sdk` IAM OAuth download
 - Metadata extraction: title, source path, page number, chunk_seq
-- Target support: IBM watsonx.data Iceberg (metadata) + OpenSearch (vectors)
+- Target support: OpenSearch (vectors)
+
+### `udi-opensearch`
+
+A skill specifically for the UDI + OpenSearch pipeline:
+
+- Watson Data API connection registration (COS HMAC, OpenSearch)
+- IBM UDI flow creation via the Watson Data API
+- UDI job execution and status polling
+- OpenSearch index configuration for UDI-ingested documents
+- Troubleshooting UDI flow failures and WML instance status errors
 
 ---
 
@@ -51,14 +51,14 @@ The zip files are pre-structured with `.bob/skills/<skill-folder>/` internally. 
 
 ```bash
 # From the root of your Bob workspace project
-unzip data-ingestion-structured.zip
 unzip data-ingestion-unstructured.zip
+unzip udi-opensearch.zip
 ```
 
 This will create:
 ```
-.bob/skills/data-ingestion-structured/SKILL.md
 .bob/skills/data-ingestion-unstructured/SKILL.md
+.bob/skills/udi-opensearch/SKILL.md
 ```
 
 ### Step 2 — Enable in IBM Bob
@@ -67,32 +67,30 @@ Open IBM Bob → Skills panel → enable the desired skill(s). Bob will use them
 
 ### Step 3 — Verify
 
-Ask Bob: *"What data ingestion skills do you have active?"*
+Ask Bob: *"What UDI skills do you have active?"*
 
 ---
 
 ## Usage Examples
 
-### data-ingestion-structured
-- *"Generate an IBM DataStage batch ingestion job from PostgreSQL into an IBM watsonx.data Iceberg table"*
-- *"Set up CDC for IBM Db2 using IBM Data Replication with Kafka as the target"*
-- *"Create a Python script for incremental load from MySQL to Iceberg using watermarks"*
-
 ### data-ingestion-unstructured
-- *"Configure an IBM UDI DataStage flow to ingest PDFs from IBM COS into OpenSearch"*
+- *"Configure an IBM UDI flow to ingest PDFs from IBM COS into OpenSearch"*
 - *"Generate a Docling document parsing script for scanned PDFs with OCR"*
 - *"Write a chunking pipeline that splits DOCX files into 512-token chunks with 128-token overlap"*
+
+### udi-opensearch
+- *"Register my COS bucket and OpenSearch instance as connections in my watsonx.ai project"*
+- *"Create and run a UDI flow that ingests documents from my COS folder into OpenSearch"*
+- *"Troubleshoot a UDI flow that fails with invalid_instance_status_error"*
 
 ---
 
 ## What Bob Can Help You Build
 
-1. **DataStage Job Configs**: Batch, incremental, and CDC job configurations
-2. **CDC Subscriptions**: IBM Data Replication log-mining setup for Db2, PostgreSQL, Oracle
-3. **Type Mapping**: RDBMS → Iceberg type conversion tables
-4. **Document Parsers**: Docling and `unstructured.io` parsing pipelines
-5. **Chunking Pipelines**: Adaptive text splitting with metadata extraction
-6. **COS-to-Iceberg Flows**: Staging → Presto INSERT INTO patterns
+1. **UDI Flow Configs**: Connection registration, flow creation, embedding and OpenSearch sink setup
+2. **Document Parsers**: Docling and multi-format parsing pipelines
+3. **Chunking Pipelines**: Adaptive text splitting with metadata extraction
+4. **OpenSearch Ingestion**: UDI-to-OpenSearch index patterns with vector support
 
 ---
 
@@ -101,34 +99,32 @@ Ask Bob: *"What data ingestion skills do you have active?"*
 Before using these skills, ensure you have:
 
 - IBM Cloud API key ([IBM Cloud IAM](https://cloud.ibm.com/iam/apikeys))
-- IBM watsonx.data instance (Iceberg catalog + Presto engine)
-- IBM DataStage service (for structured ingestion)
-- IBM Cloud Object Storage bucket (for unstructured document source)
-- IBM watsonx.ai project (for embedding generation in unstructured flows)
+- IBM watsonx.ai project (houses UDI flows and connections)
+- Watson Machine Learning instance (active, linked to your watsonx.ai project — required for OCR extraction)
+- IBM Cloud Object Storage bucket with source documents
+- OpenSearch instance (IBM watsonx.data managed, or self-managed)
 
 ## Skill Capabilities Summary
 
-| Capability | data-ingestion-structured | data-ingestion-unstructured |
+| Capability | data-ingestion-unstructured | udi-opensearch |
 |---|---|---|
-| IAM Authentication | ✅ | ✅ |
-| IBM DataStage Jobs | ✅ | ✅ |
-| CDC (Db2, PG, Oracle) | ✅ | — |
-| RDBMS Type Mapping | ✅ | — |
-| PDF/DOCX Parsing | — | ✅ |
-| IBM Docling OCR | — | ✅ |
-| Chunking & Embedding | — | ✅ |
-| OpenSearch Target | — | ✅ |
-| Iceberg Target | ✅ | ✅ |
+| IBM UDI Flow Configuration | ✅ | ✅ |
+| Watson Data API (connection registration) | — | ✅ |
+| IBM Docling OCR | ✅ | — |
+| Chunking & Embedding | ✅ | ✅ |
+| OpenSearch Target | ✅ | ✅ |
+| Troubleshooting / Status Polling | — | ✅ |
 
 ## Troubleshooting
 
 **Skill doesn't appear after installation:**
-1. Verify `.bob/skills/data-ingestion-structured/SKILL.md` exists
+1. Verify `.bob/skills/data-ingestion-unstructured/SKILL.md` exists
 2. Restart Bob to refresh the skills list
 3. Ensure you've enabled the Skills button in your current mode
 
 ## Related
 
 - [`../bob-modes/`](../bob-modes/) — Data Ingestion Builder Bob Mode
-- [`../README.md`](../README.md) — AI-Generated Data Pipeline building block overview
+- [`../README.md`](../README.md) — UDI building block overview
 - [`../assets/`](../assets/) — Deployable UDI OpenSearch ingestion assets
+- [`../../etl/`](../../etl/README.md) — ETL / ELT building block (structured ingestion)

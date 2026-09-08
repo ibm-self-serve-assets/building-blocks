@@ -18,7 +18,9 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-- **[`base-modes/context-hub-builder.zip`](base-modes/context-hub-builder.zip)**: Bob mode configuration for Context Hub development
+> **Coming soon** — `context-hub-builder.zip` is not yet committed to this repository. The documentation below describes the intended mode capabilities. Check [`base-modes/`](base-modes/) for availability.
+
+- **`base-modes/context-hub-builder.zip`**: Bob mode configuration for Context Hub development
 
 ---
 

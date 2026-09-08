@@ -6,7 +6,7 @@
 
 ## Overview
 
-Use **IBM Aspera Sync** to replicate and synchronize large files and data repositories quickly and securely over wide-area networks (WAN). IBM Aspera Sync uses IBM's purpose-built **FASP** (Fast, Adaptive, and Secure Protocol) transport to maintain near-wire-speed transfer performance regardless of network distance, latency, or packet loss — making it practical to synchronize terabytes of data between data centres, clouds, and remote sites within predictable windows.
+Use **IBM Aspera Sync** to replicate and synchronize large files and data repositories quickly and securely over wide-area networks (WAN). IBM Aspera Sync uses IBM's purpose-built **FASP** (Fast, Adaptive, and Secure Protocol) transport, which is designed for high-throughput transfers across high-latency and lossy WAN connections. Actual throughput depends on available network capacity, endpoint hardware, storage performance and workload characteristics.
 
 Conventional TCP-based file transfer (rsync, SFTP, FTP) degrades sharply over long distances and high-latency links. A transfer that takes minutes on a local network can take hours or days across a WAN. IBM Aspera Sync addresses this directly.
 
@@ -80,24 +80,9 @@ On-premises / Site A                                    Cloud / Site B
 
 ### IBM Bob — Your Fellow Developer
 
-**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The Data Sync building block ships a **Bob Mode** and **Bob Skills** that give Bob expert knowledge of IBM Aspera Sync configuration, topology design, FASP transport tuning, and integration with downstream analytics pipelines.
+**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The Data Sync building block documents **Bob Mode** and **Bob Skill** assets for IBM Aspera Sync configuration, topology design, FASP transport tuning, and integration with downstream analytics pipelines.
 
-**Install the Bob Mode**:
-```powershell
-# Windows
-Copy-Item bob-modes/base-modes/aspera-sync-builder.zip "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
-```
-```bash
-# Linux / macOS
-cp bob-modes/base-modes/aspera-sync-builder.zip ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
-```
-Restart IBM Bob — **Aspera Sync Builder** mode appears in the mode selector.
-
-**Install Bob Skills**:
-```bash
-unzip bob-skills/aspera-sync-configuration.zip
-```
-Open IBM Bob → Skills panel → enable the skill.
+> **Asset availability note**: The `aspera-sync-builder.zip` Bob Mode and `aspera-sync-configuration.zip` Bob Skill are defined in this building block. Check [`bob-modes/base-modes/`](bob-modes/base-modes/) and [`bob-skills/`](bob-skills/) for current file availability.
 
 ---
 

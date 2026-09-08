@@ -1,12 +1,20 @@
 # Data Lineage
 
 **Core Capability**: Context — Metadata Enrichment
-**IBM Products**: IBM watsonx.data intelligence (Manta data lineage), IBM Data Observability by Databand
+**IBM Products**: IBM watsonx.data intelligence (Manta data lineage)
+**Optional Integration**: IBM Data Observability by Databand (for operational observability alongside lineage)
 **Product Components**: Manta Data Lineage; OpenLineage HTTP Transport; IBM Cloud IAM; IBM Cloud Object Storage
 
-## Overview
+## What Is This Building Block?
 
-Track data transformations and maintain a full lineage graph for all IBM Cloud data assets using **IBM watsonx.data Intelligence** (powered by Manta) and **IBM Databand**. Emit OpenLineage events from any Python ETL, IBM DataStage, or Apache Spark pipeline and query the resulting lineage graph for governance, impact analysis, and compliance reporting.
+Track data transformations and query a lineage graph for governance, impact analysis, and compliance reporting using **IBM watsonx.data intelligence** — powered by Manta.
+
+OpenLineage events emitted from Python ETL, IBM DataStage, or Apache Spark pipelines can be collected and forwarded for lineage consumption. The lineage graph and impact analysis capabilities in this building block are provided through IBM watsonx.data intelligence (Manta). IBM Databand integration is included for scenarios where you also want operational pipeline observability alongside lineage — but Databand is not required for Manta lineage queries or impact analysis.
+
+> **Separation of concerns**:
+> - **Lineage graph** (upstream/downstream relationships, impact analysis, governance) → IBM watsonx.data intelligence (Manta)
+> - **Operational observability** (run health, anomaly detection, SLAs) → IBM Databand — see [Data Observability](../../data-observability/README.md)
+> - **OpenLineage events** → produced by your pipelines; can flow to Databand, to watsonx.data intelligence, or both
 
 ---
 
@@ -25,10 +33,10 @@ Track data transformations and maintain a full lineage graph for all IBM Cloud d
 
 ### Prerequisites
 
-- **IBM watsonx.data Intelligence** instance with Manta lineage enabled — note `WXDI_PROJECT_ID` and base URL
-- **IBM Databand** instance — note `DATABAND_URL` and `DATABAND_ACCESS_TOKEN`
+- **IBM watsonx.data intelligence** instance with Manta lineage enabled — note `WXDI_PROJECT_ID` and base URL
 - **IBM Cloud API key** — [create at IBM Cloud IAM](https://cloud.ibm.com/iam/apikeys)
 - **Python 3.10+**
+- **IBM Databand** instance *(optional)* — required only if you want to forward OpenLineage events to Databand for operational pipeline observability. Note `DATABAND_URL` and `DATABAND_ACCESS_TOKEN`. Manta lineage queries and impact analysis do not require Databand.
 
 ### Quick Start — OpenLineage Collector
 
