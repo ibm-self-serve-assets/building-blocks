@@ -18,7 +18,9 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-- **[`base-modes/aspera-sync-builder.zip`](base-modes/aspera-sync-builder.zip)**: Bob mode configuration for IBM Aspera Sync development
+> **Coming soon** — `aspera-sync-builder.zip` is not yet committed to this repository. The documentation below describes the intended mode capabilities. Check [`base-modes/`](base-modes/) for availability.
+
+- **`base-modes/aspera-sync-builder.zip`**: Bob mode configuration for IBM Aspera Sync development
 
 ---
 

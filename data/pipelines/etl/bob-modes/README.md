@@ -18,7 +18,9 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-- **[`base-modes/datastage-etl-builder.zip`](base-modes/datastage-etl-builder.zip)**: Bob mode configuration for DataStage ETL/ELT development
+> **Coming soon** — `datastage-etl-builder.zip` is not yet committed to this repository. The documentation below describes the intended mode capabilities. Check [`base-modes/`](base-modes/) for availability.
+
+- **`base-modes/datastage-etl-builder.zip`**: Bob mode configuration for DataStage ETL/ELT development
 
 ---
 

@@ -8,9 +8,11 @@ This skill gives IBM Bob expert knowledge of IBM Aspera Sync configuration, topo
 
 ## Available Skills
 
+> **Coming soon** — `aspera-sync-configuration.zip` is not yet committed to this repository. The documentation below describes the intended skill capabilities. Check this directory for availability.
+
 | Skill | Zip | Use When |
 |---|---|---|
-| `aspera-sync-configuration` | [`aspera-sync-configuration.zip`](aspera-sync-configuration.zip) | Configuring IBM Aspera Sync for WAN file repository synchronization |
+| `aspera-sync-configuration` | `aspera-sync-configuration.zip` | Configuring IBM Aspera Sync for WAN file repository synchronization |
 
 ---
 

@@ -8,10 +8,12 @@ These skills give IBM Bob expert knowledge of DataStage flow design, connector p
 
 ## Available Skills
 
+> **Coming soon** — `datastage-flow-design.zip` and `datastage-watsonxdata-integration.zip` are not yet committed to this repository. The documentation below describes the intended skill capabilities. Check this directory for availability.
+
 | Skill | Zip | Use When |
 |---|---|---|
-| `datastage-flow-design` | [`datastage-flow-design.zip`](datastage-flow-design.zip) | Designing DataStage ETL/ELT flows — connectors, stages, scheduling, monitoring |
-| `datastage-watsonxdata-integration` | [`datastage-watsonxdata-integration.zip`](datastage-watsonxdata-integration.zip) | Connecting DataStage flows to IBM watsonx.data — Iceberg targets, Presto, catalog setup |
+| `datastage-flow-design` | `datastage-flow-design.zip` | Designing DataStage ETL/ELT flows — connectors, stages, scheduling, monitoring |
+| `datastage-watsonxdata-integration` | `datastage-watsonxdata-integration.zip` | Connecting DataStage flows to IBM watsonx.data — Iceberg targets, Presto, catalog setup |
 
 ---
 

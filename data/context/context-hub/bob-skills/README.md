@@ -8,9 +8,11 @@ This skill gives IBM Bob expert knowledge of the integration between IBM Conflue
 
 ## Available Skills
 
+> **Coming soon** — `confluent-watsonxdata-context.zip` is not yet committed to this repository. The documentation below describes the intended skill capabilities. Check this directory for availability.
+
 | Skill | Zip | Use When |
 |---|---|---|
-| `confluent-watsonxdata-context` | [`confluent-watsonxdata-context.zip`](confluent-watsonxdata-context.zip) | Building the streaming-to-lakehouse integration and enriching streaming data with governed business context |
+| `confluent-watsonxdata-context` | `confluent-watsonxdata-context.zip` | Building the streaming-to-lakehouse integration and enriching streaming data with governed business context |
 
 ---
 
