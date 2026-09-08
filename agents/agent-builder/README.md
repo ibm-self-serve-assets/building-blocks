@@ -22,7 +22,7 @@ The **Agent Builder** building block enables developers to rapidly create autono
 
 ## How to Use
 
-###  Build Your Own Agent
+### Build Your Own Agent
 Use Bob modes to start building custom agents:
 - Explore the **Agent Builder Bob Mode** for guided agent development
 - Configure agent behaviors, rules, and enterprise integrations
@@ -32,15 +32,22 @@ Use Bob modes to start building custom agents:
 
 Download and install Bob modes for guided agent development:
 
-- **[Agent Builder Base Mode](./bob-modes/agent-builder-bob-modes/base-modes/agent-builder-base-mode/agent-builder-base-mode.zip)** ⬇️ - Foundation mode for agent building workflows
-- **[Domain Agent Builder](./bob-modes/agent-builder-bob-modes/custom-modes/domain-agent-builder/domain-agent-builder.zip)** ⬇️ - Build custom domain-specific agents (healthcare, retail, finance, etc.)
-- **[Voice Agent Builder](./bob-modes/agent-builder-bob-modes/custom-modes/voice-agent-builder/voice-agent-builder.zip)** ⬇️ - Build voice-enabled agents with multi-channel support (phone, WhatsApp, SMS, Slack)
+- **[Agent Builder Base Mode](./bob-modes/base-modes/agent-builder-base-mode.zip)** ⬇️ - Foundation mode for agent building workflows
+- **[Domain Agent Builder](./bob-modes/custom-modes/domain-agent-builder.zip)** ⬇️ - Build custom domain-specific agents (healthcare, retail, finance, etc.)
+- **[Voice Agent Builder](./bob-modes/custom-modes/voice-agent-builder.zip)** ⬇️ - Build voice-enabled agents with multi-channel support (phone, WhatsApp, SMS, Slack)
+- **[Agent REST Integration](./bob-modes/custom-modes/agent-rest-integration.zip)** ⬇️ - Connect agents to external enterprise systems via REST APIs
 
 📖 See the [bob-modes README](./bob-modes/README.md) for installation instructions.
+
+## Agent Builder Bob Skills
+
+Explore specialized agent building and lifecycle skills:
+
+- **[Agent Skills](./bob-skills/README.md)** - Access unified agent lifecycle skills across build, integrate, voice, controls, and flows.
 
 ---
 
 ## Related Building Blocks
 
 - [Multi-Agent Orchestration](../multi-agent-orchestration/)
-- [Agentic SDLC](..//agentic-sdlc/)
+- [AI Engineering](../../ai-engineering/)

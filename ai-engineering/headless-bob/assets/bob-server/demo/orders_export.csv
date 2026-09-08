@@ -1,0 +1,5 @@
+order_id,customer,region,amount,ordered_at
+1001,Ada,NA,42.5,2026-06-01
+1002,Grace,EU,108.25,2026-06-02
+1003,Linus,NA,17.99,2026-06-03
+1004,Ken,APAC,250.0,2026-06-04

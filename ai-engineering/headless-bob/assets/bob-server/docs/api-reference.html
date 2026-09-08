@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bobserver API Reference</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 13px;
+      color: #1a1a2e;
+      background: #fff;
+      padding: 40px 48px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* ── Cover ── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-bottom: 28px;
+      border-bottom: 3px solid #0f3460;
+      margin-bottom: 32px;
+    }
+    .cover-logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: #0f3460;
+      letter-spacing: 0.04em;
+    }
+    .cover-logo sup { font-size: 14px; color: #3b82f6; vertical-align: super; }
+    .cover-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #0f3460;
+      margin-top: 4px;
+    }
+    .cover-meta {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .cover-urls {
+      margin-top: 10px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .cover-url {
+      font-size: 11px;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 3px 8px;
+      color: #334155;
+      font-family: monospace;
+    }
+
+    /* ── Print button ── */
+    .print-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f3460;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 32px;
+    }
+    .print-btn:hover { background: #1a4a8a; }
+    @media print { .print-btn { display: none; } }
+
+    /* ── Section heading ── */
+    h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f3460;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 10px 14px;
+      background: #f0f4ff;
+      border-left: 4px solid #3b82f6;
+      border-radius: 0 6px 6px 0;
+      margin: 28px 0 12px;
+      page-break-after: avoid;
+    }
+
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 8px;
+      page-break-inside: avoid;
+    }
+    thead tr {
+      background: #e8edf8;
+    }
+    th {
+      text-align: left;
+      padding: 7px 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border-bottom: 2px solid #cbd5e1;
+    }
+    td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    /* ── Method badges ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      font-family: monospace;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .badge-GET    { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
+    .badge-POST   { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; }
+    .badge-DELETE { background: #fee2e2; color: #b91c1c; border: 1px solid #fca5a5; }
+
+    /* ── Endpoint path ── */
+    .path {
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      font-size: 12px;
+      color: #1e293b;
+      background: #f8fafc;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid #e2e8f0;
+    }
+
+    /* ── Auth / note pills ── */
+    .tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 10px;
+      margin-left: 6px;
+      vertical-align: middle;
+      font-weight: 600;
+    }
+    .tag-auth { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+    .tag-new  { background: #ede9fe; color: #5b21b6; border: 1px solid #c4b5fd; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body { padding: 20px 28px; }
+      h2 { page-break-after: avoid; }
+      table { page-break-inside: avoid; }
+      .cover { page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover -->
+  <div class="cover">
+    <div class="cover-logo">✦ BOB<sup>+</sup></div>
+    <div class="cover-title">Bobserver REST API Reference</div>
+    <div class="cover-meta">
+      Version 0.1.0 &nbsp;·&nbsp; Branch: bob+ &nbsp;·&nbsp;
+      Authentication: Basic Auth <code>admin:nowibm</code> or OAuth2 Bearer
+    </div>
+    <div class="cover-urls">
+      <span class="cover-url">Swagger UI → http://localhost:8081/docs</span>
+      <span class="cover-url">ReDoc → http://localhost:8081/redoc</span>
+      <span class="cover-url">OpenAPI JSON → http://localhost:8081/openapi.json</span>
+    </div>
+  </div>
+
+  <button class="print-btn" onclick="window.print()">
+    🖨 Save as PDF
+  </button>
+
+  <!-- ── Bob Runs ── -->
+  <h2>Bob Runs</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Method</th>
+        <th style="width:340px">Endpoint</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/bob/prompt</span></td>
+        <td>Run a Bob Shell prompt synchronously and wait for the full result before returning.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/bob/jobs</span></td>
+        <td>Start a Bob Shell prompt as a background async job; returns a job ID immediately for polling.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/bob/jobs</span></td>
+        <td>List all Bob jobs currently held in server memory.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/bob/jobs/{job_id}</span></td>
+        <td>Poll the status and streamed output of a specific background Bob job.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/bob/jobs/{job_id}/cancel</span></td>
+        <td>Send SIGTERM to a running Bob job and mark it cancelled.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-DELETE">DELETE</span></td>
+        <td><span class="path">/api/bob/jobs/{job_id}</span></td>
+        <td>Delete a completed job record and clean up its on-disk workspace artifacts.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/bob/jobs/{job_id}/artifacts/{artifact_name}</span></td>
+        <td>Download a named artifact file (e.g. <code>result.md</code>, <code>bob-run.json</code>) from a Bob job run.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/bob/stream</span></td>
+        <td>Run a Bob Shell prompt and stream incremental output back as Server-Sent Events (SSE).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Workflows ── -->
+  <h2>Workflows — Plan → Approve → Execute</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Method</th>
+        <th style="width:340px">Endpoint</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/workflows</span></td>
+        <td>Create a new skill-aware workflow from a plain-text objective; returns a plan for review or auto-executes if <code>autoApprove=true</code>.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/workflows</span></td>
+        <td>List all in-memory workflows with their current state.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/workflows/{workflow_id}</span></td>
+        <td>Get the full plan, skill selection, execution status, activity log, and results for a workflow.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/workflows/{workflow_id}/approve</span></td>
+        <td>Approve a workflow that is paused waiting for human sign-off; execution resumes immediately.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/workflows/{workflow_id}/cancel</span></td>
+        <td>Cancel a running or pending workflow and kill any active child process group.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-DELETE">DELETE</span></td>
+        <td><span class="path">/api/workflows/{workflow_id}</span></td>
+        <td>Remove a terminal (completed or cancelled) workflow from server memory.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/workflows/{workflow_id}/artifacts/{artifact_name}</span></td>
+        <td>Download a named artifact produced by a workflow execution run.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Bob+ Planning Sessions ── -->
+  <h2>Bob+ Planning Sessions <span class="tag tag-new">NEW</span></h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Method</th>
+        <th style="width:340px">Endpoint</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/sessions</span></td>
+        <td>Create a new 5-phase Bob+ planning session (Describe → Discovery → Architecture → Spec → Continue).</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/sessions/current</span></td>
+        <td>Return the currently active session including all phase states and conversation history.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/sessions/{session_id}/message</span></td>
+        <td>Send a user message in the active phase; returns Bob's response, any phase-transition signal, and artifact update flag.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/api/sessions/{session_id}/advance</span></td>
+        <td>Advance the session to the next phase after the user confirms a Bob-proposed transition.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/api/sessions/{session_id}/artifact/{phase_id}</span></td>
+        <td>Retrieve the generated markdown artifact for a completed phase (e.g. <code>requirements.md</code>, <code>spec.md</code>).</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-DELETE">DELETE</span></td>
+        <td><span class="path">/api/sessions/{session_id}</span></td>
+        <td>Destroy the active session and clear all conversation state from memory.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Infrastructure ── -->
+  <h2>Infrastructure</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:70px">Method</th>
+        <th style="width:340px">Endpoint</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="badge badge-GET">GET</span></td>
+        <td><span class="path">/healthz</span></td>
+        <td>Liveness probe — returns <code>{"status":"ok"}</code>. Used by Kubernetes / load-balancer health checks.</td>
+      </tr>
+      <tr>
+        <td><span class="badge badge-POST">POST</span></td>
+        <td><span class="path">/mcp</span></td>
+        <td>MCP JSON-RPC 2.0 endpoint — exposes Bob Shell and workflow tools to any MCP-compatible client or AI assistant.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ── Authentication note ── -->
+  <h2>Authentication</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width:160px">Method</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Basic Auth</strong></td>
+        <td>Send <code>Authorization: Basic &lt;base64(username:password)&gt;</code>. Default credentials: <code>admin</code> / <code>nowibm</code> (set via <code>BOBSERVER_ADMIN_USERNAME</code> / <code>BOBSERVER_ADMIN_PASSWORD</code>).</td>
+      </tr>
+      <tr>
+        <td><strong>OAuth2 Bearer</strong></td>
+        <td>Obtain a token via <code>POST /oauth/token</code> (PKCE flow) and send <code>Authorization: Bearer &lt;token&gt;</code>. Token TTL: 3600 s.</td>
+      </tr>
+      <tr>
+        <td><strong>IBM App ID</strong></td>
+        <td>Browser-based SSO via <code>GET /auth/login</code>. Requires <code>BOBSERVER_APPID_*</code> environment variables to be configured.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <footer>
+    <span>Bobserver v0.1.0 · Bob+ branch · IBM Build Labs 2026</span>
+    <span>Generated from <code>src/bobserver/main.py</code></span>
+  </footer>
+
+</body>
+</html>

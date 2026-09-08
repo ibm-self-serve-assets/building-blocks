@@ -24,10 +24,10 @@ The **Multi-Agent Orchestration** building block enables multiple AI agents to c
 ## Key Integration Standards
 
 ### MCP (Model Context Protocol)
-Enables secure, two-way connections between data sources and AI-powered tools:
+Enables secure, two-way connections between data sources and AI-powered tools.
 
 ### A2A (Agent-to-Agent)
-Enables AI agents to discover, communicate, and collaborate regardless of underlying technology:
+Enables AI agents to discover, communicate, and collaborate regardless of underlying technology.
 
 ## How to Use
 
@@ -41,19 +41,24 @@ Follow best practices for designing and implementing multi-agent orchestration:
 
 Download and install Bob modes for multi-agent development:
 
-- **[Multi-Agent Orchestration Base Mode](./bob-modes/multiagent-orchestration-bob-modes/base-modes/multi-agent-orchestration-base-mode.zip)** ⬇️ - Build production-grade AI agents, MCP servers, and multi-agent workflows
-- 🚧 More Bob modes are under development and coming soon
+- **[Multi-Agent Orchestration Base Mode](./bob-modes/base-modes/multi-agent-orchestration-base-mode.zip)** ⬇️ - Build production-grade AI agents, MCP servers, and multi-agent workflows
+- **[Agent Model Gateway Mode](./bob-modes/custom-modes/agent-model-gateway-bob-mode.zip)** ⬇️ - Integrate third-party LLM models via the AI Gateway
 
 📖 See the [bob-modes README](./bob-modes/README.md) for installation instructions.
+
+## Bob Skills for Multi-Agent Development
+
+Explore specialized skills for multi-agent workflows and flows:
+
+- **[Multi-Agent Skills](./bob-skills/README.md)** - Access multi-agent orchestration, agent flows, and controls skills.
 
 ## Best Practices & Guidelines
 
 - [Best Practice Guide](./assets/Best_Practice_Guide.md) - Comprehensive guide for multi-agent system design, tool development, and integration patterns
-
 
 ---
 
 ## Related Building Blocks
 
 - [Agent Builder](../agent-builder/)
-- [Agentic SDLC](../agentic-sdlc/)
+- [AI Engineering](../../ai-engineering/)
