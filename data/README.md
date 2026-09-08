@@ -1,29 +1,48 @@
-# Data for AI — Building Blocks
+# Data — Intelligent Data Platform Building Blocks
 
 ## Overview
 
-IBM's Data-for-AI building blocks organized by core capability, providing comprehensive solutions for AI data management, integration, intelligence, and retrieval. Every building block ships with **runnable assets** (FastAPI services, Python scripts), **Bob Modes** (AI assistant configurations), and **Bob Skills** (expert knowledge zips).
+IBM's **Data Building Blocks** provide a practical, composable foundation for making enterprise data **connected, contextual, trusted, and ready for analytics and AI**. The building blocks are organized around three use-case groups from the IBM Data sales play: **Context**, **Pipelines**, and **Query Engines**.
+
+Every building block ships with **runnable assets** (FastAPI services, Python scripts), **Bob Modes** (AI assistant configurations), and **Bob Skills** (expert knowledge zips).
 
 > **AI-tool agnostic**: All runnable assets work independently of any AI assistant. Bob modes and skills are optimised for IBM Bob but the patterns apply equally when using Claude, GitHub Copilot, or any other coding assistant.
 
 ---
 
-## When to Use This Repository
+## Building Block Map
 
-Use these building blocks when you need to **accelerate delivery** of an IBM data or AI application. Pick the capability that matches your goal:
+| Use Case | Building Block | Path | Primary Products |
+|---|---|---|---|
+| **Context** | [Context Hub](context/context-hub/) | `context/context-hub/` | IBM Confluent + IBM watsonx.data + IBM watsonx.data intelligence |
+| **Context** | [Real-Time Streaming](context/real-time-streaming/) | `context/real-time-streaming/` | IBM Confluent (Kafka + Flink + connectors + governance) |
+| **Context** | [Metadata Enrichment & Data Quality](context/metadata-enrichment/) | `context/metadata-enrichment/` | IBM watsonx.data intelligence |
+| **Context** | [Data Observability](context/data-observability/) | `context/data-observability/` | IBM watsonx.data integration + IBM Data Observability by Databand |
+| **Pipelines** | [RAG](pipelines/rag/) | `pipelines/rag/` | IBM watsonx.data OpenRAG + OpenSearch |
+| **Pipelines** | [UDI (Unstructured Data Integration)](pipelines/udi/) | `pipelines/udi/` | IBM watsonx.data integration + Docling for IBM watsonx |
+| **Pipelines** | [Text2SQL](pipelines/text2sql/) | `pipelines/text2sql/` | IBM watsonx.data intelligence |
+| **Pipelines** | [ETL / ELT](pipelines/etl/) | `pipelines/etl/` | IBM DataStage + IBM watsonx.data integration |
+| **Pipelines** | [Data Sync](pipelines/data-sync/) | `pipelines/data-sync/` | IBM Aspera Sync |
+| **Query Engines** | [Zero-Copy Lakehouse](query-engines/zero-copy-lakehouse/) | `query-engines/zero-copy-lakehouse/` | IBM watsonx.data (Presto + Spark + Iceberg) |
+| **Query Engines** | [Serverless Vector](query-engines/serverless-vector/) | `query-engines/serverless-vector/` | IBM watsonx.data + Astra DB Serverless |
+
+---
+
+## Quick Selection Guide
 
 | I want to… | Go here |
 |---|---|
-| Build a RAG pipeline — ingest documents, embed, search, answer questions | [`retrieval/RAG/`](retrieval/RAG/) |
-| Add hybrid vector + keyword search (OpenSearch) to my app | [`retrieval/vector-search/`](retrieval/vector-search/README.md) |
-| Store and query documents with NoSQL (Cassandra-compatible) | [`retrieval/no-sql-database/`](retrieval/no-sql-database/) |
-| Query across COS, Db2, S3 without copying data | [`retrieval/zero-copy/`](retrieval/zero-copy/) |
-| Build AI-generated DataStage / ingestion pipelines | [`integration/data-pipeline-ai-generated/`](integration/data-pipeline-ai-generated/) |
-| Set up real-time Kafka event streaming with Confluent | [`integration/data-streaming/`](integration/data-streaming/) |
-| Monitor data pipeline health and lineage with IBM Databand | [`integration/data-observability/`](integration/data-observability/) |
-| Validate data quality before it reaches an AI model | [`intelligence/data-quality/`](intelligence/data-quality/) |
-| Track data lineage from source to model consumption | [`intelligence/data-lineage/`](intelligence/data-lineage/) |
-| Convert natural language questions to SQL | [`intelligence/text2sql/`](intelligence/text2sql/) |
+| Build a RAG pipeline — ingest documents, embed, search, answer questions | [`pipelines/rag/`](pipelines/rag/) |
+| Ingest and prepare complex PDFs, tables or presentations for AI | [`pipelines/udi/`](pipelines/udi/) |
+| Let business users query governed data in plain English (Text2SQL) | [`pipelines/text2sql/`](pipelines/text2sql/) |
+| Build repeatable batch ETL/ELT using IBM DataStage | [`pipelines/etl/`](pipelines/etl/) |
+| Synchronize large file repositories across WAN or cloud sites | [`pipelines/data-sync/`](pipelines/data-sync/) |
+| Set up real-time Kafka event streaming with IBM Confluent | [`context/real-time-streaming/`](context/real-time-streaming/) |
+| Combine streaming, lakehouse and metadata for a governed context layer | [`context/context-hub/`](context/context-hub/) |
+| Add business terms, quality rules and descriptions to data assets | [`context/metadata-enrichment/`](context/metadata-enrichment/) |
+| Monitor data pipeline health, detect failures and track SLAs | [`context/data-observability/`](context/data-observability/) |
+| Query across COS, Db2, S3 without copying data | [`query-engines/zero-copy-lakehouse/`](query-engines/zero-copy-lakehouse/) |
+| Store embeddings and run vector similarity search elastically | [`query-engines/serverless-vector/`](query-engines/serverless-vector/) |
 
 ---
 
@@ -35,7 +54,7 @@ Navigate to the folder that matches your use case from the table above. Read the
 
 ### Step 2 — Check prerequisites
 
-Each building block lists its required IBM services at the top of its README (e.g. IBM watsonx.ai, watsonx.data, IBM COS). Ensure you have:
+Each building block lists its required IBM services at the top of its README. Ensure you have:
 - An **IBM Cloud account** with access to the listed services
 - An **IBM Cloud API key** — create one at [IBM Cloud IAM](https://cloud.ibm.com/iam/apikeys)
 - **Python 3.10+** installed locally (for FastAPI / script assets)
@@ -62,12 +81,12 @@ python main.py        # or: uvicorn app.server:app --host 0.0.0.0 --port 8080
 
 ### Step 4 — IBM Bob, Your Fellow Developer
 
-**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant, purpose-built for IBM Cloud and watsonx development. Every building block ships **Bob Modes** and **Bob Skills** that give Bob deep expertise in that specific capability — so instead of asking generic questions, Bob already knows the APIs, schemas, patterns, and IBM Cloud specifics for what you're building.
+**[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant, purpose-built for IBM Cloud and watsonx development. Every building block ships **Bob Modes** and **Bob Skills** that give Bob deep expertise in that specific capability.
 
-- **Bob Mode** — a pre-built expert persona scoped to a single capability (e.g. RAG Builder, OpenSearch Hybrid Search, Text2SQL). Switch modes to get focused, context-aware assistance.
+- **Bob Mode** — a pre-built expert persona scoped to a single capability. Switch modes to get focused, context-aware assistance.
 - **Bob Skill** — a reusable knowledge pack Bob loads into its context. Skills teach Bob the exact API calls, environment variable patterns, and IBM service integration details for this building block.
 
-**Install a Bob Mode** — give Bob a specialist persona for this building block:
+**Install a Bob Mode**:
 ```powershell
 # Windows
 Copy-Item bob-modes/base-modes/<mode>.zip "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
@@ -76,64 +95,89 @@ Copy-Item bob-modes/base-modes/<mode>.zip "$env:APPDATA\IBM Bob\User\globalStora
 # Linux / macOS
 cp bob-modes/base-modes/<mode>.zip ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
 ```
-Restart IBM Bob — the new mode will appear in the mode selector. Switch to it before starting development.
+Restart IBM Bob — the new mode will appear in the mode selector.
 
-**Install a Bob Skill** — teach Bob the details of this building block:
+**Install a Bob Skill**:
 ```bash
 unzip bob-skills/<skill>.zip
 ```
-Open IBM Bob → Skills panel → enable the skill. Bob will now use it as active context for every prompt in this workspace.
+Open IBM Bob → Skills panel → enable the skill.
 
 ---
 
-## Building Blocks
+## 1. Context
+
+> Give applications, analytics, and AI systems the business and operational context they need at the moment they need it.
+
+[Explore Context →](context/README.md)
+
+### [Context Hub](context/context-hub/README.md)
+
+> Combine real-time events, enterprise data, and governed metadata into a reusable context layer for AI and analytics
+
+**IBM Products**: IBM Confluent · IBM watsonx.data · IBM watsonx.data intelligence
+**Bob Mode**: `context-hub-builder.zip` · **Bob Skills**: `confluent-watsonxdata-context.zip`
+
+Architectural pattern combining IBM Confluent streaming with IBM watsonx.data open lakehouse and IBM watsonx.data intelligence metadata enrichment. Uses the Confluent Apache Iceberg Sink Connector to materialize Kafka topic data as Iceberg tables, then enriches with governed business context.
 
 ---
 
-### Integration
+### [Real-Time Streaming](context/real-time-streaming/README.md)
 
-Data pipeline management — from AI-generated ingestion to real-time streaming to end-to-end observability.
-
-#### [Data Ingestion — AI Generated](integration/data-pipeline-ai-generated/README.md)
-
-> AI-generated DataStage and Docling pipelines for structured and unstructured data
-
-**IBM Products**: IBM DataStage · IBM UDI · IBM Docling · IBM COS
-**Bob Mode**: `data-ingestion.zip` · **Bob Skills**: `data-ingestion-structured.zip`, `data-ingestion-unstructured.zip`
-
-Describe your source and target in plain English — IBM Bob generates the complete ingestion pipeline. Covers relational databases via DataStage CDC connectors (Db2, PostgreSQL, MySQL, Oracle) and unstructured documents (PDFs, DOCX, HTML, images) via IBM Docling and UDI.
-
-| Asset | Description |
-|---|---|
-| [`assets/udi-ingestion-opensearch/`](integration/data-pipeline-ai-generated/assets/udi-ingestion-opensearch/README.md) | IBM UDI + OpenSearch ingestion pipeline |
-| `bob-skills/data-ingestion-structured.zip` | Bob generates DataStage CDC pipeline (structured sources) |
-| `bob-skills/data-ingestion-unstructured.zip` | Bob generates Docling + UDI pipeline (documents) |
-
----
-
-#### [Data Streaming](integration/data-streaming/README.md)
-
-> Real-time event ingestion and stream processing with Confluent on IBM Cloud
+> Real-time event ingestion and stream processing with IBM Confluent on IBM Cloud
 
 **IBM Products**: Confluent (on IBM Cloud)
-**Bob Skills**: `data-streaming-confluent.zip`
+**Bob Skills**: `data-streaming-confluent.zip`, `confluent-iac-terraform.zip`
 
-Continuous data flow with enterprise-grade schema governance, Flink SQL stream processing, and infrastructure-as-code provisioning via Terraform. Covers Kafka topics, Schema Registry (Avro / JSON / Protobuf), Confluent Connectors, and Python producer/consumer patterns.
+Continuous data flow with enterprise-grade schema governance, Flink SQL stream processing, and infrastructure-as-code provisioning via Terraform. Covers Kafka topics, Schema Registry, Confluent Connectors, and Python producer/consumer patterns.
 
 | Asset | Description |
 |---|---|
-| `bob-skills/confluent-iac-terraform.zip` | Terraform IaC for Confluent environment provisioning |
+| [`assets/supply-chain-risk-control-tower/`](context/real-time-streaming/assets/supply-chain-risk-control-tower/) | Supply chain risk control tower — Kafka, Flink SQL, schema governance, Terraform IaC |
 
 ---
 
-#### [Data Observability](integration/data-observability/README.md)
+### [Metadata Enrichment & Data Quality](context/metadata-enrichment/README.md)
 
-> Pipeline health monitoring, lineage tracking, and alert management with IBM Databand
+> Automated data quality, lineage governance, and metadata enrichment for AI-ready data
+
+**IBM Products**: IBM watsonx.data Intelligence · IBM Databand
+
+[Explore Metadata Enrichment →](context/metadata-enrichment/README.md)
+
+#### [Data Quality](context/metadata-enrichment/data-quality/README.md)
+
+**IBM Products**: IBM watsonx.data Intelligence
+**Bob Mode**: `data-quality-builder.zip` · **Bob Skills**: `data-quality-rules.zip`
+
+Define completeness, uniqueness, validity, consistency, and accuracy rules against data assets in IBM watsonx.data Intelligence. Execute rules asynchronously, surface quality scores, and profile column statistics.
+
+| Asset | Description |
+|---|---|
+| `assets/quality-rules-engine/` | FastAPI service — create rules, execute, score, profile |
+
+#### [Data Lineage](context/metadata-enrichment/data-lineage/README.md)
+
+**IBM Products**: IBM watsonx.data Intelligence (Manta) · IBM Databand
+**Bob Mode**: `data-lineage-builder.zip` · **Bob Skills**: `openlineage-instrumentation.zip`
+
+Emit OpenLineage events from any Python ETL, IBM DataStage, or Apache Spark pipeline and query the resulting lineage graph for governance, impact analysis, and compliance reporting.
+
+| Asset | Description |
+|---|---|
+| `assets/openlineage-collector/` | FastAPI service — collect and forward OpenLineage events |
+| `assets/lineage-impact-analyzer/` | CLI tool — query lineage graph, archive reports to IBM COS |
+
+---
+
+### [Data Observability](context/data-observability/README.md)
+
+> Pipeline health monitoring, alert management, and data quality visibility with IBM Databand
 
 **IBM Products**: IBM Databand
 **Bob Mode**: `data-observability-builder.zip` · **Bob Skills**: `databand-pipeline-setup.zip`
 
-Monitor pipeline run health, surface data quality anomalies, enforce SLA thresholds, and maintain a complete OpenLineage lineage graph for all IBM Cloud data assets. Apply pre-built alert policies or emit OpenLineage events from any Python ETL, DataStage, or Spark job.
+Monitor pipeline run health, surface data quality anomalies, enforce SLA thresholds, and maintain a complete OpenLineage lineage graph for all IBM Cloud data assets.
 
 | Asset | Description |
 |---|---|
@@ -143,49 +187,53 @@ Monitor pipeline run health, surface data quality anomalies, enforce SLA thresho
 
 ---
 
-### Intelligence
+## 2. Pipelines
 
-Automated data quality, lineage governance, and natural language SQL for AI-ready data.
+> Prepare and move structured and unstructured data into forms that applications, search systems, analytics and AI can consume.
 
-#### [Data Quality](intelligence/data-quality/README.md)
+[Explore Pipelines →](pipelines/README.md)
 
-> Automated validation rules and quality scoring before data reaches AI models
+### [RAG — Retrieval-Augmented Generation](pipelines/rag/README.md)
 
-**IBM Products**: IBM watsonx.data Intelligence
-**Bob Mode**: `data-quality-builder.zip` · **Bob Skills**: `data-quality-rules.zip`
+> Complete end-to-end RAG pipeline with MCP server integration
 
-Define completeness, uniqueness, validity, consistency, and accuracy rules against any data asset in your watsonx.data Intelligence project. Execute rules asynchronously, surface quality scores, and profile column statistics to catch data issues before they reach AI models.
+**IBM Products**: IBM watsonx.ai · IBM watsonx.data (OpenSearch) · IBM COS
+**Bob Modes**: `rag-builder.zip`, `rag-ingestion.zip`, `rag-retrieval.zip` · **Bob Skills**: `rag-pipeline-builder.zip`, `rag-mcp-server-builder.zip`
 
-| Asset | Description |
-|---|---|
-| `assets/quality-rules-engine/` | FastAPI service — create rules, execute, score, profile |
-
----
-
-#### [Data Lineage](intelligence/data-lineage/README.md)
-
-> End-to-end lineage graph from source to AI model consumption
-
-**IBM Products**: IBM watsonx.data Intelligence (Manta) · IBM Databand
-**Bob Mode**: `data-lineage-builder.zip` · **Bob Skills**: `openlineage-instrumentation.zip`
-
-Emit OpenLineage events from any Python ETL, IBM DataStage, or Apache Spark pipeline and query the resulting lineage graph for governance, impact analysis, and compliance reporting. Column-level impact analysis shows all downstream assets affected by a schema change.
+Ingest documents from IBM COS, generate dense embeddings with IBM watsonx.ai, store in OpenSearch, and serve hybrid search (vector + BM25) and Q&A via REST API or MCP server.
 
 | Asset | Description |
 |---|---|
-| `assets/openlineage-collector/` | FastAPI service — collect + forward OpenLineage events |
-| `assets/lineage-impact-analyzer/` | CLI tool — query lineage graph, archive reports to IBM COS |
+| `assets/rag-accelerator/` | Full-featured RAG service — `/ingest`, `/query`, `/qna` REST endpoints |
+| `assets/rag-ingestion-sse-mcp-server/` | MCP server — triggers document ingestion as a tool |
+| `assets/rag-retrieval-sse-mcp-server/` | MCP server — queries the knowledge base as a tool |
+| `assets/rag-retrieval-fastapi-server/` | Lightweight REST retrieval API |
 
 ---
 
-#### [Text2SQL](intelligence/text2sql/README.md)
+### [UDI — Unstructured Data Integration](pipelines/udi/README.md)
+
+> AI-generated DataStage and Docling pipelines for structured and unstructured data
+
+**IBM Products**: IBM DataStage · IBM UDI · IBM Docling · IBM COS
+**Bob Mode**: `data-ingestion.zip` · **Bob Skills**: `data-ingestion-structured.zip`, `data-ingestion-unstructured.zip`
+
+Describe your source and target in plain English — IBM Bob generates the complete ingestion pipeline. Covers relational databases via DataStage CDC connectors and unstructured documents (PDFs, DOCX, HTML, images) via IBM Docling and UDI.
+
+| Asset | Description |
+|---|---|
+| [`assets/udi-ingestion-opensearch/`](pipelines/udi/assets/udi-ingestion-opensearch/) | IBM UDI + OpenSearch ingestion pipeline |
+
+---
+
+### [Text2SQL](pipelines/text2sql/README.md)
 
 > Natural language to SQL using IBM watsonx.data Intelligence
 
 **IBM Products**: IBM watsonx.data Intelligence
 **Bob Mode**: `text-to-sql.zip` · **Bob Skills**: `text2sql-metadata-enrichment.zip`, `text2sql-query-optimizer.zip`
 
-Convert natural language questions to validated, executable SQL without writing a single line of SQL manually. Enrich table and column metadata (descriptions, synonyms, query examples) via the DAI REST API to maximize query accuracy.
+Convert natural language questions to validated, executable SQL. Enrich table and column metadata to maximize query accuracy, then submit plain-English queries and receive SQL results.
 
 | Asset | Description |
 |---|---|
@@ -194,63 +242,39 @@ Convert natural language questions to validated, executable SQL without writing 
 
 ---
 
-### Retrieval
+### [ETL / ELT with DataStage](pipelines/etl/README.md)
 
-Efficient AI data access — RAG pipelines, hybrid search, NoSQL storage, and federated zero-copy analytics.
+> Governed batch data integration flows using IBM DataStage
 
-#### [RAG — Retrieval-Augmented Generation](retrieval/RAG/README.md)
+**IBM Products**: IBM DataStage · IBM watsonx.data integration · IBM watsonx.data
+**Bob Mode**: `datastage-etl-builder.zip` · **Bob Skills**: `datastage-flow-design.zip`, `datastage-watsonxdata-integration.zip`
 
-> Complete end-to-end RAG pipeline with MCP server integration
-
-**IBM Products**: IBM watsonx.ai · IBM watsonx.data (OpenSearch) · IBM COS
-**Bob Modes**: `rag-builder.zip`, `rag-ingestion.zip`, `rag-retrieval.zip` · **Bob Skills**: `rag-pipeline-builder.zip`, `rag-mcp-server-builder.zip`
-
-Ingest documents from IBM COS, generate dense embeddings with IBM watsonx.ai, store in OpenSearch, and serve hybrid search (vector + BM25) and Q&A via REST API or MCP server. Three focused Bob modes cover the full RAG lifecycle — pipeline design, ingestion, and retrieval tuning.
-
-| Asset | Description |
-|---|---|
-| `assets/rag-accelerator/` | Full-featured RAG service — `/ingest`, `/query`, `/qna` REST endpoints |
-| `assets/rag-ingestion-sse-mcp-server/` | MCP server — Bob or Claude triggers document ingestion as a tool |
-| `assets/rag-retrieval-sse-mcp-server/` | MCP server — Bob or Claude queries the knowledge base as a tool |
-| `assets/rag-retrieval-fastapi-server/` | Lightweight REST retrieval API — pair with your own ingestion pipeline |
+Build visual ETL/ELT flows with enterprise connectors, transformation stages, and operational scheduling. Supports ETL (transform-before-load) and ELT (load-then-transform at lakehouse compute) patterns.
 
 ---
 
-#### [Hybrid Search — OpenSearch](retrieval/vector-search/opensearch/README.md)
+### [Data Sync with IBM Aspera](pipelines/data-sync/README.md)
 
-> Vector + BM25 keyword hybrid search on IBM watsonx.data OpenSearch
+> High-speed WAN file and repository synchronization
 
-**IBM Products**: IBM watsonx.data (OpenSearch) · IBM watsonx.ai · IBM COS
-**Bob Mode**: `opensearch-builder.zip` · **Bob Skills**: `opensearch-vector-search.zip`
+**IBM Products**: IBM Aspera Sync
+**Bob Mode**: `aspera-sync-builder.zip` · **Bob Skills**: `aspera-sync-configuration.zip`
 
-Build semantic vector search and hybrid search applications using IBM watsonx.data OpenSearch with IBM watsonx.ai embeddings. Hybrid search (k-NN + BM25) outperforms vector-only retrieval for real-world corpora. Covers k-NN index design, HNSW parameter tuning, and score normalization.
-
-| Asset | Description |
-|---|---|
-| `assets/opensearch-data-ingestion/` | FastAPI service — ingest from IBM COS, generate embeddings, index to OpenSearch |
+Synchronize large file sets and repositories securely across WAN and hybrid environments using IBM Aspera's FASP transport protocol — maintaining near-wire-speed regardless of distance or latency.
 
 ---
 
-#### [NoSQL — Astra DB / watsonx.data DataStax](retrieval/no-sql-database/astradb/README.md)
+## 3. Query Engines
 
-> Large-scale NoSQL document storage with Cassandra compatibility
+> Execute analytics and retrieval workloads on the engine best suited to the data and latency profile.
 
-**IBM Products**: IBM HCD (Astra DB) · IBM watsonx.data DataStax
-**Bob Mode**: `nosql-astradb-builder.zip` · **Bob Skills**: `astradb-nosql-design.zip`
+[Explore Query Engines →](query-engines/README.md)
 
-Store and query large volumes of JSON documents without a fixed schema. Supports MongoDB-style filter expressions (`$eq`, `$in`, `$and`, `$or`) at scale via the `astrapy` Data API. Available as SaaS on IBM Cloud HCD (Astra DB) or on-premises via IBM watsonx.data DataStax.
-
-| Asset | Description |
-|---|---|
-| `assets/astradb-nosql-crud/` | FastAPI service — full CRUD, filter queries, batch insert, vector search |
-
----
-
-#### [Zero-Copy Lakehouse](retrieval/zero-copy/zero-copy-lakehouse/README.md)
+### [Zero-Copy Lakehouse](query-engines/zero-copy-lakehouse/README.md)
 
 > Federated analytics across COS, Db2, and S3 without data duplication
 
-**IBM Products**: IBM watsonx.data (Iceberg / Delta Lake · Presto · Spark)
+**IBM Products**: IBM watsonx.data (Iceberg · Presto · Spark)
 **Bob Mode**: `lakehouse-setup.zip` · **Bob Skills**: `watsonxdata-lakehouse.zip`, `iceberg-table-management.zip`
 
 Register storage buckets and databases once, then query across all sources with standard SQL — no ETL, no data copying. Supports Apache Iceberg and Delta Lake open table formats with time-travel queries and schema evolution.
@@ -258,3 +282,33 @@ Register storage buckets and databases once, then query across all sources with 
 | Asset | Description |
 |---|---|
 | `assets/setup-lakehouse/` | Python automation script — provision buckets, register catalogs, create Iceberg schemas |
+
+---
+
+### [Serverless Vector](query-engines/serverless-vector/README.md)
+
+> Elastic vector storage for semantic search, RAG and agent memory
+
+**IBM Products**: IBM watsonx.data + Astra DB Serverless
+**Bob Mode**: `astradb-vector-builder.zip` · **Bob Skills**: `astradb-vector-setup.zip`
+
+Provision Astra DB Serverless directly from the IBM watsonx.data infrastructure experience. Store embeddings and run vector similarity search without managing clusters. Includes a runnable FastAPI ingestion service.
+
+| Asset | Description |
+|---|---|
+| `assets/astradb-vector-ingestion/` | FastAPI service — ingest from IBM COS, generate watsonx.ai embeddings, store in Astra DB |
+
+---
+
+## IBM Products Used
+
+| Product | Role |
+|---|---|
+| **[IBM watsonx.data](https://www.ibm.com/products/watsonx-data)** | Open hybrid data platform — lakehouse, Presto, Spark, Iceberg, OpenRAG |
+| **[IBM Confluent](https://www.ibm.com/products/confluent)** | Managed Kafka + Flink + connectors + Stream Governance for real-time data |
+| **[IBM watsonx.data integration](https://www.ibm.com/docs/en/watsonx/wdi/2.4.x?topic=data-integration)** | DataStage ETL, UDI, data replication and observability |
+| **[IBM watsonx.data intelligence](https://www.ibm.com/docs/en/watsonx/wdi/2.4.x?topic=data-enriching-your-assets)** | Metadata enrichment, business glossary, Text2SQL |
+| **[IBM Aspera Sync](https://www.ibm.com/products/aspera/sync)** | High-speed WAN file and repository synchronization |
+| **[Docling for IBM watsonx](https://www.ibm.com/products/docling)** | Advanced document conversion for complex PDFs and unstructured content |
+| **[Astra DB Serverless](https://docs.datastax.com/en/astra-db-serverless/databases/create-database.html)** | Serverless vector and NoSQL document database for embeddings, semantic search and document storage |
+| **[IBM HCD (Hyper Converged Database)](https://cloud.ibm.com/catalog/services/hyper-converged-database)** | IBM Cloud managed service for Astra DB (SaaS) and DataStax (software) |
