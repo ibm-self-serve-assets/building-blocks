@@ -30,6 +30,24 @@ Embeddable capabilities across key domains:
 
 ---
 
+## AI — Artificial Intelligence, Agents, & Trust
+
+The **[AI Building Blocks](ai/README.md)** deliver reusable engineering patterns, agent creation frameworks, governance tooling, and full-lifecycle software development automation. They are organized into three domains:
+
+| Domain | Building Block | Primary Products / Capabilities |
+|---|---|---|
+| **Agents** | [Agent Builder](ai/agents/agent-builder/) | IBM watsonx Orchestrate ADK + Tools + Knowledge Bases |
+| **Agents** | [Multi-Agent Orchestration](ai/agents/multi-agent-orchestration/) | IBM watsonx Orchestrate + AI Gateway + MCP/A2A |
+| **AI Engineering** | [Agentic SDLC](ai/ai-engineering/agentic-sdlc/) | IBM Bob + In-IDE Agentic Development |
+| **AI Engineering** | [Code Modernization](ai/ai-engineering/code-modernization/) | IBM Bob + Legacy Refactoring + Java/Maximo |
+| **AI Engineering** | [Headless Bob](ai/ai-engineering/headless-bob/) | Bobserver + REST/MCP API + CI/CD Pipelines |
+| **AI Engineering** | [Integrate as Code](ai/ai-engineering/integrate-as-code/) | IBM iPaaS + watsonx Orchestrate Workflows |
+| **AI Trust** | [AI Trust](ai/ai-trust/) | IBM watsonx.governance + Model Eval + Guardrails |
+
+[Explore all AI building blocks →](ai/README.md)
+
+---
+
 ## Automation — Enterprise IT & Cloud Automation
 
 The **[Automation Building Blocks](automation/README.md)** deliver automated engineering patterns, infrastructure code, observability, compliance, and cost optimization capabilities. They are organized into three domains:

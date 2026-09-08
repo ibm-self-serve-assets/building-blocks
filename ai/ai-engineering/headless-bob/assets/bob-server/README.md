@@ -138,11 +138,11 @@ See [`docs/claude-desktop-mcp.md`](docs/claude-desktop-mcp.md) for full MCP usag
 ### Skills Configuration
 
 Bobserver can automatically load custom Bob skills into its execution workspaces. To make skills available to Bobserver:
-1. Choose the skills you need from the central repository at [`building-blocks/ibm-bob/skills/`](../../../../ibm-bob/skills/).
+1. Choose the skills you need from the central repository at [`building-blocks/ibm-bob/skills/`](../../../../../ibm-bob/skills/).
 2. Copy the desired skill folders into [`skills/`](skills/):
    ```bash
    # Example: copy the agent skill into bob-server/skills
-   cp -r ../../../../ibm-bob/skills/agent skills/
+   cp -r ../../../../../ibm-bob/skills/agent skills/
    ```
 3. When Bobserver provisions workspaces for runs or jobs, it will automatically make these skills accessible to Bob.
 

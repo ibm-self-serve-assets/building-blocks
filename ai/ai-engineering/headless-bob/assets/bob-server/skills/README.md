@@ -4,7 +4,7 @@ Place your desired IBM Bob skills in this directory to make them available to Bo
 
 ## 🚀 How to Add Skills
 
-1. Browse the centralized skill catalog at [`building-blocks/ibm-bob/skills/`](../../../../ibm-bob/skills/).
+1. Browse the centralized skill catalog at [`building-blocks/ibm-bob/skills/`](../../../../../ibm-bob/skills/).
 2. Copy the skill folders you want your Bobserver instance to access into this directory:
    ```text
    assets/bob-server/skills/
