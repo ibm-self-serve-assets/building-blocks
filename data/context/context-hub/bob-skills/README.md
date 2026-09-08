@@ -8,11 +8,11 @@ This skill gives IBM Bob expert knowledge of the integration between IBM Conflue
 
 ## Available Skills
 
-> **Coming soon** — `confluent-watsonxdata-context.zip` is not yet committed to this repository. The documentation below describes the intended skill capabilities. Check this directory for availability.
+> **Coming soon** — the Bob Skill zip for this building block has not yet been committed to this repository.
 
-| Skill | Zip | Use When |
-|---|---|---|
-| `confluent-watsonxdata-context` | `confluent-watsonxdata-context.zip` | Building the streaming-to-lakehouse integration and enriching streaming data with governed business context |
+| Skill | Use When |
+|---|---|
+| `confluent-watsonxdata-context` | Building the streaming-to-lakehouse integration and enriching streaming data with governed business context |
 
 ---
 
@@ -35,25 +35,7 @@ A comprehensive skill for the Context Hub pattern:
 
 ## Installation
 
-### Step 1 — Install the skill
-
-```bash
-# From the root of your Bob workspace project
-unzip confluent-watsonxdata-context.zip
-```
-
-This will create:
-```
-.bob/skills/confluent-watsonxdata-context/SKILL.md
-```
-
-### Step 2 — Enable in IBM Bob
-
-Open IBM Bob → Skills panel → enable the skill. Bob will use it as active context for every prompt in this workspace.
-
-### Step 3 — Verify
-
-Ask Bob: *"What Context Hub skills do you have active?"*
+Installation instructions will be added when the zip is available.
 
 ---
 

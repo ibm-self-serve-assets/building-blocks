@@ -18,9 +18,7 @@ This Bob mode provides specialized assistance for:
 
 ## What's Included
 
-> **Coming soon** — `aspera-sync-builder.zip` is not yet committed to this repository. The documentation below describes the intended mode capabilities. Check [`base-modes/`](base-modes/) for availability.
-
-- **`base-modes/aspera-sync-builder.zip`**: Bob mode configuration for IBM Aspera Sync development
+> **Coming soon** — the Bob Mode zip for this building block has not yet been committed to this repository.
 
 ---
 
@@ -49,17 +47,7 @@ This Bob mode provides specialized assistance for:
 
 ## Installing the Bob Mode
 
-**Windows**
-```powershell
-Copy-Item base-modes/aspera-sync-builder.zip "$env:APPDATA\IBM Bob\User\globalStorage\ibm.bob-code\modes\"
-```
-
-**Linux / macOS**
-```bash
-cp base-modes/aspera-sync-builder.zip ~/.config/IBM\ Bob/User/globalStorage/ibm.bob-code/modes/
-```
-
-After copying, restart IBM Bob for the new mode to become available in the mode selector.
+Installation instructions will be added when the zip is available.
 
 ---
 

@@ -51,7 +51,7 @@ IBM DataStage supports both **ETL** (transform then load) and **ELT** (load raw 
 
 **[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The ETL/ELT building block documents **Bob Mode** and **Bob Skill** assets for DataStage flow design, connector configuration, transformation patterns, and watsonx.data integration.
 
-> **Asset availability note**: The `datastage-etl-builder.zip` Bob Mode and DataStage Bob Skills are defined in this building block. Check [`bob-modes/base-modes/`](bob-modes/base-modes/) and [`bob-skills/`](bob-skills/) for current file availability.
+> **Bob Mode and Bob Skills**: coming soon.
 
 ---
 
@@ -97,17 +97,15 @@ Source systems                  Transformation              Target systems
 ## Bob Modes
 
 - **[`bob-modes/`](./bob-modes/)**: AI mode for DataStage ETL/ELT flow design and watsonx.data integration
-  - **Install**: copy [`bob-modes/base-modes/datastage-etl-builder.zip`](./bob-modes/base-modes/datastage-etl-builder.zip) to your Bob modes directory
+  - **Install**: *(coming soon)*
   - Describe your source and target → Bob assists with flow design, transformation logic, and connector configuration
 
 ## Bob Skills
 
-Install by extracting the zip into your Bob workspace `.bob/skills/` directory:
-
-| Skill | Zip | Capabilities |
-|---|---|---|
-| `datastage-flow-design` | [`bob-skills/datastage-flow-design.zip`](./bob-skills/datastage-flow-design.zip) | DataStage visual flow design, connector setup, transformation stage configuration, scheduling, monitoring |
-| `datastage-watsonxdata-integration` | [`bob-skills/datastage-watsonxdata-integration.zip`](./bob-skills/datastage-watsonxdata-integration.zip) | Connecting DataStage to IBM watsonx.data — Iceberg targets, Presto, catalog configuration, ELT patterns |
+| Skill | Capabilities |
+|---|---|
+| `datastage-flow-design` *(coming soon)* | DataStage visual flow design, connector setup, transformation stage configuration, scheduling, monitoring |
+| `datastage-watsonxdata-integration` *(coming soon)* | Connecting DataStage to IBM watsonx.data — Iceberg targets, Presto, catalog configuration, ELT patterns |
 
 See [`bob-skills/README.md`](./bob-skills/README.md) for full installation instructions.
 

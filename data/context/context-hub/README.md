@@ -95,21 +95,21 @@ Start with the smallest combination that solves the immediate use case:
 
 **[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The Context Hub building block documents **Bob Mode** and **Bob Skill** assets for architecture, connector configuration, Flink SQL, Iceberg sink setup, and watsonx.data intelligence integration.
 
-> **Asset availability note**: The `context-hub-builder.zip` Bob Mode and `confluent-watsonxdata-context.zip` Bob Skill are defined in the building block READMEs. Check [`bob-modes/base-modes/`](bob-modes/base-modes/) and [`bob-skills/`](bob-skills/) for current file availability.
+> **Bob Mode and Bob Skill**: coming soon.
 
 ---
 
 ## Bob Modes
 
 - **[`bob-modes/`](./bob-modes/)**: AI mode for Context Hub architecture, streaming-to-lakehouse integration, and metadata enrichment
-  - **Install**: copy [`bob-modes/base-modes/context-hub-builder.zip`](./bob-modes/base-modes/context-hub-builder.zip) to your Bob modes directory
+  - **Install**: *(coming soon)*
   - Assists with connector setup, Flink SQL, Iceberg sink configuration, and watsonx.data intelligence enrichment design
 
 ## Bob Skills
 
-| Skill | Zip | Capabilities |
-|---|---|---|
-| `confluent-watsonxdata-context` | [`bob-skills/confluent-watsonxdata-context.zip`](./bob-skills/confluent-watsonxdata-context.zip) | IBM Confluent Kafka + Flink + connectors + Iceberg Sink → watsonx.data integration; watsonx.data intelligence metadata enrichment for streaming data |
+| Skill | Capabilities |
+|---|---|
+| `confluent-watsonxdata-context` *(coming soon)* | IBM Confluent Kafka + Flink + connectors + Iceberg Sink → watsonx.data integration; watsonx.data intelligence metadata enrichment for streaming data |
 
 See [`bob-skills/README.md`](./bob-skills/README.md) for installation instructions.
 

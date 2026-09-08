@@ -82,7 +82,7 @@ On-premises / Site A                                    Cloud / Site B
 
 **[IBM Bob](https://www.ibm.com/products/bob)** is IBM's AI coding assistant purpose-built for IBM Cloud and watsonx. The Data Sync building block documents **Bob Mode** and **Bob Skill** assets for IBM Aspera Sync configuration, topology design, FASP transport tuning, and integration with downstream analytics pipelines.
 
-> **Asset availability note**: The `aspera-sync-builder.zip` Bob Mode and `aspera-sync-configuration.zip` Bob Skill are defined in this building block. Check [`bob-modes/base-modes/`](bob-modes/base-modes/) and [`bob-skills/`](bob-skills/) for current file availability.
+> **Bob Mode and Bob Skill**: coming soon.
 
 ---
 
@@ -100,13 +100,13 @@ On-premises / Site A                                    Cloud / Site B
 ## Bob Modes
 
 - **[`bob-modes/`](./bob-modes/)**: AI mode for IBM Aspera Sync configuration, topology design, and integration
-  - **Install**: copy [`bob-modes/base-modes/aspera-sync-builder.zip`](./bob-modes/base-modes/aspera-sync-builder.zip) to your Bob modes directory
+  - **Install**: *(coming soon)*
 
 ## Bob Skills
 
-| Skill | Zip | Capabilities |
-|---|---|---|
-| `aspera-sync-configuration` | [`bob-skills/aspera-sync-configuration.zip`](./bob-skills/aspera-sync-configuration.zip) | IBM Aspera Sync topology design, FASP transport configuration, synchronization scheduling, large-scale file set patterns |
+| Skill | Capabilities |
+|---|---|
+| `aspera-sync-configuration` *(coming soon)* | IBM Aspera Sync topology design, FASP transport configuration, synchronization scheduling, large-scale file set patterns |
 
 See [`bob-skills/README.md`](./bob-skills/README.md) for installation instructions.
 

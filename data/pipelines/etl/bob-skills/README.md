@@ -8,12 +8,12 @@ These skills give IBM Bob expert knowledge of DataStage flow design, connector p
 
 ## Available Skills
 
-> **Coming soon** — `datastage-flow-design.zip` and `datastage-watsonxdata-integration.zip` are not yet committed to this repository. The documentation below describes the intended skill capabilities. Check this directory for availability.
+> **Coming soon** — the Bob Skill zips for this building block have not yet been committed to this repository.
 
-| Skill | Zip | Use When |
-|---|---|---|
-| `datastage-flow-design` | `datastage-flow-design.zip` | Designing DataStage ETL/ELT flows — connectors, stages, scheduling, monitoring |
-| `datastage-watsonxdata-integration` | `datastage-watsonxdata-integration.zip` | Connecting DataStage flows to IBM watsonx.data — Iceberg targets, Presto, catalog setup |
+| Skill | Use When |
+|---|---|
+| `datastage-flow-design` | Designing DataStage ETL/ELT flows — connectors, stages, scheduling, monitoring |
+| `datastage-watsonxdata-integration` | Connecting DataStage flows to IBM watsonx.data — Iceberg targets, Presto, catalog setup |
 
 ---
 
@@ -47,29 +47,7 @@ A comprehensive skill for integrating DataStage with IBM watsonx.data:
 
 ## Installation
 
-### Step 1 — Install the skill(s)
-
-The zip files are pre-structured with `.bob/skills/<skill-folder>/` internally. Extract from your **project root**:
-
-```bash
-# From the root of your Bob workspace project
-unzip datastage-flow-design.zip
-unzip datastage-watsonxdata-integration.zip
-```
-
-This will create:
-```
-.bob/skills/datastage-flow-design/SKILL.md
-.bob/skills/datastage-watsonxdata-integration/SKILL.md
-```
-
-### Step 2 — Enable in IBM Bob
-
-Open IBM Bob → Skills panel → enable the desired skill(s). Bob will use them as active context for every prompt in this workspace.
-
-### Step 3 — Verify
-
-Ask Bob: *"What DataStage ETL skills do you have active?"*
+Installation instructions will be added when the zips are available.
 
 ---
 

@@ -8,11 +8,11 @@ This skill gives IBM Bob expert knowledge of IBM Aspera Sync configuration, topo
 
 ## Available Skills
 
-> **Coming soon** — `aspera-sync-configuration.zip` is not yet committed to this repository. The documentation below describes the intended skill capabilities. Check this directory for availability.
+> **Coming soon** — the Bob Skill zip for this building block has not yet been committed to this repository.
 
-| Skill | Zip | Use When |
-|---|---|---|
-| `aspera-sync-configuration` | `aspera-sync-configuration.zip` | Configuring IBM Aspera Sync for WAN file repository synchronization |
+| Skill | Use When |
+|---|---|
+| `aspera-sync-configuration` | Configuring IBM Aspera Sync for WAN file repository synchronization |
 
 ---
 
@@ -35,25 +35,7 @@ A comprehensive skill for IBM Aspera Sync deployments:
 
 ## Installation
 
-### Step 1 — Install the skill
-
-```bash
-# From the root of your Bob workspace project
-unzip aspera-sync-configuration.zip
-```
-
-This will create:
-```
-.bob/skills/aspera-sync-configuration/SKILL.md
-```
-
-### Step 2 — Enable in IBM Bob
-
-Open IBM Bob → Skills panel → enable the skill. Bob will use it as active context for every prompt in this workspace.
-
-### Step 3 — Verify
-
-Ask Bob: *"What IBM Aspera Sync skills do you have active?"*
+Installation instructions will be added when the zip is available.
 
 ---
 

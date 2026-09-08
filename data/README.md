@@ -116,7 +116,7 @@ Open IBM Bob → Skills panel → enable the skill.
 > Combine real-time events, enterprise data, and governed metadata into a reusable context layer for AI and analytics
 
 **IBM Products**: IBM Confluent · IBM watsonx.data · IBM watsonx.data intelligence
-**Bob Mode**: `context-hub-builder.zip` · **Bob Skills**: `confluent-watsonxdata-context.zip`
+**Bob Mode**: coming soon · **Bob Skills**: coming soon
 
 Architectural pattern combining IBM Confluent streaming with IBM watsonx.data open lakehouse and IBM watsonx.data intelligence metadata enrichment. Uses the Confluent Apache Iceberg Sink Connector to materialize Kafka topic data as Iceberg tables, then enriches with governed business context.
 
@@ -247,7 +247,7 @@ Convert natural language questions to validated, executable SQL. Enrich table an
 > Governed batch data integration flows using IBM DataStage
 
 **IBM Products**: IBM DataStage · IBM watsonx.data integration · IBM watsonx.data
-**Bob Mode**: `datastage-etl-builder.zip` · **Bob Skills**: `datastage-flow-design.zip`, `datastage-watsonxdata-integration.zip`
+**Bob Mode**: coming soon · **Bob Skills**: coming soon
 
 Build visual ETL/ELT flows with enterprise connectors, transformation stages, and operational scheduling. Supports ETL (transform-before-load) and ELT (load-then-transform at lakehouse compute) patterns.
 
@@ -258,7 +258,7 @@ Build visual ETL/ELT flows with enterprise connectors, transformation stages, an
 > WAN-optimized file and repository synchronization
 
 **IBM Products**: IBM Aspera Sync
-**Bob Mode**: `aspera-sync-builder.zip` · **Bob Skills**: `aspera-sync-configuration.zip`
+**Bob Mode**: coming soon · **Bob Skills**: coming soon
 
 Synchronize large file sets and repositories securely across WAN and hybrid environments using IBM Aspera's FASP transport protocol — designed for high-throughput transfers over high-latency and lossy WAN connections. Actual throughput depends on network capacity, endpoints, storage and workload characteristics.
 
