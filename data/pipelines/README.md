@@ -1,21 +1,28 @@
 # Pipelines
 
-Reusable ingestion, transformation, replication, retrieval, and natural-language data access patterns built around IBM data products.
+Pipeline building blocks cover the developer path from **ingestion and transformation** to **retrieval and natural-language access**.
 
-| Building block | IBM product anchor | Use |
+## Building blocks
+
+| Building block | IBM product anchor | Developer use |
 |---|---|---|
-| [RAG](rag/) | IBM watsonx.data OpenRAG + IBM watsonx.ai | Retrieval-augmented generation and reference RAG services |
-| [Unstructured Data Integration](udi/) | IBM watsonx.data integration — UDI | Parse, enrich, chunk, and prepare unstructured content |
-| [Text2SQL](text2sql/) | IBM watsonx.data intelligence | Generate governed SQL from natural-language questions |
-| [ETL / ELT](etl/) | IBM watsonx.data integration — DataStage | Batch data transformation and integration |
+| [RAG](rag/) | IBM watsonx.data OpenRAG + IBM watsonx.ai | Ingest, embed, retrieve, and generate grounded answers |
+| [Unstructured Data Integration](udi/) | IBM watsonx.data integration — UDI | Parse, chunk, enrich, and prepare documents |
+| [Text2SQL](text2sql/) | IBM watsonx.data intelligence | Generate SQL from natural-language questions using governed metadata |
+| [ETL / ELT](etl/) | IBM watsonx.data integration — DataStage | Structured batch transformation/integration |
 | [Data Sync](data-sync/) | IBM Aspera Sync | High-speed file and directory synchronization |
 
-## Capability boundaries
+## Choose the right building block
 
-- Batch transformation → **ETL / ELT**
-- Unstructured document preparation → **UDI**
-- File/directory transfer → **Data Sync**
-- RAG retrieval/generation → **RAG**
+```text
+Structured batch transformation        -> ETL / ELT
+Unstructured document preparation      -> UDI
+Large file/directory synchronization   -> Data Sync
+Grounded retrieval + generation        -> RAG
+Natural language -> governed SQL       -> Text2SQL
+```
+
+Structured near-real-time database replication is an IBM watsonx.data integration **Data Replication** capability, but it is not a separate building-block folder in this package.
 
 ## IBM references
 

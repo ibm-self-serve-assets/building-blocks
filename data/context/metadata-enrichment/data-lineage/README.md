@@ -2,36 +2,74 @@
 
 **IBM product**: IBM watsonx.data intelligence
 
-Reference assets for OpenLineage instrumentation, lineage queries, and impact analysis. IBM watsonx.data intelligence is the lineage/governance product anchor; Data Observability is a separate operational monitoring capability.
+Reference assets for OpenLineage instrumentation, lineage ingestion, lineage queries, and downstream impact analysis.
+
+## Product boundary
+
+IBM uses OpenLineage as a common lineage-exchange standard across the watsonx platform:
+
+- watsonx.data and watsonx.data integration can act as **OpenLineage producers**;
+- watsonx.data intelligence acts as an **OpenLineage consumer** and correlates lineage with other collected metadata;
+- Data Observability remains a separate operational monitoring capability.
+
+## Architecture
+
+```text
+DataStage / Spark / Python / watsonx.data
+                |
+                | OpenLineage / lineage metadata
+                v
+      IBM watsonx.data intelligence
+       lineage + impact + governance
+                |
+                v
+        governed consumers
+
+Pipeline operational health
+                |
+                v
+watsonx.data integration — Data Observability
+```
 
 ## Included assets
 
 | Path | Purpose |
 |---|---|
-| [`assets/openlineage-collector/`](assets/openlineage-collector/) | OpenLineage event collection/reference integration |
-| [`assets/lineage-impact-analyzer/`](assets/lineage-impact-analyzer/) | Lineage impact analysis/reporting reference asset |
+| [`assets/openlineage-collector/`](assets/openlineage-collector/) | Reference collector/API for OpenLineage events |
+| [`assets/lineage-impact-analyzer/`](assets/lineage-impact-analyzer/) | Downstream impact analysis/reporting reference |
 | [`bob-modes/`](bob-modes/) | IBM Bob lineage mode |
-| [`bob-skills/openlineage-instrumentation.zip`](bob-skills/openlineage-instrumentation.zip) | IBM Bob OpenLineage/lineage skill |
+| [`bob-skills/openlineage-instrumentation.zip`](bob-skills/openlineage-instrumentation.zip) | IBM Bob lineage/instrumentation skill |
 
-## Architecture boundary
+## Quick start
 
-```text
-DataStage / Spark / Python pipelines
-              |
-              | OpenLineage / lineage metadata
-              v
-IBM watsonx.data intelligence
-   lineage, impact analysis, governance
+Run the collector:
 
-Operational pipeline health and alerting
-              |
-              v
-IBM watsonx.data integration — Data Observability
+```bash
+cd assets/openlineage-collector
+cp .env.example .env
+# Configure the target IBM services/credentials described in the asset README.
+pip install -r requirements.txt
+python main.py
+# Swagger UI: http://localhost:8080/docs
 ```
 
-Do not treat Data Observability/Databand as the enterprise lineage graph repository.
+Run impact analysis:
+
+```bash
+cd assets/lineage-impact-analyzer
+pip install -r requirements.txt
+python impact_analyzer.py --asset-id <asset-id>
+```
+
+The impact analyzer can also emit a JSON report; see its README for available options and IBM COS archival support.
+
+## Production notes
+
+- Treat OpenLineage event payloads as lineage metadata, not as authorization assertions.
+- Validate namespace/job/dataset naming conventions before integrating multiple producers.
+- Use watsonx.data intelligence for the governed lineage view; do not model Databand as the enterprise lineage repository.
 
 ## IBM references
 
 - IBM watsonx.data intelligence: https://www.ibm.com/products/watsonx-data-intelligence
-- IBM watsonx.data integration: https://www.ibm.com/products/watsonx-data-integration
+- OpenLineage integration: https://www.ibm.com/docs/en/ws-and-kc?topic=lineage-openlineage-integration
