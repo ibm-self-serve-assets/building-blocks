@@ -19,16 +19,37 @@ The Building Block is a **reference implementation framework** that accelerates 
 - Seamlessly **integrate IBM services** like **watsonx.ai**, **watsonx.data**, **Instana**, **Turbonomic** and other IBM offerings with partner and open-source ecosystems.
 - Present **business-aligned outcomes** showcasing seamless integration and value delivery through reusable building blocks that highlight the full potential of IBM's capabilities.
 
-<img width="1393" height="740" alt="Screenshot 2026-06-23 at 1 21 34 PM" src="https://github.com/user-attachments/assets/a4458c25-220e-4fc4-831c-b03b01d1ac1a" />
+![alt text](image.png)
 
 Embeddable capabilities across key domains:
 
 - **AI Agents** – APIs and SDKs from watsonx Orchestrate, watsonx.ai, and open source that enable orchestration and intelligent task automation.
 - **Trusted AI** – Capabilities from watsonx.governance and watsonx.ai that support model validation, guardrails, and governance workflows.
 - **Data for AI** – Solutions powered by watsonx.data and watsonx.ai for tasks such as Auto-RAG, model fine-tuning, and Text-to-SQL.
-- **Build & Deploy** – Tools for infrastructure automation and AI-assisted development using Infrastructure-as-Code and code generation.
-- **Modernize** – Observability capabilities including dependency mapping, anomaly detection, and application monitoring.
-- **Optimize** – AI-driven solutions for cost optimization, risk detection, and automated remediation across application environments.
+- **Automation** – Automated engineering patterns across Operate (IaC, configuration), Secure (secrets, continuous compliance, quantum-safe), and Optimize (observability, FinOps, performance).
+
+---
+
+## Automation — Enterprise IT & Cloud Automation
+
+The **[Automation Building Blocks](automation/README.md)** deliver automated engineering patterns, infrastructure code, observability, compliance, and cost optimization capabilities. They are organized into three domains:
+
+| Domain | Building Block | Primary Products / Capabilities |
+|---|---|---|
+| **Operate** | [Infrastructure as Code](automation/operate/infrastructure-as-code/) | Terraform + OpenTofu + JMeter + Multi-Cloud |
+| **Operate** | [Configure & Automate](automation/operate/configure-and-automate/) | Ansible + Automation Playbooks |
+| **Operate** | [Workload Orchestration & Scheduling](automation/operate/workload-orchestration-and-scheduling/) | IBM Workload Automation + Enterprise Scheduling |
+| **Operate** | [Asset Management](automation/operate/asset-management/) | IBM Maximo Application Suite + Code Modernization |
+| **Secure** | [Non-Human Identity & Secret Management](automation/secure/non-human-identity-and-secret-management/) | IBM Security Verify + HashiCorp Vault |
+| **Secure** | [Application Risk & Continuous Compliance](automation/secure/application-risk-and-continuous-compliance/) | IBM Concert + Continuous Resilience |
+| **Secure** | [Cryptographic & Quantum-Safe Readiness](automation/secure/cryptographic-and-quantum-safe-readiness/) | IBM Quantum Safe Explorer + IBM Guardium |
+| **Optimize** | [Full-Stack Application Observability](automation/optimize/full-stack-application-observability/) | IBM Instana + OpenTelemetry |
+| **Optimize** | [Application Performance](automation/optimize/application-performance/) | IBM Turbonomic |
+| **Optimize** | [Technology Financial Management & FinOps](automation/optimize/technology-financial-management-and-finops/) | IBM Apptio + Cloudability |
+| **Optimize** | [Network Performance Management](automation/optimize/network-performance-management/) | Network Observability & Diagnostics |
+| **Optimize** | [Budget & Forecasting](automation/optimize/budget-and-forecasting/) | IBM Planning Analytics (TM1) |
+
+[Explore all Automation building blocks →](automation/README.md)
 
 ---
 
