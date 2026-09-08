@@ -70,7 +70,7 @@ The following steps are required to use the service:
 
 ### Step 3: Deploy Metadata Enrichment FastAPI Application.
 
-Follow this link to deploy your application on Code Engine. [Guide](../../applications/code-engine-setup)
+Follow this link to deploy your application on Code Engine. [Guide](../applications/code-engine-setup/)
 
 Steps below will show how to deploy the application locally.
 
@@ -194,7 +194,7 @@ Use the below url to use the swagger : http://localhost:8000/docs
    "Text2SQL_Generation": {
       "input_query": "What is the uniqueness of the field product_number in product table",
       "generated_sql_queries": [],
-      "model_id": "meta-llama/llama-3-3-70b-instruct",
+      "model_id": "ibm/granite-4-h-small",
       "resource_usage": {
          "token_count": 4048,
          "cuh": 0.0003976528,
@@ -209,7 +209,7 @@ Use the below url to use the swagger : http://localhost:8000/docs
          },
          {
             "model_type": "foundation",
-            "model_id": "meta-llama/llama-3-3-70b-instruct",
+            "model_id": "ibm/granite-4-h-small",
             "input_token_count": 3939,
             "output_token_count": 91
          }
@@ -243,7 +243,7 @@ Use the below url to use the swagger : http://localhost:8000/docs
                "score": 100
                }
             ],
-            "model_id": "meta-llama/llama-3-3-70b-instruct",
+            "model_id": "ibm/granite-4-h-small",
             "resource_usage": {
                "token_count": 3880,
                "cuh": 0.0003813402,
@@ -258,7 +258,7 @@ Use the below url to use the swagger : http://localhost:8000/docs
                },
                {
                   "model_type": "foundation",
-                  "model_id": "meta-llama/llama-3-3-70b-instruct",
+                  "model_id": "ibm/granite-4-h-small",
                   "input_token_count": 3782,
                   "output_token_count": 83
                }
@@ -267,7 +267,7 @@ Use the below url to use the swagger : http://localhost:8000/docs
             "wx_ai_raw_output": [
                {
                "wxai_input": {
-                  "model_id": "meta-llama/llama-3-3-70b-instruct",
+                  "model_id": "ibm/granite-4-h-small",
                   "space_id": "7620446c-9127-459d-9a4c-d5169c63878f",
                   "project_id": null,
                   "input": null,
@@ -294,7 +294,7 @@ Use the below url to use the swagger : http://localhost:8000/docs
                   "max_completion_tokens": 8192
                },
                "wxai_output": {
-                  "model_id": "meta-llama/llama-3-3-70b-instruct",
+                  "model_id": "ibm/granite-4-h-small",
                   "created_at": "2025-11-28T11:51:25.296Z",
                   "results": null,
                   "choices": [

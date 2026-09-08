@@ -2,7 +2,7 @@
 
 ## Manual method if your application code resides in a Github Enterprise repository
 
-1. Log into [IBM Cloud](cloud.ibm.com)
+1. Log into [IBM Cloud](https://cloud.ibm.com)
 
 2. Create an IBM Cloud API Key.  See [Creating and IBM Cloud API Key](https://www.ibm.com/docs/en/app-connect/container?topic=servers-creating-cloud-api-key)
 

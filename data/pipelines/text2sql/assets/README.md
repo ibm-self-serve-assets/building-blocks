@@ -59,7 +59,7 @@ curl --location --request PUT 'https://api.ca-tor.dai.cloud.ibm.com/semantic_aut
 1. Use the following API call to query your selected assets:
 
 ```
-curl --location 'https://api.ca-tor.dai.cloud.ibm.com/semantic_automation/v1/text_to_sql?container_id=<YOUR_PROJECT_ID>&container_type=project&dialect=<YOUR_DIALECT>l&model_id=meta-llama%2Fllama-3-3-70b-instruct' \
+curl --location 'https://api.ca-tor.dai.cloud.ibm.com/semantic_automation/v1/text_to_sql?container_id=<YOUR_PROJECT_ID>&container_type=project&dialect=<YOUR_DIALECT>l' \
 --header 'accept: application/json' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Bearer <YOUR_BEARER_TOKEN>' \

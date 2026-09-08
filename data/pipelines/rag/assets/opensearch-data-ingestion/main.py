@@ -33,7 +33,7 @@ app = FastAPI(
     title="IBM watsonx.data OpenSearch – Data Ingestion Service",
     description=(
         "Ingest documents from IBM COS into IBM watsonx.data OpenSearch with "
-        "IBM watsonx.ai embeddings (ibm/slate-125m-english-rtrvr). "
+        "IBM watsonx.ai embeddings (ibm/granite-embedding-278m-multilingual). "
         "Supports k-NN vector indexing and hybrid (BM25 + vector) search."
     ),
     version="1.0.0",

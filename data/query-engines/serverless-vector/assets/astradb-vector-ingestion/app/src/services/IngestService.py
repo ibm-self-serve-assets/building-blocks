@@ -35,9 +35,7 @@ CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "128"))
 BATCH_SIZE = int(os.getenv("INDEX_CHUNK_BATCH_SIZE", "20"))
 
 _EMBEDDING_DIMS: dict[str, int] = {
-    "ibm/slate-125m-english-rtrvr": 768,
-    "ibm/slate-30m-english-rtrvr": 384,
-    "intfloat/multilingual-e5-large": 1024,
+    "ibm/granite-embedding-278m-multilingual": 768,
 }
 
 
@@ -112,7 +110,7 @@ def ingest(
     bucket_name: str,
     directory: str,
     collection_name: str,
-    embedding_model_id: str = "ibm/slate-125m-english-rtrvr",
+    embedding_model_id: str = "ibm/granite-embedding-278m-multilingual",
 ) -> int:
     """
     Full pipeline:

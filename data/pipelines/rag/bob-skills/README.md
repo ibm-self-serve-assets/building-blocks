@@ -11,7 +11,7 @@ These skills empower IBM Bob to help you design, build, and deploy end-to-end IB
 | Skill | Zip | Use When |
 |---|---|---|
 | `rag-pipeline-builder` | [`rag-pipeline-builder.zip`](rag-pipeline-builder.zip) | Designing or building a complete RAG pipeline — ingestion, embedding, indexing, hybrid search, Q&A |
-| `rag-mcp-server-builder` | [`rag-mcp-server-builder.zip`](rag-mcp-server-builder.zip) | Building MCP servers that expose RAG ingestion or retrieval as AI tools for Bob/Claude |
+| `rag-mcp-server-builder` | [`rag-mcp-server-builder.zip`](rag-mcp-server-builder.zip) | Building MCP servers that expose RAG ingestion or retrieval as AI tools for IBM Bob |
 | `opensearch-vector-search` | [`opensearch-vector-search.zip`](opensearch-vector-search.zip) | IBM watsonx.data OpenSearch k-NN index design, HNSW tuning, hybrid search, embedding integration |
 
 ---
@@ -20,7 +20,7 @@ These skills empower IBM Bob to help you design, build, and deploy end-to-end IB
 
 A comprehensive skill for designing end-to-end IBM RAG pipelines:
 
-- IBM watsonx.ai embedding generation (`ibm/slate-125m-english-rtrvr`, dim=768)
+- IBM watsonx.ai embedding generation (`ibm/granite-embedding-278m-multilingual`, dim=768)
 - IBM watsonx.ai LLM generation (configurable model — select a currently supported watsonx.ai generation model for your deployment and region) with `langchain_ibm.WatsonxLLM`
 - Chunking strategy optimisation for PDF, DOCX, HTML, Markdown, TXT
 - IBM watsonx.data OpenSearch hybrid search design (vector + BM25 with score fusion)
@@ -37,7 +37,7 @@ A comprehensive skill for building RAG MCP servers:
 - IBM watsonx.ai embedding integration inside MCP tool handlers
 - IBM watsonx.data OpenSearch integration (index creation, bulk insert, k-NN search)
 - IBM Code Engine deployment for remote SSE-based MCP servers
-- IBM Bob and Claude MCP integration configuration
+- IBM IBM Bob MCP integration configuration
 - Pydantic v2 input validation for MCP tool arguments
 
 ### `opensearch-vector-search`
@@ -101,7 +101,7 @@ Once activated, you can ask Bob:
 With these skills, Bob can generate:
 
 1. **Complete RAG Services**: FastAPI apps with `/ingest`, `/query`, and `/qna` endpoints
-2. **MCP Servers**: SSE-transport servers exposable to Bob, Claude, and other MCP clients
+2. **MCP Servers**: SSE-transport servers exposable to IBM Bob and other MCP-compatible clients
 3. **Hybrid Search Queries**: OpenSearch k-NN + BM25 queries with score fusion
 4. **Embedding Pipelines**: IBM watsonx.ai embedding code for batch and query embedding
 5. **Chunking Logic**: Adaptive text splitting strategies for different document types

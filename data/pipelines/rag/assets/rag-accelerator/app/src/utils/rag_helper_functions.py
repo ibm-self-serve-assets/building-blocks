@@ -412,7 +412,7 @@ def get_premium_retrieval(query, parameters, lakehouse_url=None, ai_bearer_token
             ],
                 "search_inference_config": {
                 "enabled": False,
-                "inference_model_id": "meta-llama/llama-3-3-70b-instruct"
+                "inference_model_id": "ibm/granite-4-h-small"
             },
             "provide_suggested_template": False}
         
@@ -456,7 +456,7 @@ def merge_documents(documents, document_source_field):
 
             # remove and save prefix
             if 'page_content' in _document:
-                m = re.match('^(Document Title:.*?\n\s*Document Content:.*?\n\n)', _document['page_content'])
+                m = re.match(r'^(Document Title:.*?\n\s*Document Content:.*?\n\n)', _document['page_content'])
                 if not m == None:
                     _document['page_content_prefix'] = m.groups()[0]
                     _document['page_content'] = _document['page_content'][len(m.groups()[0]):]

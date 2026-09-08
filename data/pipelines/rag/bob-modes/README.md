@@ -28,7 +28,7 @@ Full end-to-end RAG architect — use when you need to design or build a complet
 **Capabilities**:
 - RAG architecture design using IBM watsonx.data OpenSearch as the hybrid search backend
 - Chunking strategy selection for PDF, DOCX, HTML, Markdown, and TXT documents
-- IBM watsonx.ai embedding model selection (`ibm/slate-125m-english-rtrvr` vs multilingual)
+- IBM watsonx.ai embedding model selection using currently supported IBM embedding models
 - OpenSearch k-NN index design (HNSW, cosine) and hybrid search score fusion
 - MCP server design for AI assistant integration (SSE transport, FastMCP)
 - RAG evaluation framework (RAGAS: faithfulness, answer relevancy, context precision)
@@ -98,7 +98,7 @@ OpenSearch specialist — use when designing, tuning, or troubleshooting the Ope
 | Optimising vector search recall | `rag-retrieval.zip` |
 | Building a RAG Q&A API | `rag-retrieval.zip` |
 | Evaluating RAG quality with RAGAS | `rag-retrieval.zip` |
-| Designing MCP server tools for Bob/Claude | `rag-builder.zip` |
+| Designing MCP server tools for IBM Bob | `rag-builder.zip` |
 
 ---
 

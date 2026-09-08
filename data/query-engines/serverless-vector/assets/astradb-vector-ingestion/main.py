@@ -1,6 +1,6 @@
 """
 DataStax Astra DB – Vector Ingestion Service
-IBM Cloud portfolio: HCD (Hyper-Converged Database) / AstraDB
+IBM product: IBM watsonx.data — Astra DB service
 FastAPI entry point.
 """
 import os
@@ -27,8 +27,8 @@ app = FastAPI(
     title="DataStax Astra DB – Vector Ingestion Service",
     description=(
         "Ingest documents from IBM COS into DataStax Astra DB vector collections "
-        "using IBM watsonx.ai embeddings (ibm/slate-125m-english-rtrvr). "
-        "Part of the IBM Cloud HCD (Hyper-Converged Database) portfolio."
+        "using IBM watsonx.ai embeddings (ibm/granite-embedding-278m-multilingual). "
+        "Part of the IBM watsonx.data portfolio."
     ),
     version="1.0.0",
     servers=[{"url": SERVER_URL}],

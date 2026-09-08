@@ -66,7 +66,7 @@ This asset is a starting point, not production-ready code. The risk scoring logi
 - An IBM Carbon Design dashboard with a browser-based simulation mode and a live Kafka streaming mode
 - Agent prompt templates for watsonx.ai covering executive risk summary, supplier escalation email, and procurement recommendation
 - Terraform infrastructure-as-code for provisioning a complete Confluent Cloud environment
-- IBM integration story covering watsonx.ai, watsonx.data, IBM Db2, IBM MQ, IBM OpenSearch, IBM Maximo, IBM Instana, Terraform, and Ansible
+- IBM integration story covering watsonx.ai, watsonx.data, IBM Db2, IBM MQ, OpenSearch, IBM Maximo, IBM Instana, Terraform, and Ansible
 
 ---
 
@@ -989,7 +989,7 @@ The [`docs/agents/`](docs/agents/) folder contains three prompt templates for IB
 3. Open [IBM watsonx.ai Prompt Lab](https://dataplatform.cloud.ibm.com/wx/prompts) in your Confluent Cloud environment.
 4. Paste the prompt template text from the `.md` file into the **System prompt** or **Freeform** input.
 5. Replace the `{{risk_event}}`, `{{recommendation_event}}`, and `{{alert_event}}` placeholders with the copied JSON.
-6. Select a currently supported foundation model appropriate for your watsonx.ai deployment and region (e.g. `meta-llama/llama-3-1-70b-instruct` or a current Granite model). Consult [IBM watsonx.ai Foundation Models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models.html) for the current supported list.
+6. Select a currently supported foundation model appropriate for your watsonx.ai deployment and region (e.g. `ibm/granite-4-h-small` or a current Granite model). Consult [IBM watsonx.ai Foundation Models](https://www.ibm.com/docs/en/watsonx/saas?topic=solutions-supported-foundation-models) for the current supported list.
 7. Click **Generate**.
 
 The output is ready to send or use in a slide deck. For live API integration — where watsonx.ai is called automatically each time the risk engine emits a CRITICAL event — see [SPEC-01](docs/specs/SPEC-01-watsonx-ai-live.md).
@@ -1081,7 +1081,7 @@ Confluent Cloud acts as the real-time nervous system for supply chain events. Ra
 | IBM watsonx.data | Provides governed analytical access to the complete event history via Confluent Tableflow lakehouse integration, enabling historical trend analysis and model training |
 | IBM Db2 | Source system for supplier master data, purchase orders, and inventory records, connected to Confluent via the Db2 managed connector |
 | IBM MQ | Bridge for legacy EDI and supplier message feeds that cannot publish directly to Kafka, connected via the MQ Source connector |
-| IBM OpenSearch | Operational risk dashboard that consumes the three output topics and surfaces risk scores, alerts, and recommendations to operations teams |
+| OpenSearch | Operational risk dashboard that consumes the three output topics and surfaces risk scores, alerts, and recommendations to operations teams |
 | IBM Maximo | Receives CRITICAL-severity control tower alerts and automatically creates maintenance or logistics work orders to accelerate response |
 | IBM Instana | Monitors the performance and health of the Kafka producers, consumers, and risk engine in production environments |
 | IBM Terraform and Ansible | Automates the provisioning and configuration of the Confluent Cloud environment alongside other IBM infrastructure |

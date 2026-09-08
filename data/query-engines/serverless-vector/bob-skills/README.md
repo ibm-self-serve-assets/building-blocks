@@ -1,6 +1,6 @@
-# DataStax Astra DB Vector Search Bob Skills
+# IBM watsonx.data Astra DB — Bob Skills
 
-Bob skills for **DataStax Astra DB** (IBM Cloud HCD portfolio) vector search development using **IBM watsonx.ai** embeddings.
+Bob skills for **DataStax Astra DB** (IBM watsonx.data portfolio) vector search development using **IBM watsonx.ai** embeddings.
 
 ## Overview
 
@@ -10,7 +10,7 @@ The `astradb-vector-setup` skill empowers IBM Bob to design and build vector sea
 
 | Skill | Zip | Use When |
 |---|---|---|
-| `astradb-vector-setup` | [`astradb-vector-setup.zip`](astradb-vector-setup.zip) | Building vector search collections on DataStax Astra DB (IBM HCD) with IBM watsonx.ai embeddings |
+| `astradb-vector-setup` | [`astradb-vector-setup.zip`](astradb-vector-setup.zip) | Building vector search collections on DataStax Astra DB (IBM watsonx.data) with IBM watsonx.ai embeddings |
 
 ---
 
@@ -19,7 +19,7 @@ The `astradb-vector-setup` skill empowers IBM Bob to design and build vector sea
 A comprehensive skill for building DataStax Astra DB vector search applications using IBM Cloud services:
 
 - `astrapy>=1.5.2` Data API client for vector collection creation and ANN search
-- IBM watsonx.ai embedding generation (`ibm/slate-125m-english-rtrvr`, dim=768)
+- IBM watsonx.ai embedding generation (`ibm/granite-embedding-278m-multilingual`, dim=768)
 - IBM COS document source with `ibm-cos-sdk` IAM OAuth download
 - Vector collection creation with cosine metric and configurable dimension
 - Bulk insert with `$vector` field convention and SHA-256 `_id` hashing
@@ -62,7 +62,7 @@ Once activated, you can ask Bob:
 - *"Create an Astra DB vector collection with 768 dimensions and cosine metric"*
 - *"Generate a bulk insert script that embeds PDF documents from IBM COS into Astra DB"*
 - *"Write an ANN search function using collection.find() with a watsonx.ai query vector"*
-- *"Show me the astrapy Data API setup for IBM HCD Astra DB"*
+- *"Show me the astrapy Data API setup for Astra DB service in IBM watsonx.data"*
 - *"What's the correct $vector field format for Astra DB document insertion?"*
 
 ---
@@ -82,7 +82,7 @@ Once activated, you can ask Bob:
 
 Before using this skill, ensure you have:
 
-- DataStax Astra DB instance (IBM Cloud HCD portfolio)
+- DataStax Astra DB instance (IBM watsonx.data portfolio)
 - Astra DB Application Token (`AstraCS:...`)
 - Astra DB API endpoint URL (`https://<DB_ID>-<REGION>.apps.astra.datastax.com`)
 - IBM watsonx.ai project with embedding model access
@@ -97,7 +97,7 @@ Before using this skill, ensure you have:
 | **Document Insert** | `$vector` field, SHA-256 `_id`, `insert_many()` batching |
 | **ANN Search** | `collection.find(sort={"$vector": ...})` with $similarity |
 | **IBM COS Source** | IAM OAuth document download with `ibm-cos-sdk` |
-| **Embedding Model Reference** | 768 (slate-125m), 384 (slate-30m), 1024 (multilingual-e5-large) |
+| **Embedding Model Reference** | 768 (`ibm/granite-embedding-278m-multilingual`); verify current IBM model docs |
 
 ## Troubleshooting
 
@@ -114,4 +114,4 @@ Before using this skill, ensure you have:
 
 - [`../bob-modes/`](../bob-modes/) — Astra DB Vector Builder Bob Mode
 - [`../README.md`](../README.md) — DataStax Astra DB Vector Search building block overview
-- [`../../no-sql-database/astradb/bob-skills/`](../../no-sql-database/astradb/bob-skills/) — NoSQL Astra DB skills (non-vector)
+- [`../`](../) — NoSQL Astra DB skills (non-vector)

@@ -67,7 +67,7 @@ COS_PREFIX=ingest
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
 WATSONX_API_KEY=your_watsonx_api_key
 WATSONX_PROJECT_ID=your_project_id
-EMBEDDING_MODEL_ID=intfloat/multilingual-e5-large
+EMBEDDING_MODEL_ID=ibm/granite-embedding-278m-multilingual
 ```
 
 #### Chunking Configuration
@@ -139,7 +139,7 @@ On startup, the server automatically checks connectivity to:
 Example output:
 ```
 [BOOTSTRAP] COS: OK - bucket=your-bucket-name
-[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=intfloat/multilingual-e5-large
+[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=ibm/granite-embedding-278m-multilingual
 [BOOTSTRAP] OPENSEARCH: OK - host=your-host:9200
 ```
 
@@ -419,7 +419,7 @@ curl http://localhost:8080/health
 The server logs bootstrap checks and ingestion progress:
 ```
 [BOOTSTRAP] COS: OK - bucket=your-bucket
-[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=intfloat/multilingual-e5-large
+[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=ibm/granite-embedding-278m-multilingual
 [BOOTSTRAP] OPENSEARCH: OK - host=your-host:9200
 ```
 

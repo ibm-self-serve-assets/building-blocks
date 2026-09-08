@@ -1,6 +1,6 @@
-# Bob Mode for DataStax Astra DB Vector Search
+# IBM watsonx.data Astra DB — Bob Mode
 
-Custom IBM Bob mode configuration for **DataStax Astra DB** vector search development — part of the IBM Cloud HCD portfolio.
+Custom IBM Bob mode configuration for **DataStax Astra DB** vector search development — part of the IBM watsonx.data portfolio.
 
 ---
 
@@ -9,7 +9,7 @@ Custom IBM Bob mode configuration for **DataStax Astra DB** vector search develo
 This Bob mode provides specialized assistance for:
 
 - **Astra DB Data API**: Creating collections, inserting vectors, ANN search using `astrapy`
-- **IBM watsonx.ai Embeddings**: Generating dense vectors with `ibm/slate-125m-english-rtrvr`
+- **IBM watsonx.ai Embeddings**: Generating dense vectors with `ibm/granite-embedding-278m-multilingual`
 - **IBM COS Document Source**: Downloading and chunking documents with `ibm-cos-sdk`
 - **Collection Schema Design**: Choosing dimensions, metric, and indexing options
 - **ANN Search Queries**: Building `find()` queries with `$vector` sort
@@ -31,13 +31,13 @@ This Bob mode provides specialized assistance for:
 - `$vector` field conventions and document ID strategies
 - Batch insert optimisation (≤20 documents per request)
 - Cosine, dot-product, and Euclidean distance metric selection
-- IBM HCD token management and endpoint configuration
+- IBM watsonx.data token management and endpoint configuration
 
 ---
 
 ## When to Use This Mode
 
-- Building vector search applications on IBM HCD (Astra DB)
+- Building vector search applications on IBM watsonx.data — Astra DB service
 - Designing vector collection schemas with cosine or dot-product similarity
 - Ingesting documents from IBM COS into Astra DB vector collections
 - Implementing ANN search queries with `astrapy` `find()` patterns

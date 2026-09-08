@@ -1,6 +1,6 @@
 # Astra DB Vector Ingestion Service
 
-**IBM Products**: IBM HCD (DataStax Astra DB), IBM watsonx.ai, IBM Cloud Object Storage
+**IBM Products**: IBM watsonx.data — Astra DB service, IBM watsonx.ai, IBM Cloud Object Storage
 **Language**: Python 3.12
 **Framework**: FastAPI
 
@@ -12,7 +12,7 @@ FastAPI service that downloads documents from **IBM Cloud Object Storage**, gene
 
 - IBM Cloud API key
 - IBM watsonx.ai project ID
-- DataStax Astra DB instance (IBM HCD) with vector-enabled collection
+- Astra DB service/database provisioned through IBM watsonx.data with vector-enabled collection
 - IBM Cloud Object Storage bucket with source documents
 
 ## Quick Start
@@ -57,7 +57,7 @@ curl -X POST http://localhost:8080/ingest \
     "bucket_name": "my-docs-bucket",
     "directory": "documents/",
     "collection_name": "ibm_docs_vectors",
-    "embedding_model_id": "ibm/slate-125m-english-rtrvr"
+    "embedding_model_id": "ibm/granite-embedding-278m-multilingual"
   }'
 ```
 
@@ -75,9 +75,7 @@ curl -X POST http://localhost:8080/ingest \
 
 | Model ID | Dimension | Use Case |
 |---|---|---|
-| `ibm/slate-125m-english-rtrvr` | 768 | Recommended for English RAG |
-| `ibm/slate-30m-english-rtrvr` | 384 | Lightweight English RAG |
-| `intfloat/multilingual-e5-large` | 1024 | Multilingual RAG |
+| `ibm/granite-embedding-278m-multilingual` | 768 | Current IBM example; verify support/lifecycle before deployment |
 
 ## Docker Deployment
 
@@ -105,8 +103,8 @@ astradb-vector-ingestion/
 
 ## IBM Cloud References
 
-- [IBM HCD / DataStax Astra DB](https://cloud.ibm.com/catalog/services/hyper-converged-database)
-- [IBM watsonx.ai Embedding Models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-embed.html)
+- [IBM watsonx.data — Astra DB service](https://www.ibm.com/docs/en/watsonxdata/saas?topic=watsonxdata-adding-astra-db-service)
+- [IBM watsonx.ai Embedding Models](https://www.ibm.com/docs/en/watsonx/saas?topic=models-supported-embedding)
 - [IBM Cloud Object Storage](https://cloud.ibm.com/docs/cloud-object-storage)
 - [astrapy SDK Documentation](https://github.com/datastax/astrapy)
 - [IBM Cloud IAM API Keys](https://cloud.ibm.com/iam/apikeys)

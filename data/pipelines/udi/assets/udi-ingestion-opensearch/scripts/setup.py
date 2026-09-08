@@ -41,7 +41,7 @@ Optional env vars (defaults shown):
   INDEX_NAME           udi_opensearch_index (OpenSearch index to write to)
   CHUNK_SIZE           4000
   CHUNK_OVERLAP        200
-  EMBEDDINGS_MODEL_ID  ibm/slate-30m-english-rtrvr-v2
+  EMBEDDINGS_MODEL_ID  ibm/granite-embedding-278m-multilingual
   FLOW_NAME            udi_opensearch_flow  (fixed name — no timestamp, so ingest.py can reuse it)
 
 Output:
@@ -147,7 +147,7 @@ COLLECTION_NAME     = os.environ.get("COLLECTION_NAME",     "udi_documents")
 INDEX_NAME          = os.environ.get("INDEX_NAME",          "udi_opensearch_index")
 CHUNK_SIZE          = int(os.environ.get("CHUNK_SIZE",      "4000"))
 CHUNK_OVERLAP       = int(os.environ.get("CHUNK_OVERLAP",   "200"))
-EMBEDDINGS_MODEL_ID = os.environ.get("EMBEDDINGS_MODEL_ID", "ibm/slate-30m-english-rtrvr-v2")
+EMBEDDINGS_MODEL_ID = os.environ.get("EMBEDDINGS_MODEL_ID", "ibm/granite-embedding-278m-multilingual")
 # Append timestamp to ensure uniqueness across runs — ingest.py reads the actual
 # name back from udi_config.json, so repeatable ingestion still works fine.
 _flow_name_base = os.environ.get("FLOW_NAME", "udi_opensearch_flow")

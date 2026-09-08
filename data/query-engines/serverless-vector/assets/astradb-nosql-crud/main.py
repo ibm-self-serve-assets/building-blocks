@@ -1,6 +1,6 @@
 """
 DataStax Astra DB – NoSQL CRUD Service
-IBM Cloud portfolio: HCD (Hyper-Converged Database) / AstraDB
+IBM product: IBM watsonx.data — Astra DB service
 FastAPI entry point.
 """
 import os
@@ -27,7 +27,7 @@ app = FastAPI(
     title="DataStax Astra DB – NoSQL CRUD Service",
     description=(
         "Full CRUD operations on DataStax Astra DB NoSQL collections "
-        "using the astrapy Data API. Part of IBM Cloud HCD portfolio."
+        "using the astrapy Data API. Part of IBM watsonx.data portfolio."
     ),
     version="1.0.0",
     servers=[{"url": SERVER_URL}],

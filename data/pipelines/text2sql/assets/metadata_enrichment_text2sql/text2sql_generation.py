@@ -71,7 +71,7 @@ class Text2SQLGeneration:
                 "query": text2sql_data.query,
                 "raw_output": True
                 }
-            text2sql_url = f"{self.text2sql_gen_url}?container_id={self.project_id}&container_type=project&dialect=presto&model_id=meta-llama%2Fllama-3-3-70b-instruct"
+            text2sql_url = f"{self.text2sql_gen_url}?container_id={self.project_id}&container_type=project&dialect=presto"
             self.logger.info(f"Text2SQL generation initiated")
             response = requests.post(text2sql_url, headers=self.header, json=payload)
             response = response.json()

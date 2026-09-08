@@ -7,7 +7,7 @@ class VectorIngestRequest(BaseModel):
     bucket_name: str = Field(..., description="IBM COS bucket containing source documents")
     directory: str = Field(..., description="COS key prefix to ingest from")
     collection_name: str = Field(..., description="Astra DB vector collection name")
-    embedding_model_id: str = Field("ibm/slate-125m-english-rtrvr", description="IBM watsonx.ai embedding model")
+    embedding_model_id: str = Field("ibm/granite-embedding-278m-multilingual", description="IBM watsonx.ai embedding model")
 
 
 class VectorIngestResponse(BaseModel):

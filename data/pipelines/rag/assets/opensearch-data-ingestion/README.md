@@ -58,7 +58,7 @@ curl -X POST http://localhost:8080/ingest \
     "bucket_name": "my-docs-bucket",
     "directory": "documents/",
     "index_name": "product_knowledge_base",
-    "embedding_model_id": "ibm/slate-125m-english-rtrvr"
+    "embedding_model_id": "ibm/granite-embedding-278m-multilingual"
   }'
 ```
 
@@ -102,9 +102,7 @@ The service creates indexes with HNSW configuration for high-recall vector searc
 
 | Model ID | Dimension | Use Case |
 |---|---|---|
-| `ibm/slate-125m-english-rtrvr` | 768 | Recommended for English RAG |
-| `ibm/slate-30m-english-rtrvr` | 384 | Lightweight English RAG |
-| `intfloat/multilingual-e5-large` | 1024 | Multilingual RAG |
+| `ibm/granite-embedding-278m-multilingual` | 768 | Current IBM example; verify support/lifecycle before deployment |
 
 ## Docker Deployment
 
@@ -133,7 +131,7 @@ opensearch-data-ingestion/
 ## IBM Cloud References
 
 - [IBM watsonx.data Documentation](https://cloud.ibm.com/docs/watsonxdata)
-- [IBM watsonx.ai Embedding Models](https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/fm-models-embed.html)
+- [IBM watsonx.ai Embedding Models](https://www.ibm.com/docs/en/watsonx/saas?topic=models-supported-embedding)
 - [OpenSearch k-NN Plugin](https://opensearch.org/docs/latest/search-plugins/knn/)
 - [IBM Cloud Object Storage](https://cloud.ibm.com/docs/cloud-object-storage)
 - [IBM Cloud IAM API Keys](https://cloud.ibm.com/iam/apikeys)

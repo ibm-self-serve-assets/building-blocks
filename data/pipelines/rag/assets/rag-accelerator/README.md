@@ -1,6 +1,6 @@
 # RAG Accelerator 2.0
 
-A production-ready RAG (Retrieval-Augmented Generation) service built with FastAPI that supports multiple vector databases (Milvus and OpenSearch) for document ingestion, semantic search, and AI-powered question answering using IBM watsonx.ai.
+A reference RAG (Retrieval-Augmented Generation) service built with FastAPI that supports multiple vector databases (Milvus and OpenSearch) for document ingestion, semantic search, and AI-powered question answering using IBM watsonx.ai.
 
 ## Table of Contents
 
@@ -140,7 +140,7 @@ class ConnectionFactory:
 - **Cloud Object Storage**: Document ingestion from IBM COS
 - **REST API**: FastAPI-based with automatic OpenAPI documentation
 - **Extensible Architecture**: Easy to add new vector databases or features
-- **Production Ready**: Logging, error handling, and API key authentication
+- **Reference controls**: Logging, error handling, and API key authentication; review for your production requirements
 
 ## Prerequisites
 
@@ -286,7 +286,7 @@ RAG_ELASTIC_SEARCH_TEMPLATE_FILE=""         # Custom OpenSearch template
 
 ```bash
 # Embedding Model
-RAG_ADV_MILVUS_EMBEDDING_MODEL_ID=intfloat/multilingual-e5-large
+RAG_ADV_MILVUS_EMBEDDING_MODEL_ID=ibm/granite-embedding-278m-multilingual
 
 # Milvus Advanced
 RAG_ADV_MILVUS_HYBRID_SEARCH=false          # Enable hybrid search
@@ -517,7 +517,7 @@ Features:
 
 ### Adding a New Vector Database
 
-To add support for a new vector database (e.g., Pinecone, Weaviate):
+To add another IBM-supported vector/search backend:
 
 1. **Create Connection Class** (`app/src/utils/newdb_connection.py`):
 

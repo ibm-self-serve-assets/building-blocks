@@ -1,5 +1,6 @@
+from typing import Any
 from pydantic import BaseModel
-from typing import Dict
 
-class texttosqlResponse(BaseModel):
-     response: Dict
+
+class TextToSQLResponse(BaseModel):
+    response: dict[str, Any]

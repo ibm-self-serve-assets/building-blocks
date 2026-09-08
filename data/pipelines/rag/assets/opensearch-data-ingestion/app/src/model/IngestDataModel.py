@@ -8,7 +8,7 @@ class IngestRequest(BaseModel):
     directory: str = Field(..., description="COS key prefix (folder path) to ingest")
     index_name: str = Field(..., description="OpenSearch index name to ingest into")
     embedding_model_id: str = Field(
-        "ibm/slate-125m-english-rtrvr",
+        "ibm/granite-embedding-278m-multilingual",
         description="IBM watsonx.ai embedding model ID"
     )
 

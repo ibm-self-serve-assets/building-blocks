@@ -1,6 +1,6 @@
 # RAG Retrieval FastAPI Server
 
-A production-ready FastAPI server for semantic search and keyword search over RAG (Retrieval-Augmented Generation) indexes. Supports both OpenSearch and Milvus vector databases with IBM Watsonx embeddings.
+A reference FastAPI server for semantic search and keyword search over RAG (Retrieval-Augmented Generation) indexes. Supports both OpenSearch and Milvus vector databases with IBM Watsonx embeddings.
 
 ## Features
 
@@ -105,7 +105,7 @@ A production-ready FastAPI server for semantic search and keyword search over RA
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
 WATSONX_API_KEY=your_api_key
 WATSONX_PROJECT_ID=your_project_id
-EMBEDDING_MODEL_ID=intfloat/multilingual-e5-large
+EMBEDDING_MODEL_ID=ibm/granite-embedding-278m-multilingual
 
 # Vector Database Selection
 VECTOR_DB_TYPE=opensearch  # or milvus
@@ -296,7 +296,7 @@ ibmcloud ce application create --name rag-retrieval-api \
   --env-from-secret opensearch-credentials \
   --env-from-secret api-token \
   --env WATSONX_URL=https://us-south.ml.cloud.ibm.com \
-  --env EMBEDDING_MODEL_ID=intfloat/multilingual-e5-large \
+  --env EMBEDDING_MODEL_ID=ibm/granite-embedding-278m-multilingual \
   --env VECTOR_DB_TYPE=opensearch \
   --env OPENSEARCH_HOST=your_opensearch_host \
   --env OPENSEARCH_PORT=9200 \
@@ -371,7 +371,7 @@ For non-sensitive configuration, you can use ConfigMaps:
 # Create ConfigMap
 ibmcloud ce configmap create --name rag-config \
   --from-literal WATSONX_URL=https://us-south.ml.cloud.ibm.com \
-  --from-literal EMBEDDING_MODEL_ID=intfloat/multilingual-e5-large \
+  --from-literal EMBEDDING_MODEL_ID=ibm/granite-embedding-278m-multilingual \
   --from-literal VECTOR_DB_TYPE=opensearch \
   --from-literal OPENSEARCH_HOST=your_host \
   --from-literal OPENSEARCH_PORT=9200 \
@@ -429,7 +429,7 @@ curl -H "Authorization: Bearer your_token" http://your-app-url/config
 The server performs connectivity checks on startup:
 
 ```
-[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=intfloat/multilingual-e5-large
+[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=ibm/granite-embedding-278m-multilingual
 [BOOTSTRAP] OPENSEARCH: OK - your-host:9200 ssl=True
 ```
 

@@ -52,7 +52,7 @@ ENVIRONMENT=development
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
 WATSONX_API_KEY=your_watsonx_api_key
 WATSONX_PROJECT_ID=your_project_id
-EMBEDDING_MODEL_ID=intfloat/multilingual-e5-large
+EMBEDDING_MODEL_ID=ibm/granite-embedding-278m-multilingual
 ```
 
 **Vector Database Selection** (Required)
@@ -120,7 +120,7 @@ On startup, the server automatically validates connectivity to:
 
 Example output:
 ```
-[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=intfloat/multilingual-e5-large
+[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=ibm/granite-embedding-278m-multilingual
 [BOOTSTRAP] OPENSEARCH: OK - your-host:9200 ssl=True
 ```
 
@@ -242,7 +242,7 @@ View current retrieval configuration with secrets masked.
     "configured": true,
     "watsonx_url": "https://us-south.ml.cloud.ibm.com",
     "project_id": "14431c61-b5a8-4d06-81e4-a3b55bbea942",
-    "embedding_model_id": "intfloat/multilingual-e5-large",
+    "embedding_model_id": "ibm/granite-embedding-278m-multilingual",
     "watsonx_api_key": "D9***v0"
   },
   "vector_db": {
@@ -540,7 +540,7 @@ curl http://localhost:8080/health
 
 The server logs bootstrap checks and query execution:
 ```
-[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=intfloat/multilingual-e5-large
+[BOOTSTRAP] WATSONX_EMBEDDINGS: OK - model=ibm/granite-embedding-278m-multilingual
 [BOOTSTRAP] OPENSEARCH: OK - your-host:9200 ssl=True
 ```
 

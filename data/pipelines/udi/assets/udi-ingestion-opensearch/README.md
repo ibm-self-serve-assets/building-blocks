@@ -91,7 +91,7 @@ After ingestion, every document is split into chunks and indexed in OpenSearch u
 | OpenSearch field | Content |
 |---|---|
 | `text` | Extracted text chunk |
-| `vector_index` | 384-dimensional embedding vector |
+| `vector_index` | 768-dimensional embedding vector |
 | `document_name` | Original filename |
 | `document_id` | Unique document identifier |
 | `pk` | Chunk hash (primary key) |
@@ -208,7 +208,7 @@ Set these in `scripts/.env` before running setup:
 | `INDEX_NAME` | `udi_opensearch_index` | OpenSearch index to create and write to |
 | `CHUNK_SIZE` | `4000` | Max tokens per chunk (1–10000) |
 | `CHUNK_OVERLAP` | `200` | Overlap tokens between adjacent chunks (must be < `CHUNK_SIZE`) |
-| `EMBEDDINGS_MODEL_ID` | `ibm/slate-30m-english-rtrvr-v2` | watsonx embedding model ID |
+| `EMBEDDINGS_MODEL_ID` | `ibm/granite-embedding-278m-multilingual` | watsonx embedding model ID |
 | `FLOW_NAME` | `udi_opensearch_flow` | Base name — a timestamp is appended on each setup run to ensure uniqueness |
 | `WATSONX_URL` | `https://api.dataplatform.cloud.ibm.com` | Watson Data API base URL |
 | `WATSONX_ENV` | `cloud-prod` | UDI environment: `cloud-prod` \| `cloud-dev` \| `cloud-test` \| `cpd` |
@@ -287,8 +287,8 @@ pip install -r scripts/requirements.txt
 │  └────────────┬─────────────┘                                  │
 │               ↓                                                │
 │  ┌──────────────────────────┐                                  │
-│  │        embeddings        │  384-dim vectors                │
-│  │  ibm/slate-30m-english-* │                                  │
+│  │        embeddings        │  768-dim vectors                │
+│  │  ibm/granite-embedding-* │                                  │
 │  └────────────┬─────────────┘                                  │
 │               ↓                                                │
 │  ┌──────────────────────────┐                                  │

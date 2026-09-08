@@ -4,7 +4,7 @@ Bob skills for data lineage instrumentation and querying using **IBM watsonx.dat
 
 ## Overview
 
-The `openlineage-instrumentation` skill empowers IBM Bob to instrument IBM data pipelines (Python ETL, IBM DataStage, Apache Spark) with **OpenLineage**, forward events to IBM Databand, and query Manta lineage graphs via IBM watsonx.data Intelligence — generating production-ready Python 3.12 code with IBM IAM authentication.
+The `openlineage-instrumentation` skill helps instrument supported/custom workloads with OpenLineage and route lineage into IBM watsonx.data intelligence using IBM-supported procedures.
 
 ## Available Skills
 

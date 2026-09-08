@@ -23,7 +23,7 @@ def _auth(key: str = Security(_KEY)) -> str:
     summary="Ingest documents from IBM COS into watsonx.data OpenSearch",
     description=(
         "Downloads documents from IBM COS, generates IBM watsonx.ai embeddings "
-        "(ibm/slate-125m-english-rtrvr), creates a k-NN index in IBM watsonx.data "
+        "(ibm/granite-embedding-278m-multilingual), creates a k-NN index in IBM watsonx.data "
         "OpenSearch, and bulk-inserts document vectors with metadata."
     ),
     response_model=IngestResponse,

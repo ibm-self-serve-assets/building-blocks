@@ -1,16 +1,16 @@
 # Astra DB NoSQL CRUD Service
 
-**IBM Products**: IBM HCD (DataStax Astra DB)
+**IBM Products**: IBM watsonx.data — Astra DB service
 **Language**: Python 3.12
 **Framework**: FastAPI
 
 ## Overview
 
-FastAPI service providing full CRUD operations on **DataStax Astra DB** NoSQL collections using the `astrapy` Data API with MongoDB-style filter expressions. Part of the IBM HCD (Hyper-Converged Database) portfolio.
+FastAPI service providing full CRUD operations on **DataStax Astra DB** NoSQL collections using the `astrapy` Data API with MongoDB-style filter expressions. The Astra DB service is available through IBM watsonx.data.
 
 ## Prerequisites
 
-- DataStax Astra DB instance (IBM HCD)
+- Astra DB service/database provisioned through IBM watsonx.data
 - Astra DB API Endpoint URL
 - Astra DB Application Token
 
@@ -108,6 +108,6 @@ astradb-nosql-crud/
 
 ## IBM Cloud References
 
-- [IBM HCD / DataStax Astra DB](https://cloud.ibm.com/catalog/services/hyper-converged-database)
+- [IBM watsonx.data — Astra DB service](https://www.ibm.com/docs/en/watsonxdata/saas?topic=watsonxdata-adding-astra-db-service)
 - [DataStax Astra DB Data API Reference](https://docs.datastax.com/en/astra/astra-db-vector/api-reference/data-api.html)
 - [astrapy SDK Documentation](https://github.com/datastax/astrapy)

@@ -51,9 +51,7 @@ def _get_embedding_client(model_id: str) -> Embeddings:
 def _embedding_dim(model_id: str) -> int:
     """Return embedding dimension for known watsonx.ai embedding models."""
     dims = {
-        "ibm/slate-125m-english-rtrvr": 768,
-        "ibm/slate-30m-english-rtrvr": 384,
-        "intfloat/multilingual-e5-large": 1024,
+        "ibm/granite-embedding-278m-multilingual": 768,
     }
     return dims.get(model_id, 768)
 
@@ -146,7 +144,7 @@ def ingest(
     bucket_name: str,
     directory: str,
     index_name: str,
-    embedding_model_id: str = "ibm/slate-125m-english-rtrvr",
+    embedding_model_id: str = "ibm/granite-embedding-278m-multilingual",
 ) -> int:
     """
     Full ingestion pipeline:
