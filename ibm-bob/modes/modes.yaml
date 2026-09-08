@@ -1,0 +1,60 @@
+version: "1.0"
+modes:
+  # ─── AGENTS BUILDING BLOCK ───
+  - name: Agent Builder Base Mode
+    folderName: agent-builder-base-mode
+    category: base
+    domain: Agents
+    description: "Agent Builder Base Mode: Foundation mode for building and testing autonomous agents with the watsonx Orchestrate ADK."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/base-modes/agent-builder-base-mode.zip"
+
+  - name: Domain Agent Builder
+    folderName: domain-agent-builder
+    category: custom
+    domain: Agents
+    description: "Domain Agent Builder: Build domain-specific agents (healthcare, retail, finance, HR, IT) with custom tools and RAG knowledge bases."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/custom-modes/domain-agent-builder.zip"
+
+  - name: Voice Agent Builder
+    folderName: voice-agent-builder
+    category: custom
+    domain: Agents
+    description: "Voice Agent Builder: Configure and deploy voice-enabled agents with STT/TTS channels (phone, WhatsApp, SMS, Slack)."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/custom-modes/voice-agent-builder.zip"
+
+  - name: Agent REST Integration
+    folderName: agent-rest-integration
+    category: custom
+    domain: Agents
+    description: "Agent REST Integration: Connect agents to external enterprise systems and web applications via REST APIs."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/custom-modes/agent-rest-integration.zip"
+
+  - name: Multi-Agent Orchestration Base Mode
+    folderName: multi-agent-orchestration-base-mode
+    category: base
+    domain: Agents
+    description: "Multi-Agent Orchestration Base Mode: Foundation mode for defining coordinator agents, task delegation strategies, shared context, and agent-to-agent (A2A) communication."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/multi-agent-orchestration/bob-modes/base-modes/multi-agent-orchestration-base-mode.zip"
+
+  - name: Agent Model Gateway Mode
+    folderName: agent-model-gateway-bob-mode
+    category: custom
+    domain: Agents
+    description: "Agent Model Gateway Mode: Configure agent routing through the watsonx.ai AI Gateway for load balancing, multi-model fallback, and rate limiting."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/multi-agent-orchestration/bob-modes/custom-modes/agent-model-gateway-bob-mode.zip"
+
+  # ─── DATA BUILDING BLOCK ───
+  - name: Data Observability Builder
+    folderName: data-observability-builder
+    category: base
+    domain: Data
+    description: "Custom IBM Bob mode configuration for data observability workflows using IBM Databand on IBM Cloud."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/data-observability/bob-modes/base-modes/data-observability-builder.zip"
+
+  # ─── AUTOMATION BUILDING BLOCK ───
+  - name: infrastructure-as-code
+    folderName: infrastructure-as-code
+    category: base
+    domain: Automation
+    description: "This building block provides Infrastructure as Code (IaC) solutions for deploying applications on IBM Cloud and Red Hat OpenShift."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/automation/operate/infrastructure-as-code/bob-modes/base-modes/infrastructure-as-code.zip"
