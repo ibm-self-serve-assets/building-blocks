@@ -46,6 +46,7 @@ ERP / suppliers / logistics / risk feeds
 | Path | Purpose |
 |---|---|
 | [`assets/supply-chain-risk-control-tower/`](assets/supply-chain-risk-control-tower/) | Runnable supply-chain streaming reference solution |
+| [`assets/live-context-for-supply-chain-resilience/`](assets/live-context-for-supply-chain-resilience/) | Full-stack AI demo: real-time risk detection + watsonx Orchestrate agents + Carbon React control tower |
 | [`bob-skills/data-streaming-confluent.zip`](bob-skills/data-streaming-confluent.zip) | IBM Bob streaming skill |
 | [`bob-skills/confluent-iac-terraform.zip`](bob-skills/confluent-iac-terraform.zip) | IBM Bob Terraform/IaC skill |
 
