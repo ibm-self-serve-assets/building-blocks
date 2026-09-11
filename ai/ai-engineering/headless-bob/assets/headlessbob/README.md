@@ -150,3 +150,7 @@ New completed responses show a Usage section with Bob-reported duration, session
 ACP is exposed on the same origin at `/agents`, `/runs` and `/session/{session_id}`; it does not use the `/api/v1` prefix. Open **API docs** in the UI for both interfaces. The [ACP guide](public/acp.html) is served at `/acp`, and its implemented OpenAPI contract at `/acp/openapi.json`. `/api/openapi.json` documents the REST thread interface. Authenticated `/api/v1/capabilities` includes links to both APIs.
 
 The ACP guide includes authentication, discovery, async polling, sync execution, live SSE, cancellation and continuation examples. ACP is intended for server/CLI clients; browser Origin requests are rejected. `GET /runs/{run_id}/events` returns stored JSON events, while `POST /runs` with `mode: stream` starts live SSE. Direct ACP runs do not create wrapper threads and therefore do not appear in the conversation UI or gain thread-based file download routes.
+
+## Python examples
+
+See [examples/python](examples/python/README.md) for small, dependency-free ACP and REST clients covering discovery, execution, streaming, session/thread continuation, usage, cancellation and file downloads.

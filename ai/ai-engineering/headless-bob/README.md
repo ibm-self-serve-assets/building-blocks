@@ -52,3 +52,5 @@ The service is intended for trusted operators. Bob can execute commands; API own
 ## API documentation
 
 The UI **API docs** button exposes both interfaces. ACP uses root-level `/agents`, `/runs` and `/session/{session_id}` routes; REST threads use `/api/v1`. Read the [ACP guide and request examples](assets/headlessbob/public/acp.html) and [ACP OpenAPI contract](assets/headlessbob/public/acp-openapi.json). On a running service these are available at `/acp` and `/acp/openapi.json`. The REST contract is served separately at `/api/openapi.json`.
+
+[Python samples](assets/headlessbob/examples/python/README.md) provide small standard-library clients for ACP runs and REST threads, including streaming, follow-ups, cancellation and downloads.
