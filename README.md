@@ -40,7 +40,7 @@ The **[AI Building Blocks](ai/README.md)** deliver reusable engineering patterns
 | **Agents** | [Multi-Agent Orchestration](ai/agents/multi-agent-orchestration/) | IBM watsonx Orchestrate + AI Gateway + MCP/A2A |
 | **AI Engineering** | [Agentic SDLC](ai/ai-engineering/agentic-sdlc/) | IBM Bob + In-IDE Agentic Development |
 | **AI Engineering** | [Code Modernization](ai/ai-engineering/code-modernization/) | IBM Bob + Legacy Refactoring + Java/Maximo |
-| **AI Engineering** | [Headless Bob](ai/ai-engineering/headless-bob/) | Bobserver + REST/MCP API + CI/CD Pipelines |
+| **AI Engineering** | [headlessbob](ai/ai-engineering/headless-bob/) | Node.js + REST/ACP APIs + Threads UI |
 | **AI Engineering** | [Integrate as Code](ai/ai-engineering/integrate-as-code/) | IBM iPaaS + watsonx Orchestrate Workflows |
 | **AI Trust** | [AI Trust](ai/ai-trust/) | IBM watsonx.governance + Model Eval + Guardrails |
 
