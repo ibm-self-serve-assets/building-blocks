@@ -56,7 +56,7 @@
           <button id="archive-thread" class="button quiet" disabled>Archive</button>
           <button id="delete-thread" class="button quiet danger" disabled>Delete</button>
           <button id="refresh" class="button quiet" title="Refresh threads and conversation">Refresh</button>
-          <button id="api-help" class="button outline">REST API <span aria-hidden="true">↗</span></button>
+          <button id="api-help" class="button outline">API docs <span aria-hidden="true">↗</span></button>
         </div>
       </header>
       <form id="rename-form" class="rename-form" hidden>
@@ -106,8 +106,9 @@
   </div>
 
   <dialog id="api-dialog">
-    <div class="dialog-heading"><div><p class="eyebrow">BUILT FOR YOUR APPLICATIONS</p><h2>The same actions, over REST.</h2></div><button id="close-api" class="button quiet" aria-label="Close API reference">Close</button></div>
+    <div class="dialog-heading"><div><p class="eyebrow">BUILT FOR YOUR APPLICATIONS</p><h2>REST and ACP APIs.</h2></div><button id="close-api" class="button quiet" aria-label="Close API reference">Close</button></div>
     <p>Send your service token as <code>Authorization: Bearer TOKEN</code>. Requests and responses are JSON; live events use SSE.</p>
+    <h3>REST threads API</h3>
     <dl class="endpoint-list">
       <dt>POST /api/v1/threads</dt><dd>Create a conversation with an optional title.</dd>
       <dt>GET /api/v1/threads</dt><dd>List and search your threads. Supports pagination.</dd>
@@ -122,7 +123,18 @@
       <dt>POST /api/v1/runs/{id}/cancel</dt><dd>Stop a queued or executing run.</dd>
     </dl>
     <p>Use an <code>Idempotency-Key</code> when sending a message to safely retry the same request. One run can be active per thread.</p>
-    <a href="/api/openapi.json" target="_blank" rel="noopener">OpenAPI specification ↗</a>
+    <a href="/api/openapi.json" target="_blank" rel="noopener">REST OpenAPI specification ↗</a>
+    <h3>ACP 0.2.0 API</h3>
+    <p>ACP uses root-level routes on this same service and the same service token. It supports text runs and session continuation. Use ACP from a server or CLI; browser Origin requests are rejected.</p>
+    <dl class="endpoint-list">
+      <dt>GET /agents · GET /agents/headlessbob</dt><dd>Discover the Bob agent and its capabilities.</dd>
+      <dt>POST /runs</dt><dd>Create a run with mode sync, async or stream. Pass session_id to continue a completed task.</dd>
+      <dt>GET /runs/{run_id}</dt><dd>Read status, output and usage.</dd>
+      <dt>GET /runs/{run_id}/events</dt><dd>Read persisted events as JSON.</dd>
+      <dt>POST /runs/{run_id}/cancel</dt><dd>Cancel a queued or running task.</dd>
+      <dt>GET /session/{session_id}</dt><dd>Read session run history.</dd>
+    </dl>
+    <p><a href="/acp" target="_blank" rel="noopener">ACP documentation and examples ↗</a> · <a href="/acp/openapi.json" target="_blank" rel="noopener">ACP OpenAPI specification ↗</a></p>
     <p class="field-help">Threads and messages survive service restarts. A failed or cancelled execution may require a fresh thread. Attachments and thread branching are not supported yet.</p>
   </dialog>
   <dialog id="delete-dialog">

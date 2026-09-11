@@ -46,6 +46,8 @@ export async function createApp(config: Config, runtime: Runtime = new BobRuntim
     ['/app.js', ['app.js', 'text/javascript; charset=utf-8']],
     ['/markdown.js', ['markdown.js', 'text/javascript; charset=utf-8']],
     ['/style.css', ['style.css', 'text/css; charset=utf-8']],
+    ['/acp', ['acp.html', 'text/html; charset=utf-8']],
+    ['/acp/openapi.json', ['acp-openapi.json', 'application/json']],
     ['/api/openapi.json', ['openapi.json', 'application/json']]
   ].map(([path, [file, type]]) => [path, { type, body: readFileSync(new URL(`../public/${file}`, import.meta.url)) }]));
   let readiness = await runtime.ready();
@@ -121,7 +123,7 @@ export async function createApp(config: Config, runtime: Runtime = new BobRuntim
       if (method === 'GET' && path === '/readyz') return json(response, readiness.ready && !shuttingDown ? 200 : 503, shuttingDown ? { ready: false, reason: 'Shutting down' } : readiness);
       if (shuttingDown) throw new ApiError(503, 'server_error', 'Service is shutting down');
       if (method === 'GET' && path === '/api/v1/capabilities') return json(response, 200, {
-        caller: owner, runtime: readiness, features: { threads: true, archive_threads: true, delete_threads: true, streaming: true, cancellation: true, continuation: config.continuation, file_downloads: true, attachments: false, thread_forking: false },
+        caller: owner, runtime: readiness, apis: { rest: { base_path: '/api/v1', openapi_url: '/api/openapi.json' }, acp: { version: '0.2.0', base_path: '/', docs_url: '/acp', openapi_url: '/acp/openapi.json', discovery_url: '/agents' } }, features: { threads: true, archive_threads: true, delete_threads: true, streaming: true, cancellation: true, continuation: config.continuation, file_downloads: true, attachments: false, thread_forking: false },
         limits: { max_download_bytes: MAX_DOWNLOAD_BYTES, max_message_characters: 20000, max_concurrent_runs: config.maxConcurrent, max_turns: config.maxTurns, max_cost: config.maxCost, timeout_ms: config.timeoutMs }
       });
       if (path === '/api/v1/threads') {

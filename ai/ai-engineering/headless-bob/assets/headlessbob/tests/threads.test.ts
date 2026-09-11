@@ -198,3 +198,19 @@ test('usage survives storage restart and appears in run, replayed completion and
   const events = (await response.text()).trim().split('\n\n').map(block=>JSON.parse(block.split('\n').find(line=>line.startsWith('data: '))!.slice(6)));
   assert.deepEqual(events.at(-1).run.usage,expected);
 });
+test('ACP is discoverable from UI and capabilities with its own implemented contract', async t => {
+  const { raw, request, base } = await setup(t);
+  const page = await fetch(base() + '/'); assert.match(await page.text(), /ACP documentation and examples/);
+  const guide = await fetch(base() + '/acp'); assert.equal(guide.status, 200); assert.match(await guide.text(), /Continue a session/);
+  const response = await fetch(base() + '/acp/openapi.json'); assert.equal(response.status, 200);
+  const contract = await response.json() as any;
+  assert.equal(contract.servers[0].url, '/'); assert.ok(contract.paths['/agents/headlessbob'].get);
+  assert.ok(contract.paths['/runs'].post); assert.equal(contract.paths['/runs/{run_id}'].post, undefined);
+  assert.deepEqual(contract.security, [{bearerAuth:[]}]);
+  assert.equal(contract.components.schemas.RunCreateRequest.properties.session, undefined);
+  const caps = (await request('/capabilities')).data;
+  assert.equal(caps.apis.acp.openapi_url, '/acp/openapi.json');
+  assert.equal(caps.apis.rest.base_path, '/api/v1');
+  assert.equal((await fetch(base() + '/agents')).status, 401);
+  assert.equal((await raw('/agents')).status, 200);
+});

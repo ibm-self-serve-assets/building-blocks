@@ -13,3 +13,4 @@
 @media(max-width:700px){.workspace-content{flex-direction:column;overflow-y:auto}.chat-column{flex:1 0 380px}.workspace-content>.files-panel{flex:0 0 auto;width:100%;max-height:240px;border-left:0;border-top:1px solid var(--line);padding:14px 18px}.composer-bottom{flex-wrap:wrap;gap:8px}.composer-actions{margin-left:auto}.cancel-button{font-size:10px;padding:6px 10px}}
 
 .usage-details{margin-top:14px;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted)}.usage-details summary{cursor:pointer;font-weight:600}.usage-metrics{display:flex;flex-wrap:wrap;gap:12px 24px;margin:10px 0}.usage-metrics dt{font-size:10px}.usage-metrics dd{margin:2px 0 0;color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums}.usage-details p{font-size:10px;margin:7px 0}
+.api-document{max-width:1000px;margin:0 auto;padding:32px 24px 64px;font-size:14px;line-height:1.7}.api-document pre{font-size:12px}.api-document table{width:100%}
