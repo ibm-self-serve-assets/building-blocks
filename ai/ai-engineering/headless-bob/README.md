@@ -1,58 +1,138 @@
-# headlessbob
+# Headless Bob
 
-headlessbob runs IBM Bob Shell as a Node.js/TypeScript service with REST and Agent Communication Protocol (ACP) APIs and a browser UI. It replaces the previous Python Bobserver implementation in this building block.
+headlessbob runs IBM Bob Shell as a Node.js/TypeScript service with REST and Agent Communication Protocol (ACP) APIs and an integrated browser UI. It features native ACP support directly from IBM Bob. You can find more about ACP integration in the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
 
-## Included asset
+📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-engineering/headless-bob/)** · 📦 **Runnable Asset:** [assets/headlessbob/](assets/headlessbob/README.md)
 
-| Asset | Location | Description |
-| --- | --- | --- |
-| **headlessbob** | [assets/headlessbob/](assets/headlessbob/) | Service source, browser UI, tests, Docker packaging and OpenShift manifests |
+---
 
 ## Features
 
-- Persistent threads, follow-up messages, rename, search, archive and delete.
-- Queued and asynchronous runs with streamed responses and cancellation.
-- Markdown rendering and a right-hand workspace file panel with authenticated downloads.
-- Bob-reported usage statistics stored with runs and assistant responses.
-- Bearer-token authentication, caller ownership checks and SQLite persistence.
-- Text-based ACP 0.2.0 endpoints with a dedicated guide and OpenAPI contract, plus the REST thread contract.
+- **Persistent Conversations**: Thread-based conversation lifecycle with rename, search, archive, delete, and turn pagination backed by SQLite.
+- **Asynchronous Execution & Streaming**: Queued runs with real-time Server-Sent Events (SSE) streaming and execution cancellation.
+- **Dual Protocols**: Native text-based **ACP 0.2.0** endpoints (`/agents`, `/runs`, `/session`) alongside thread-based **REST APIs** (`/api/v1`).
+- **Integrated Browser UI**: Single-page chat interface with live markdown rendering, code block copying, run JSON inspection, and workspace file browsing/downloads.
+- **Usage & Cost Tracking**: Captures token counts, execution duration, tool call metrics, and session cost reporting reported by Bob Shell.
+- **Security & Authorization**: Bearer-token authentication, caller-isolated workspaces, path traversal guards, and sub-process lifecycle termination.
 
 ```mermaid
 flowchart LR
-    UI[Browser UI] --> REST[REST API]
-    Client[API client] --> REST
-    Agent[ACP client] --> ACP[ACP API]
-    REST --> Manager[Run manager]
+    UI[Browser UI] --> REST[REST API /api/v1]
+    Client[API Client] --> REST
+    Agent[ACP Client] --> ACP[ACP API /agents /runs]
+    REST --> Manager[Run Manager]
     ACP --> Manager
-    Manager --> Bob[Bob Shell]
-    Manager --> Store[(SQLite and workspaces)]
+    Manager --> Bob[Bob Shell Subprocess]
+    Manager --> Store[(SQLite & Workspaces)]
 ```
 
-## Get started
+---
 
-See the [service README](assets/headlessbob/README.md) for local setup, credentials, API examples, operational limits and OpenShift deployment. Use Node.js 22.22 or newer and a licensed Bob Shell 2.0.1 installation. Credentials and the licensed Bob distribution are supplied separately.
+## Included Assets
 
+| Asset | Location | Description |
+| --- | --- | --- |
+| **headlessbob** | [assets/headlessbob/](assets/headlessbob/) | Service source, browser UI, test suite, Python client examples, Docker packaging, and OpenShift manifests |
+
+---
+
+## API Overview
+
+### REST Endpoints (`/api/v1`)
+All REST endpoints require `Authorization: Bearer <TOKEN>` and return structured JSON.
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/api/v1/capabilities` | `GET` | Retrieve server status, capabilities, and operational limits |
+| `/api/v1/threads` | `GET`, `POST` | List, search, or create conversation threads |
+| `/api/v1/threads/{id}` | `GET`, `PATCH`, `DELETE` | Inspect, rename, archive, or remove a thread |
+| `/api/v1/threads/{id}/messages` | `GET`, `POST` | Post a prompt (returns run status) or list conversation turns |
+| `/api/v1/runs/{id}` | `GET` | Get run execution status, results, and usage stats |
+| `/api/v1/runs/{id}/events` | `GET` | Stream live run output via Server-Sent Events (SSE) |
+| `/api/v1/runs/{id}/cancel` | `POST` | Cancel an active run execution |
+| `/api/v1/threads/{id}/files` | `GET` | List files generated in the thread's workspace |
+| `/api/v1/threads/{id}/files/{path}` | `GET` | Download a workspace file |
+
+### ACP Endpoints (ACP 0.2.0)
+Standard Agent Communication Protocol endpoints for multi-agent interoperability:
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/agents` | `GET` | Agent discovery and manifest |
+| `/runs` | `POST` | Execute an ACP run (sync, async, or streamed) |
+| `/runs/{run_id}` | `GET` | Get ACP run status and output |
+| `/runs/{run_id}/events` | `GET` | Stream ACP run events via SSE |
+| `/runs/{run_id}/cancel` | `POST` | Request cancellation of an active run |
+| `/session/{session_id}` | `GET`, `DELETE` | Inspect or terminate an ACP session |
+
+OpenAPI specifications are available at `/api/openapi.json` (REST) and `/acp/openapi.json` (ACP).
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Node.js 22.22 or newer
+- Licensed **IBM Bob Shell 2.0.1** binary available on your `PATH`
+- `BOB_API_KEY` configured with valid credentials
+
+### Local Setup
 ```sh
-cd ai/ai-engineering/headless-bob/assets/headlessbob
+cd assets/headlessbob
 npm ci
 cp .env.example .env
-# Configure Bob credentials and service tokens in .env.
+# Edit .env to set your BOB_API_KEY and service AUTH_TOKENS
 npm run build
 npm start
 ```
 
-Open `http://127.0.0.1:8000`. Run `npm run check` for the fixture-based test suite.
+Access the UI at `http://127.0.0.1:8000` and connect using your service token configured in `AUTH_TOKENS`.
 
-## Replacing Bobserver
+Run the automated test suite:
+```sh
+npm run check  # TypeScript type-check and fixture/HTTP unit tests
+```
 
-This is a new API and storage model, not an in-place migration. Existing Bobserver clients must move to headlessbob's REST or ACP endpoints. Bobserver's MCP/OAuth integrations, guided approval workflows and legacy database are not carried over. Retain old deployment data separately if needed; the repository replacement does not migrate or delete it.
+---
 
-The service is intended for trusted operators. Bob can execute commands; API ownership checks do not provide an OS sandbox between mutually untrusted users. See the service README for retention and deployment details.
+## Container & Cloud Deployment
 
-## API documentation
+### Docker
+Build and run as a standalone container:
+```sh
+docker build -t headlessbob assets/headlessbob
+docker run -d -p 8000:8000 -e BOB_API_KEY="your-key" headlessbob
+```
 
-The UI **API docs** button exposes both interfaces. ACP uses root-level `/agents`, `/runs` and `/session/{session_id}` routes; REST threads use `/api/v1`. Read the [ACP guide and request examples](assets/headlessbob/public/acp.html) and [ACP OpenAPI contract](assets/headlessbob/public/acp-openapi.json). On a running service these are available at `/acp` and `/acp/openapi.json`. The REST contract is served separately at `/api/openapi.json`.
+### Red Hat OpenShift
+OpenShift manifests are provided in [`assets/headlessbob/openshift/`](assets/headlessbob/openshift/):
+```sh
+oc apply -f assets/headlessbob/openshift/build.yaml
+oc apply -f assets/headlessbob/openshift/app.yaml
+```
 
-[Python samples](assets/headlessbob/examples/python/README.md) provide small standard-library clients for ACP runs and REST threads, including streaming, follow-ups, cancellation and downloads.
+---
 
-The HTML developer guide is served at `/docs`, with REST/ACP walkthroughs, code-copy controls and Python sample downloads. Open it from the UI’s **API docs** dialog.
+## SDKs & Client Examples
+
+Ready-to-use Python client examples using Python's standard library are located in [`assets/headlessbob/examples/python/`](assets/headlessbob/examples/python/):
+
+- [`rest.py`](assets/headlessbob/examples/python/rest.py): Demonstrates creating threads, sending tasks, streaming output, and downloading generated files via REST.
+- [`acp.py`](assets/headlessbob/examples/python/acp.py): Demonstrates dispatching tasks using ACP protocol and consuming SSE events.
+- [`cancel.py`](assets/headlessbob/examples/python/cancel.py): Demonstrates asynchronous cancellation of active executions.
+
+---
+
+## Security & Operational Model
+
+- **Trusted Operator Execution**: Headless Bob is intended for deployment within trusted environments. Bob Shell executes code and commands on the host/container; workspace access checks prevent unauthorized caller crossover, but the service does not provide an OS sandbox between mutually untrusted actors.
+- **Resource Limits**: Concurrency, maximum prompt length, output buffer sizes, and subprocess timeouts are strictly bounded and configurable via environment variables in `.env`.
+
+---
+
+## Related AI Engineering Building Blocks
+
+- [Agentic SDLC](../agentic-sdlc/README.md)
+- [Code Modernization](../code-modernization/README.md)
+- [Integrate as Code](../integrate-as-code/README.md)
+- [AI Building Blocks Overview](../../README.md)

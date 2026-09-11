@@ -1,162 +1,263 @@
 # headlessbob
 
-A standalone TypeScript service that runs **Bob Shell 2.0.1** and implements the text subset of **Agent Communication Protocol (ACP) 0.2.0** over HTTP. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
+A standalone TypeScript service that runs **IBM Bob Shell 2.0.1** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
 
-## Test UI and thread-based REST API
+For official IBM Bob protocol capabilities, see the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
 
-Open your deployment URL, or `http://127.0.0.1:8000` when running locally. The root page now serves a simple conversation UI. Connect with the **service token** (the `owner` value inside `AUTH_TOKENS` in `.env`), not the Bob API key. The token stays only in the page's memory; reload or Disconnect clears it. The UI and API share the same origin and require no separate frontend service.
+---
 
-- A **thread** is a saved conversation linked to one Bob session and workspace.
-- A **message** is the task or follow-up you send to that thread.
-- A **run** is one execution of Bob for that message, including status, streamed output, and cancellation.
+## Architecture & Interfaces
 
-The UI supports creating, searching, renaming, archiving/restoring, and deleting threads; sending follow-ups; live text; stopping a run; copying messages; and inspecting run JSON. History is paginated and persists across restarts. Only one run may be active per thread. Failed or cancelled sessions can require a new thread rather than silently losing Bob's context.
+```mermaid
+flowchart LR
+    subgraph Clients
+        UI[Browser UI]
+        RESTClient[REST API Client]
+        ACPClient[ACP Agent / Pipeline]
+    end
 
-**Archive** is reversible. **Delete** requires confirmation in the UI and removes the thread plus wrapper message records permanently. The service's ACP run audit records, Bob's internal task history, and workspace files are retained separately. Deletion is rejected while the thread has an active run; it is not a filesystem wipe.
+    subgraph Service[headlessbob Node.js Service]
+        REST[REST API /api/v1]
+        ACP[ACP API /agents /runs /session]
+        Manager[Run Manager & Scheduler]
+        Files[Workspace File Manager]
+    end
 
-| REST endpoint | Purpose |
-| --- | --- |
-| `GET /api/v1/capabilities` | Caller, readiness, features, and limits |
-| `POST /api/v1/threads` | Create with `{}` or `{"title":"My project"}` |
-| `GET /api/v1/threads` | List/search; `q`, `archived`, `limit`, `cursor` |
-| `GET /api/v1/threads/{id}` | Thread metadata and status |
-| `PATCH /api/v1/threads/{id}` | Set `title` and/or `archived` |
-| `DELETE /api/v1/threads/{id}` | Delete wrapper conversation; returns 204 |
-| `POST /api/v1/threads/{id}/messages` | Send `{"content":"Your task"}`; returns 202 with run and events URL |
-| `GET /api/v1/threads/{id}/messages` | Read messages; `limit` counts turns, `before` loads older turns |
-| `GET /api/v1/runs/{id}` | Status/result |
-| `GET /api/v1/runs/{id}/events` | SSE stream with replay |
-| `POST /api/v1/runs/{id}/cancel` | Request cancellation |
+    subgraph Storage & Engine
+        Store[(SQLite runs.sqlite)]
+        Workspaces[(File Workspaces)]
+        Bob[IBM Bob Shell 2.0.1 Subprocess]
+    end
 
-All REST calls use `Authorization: Bearer TOKEN`. Errors use `{"error":{"code":"thread_busy","message":"..."}}`. Send an `Idempotency-Key` header when posting a message: retries with the same content return the original run; changing the content with that key returns 409. Event streams use per-run integer SSE IDs; reconnect with `Last-Event-ID` or `?after=` to avoid replaying already-received events. Disconnecting the UI or stream does not cancel a run.
-
-The full OpenAPI contract is served at `/api/openapi.json`. Threads wrap the existing runtime directly; the ACP endpoints below remain available unchanged. The wrapper does not make HTTP calls to the ACP routes: both interfaces share the same run manager, scheduler, persistence, and Bob subprocess adapter. Node.js/TypeScript was retained for reuse and streaming support; no performance advantage over Python/FastAPI has been benchmarked. Older ACP-only runs are not automatically converted into threads because their original input messages were not stored by the earlier service.
-
-## Run locally
-
-Requires macOS/Linux, Node.js 22.22 or newer, Bob Shell 2.0.1, a Bob API key, and an accepted Bob license. Run `bob --show-license` to review the license and use Bob's interactive setup to accept it if needed.
-
-```sh
-npm ci
-cp .env.example .env  # only for a new checkout; preserve an existing .env
-# Set BOB_API_KEY in .env. Configure AUTH_TOKENS if sharing access.
-npm run build
-npm start
+    UI --> REST
+    RESTClient --> REST
+    ACPClient --> ACP
+    REST --> Manager
+    ACP --> Manager
+    REST --> Files
+    Manager --> Bob
+    Manager --> Store
+    Manager --> Workspaces
+    Files --> Workspaces
 ```
 
-The default address is `http://127.0.0.1:8000`. `.env` is loaded by `start`, `dev`, and `smoke`. Store local credentials in `.env`, which is excluded from Git and Docker. Do not place keys in source files or request bodies.
+---
 
+## Integrated Browser UI & Thread REST API
+
+Open your deployment URL, or `http://127.0.0.1:8000` when running locally. The root page serves an interactive conversation UI. Connect with the **service token** (the `owner` key inside `AUTH_TOKENS` in `.env`), not the Bob API key. The token is held only in browser session memory; reloading or clicking Disconnect clears it.
+
+### UI Features
+- **Conversation Management**: Create, rename, search, archive/restore, and delete threads.
+- **Live Output Streaming**: Real-time message streaming with sanitized Markdown rendering (headings, tables, syntax-highlighted code blocks).
+- **Execution Controls**: Real-time **Cancel run** button to terminate active or queued runs immediately.
+- **Workspace File Explorer**: Right-hand panel (responsive below chat on small screens) to browse generated project files and download them with one click.
+- **Run Diagnostics & Cost**: Inspect full run JSON, tool calls, execution duration, and token/cost statistics reported by Bob.
+- **Integrated API Documentation**: One-click modal linking to interactive OpenAPI specifications and downloadable Python samples.
+
+### REST Endpoints (`/api/v1`)
+
+| REST endpoint | Method | Purpose |
+| --- | --- | --- |
+| `/api/v1/capabilities` | `GET` | Caller identity, readiness, features, and operational limits |
+| `/api/v1/threads` | `POST` | Create a thread with `{}` or `{"title":"Project Name"}` |
+| `/api/v1/threads` | `GET` | List/search threads (`q`, `archived`, `limit`, `cursor`) |
+| `/api/v1/threads/{id}` | `GET` | Retrieve thread metadata and status |
+| `/api/v1/threads/{id}` | `PATCH` | Update `title` and/or `archived` state |
+| `/api/v1/threads/{id}` | `DELETE` | Delete thread conversation records (returns 204) |
+| `/api/v1/threads/{id}/messages` | `POST` | Send `{"content":"Your prompt"}`; returns 202 with run ID and events URL |
+| `/api/v1/threads/{id}/messages` | `GET` | Read conversation turns (`limit`, `before`) |
+| `/api/v1/runs/{id}` | `GET` | Check run status, output, errors, and usage metrics |
+| `/api/v1/runs/{id}/events` | `GET` | Live SSE stream with replay cursor support (`?after=` or `Last-Event-ID`) |
+| `/api/v1/runs/{id}/cancel` | `POST` | Request cancellation of an active run |
+| `/api/v1/threads/{id}/files` | `GET` | List files generated in the thread's workspace (`?path=folder`) |
+| `/api/v1/threads/{id}/files/{path}` | `GET` | Download a workspace file as a binary attachment |
+
+All REST calls use `Authorization: Bearer <TOKEN>`. Send an `Idempotency-Key` header when posting messages to safely retry without duplicate executions.
+
+---
+
+## Agent Communication Protocol (ACP 0.2.0)
+
+headlessbob natively implements the text subset of **ACP 0.2.0**. ACP endpoints live at root routes (`/agents`, `/runs`, `/session`) and do not carry the `/api/v1` prefix.
+
+### ACP Endpoints
+
+| Endpoint | Method | Purpose |
+| --- | --- | --- |
+| `GET /ping`, `GET /healthz` | `GET` | Unauthenticated public liveness probes |
+| `GET /readyz` | `GET` | Authenticated Bob executable/version/key readiness check |
+| `GET /agents` | `GET` | Agent discovery listing available agents |
+| `GET /agents/headlessbob` | `GET` | Detailed agent capability manifest |
+| `POST /runs` | `POST` | Create a run in `sync`, `async`, or `stream` mode |
+| `GET /runs/{run_id}` | `GET` | Poll run status, output text, and usage metrics |
+| `GET /runs/{run_id}/events` | `GET` | Fetch stored ACP JSON events in execution sequence |
+| `POST /runs/{run_id}/cancel` | `POST` | Cancel an in-flight ACP run (returns HTTP 202) |
+| `GET /session/{session_id}` | `GET` | Retrieve session workspace ID and run history URNs |
+
+---
+
+## Testing ACP Endpoints (Step-by-Step)
+
+Configure your target URL and authentication token:
 ```sh
-npm run check  # TypeScript build and fixture/HTTP/contract/recovery tests
-npm run smoke # real Bob: creates a file, continues the task, cancels a running tool
+BASE=http://127.0.0.1:8000
+TOKEN=owner-token-from-auth-tokens
 ```
 
-The live smoke test spends a small amount of Bob credit, uses temporary workspaces, and removes those workspaces afterwards. Bob's own task records remain in its task database.
+### 1. Agent Discovery & Manifest
+```sh
+# List available agents
+curl -s -H "Authorization: Bearer $TOKEN" "$BASE/agents" | jq .
 
-## API
+# Inspect the headlessbob agent manifest and capabilities
+curl -s -H "Authorization: Bearer $TOKEN" "$BASE/agents/headlessbob" | jq .
+```
 
-Set `BASE` to the local address or your HTTPS route. If authentication is configured, set `TOKEN` to the appropriate value from `AUTH_TOKENS` in `.env`.
+### 2. Synchronous Run (`mode: "sync"`)
+Waits for the entire task to complete before returning HTTP 200:
+```sh
+curl -s -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "$BASE/runs" -d '{
+    "agent_name": "headlessbob",
+    "input": [{"role": "user", "parts": [{"content_type": "text/plain", "content": "Create a file named hello.txt with content Hello World"}]}],
+    "mode": "sync"
+  }' | jq .
+```
 
-Set `HEADLESSBOB_URL` to your service URL (default: `http://127.0.0.1:8000`). The included client loads the token from `.env` automatically:
+### 3. Real-Time Streaming (`mode: "stream"`)
+Streams live text chunks and lifecycle events via Server-Sent Events (SSE). Use `curl -N`:
+```sh
+curl -N -s -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "$BASE/runs" -d '{
+    "agent_name": "headlessbob",
+    "input": [{"role": "user", "parts": [{"content_type": "text/plain", "content": "Write a Python script that computes Fibonacci numbers."}]}],
+    "mode": "stream"
+  }'
+```
 
+### 4. Asynchronous Run & Polling (`mode: "async"`)
+Returns HTTP 202 immediately with `run_id` and `session_id`:
+```sh
+# Start asynchronous run
+RUN_RESP=$(curl -s -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "$BASE/runs" -d '{
+    "agent_name": "headlessbob",
+    "input": [{"role": "user", "parts": [{"content_type": "text/plain", "content": "Analyze project files"}]}],
+    "mode": "async"
+  }')
+RUN_ID=$(echo $RUN_RESP | jq -r .run_id)
+SESSION_ID=$(echo $RUN_RESP | jq -r .session_id)
+echo "Run ID: $RUN_ID, Session ID: $SESSION_ID"
+
+# Poll execution status
+curl -s -H "Authorization: Bearer $TOKEN" "$BASE/runs/$RUN_ID" | jq .
+
+# Fetch all recorded JSON events
+curl -s -H "Authorization: Bearer $TOKEN" "$BASE/runs/$RUN_ID/events" | jq .
+```
+
+### 5. Multi-Turn Session Continuation
+Pass the `session_id` returned from a prior run to continue executing in the same workspace:
+```sh
+curl -s -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  "$BASE/runs" -d "{
+    \"agent_name\": \"headlessbob\",
+    \"session_id\": \"$SESSION_ID\",
+    \"input\": [{\"role\": \"user\", \"parts\": [{\"content_type\": \"text/plain\", \"content\": \"Now add unit tests for the code generated earlier.\"}]}],
+    \"mode\": \"sync\"
+  }" | jq .
+```
+
+### 6. Cancelling an Active Run
+```sh
+curl -X POST -s -H "Authorization: Bearer $TOKEN" "$BASE/runs/$RUN_ID/cancel" | jq .
+```
+
+---
+
+## Testing with Python Samples
+
+Pre-built Python clients using only Python's standard library are located in [`examples/python/`](examples/python/):
+
+```sh
+export HEADLESSBOB_URL="http://127.0.0.1:8000"
+export HEADLESSBOB_TOKEN="owner-token-from-auth-tokens"
+
+# 1. Run ACP Task with Live Streaming
+python3 examples/python/acp.py --mode stream "Generate a quick HTTP server in Go"
+
+# 2. Continue a previous session
+python3 examples/python/acp.py --session "<SESSION_ID>" "Add a health check endpoint to that server"
+
+# 3. Test Asynchronous Task Cancellation
+python3 examples/python/cancel.py
+
+# 4. Test REST Thread conversation and file downloads
+python3 examples/python/rest.py
+```
+
+You can also use the interactive CLI test tool:
 ```sh
 npm run client -- /agents
 npm run client -- /runs examples/run.json
 ```
 
-```sh
-BASE=http://127.0.0.1:8000
-curl -H "Authorization: Bearer $TOKEN" "$BASE/agents"
+---
 
-curl -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
-  "$BASE/runs" -d '{
-    "agent_name":"headlessbob",
-    "input":[{"role":"user","parts":[{"content_type":"text/plain","content":"Create hello.txt containing hello."}]}],
-    "mode":"sync"
-  }'
+## Running Locally
+
+Requires macOS/Linux, Node.js 22.22+, Bob Shell 2.0.1, and an active Bob API key.
+
+```sh
+npm ci
+cp .env.example .env
+# Set BOB_API_KEY and configure AUTH_TOKENS in .env
+npm run build
+npm start
 ```
 
-`sync` (the default) waits for a terminal run. `async` returns HTTP 202 immediately. `stream` returns HTTP 200 with ACP JSON events in SSE `data:` records; use `curl -N`. Streaming text excludes Bob reasoning and raw tool payloads. Disconnecting any response does not cancel the run. Slow streaming consumers are disconnected once their pending output exceeds 256 KiB; persisted events can be fetched afterwards.
+### Running the Test Suite
+```sh
+npm run check  # TypeScript compilation, HTTP mock fixtures, contract & recovery tests
+npm run smoke  # End-to-end smoke test invoking real Bob binary (consumes small credit)
+```
 
-The returned `session_id` identifies a service-assigned workspace. Pass it in a later `POST /runs` to continue the same Bob task. The service binds sessions to the authenticated caller and configured Bob mode. Never send Bob task IDs or server filesystem paths. Failed or interrupted executions invalidate continuation; omit `session_id` to start a fresh workspace.
+---
 
-| Endpoint | Behavior |
-| --- | --- |
-| `GET /ping`, `GET /healthz` | Public liveness |
-| `GET /readyz` | Authenticated Bob executable/version/key readiness |
-| `GET /agents`, `GET /agents/headlessbob` | Discovery and manifest |
-| `POST /runs` | Create sync, async, or stream run |
-| `GET /runs/{run_id}` | Current run, result, or explicit failure |
-| `POST /runs/{run_id}/cancel` | Request cancellation, returns HTTP 202 |
-| `GET /runs/{run_id}/events` | Persisted ACP events in order |
-| `GET /session/{session_id}` | Session ID and run history as UUID URNs |
+## Limits, Persistence, and Trust Model
 
-ACP Await/resume (`POST /runs/{run_id}`), imported session state/history, non-text media, URL inputs, artifact transfer, and A2A are not implemented. Unsupported inputs return ACP error envelopes. The source schema is pinned in [spec/PROVENANCE.md](spec/PROVENANCE.md); [the upstream ACP specification](https://github.com/i-am-bee/acp/blob/main/docs/spec/openapi.yaml) defines the wire contract. A2A remains a later adapter, as a possible future adapter.
+- **Storage**: SQLite stores run metadata, session ownership, task mappings, and ordered events in `DATA_DIR/runs.sqlite`. Bob workspaces are UUID directories under `DATA_DIR/workspaces`. Bob's internal history database lives under `$HOME/.bob`.
+- **Concurrency & Limits**: Defaults: 2 concurrent runs, 100 queued tasks, 5-minute timeout, 20 max turns, $1 Bob cost limit, 2 MiB stdout/stderr buffers, and 10,000 events max per run.
+- **Trust Boundary**: Intended for trusted operators. Bob Shell can execute arbitrary terminal commands; workspace token checks prevent caller crossover but do not provide an OS sandbox between untrusted actors.
+- **Process Cleanup**: Subprocesses are spawned in their own process groups and cleaned up with `SIGTERM` followed by `SIGKILL` escalation via `KILL_GRACE_MS`.
 
-## Limits, persistence, and trust
+---
 
-SQLite stores run metadata, session ownership, task mappings, and ordered events in `DATA_DIR`. Workspaces are UUID directories under `DATA_DIR/workspaces`. Bob's separate history database lives under `$HOME/.bob`; persist **both** locations. An exclusive SQLite lock permits one service process per data directory and releases automatically on process death. Unfinished runs become failed/interrupted on restart and are never replayed automatically.
+## OpenShift & Container Deployment
 
-The scheduler serializes each session/workspace and bounds total execution and queue capacity. Defaults: 2 concurrent runs, 100 queued, 5-minute timeout, 20 turns, $1 Bob cost limit, 2 MiB each of stdout/stderr, 10,000 events, and a 64 KiB request body. Bob enforces cost/turn limits; the service enforces timeout/output/event limits. `KILL_GRACE_MS` defaults to 2 seconds, followed by process-group SIGKILL. Public errors omit raw stderr to avoid exposing credentials.
-
-Use this service with trusted operators. Bob can execute shell commands; assigned workspaces and ownership checks are **not an OS sandbox**. Different API tokens prevent cross-caller API access, but do not isolate mutually untrusted code within the same worker. The OpenShift deployment runs a single trusted owner in a dedicated non-root pod with no Kubernetes service-account token or RBAC permissions. Untrusted multi-user service requires separate worker containers and stronger filesystem/network isolation.
-
-Only `PATH`, `HOME`, `TMPDIR`, locale, `BOB_API_KEY`, proxy settings, and `NODE_EXTRA_CA_CERTS` are inherited by Bob; the service bearer tokens are omitted from the child environment. MCP and Bob subagents are disabled. ACP endpoints reject browser-origin requests. The REST wrapper accepts same-origin browser requests and rejects cross-origin calls; no permissive CORS support is exposed. Non-loopback binding requires `AUTH_TOKENS` and `ALLOW_TRUSTED_NETWORK=true`.
-
-Run readiness checks verify the key is present and the binary reports version 2.0.1; they do not make a billable API call or guarantee that a key is valid/unexpired. Completed runs/events are retained without automatic pruning. Monitor disk usage and back up the whole persistent volume while the service is stopped. Do not scale the SQLite deployment above one replica.
-
-## OpenShift (`binb`)
-
-The supplied manifests use unique `headlessbob` resource names, a 10 GiB block PVC, a Recreate deployment, one concurrent Bob execution, a TLS edge route, and an ingress policy allowing the OpenShift router. The Docker build uses your licensed Bob tarball at `vendor/bobshell-2.0.1.tgz`; it is not distributed in Git. The image includes `tini` to reap orphaned subprocesses.
+OpenShift manifests are provided under [`openshift/`](openshift/):
 
 ```sh
-# Log into your cluster with oc, then:
+# Deploy BuildConfig and ImageStream
 oc apply -n binb -f openshift/build.yaml
+
+# Build image from local archive (including vendor Bob binary)
 tar -czf /tmp/headlessbob-build.tgz Dockerfile package.json package-lock.json \
   tsconfig.json src browser spec public examples scripts/container-entrypoint.sh vendor/bobshell-2.0.1.tgz
 oc start-build headlessbob -n binb --from-archive=/tmp/headlessbob-build.tgz --follow
 
-# Import only .env credentials and the already-accepted local Bob license flag.
+# Generate OpenShift Secrets/ConfigMap from local .env
 node --env-file=.env scripts/configure-cluster.mjs
 oc apply -n binb -f openshift/app.yaml
 oc rollout status deployment/headlessbob -n binb
-oc get route headlessbob -n binb
 ```
 
-The archive allowlist excludes `.env`, API-key JSON files, personal Bob history, and unrelated workspace files. The Secret contains the Bob key and service tokens. The ConfigMap contains only the existing `licenseConsent` flag. Mounting the PVC at `/data` preserves service data and Bob's home directory across pod replacement.
+---
 
-For subsequent builds, update the deployment to the resulting immutable image digest (preferred), or use `oc rollout restart deployment/headlessbob -n binb` after rebuilding the mutable tag. Restarting cancels active work; check run status first. Adjust the namespace/image registry path and storage class before using these manifests on another cluster.
+## Related Building Blocks
 
-## Markdown and workspace downloads
-
-Assistant messages render sanitized Markdown headings, lists, tables, links and code blocks. Relative file links download from that thread's workspace using the current service token. Workspace files appear in a right-hand panel on desktop (below the chat on small screens). Use **Files** to focus the panel and browse folders or download files; downloaded HTML can be opened locally. Generated HTML is never executed inside the service UI.
-
-Authenticated REST endpoints:
-- `GET /api/v1/threads/{id}/files?path=folder` lists the current workspace (omit path for root).
-- `GET /api/v1/threads/{id}/files/download?path=tetris.html` returns a binary attachment.
-
-Both use `Authorization: Bearer <service-token>`. Downloads are limited to 25 MiB each and eight concurrent transfers; listings return at most 500 entries and inspect at most 2,000. Files are available once active execution ends. Hidden files, traversal paths, symlinks and hard links are excluded. These are current workspace files, not immutable run snapshots. Archived threads retain access; deleted threads lose these API routes while underlying files remain retained.
-
-**Cancel run** stays visible beside Send message. It is enabled for queued or running tasks, shows Cancelling while a stop is pending, and is disabled when there is no active run.
-
-## Usage statistics
-
-New completed responses show a Usage section with Bob-reported duration, session cost and tool calls. Input/output/total and cache token counts appear when Bob supplies them. Bob Shell 2.0.1 gates token reporting behind its developer mode, so unavailable token metrics are omitted from the UI. The wrapper does not enable developer mode or estimate missing token counts. Session cost is preserved as reported, without treating it as a per-message charge or assuming a currency.
-
-`GET /api/v1/runs/{id}` returns an optional `usage` object, also included on assistant messages from `GET /api/v1/threads/{id}/messages` and in the completed run SSE event. ACP run responses expose the same additive field. Fields: `duration_ms`, `session_costs`, `max_cost`, `tool_calls`, `input_tokens`, `output_tokens`, `total_tokens`, `cache_read_tokens`, `cache_write_tokens`, `cache_ratio`. Only finite nonnegative reported values are preserved; counts must be integers. Missing values are omitted. Usage is persisted with runs and survives restart. Old runs and runs that do not emit a successful final result have no recorded usage; the UI says so explicitly.
-
-## ACP discovery and documentation
-
-ACP is exposed on the same origin at `/agents`, `/runs` and `/session/{session_id}`; it does not use the `/api/v1` prefix. Open **API docs** in the UI for both interfaces. The [ACP guide](public/acp.html) is served at `/acp`, and its implemented OpenAPI contract at `/acp/openapi.json`. `/api/openapi.json` documents the REST thread interface. Authenticated `/api/v1/capabilities` includes links to both APIs.
-
-The ACP guide includes authentication, discovery, async polling, sync execution, live SSE, cancellation and continuation examples. ACP is intended for server/CLI clients; browser Origin requests are rejected. `GET /runs/{run_id}/events` returns stored JSON events, while `POST /runs` with `mode: stream` starts live SSE. Direct ACP runs do not create wrapper threads and therefore do not appear in the conversation UI or gain thread-based file download routes.
-
-## Python examples
-
-See [examples/python](examples/python/README.md) for small, dependency-free ACP and REST clients covering discovery, execution, streaming, session/thread continuation, usage, cancellation and file downloads.
-
-## HTML developer guide
-
-Open `/docs` on the running service for the browsable REST/ACP guide, copyable code examples, and downloadable Python samples. The UI **API docs** dialog links to the guide. Sample downloads are public source files; execution still requires the service token.
-
-The app sidebar includes direct **Documentation** and **Python examples** links. Documentation is also accessible from the connection screen; links open in a new tab so the active workspace stays open.
+- [Headless Bob Building Block Overview](../../README.md)
+- [Agentic SDLC](../../agentic-sdlc/README.md)
+- [Code Modernization](../../code-modernization/README.md)
+- [Integrate as Code](../../integrate-as-code/README.md)
