@@ -5,3 +5,5 @@ dist
 *key*.json
 .headlessbob
 tests
+
+**/__pycache__

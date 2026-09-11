@@ -113,7 +113,7 @@ The supplied manifests use unique `headlessbob` resource names, a 10 GiB block P
 # Log into your cluster with oc, then:
 oc apply -n binb -f openshift/build.yaml
 tar -czf /tmp/headlessbob-build.tgz Dockerfile package.json package-lock.json \
-  tsconfig.json src browser spec public scripts/container-entrypoint.sh vendor/bobshell-2.0.1.tgz
+  tsconfig.json src browser spec public examples scripts/container-entrypoint.sh vendor/bobshell-2.0.1.tgz
 oc start-build headlessbob -n binb --from-archive=/tmp/headlessbob-build.tgz --follow
 
 # Import only .env credentials and the already-accepted local Bob license flag.
@@ -154,3 +154,7 @@ The ACP guide includes authentication, discovery, async polling, sync execution,
 ## Python examples
 
 See [examples/python](examples/python/README.md) for small, dependency-free ACP and REST clients covering discovery, execution, streaming, session/thread continuation, usage, cancellation and file downloads.
+
+## HTML developer guide
+
+Open `/docs` on the running service for the browsable REST/ACP guide, copyable code examples, and downloadable Python samples. The UI **API docs** dialog links to the guide. Sample downloads are public source files; execution still requires the service token.

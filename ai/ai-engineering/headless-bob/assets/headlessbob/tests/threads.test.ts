@@ -214,3 +214,16 @@ test('ACP is discoverable from UI and capabilities with its own implemented cont
   assert.equal((await fetch(base() + '/agents')).status, 401);
   assert.equal((await raw('/agents')).status, 200);
 });
+test('HTML guide serves only the allowlisted Python sample downloads', async t => {
+  const { base, request } = await setup(t);
+  const guide = await fetch(base() + '/docs'); assert.equal(guide.status, 200);
+  const html = await guide.text(); assert.match(html, /Download the Python samples/); assert.match(html, /\/docs.js/);
+  const { readFileSync } = await import('node:fs');
+  for (const file of ['client.py', 'rest.py', 'acp.py', 'cancel.py', 'README.md']) {
+    const response = await fetch(base() + '/examples/python/' + file);
+    assert.equal(response.status, 200); assert.match(response.headers.get('content-type')!, /text\/plain/);
+    assert.equal(await response.text(), readFileSync(new URL('../examples/python/' + file, import.meta.url), 'utf8'));
+  }
+  assert.equal((await fetch(base() + '/examples/python/.env')).status, 401);
+  assert.equal((await request('/capabilities')).data.apis.docs_url, '/docs');
+});
