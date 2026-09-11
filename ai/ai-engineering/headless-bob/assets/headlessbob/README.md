@@ -158,3 +158,5 @@ See [examples/python](examples/python/README.md) for small, dependency-free ACP 
 ## HTML developer guide
 
 Open `/docs` on the running service for the browsable REST/ACP guide, copyable code examples, and downloadable Python samples. The UI **API docs** dialog links to the guide. Sample downloads are public source files; execution still requires the service token.
+
+The app sidebar includes direct **Documentation** and **Python examples** links. Documentation is also accessible from the connection screen; links open in a new tab so the active workspace stays open.
