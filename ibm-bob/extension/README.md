@@ -24,6 +24,8 @@
    - Go to **View → Extensions** from the menu bar
 
    <img src="images/step-2.1-install.png" alt="Step 2 — Open Extensions from the View menu" width="480" />
+
+   
    <img src="images/step-2.2-install.png" alt="Step 2 — Extensions panel in the Activity Bar" width="360" />
 
 3. Click the **three-dots menu** (`···`) in the top right of the Extensions panel.
