@@ -12,7 +12,9 @@
 2. Download `bob-plus-assets-1.0.0.vsix` (the latest version listed under Assets).
 3. Save the file locally — you will use it in Step 2.
 
-<img src="images/step-1-download.png" alt="Step 1 — Download the VSIX from GitHub releases" width="800" />
+<p align="center">
+  <img src="images/step-1-download.png" alt="Step 1 — Download the VSIX from GitHub releases" width="800" />
+</p>
 
 ---
 
@@ -23,25 +25,34 @@
    - Click the **Extensions** icon in the Activity Bar, or press `Cmd+Shift+X` (Mac) / `Ctrl+Shift+X` (Windows/Linux)
    - Go to **View → Extensions** from the menu bar
 
-   <img src="images/step-2.1-install.png" alt="Step 2 — Open Extensions from the View menu" width="480" />
+<p align="center">
+  <img src="images/step-2.1-install.png" alt="Step 2 — Open Extensions from the View menu" width="550" />
+</p>
 
-   
-   <img src="images/step-2.2-install.png" alt="Step 2 — Extensions panel in the Activity Bar" width="360" />
+<p align="center">
+  <img src="images/step-2.2-install.png" alt="Step 2 — Extensions panel in the Activity Bar" width="400" />
+</p>
 
 3. Click the **three-dots menu** (`···`) in the top right of the Extensions panel.
 4. Select **Install from VSIX…**
 
-   <img src="images/step-2.3-install.png" alt="Step 2 — Select Install from VSIX from the three-dots menu" width="600" />
+<p align="center">
+  <img src="images/step-2.3-install.png" alt="Step 2 — Select Install from VSIX from the three-dots menu" width="600" />
+</p>
 
 5. Choose the downloaded `.vsix` file and click **Open**.
 
-   <img src="images/step-2.4-install.png" alt="Step 2 — Select the downloaded .vsix file in the file picker" width="700" />
+<p align="center">
+  <img src="images/step-2.4-install.png" alt="Step 2 — Select the downloaded .vsix file in the file picker" width="700" />
+</p>
 
 6. **Reload** the window using either option:
    - Click **Reload** if a notification prompt appears, or
    - Press `Cmd+Shift+P` (Mac) / `Ctrl+Shift+P` (Windows/Linux), type **Developer: Reload Window**, and press `Enter`
 
-   <img src="images/step-2.5-install.png" alt="Step 2 — Developer: Reload Window in the Command Palette" width="700" />
+<p align="center">
+  <img src="images/step-2.5-install.png" alt="Step 2 — Developer: Reload Window in the Command Palette" width="700" />
+</p>
 
 > ℹ️ You only need to install the extension once.
 
@@ -51,11 +62,15 @@
 
 1. Click the **B+** icon in the Activity Bar on the left.
 
-   <img src="images/step-3.1.png" alt="Step 3 — B+ icon highlighted in the Activity Bar" width="400" />
+<p align="center">
+  <img src="images/step-3.1.png" alt="Step 3 — B+ icon highlighted in the Activity Bar" width="400" />
+</p>
 
 2. Bob+ opens showing **Modes** and **Skills**, grouped by domain.
 
-   <img src="images/step-3.2.png" alt="Step 3 — Bob+ sidebar showing Modes and Skills grouped by domain" width="360" />
+<p align="center">
+  <img src="images/step-3.2.png" alt="Step 3 — Bob+ sidebar showing Modes and Skills grouped by domain" width="400" />
+</p>
 
 3. Browse the items and click **Install** on anything you want to use — see [Step 4](#step-4--install-skills-and-modes) below.
 
@@ -71,7 +86,9 @@
 
 > ℹ️ All assets are installed into your current workspace `.bob/` folder.
 
-<img src="images/step-4.1.png" alt="Step 4 — Install and Uninstall buttons on skill cards" width="360" />
+<p align="center">
+  <img src="images/step-4.1.png" alt="Step 4 — Install and Uninstall buttons on skill cards" width="400" />
+</p>
 
 > 🗑️ To remove an asset, click the **Uninstall** button on its card — it will be removed from your workspace.
 
