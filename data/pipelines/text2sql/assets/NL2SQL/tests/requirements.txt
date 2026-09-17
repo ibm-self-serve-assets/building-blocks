@@ -1,0 +1,3 @@
+# Test dependencies (no database drivers needed for unit tests)
+pytest>=8.0
+sqlglot>=23.0

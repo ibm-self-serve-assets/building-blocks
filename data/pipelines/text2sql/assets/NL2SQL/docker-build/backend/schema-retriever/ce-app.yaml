@@ -1,0 +1,101 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: schema-retriever
+  # Annotate with your Code Engine project namespace if using kubectl directly.
+  # When using `ibmcloud ce app create/update`, these fields are set automatically.
+  annotations:
+    serving.knative.dev/creator: ibmcloud-ce
+spec:
+  template:
+    metadata:
+      annotations:
+        # Scale to zero when idle (Code Engine default behaviour)
+        autoscaling.knative.dev/minScale: "1"   # keep 1 warm instance for low-latency
+        autoscaling.knative.dev/maxScale: "10"
+        # Concurrency per instance — uvicorn is async so 100 is safe
+        autoscaling.knative.dev/target: "100"
+    spec:
+      # Code Engine requires non-root
+      containerConcurrency: 100
+      timeoutSeconds: 120
+      containers:
+        - name: schema-retriever
+          # Replace with your ICR image reference after build.sh
+          image: de.icr.io/YOUR_NAMESPACE/schema-retriever-service:latest
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2"
+              memory: "3Gi"   # sentence-transformers model needs ~1.5 GB
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            failureThreshold: 3
+          env:
+            # --- OpenSearch ---
+            - name: OS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: schema-retriever-secrets
+                  key: OS_HOST
+            - name: OS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: schema-retriever-secrets
+                  key: OS_PORT
+            - name: OS_USER
+              valueFrom:
+                secretKeyRef:
+                  name: schema-retriever-secrets
+                  key: OS_USER
+            - name: OS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: schema-retriever-secrets
+                  key: OS_PASSWORD
+            - name: OS_USE_SSL
+              value: "true"
+            - name: OS_VERIFY_CERTS
+              value: "true"
+            - name: OS_INDEX
+              value: "schema_embeddings"
+            # --- Embedding ---
+            - name: EMBED_PROVIDER
+              value: "watsonx"
+            - name: EMBED_MODEL
+              value: "ibm-granite/granite-embedding-125m-english"
+            - name: WATSONX_URL
+              value: "https://us-south.ml.cloud.ibm.com"
+            - name: WATSONX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: schema-retriever-secrets
+                  key: WATSONX_API_KEY
+            - name: WATSONX_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: schema-retriever-secrets
+                  key: WATSONX_PROJECT_ID
+            # --- Retrieval tuning ---
+            - name: TOP_K
+              value: "15"   # default result count; client top_k overrides this
+            - name: MIN_SCORE
+              value: "0.40"
+            - name: LOG_LEVEL
+              value: "INFO"

@@ -1,0 +1,8 @@
+opensearch-py>=2.4
+psycopg2-binary>=2.9
+ibm-db>=3.1; sys_platform != "darwin"  # ibm_db native driver (x86/Linux only)
+jaydebeapi>=1.2                         # Db2 JDBC fallback (ARM/Mac/Graviton)
+sentence-transformers==3.0.1
+sqlalchemy>=2.0
+python-dotenv>=1.0
+requests>=2.31

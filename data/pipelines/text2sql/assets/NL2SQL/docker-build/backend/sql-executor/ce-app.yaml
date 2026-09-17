@@ -1,0 +1,81 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: sql-executor
+  annotations:
+    serving.knative.dev/creator: ibmcloud-ce
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "1"
+        autoscaling.knative.dev/maxScale: "5"
+        autoscaling.knative.dev/target: "10"
+    spec:
+      containerConcurrency: 10
+      timeoutSeconds: 60
+      containers:
+        - name: sql-executor
+          image: de.icr.io/YOUR_NAMESPACE/sql-executor:latest
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            failureThreshold: 3
+          env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: sql-executor-secrets
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: sql-executor-secrets
+                  key: DB_PORT
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: sql-executor-secrets
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sql-executor-secrets
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: sql-executor-secrets
+                  key: DB_PASS
+            - name: DB_SSLMODE
+              value: "require"
+            - name: MAX_ROWS
+              value: "100"
+            - name: STATEMENT_TIMEOUT_MS
+              value: "30000"
+            - name: POOL_MIN
+              value: "1"
+            - name: POOL_MAX
+              value: "10"
+            - name: LOG_LEVEL
+              value: "INFO"
