@@ -48,4 +48,4 @@ Returns `{"ok": true, "db": "mydb", "host": "..."}` when the pool is healthy.
 
 ## Deployment (IBM Cloud Code Engine)
 
-See `docker-build/backend-sql-executor/` for the Dockerfile, `ce-app.yaml`, and `build.sh`.
+See [`docker-build/backend/sql-executor/`](../../docker-build/backend/sql-executor/) for the Dockerfile, `ce-app.yaml`, and `build.sh`.
