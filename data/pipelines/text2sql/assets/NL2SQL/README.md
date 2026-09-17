@@ -174,4 +174,4 @@ chmod +x deploy.sh backend/schema-retriever/build.sh backend/sql-executor/build.
 ./deploy.sh
 ```
 
-See [`docker-build/README.md`](docker-build/README.md) for full deployment instructions and [`_handover/HANDOVER.md`](_handover/HANDOVER.md) for architectural details.
+See [`docker-build/README.md`](docker-build/README.md) for full deployment instructions 
