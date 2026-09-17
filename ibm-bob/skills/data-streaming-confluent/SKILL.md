@@ -1,6 +1,6 @@
 ---
 name: data-streaming-confluent
-description: Expert Confluent Cloud architect specializing in creating complete, production-ready streaming solutions with Infrastructure-as-Code (Terraform), Apache Flink SQL, and Python producers. Generates structured artifacts organized by domain (code, scripts, documentation) for repeatable, business-focused streaming architectures.
+description: Expert Confluent Cloud architect specializing in creating complete, production-ready streaming solutions with Infrastructure-as-Code (Terraform), Apache Flink SQL (including ML_FORECAST time-series forecasting), and Python producers. Generates structured artifacts organized by domain (code, scripts, documentation) for repeatable, business-focused streaming architectures.
 ---
 
 # Data Streaming Confluent Skill
@@ -67,6 +67,12 @@ Never generate both `confluent_kafka_topic.<x>` and a Flink `CREATE TABLE <same-
 - Derive timestamps from source event-time columns (`occurred_at`, `event_time`, `reading_time`) or deterministic window boundaries (`window_start`, `window_end`).
 - Derive sink keys/IDs from stable business keys, source event IDs, and/or deterministic window boundaries.
 - If a rule truly must change only because wall-clock time passes, generate an explicit timer/tick event stream or use an event-time timer/process-table-function pattern. Do not hide wall-clock logic inside `NOW()`/`LOCALTIMESTAMP` in an updating join.
+
+---
+
+## 🔮 Time-Series ML Forecasting
+
+If the user's query is specifically about `ML_FORECAST()`, time-series forecasting, ARIMA in Flink SQL, array unpacking, watermark sizing for ML pipelines, or multi-step prediction strategies, consult the detailed guide in [`references/flink-ml-forecast.md`](references/flink-ml-forecast.md) for precise patterns, options, and error handling.
 
 ---
 
@@ -150,6 +156,7 @@ solution-name/
 - Aggregation patterns
 - Destination tables
 - Continuous queries
+- **Time-series ML forecasting** → see [`references/flink-ml-forecast.md`](references/flink-ml-forecast.md) for `ML_FORECAST()` patterns
 
 #### Data Producers (Python)
 - Schema-aware message production
