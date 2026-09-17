@@ -8,17 +8,16 @@ A production-ready Text2SQL schema ingestion, semantic retrieval, and safe SQL e
 
 ```text
 NL2SQL/
-├── .env.example                  ← single consolidated env file for ALL modules
-├── setup.py                      ← unified one-time setup entry point
-├── test_schema_retriever.py      ← integration smoke test for the retriever API
+├── .env.example             ← single consolidated env file for ALL modules
+├── setup.py                 ← unified one-time setup entry point
 │
-├── setup/                        ── One-time backend initialisation ──────────
-│   ├── opensearch/               # Creates the OpenSearch k-NN index
+├── setup/                   ── One-time backend initialisation ──────────────
+│   ├── opensearch/          # Creates the OpenSearch k-NN index
 │   │   ├── opensearch_index_mapping.py
 │   │   ├── requirements.txt
 │   │   ├── .env.example
 │   │   └── README.md
-│   └── pgvector/                 # Bootstraps the PostgreSQL pgvector schema
+│   └── pgvector/            # Bootstraps the PostgreSQL pgvector schema
 │       ├── bootstrap_embeddings_schema.py
 │       ├── sql/
 │       │   ├── pgvector_schema.sql
@@ -27,53 +26,48 @@ NL2SQL/
 │       ├── .env.example
 │       └── README.md
 │
-├── embedding/                    ── Schema introspection & ingestion pipeline ─
-│   ├── ingest.py                 # Unified entry point (auto-selects backend)
-│   ├── ingest_opensearch.py      # OpenSearch ingestion pipeline (multi-source)
-│   ├── ingest_pgvector.py        # pgvector ingestion pipeline
-│   ├── metadata_enricher.py      # Schema metadata enricher (Markdown, YAML, JSON)
-│   ├── embedders.py              # watsonx Granite & sentence-transformers providers
-│   ├── connectors/               # Live database introspection connectors
-│   │   ├── __init__.py
-│   │   ├── base.py               # BaseConnector and SchemaDoc data models
-│   │   ├── postgresql.py         # PostgreSQL catalog introspector
-│   │   └── db2.py                # IBM Db2 catalog introspector
+├── embedding/               ── Schema introspection & ingestion pipeline ────
+│   ├── ingest.py            # Unified entry point (delegates to backend below)
+│   ├── ingest_opensearch.py # OpenSearch ingestion pipeline (multi-source)
+│   ├── ingest_pgvector.py   # pgvector ingestion pipeline
+│   ├── metadata_enricher.py # Schema metadata enricher (Markdown, YAML, JSON)
+│   ├── embedders.py         # watsonx Granite & sentence-transformers providers
+│   ├── connectors/          # Live database introspection connectors
+│   │   ├── base.py          # BaseConnector and SchemaDoc data models
+│   │   ├── postgresql.py    # PostgreSQL catalog introspector
+│   │   └── db2.py           # IBM Db2 catalog introspector
 │   ├── requirements.txt
 │   ├── .env.example
 │   └── README.md
 │
-├── metadata/                     ── Optional external schema metadata ─────────
-│   └── schema_metadata.md        # Markdown schema descriptions & column hints
+├── metadata/                ── Optional external schema metadata files ──────
+│   └── schema_metadata.md   # Markdown schema descriptions & column hints
 │
-├── backend/                      ── Deployed microservices (Code Engine) ──────
-│   ├── schema_retriever/         # Schema Retrieval API (queried by LLM agents)
-│   │   ├── schema_retriever.py              # Unified entry point
-│   │   ├── schema_retriever_opensearch.py   # FastAPI OpenSearch retriever
-│   │   ├── schema_retriever_pgvector.py     # FastAPI pgvector retriever
-│   │   ├── reranker.py                      # Cross-Encoder & FlashRank re-ranking
+├── backend/                 ── Deployed microservices (Code Engine) ─────────
+│   ├── schema_retriever/    # Schema Retrieval API (queried by LLM agents)
+│   │   ├── schema_retriever.py            # Unified entry point
+│   │   ├── schema_retriever_opensearch.py # FastAPI OpenSearch retriever
+│   │   ├── schema_retriever_pgvector.py   # FastAPI pgvector retriever
+│   │   ├── reranker.py                    # Cross-Encoder & FlashRank re-ranking
 │   │   ├── requirements.txt
 │   │   ├── .env.example
 │   │   └── README.md
-│   └── sql_executor/             # Hardened Read-Only SQL Execution API
-│       ├── tool_sql_executor.py  # FastAPI read-only SQL runner
-│       ├── sql_validation.py     # AST-based SQL safety checks
+│   └── sql_executor/        # Hardened Read-Only SQL Execution API
+│       ├── tool_sql_executor.py # FastAPI read-only SQL runner
+│       ├── sql_validation.py    # AST-based SQL safety checks
 │       ├── requirements.txt
 │       ├── .env.example
 │       └── README.md
 │
-├── docker-build/                 ── Containerisation & Code Engine deployment ─
-│   ├── deploy.sh                 # One-shot build, ICR push, and CE deploy script
+├── docker-build/            ── Containerization & Code Engine deployment ────
+│   ├── deploy.sh            # One-shot build, ICR push, and CE deploy script
 │   ├── README.md
 │   └── backend/
-│       ├── schema-retriever/     # Dockerfile, .dockerignore, build.sh, ce-app.yaml
-│       └── sql-executor/         # Dockerfile, .dockerignore, build.sh, ce-app.yaml, openspec.json
+│       ├── schema-retriever/  # Dockerfile, build.sh, ce-app.yaml
+│       └── sql-executor/      # Dockerfile, build.sh, ce-app.yaml
 │
-└── tests/                        # Unit tests
-    ├── test_enrichment_and_reranker.py
-    ├── test_pii_masking.py
-    ├── test_session6_improvements.py
-    ├── test_sql_validation.py
-    └── requirements.txt
+├── tests/                   # Unit tests
+└── _handover/               # Handover document and maintenance history
 ```
 
 ---
@@ -180,4 +174,4 @@ chmod +x deploy.sh backend/schema-retriever/build.sh backend/sql-executor/build.
 ./deploy.sh
 ```
 
-See [`docker-build/README.md`](docker-build/README.md) for full deployment instructions.
+See [`docker-build/README.md`](docker-build/README.md) for full deployment instructions and [`_handover/HANDOVER.md`](_handover/HANDOVER.md) for architectural details.

@@ -80,8 +80,10 @@ spec:
               value: "watsonx"
             - name: EMBED_MODEL
               value: "ibm-granite/granite-embedding-125m-english"
+            # eu-de region — co-located with the Code Engine app to minimise
+            # cross-region embedding latency (~200–400 ms saving per request)
             - name: WATSONX_URL
-              value: "https://us-south.ml.cloud.ibm.com"
+              value: "https://eu-de.ml.cloud.ibm.com"
             - name: WATSONX_API_KEY
               valueFrom:
                 secretKeyRef:

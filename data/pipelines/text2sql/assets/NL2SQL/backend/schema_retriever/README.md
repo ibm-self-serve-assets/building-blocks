@@ -13,10 +13,8 @@
 
 | File | Purpose |
 |---|---|
-| `schema_retriever.py` | Unified entry point — selects backend based on `VECTOR_BACKEND` env var |
 | `schema_retriever_opensearch.py` | FastAPI app — OpenSearch backend (production) |
 | `schema_retriever_pgvector.py` | FastAPI app — pgvector/Postgres backend (alternative) |
-| `reranker.py` | 2nd-stage Cross-Encoder & FlashRank re-ranking (optional) |
 
 ## Usage
 
@@ -57,17 +55,6 @@ Returns a ranked list of matching table schemas with `confidence` scores.
 ```
 
 Performs hybrid retrieval combining k-NN vector similarity and BM25 full-text matching.
-
-### `POST /retrieve-schema/rrf`
-
-```json
-{
-  "user_query": "find all customer orders",
-  "top_k": 5
-}
-```
-
-Reciprocal Rank Fusion of vector and BM25 rankings — no weight tuning required.
 
 ### `GET /health`
 

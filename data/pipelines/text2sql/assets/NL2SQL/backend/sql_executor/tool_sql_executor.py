@@ -309,6 +309,9 @@ app = FastAPI(
 
 @app.exception_handler(Exception)
 async def _global_handler(request: Request, exc: Exception) -> JSONResponse:
+    # Let FastAPI's own HTTPException handler take HTTPException — do not swallow it.
+    if isinstance(exc, HTTPException):
+        return JSONResponse(status_code=exc.status_code, content={"detail": exc.detail})
     log.exception("Unhandled error", extra={"path": str(request.url)})
     return JSONResponse(status_code=500, content={"detail": "Internal server error"})
 

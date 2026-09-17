@@ -14,12 +14,9 @@
 
 | File | Purpose |
 |---|---|
-| `ingest.py` | Unified entry point — delegates to `ingest_opensearch.py` or `ingest_pgvector.py` based on `VECTOR_BACKEND` |
 | `ingest_opensearch.py` | Main ingestion script (OpenSearch target) |
-| `ingest_pgvector.py` | pgvector/Postgres ingestion script |
-| `metadata_enricher.py` | Enriches `SchemaDoc` with external Markdown / YAML / JSON metadata definitions |
+| `ingest_pgvector.py` | Legacy ingestion script (pgvector/Postgres target) |
 | `embedders.py` | Shared `WatsonxEmbedding` + `LocalSTEmbedding` providers |
-| `connectors/__init__.py` | Package init |
 | `connectors/base.py` | `SchemaDoc` dataclass + `to_text()` |
 | `connectors/postgresql.py` | PostgreSQL introspection (reverse FKs, row counts, enums, indexes) |
 | `connectors/db2.py` | Db2 introspection (SYSCAT views, COLCARD-based enum detection) |
