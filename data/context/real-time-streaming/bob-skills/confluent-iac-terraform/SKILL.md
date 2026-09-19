@@ -164,18 +164,27 @@ terraform {
 
 **Resource Creation Order (Critical for Dependencies):**
 1. Data source: `confluent_organization`
-2. Environment: `confluent_environment`
+2. Environment: `confluent_environment` — **do NOT add a `stream_governance` block**; omitting it lets Confluent auto-provision Schema Registry (adding `package = "ESSENTIALS"` does NOT provision Schema Registry and will cause `data.confluent_schema_registry_cluster` to fail with "no schema registry clusters found")
 3. Kafka Cluster: `confluent_kafka_cluster` (Basic tier)
 4. Service Account: `confluent_service_account`
-5. Data source: `confluent_schema_registry_cluster` (auto-provisioned)
-6. Flink Compute Pool: `confluent_flink_compute_pool`
-7. Data source: `confluent_flink_region`
+5. Data source: `confluent_schema_registry_cluster` — must have `depends_on = [confluent_kafka_cluster.main]` (not the environment) so it resolves only after the cluster is ready
+6. Flink Compute Pool: `confluent_flink_compute_pool` — must have `depends_on = [confluent_kafka_cluster.main]`
+7. Data source: `confluent_flink_region` — must have `depends_on = [confluent_environment.main]`
+
+**Do NOT declare `confluent_kafka_topic` resources** for topics that will be owned by Flink DDL. The `CREATE TABLE` Flink statement auto-creates the backing Kafka topic. Pre-declaring the topic as a Terraform resource causes:
+- Partition count conflicts (Flink may create with different defaults)
+- Read-only config errors on re-apply (`compression.type` etc.)
+- State drift between Kafka topic resource and Flink catalog
+Only declare `confluent_kafka_topic` resources for topics consumed by non-Flink systems that Flink will not `CREATE TABLE` against.
 
 #### Phase 3: Security & Access
 
-**API Keys (3 types with correct associations):**
+**API Keys (3 types with correct associations and `depends_on`):**
+
+Each API key must depend on its **specific** role binding — not on `time_sleep.wait_for_rbac`. Using `time_sleep` as the dependency for all three is incorrect and can cause race conditions where a key is created before its permission is granted.
+
 ```hcl
-# Flink API Key → Associated with Flink Region
+# Flink API Key → Associated with Flink Region, depends on FlinkDeveloper role binding
 resource "confluent_api_key" "flink" {
   owner {
     id          = confluent_service_account.app.id
@@ -186,10 +195,14 @@ resource "confluent_api_key" "flink" {
     id          = data.confluent_flink_region.main.id
     api_version = data.confluent_flink_region.main.api_version
     kind        = data.confluent_flink_region.main.kind
+    environment {
+      id = confluent_environment.main.id
+    }
   }
+  depends_on = [confluent_role_binding.flink_developer]
 }
 
-# Kafka API Key → Associated with Kafka Cluster
+# Kafka API Key → Associated with Kafka Cluster, depends on CloudClusterAdmin role binding
 resource "confluent_api_key" "kafka_producer" {
   owner {
     id          = confluent_service_account.app.id
@@ -200,10 +213,14 @@ resource "confluent_api_key" "kafka_producer" {
     id          = confluent_kafka_cluster.main.id
     api_version = confluent_kafka_cluster.main.api_version
     kind        = confluent_kafka_cluster.main.kind
+    environment {
+      id = confluent_environment.main.id
+    }
   }
+  depends_on = [confluent_role_binding.kafka_admin]
 }
 
-# Schema Registry API Key → Associated with Schema Registry
+# Schema Registry API Key → Associated with Schema Registry, depends on EnvironmentAdmin role binding
 resource "confluent_api_key" "schema_registry" {
   owner {
     id          = confluent_service_account.app.id
@@ -214,7 +231,11 @@ resource "confluent_api_key" "schema_registry" {
     id          = data.confluent_schema_registry_cluster.main.id
     api_version = data.confluent_schema_registry_cluster.main.api_version
     kind        = data.confluent_schema_registry_cluster.main.kind
+    environment {
+      id = confluent_environment.main.id
+    }
   }
+  depends_on = [confluent_role_binding.env_admin]
 }
 ```
 
@@ -417,8 +438,14 @@ resource "confluent_flink_statement" "create_source_table" {
     time_sleep.wait_for_rbac,
     confluent_api_key.flink
   ]
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 ```
+
+**Statement ordering:** The first `CREATE TABLE` statement (source table) depends on `[time_sleep.wait_for_rbac, confluent_api_key.flink]`. Each subsequent statement depends only on the preceding Flink statement resource — do not re-list `time_sleep` on later statements.
 
 **Important Provider Note:**
 - Do **not** rely on partial provider-level Flink environment variables for `confluent_flink_statement` resources.
@@ -472,7 +499,8 @@ output "schema_registry_api_secret" {
 }
 
 output "flink_rest_endpoint" {
-  value = "https://flink.${var.region}.${var.cloud_provider}.confluent.cloud"
+  # Use the data source — do NOT hardcode a URL template
+  value = data.confluent_flink_region.main.rest_endpoint
 }
 
 output "environment_id" {
@@ -496,6 +524,11 @@ SCHEMA_REGISTRY_URL=${data.confluent_schema_registry_cluster.main.rest_endpoint}
 SCHEMA_REGISTRY_API_KEY=${confluent_api_key.schema_registry.id}
 SCHEMA_REGISTRY_API_SECRET=${confluent_api_key.schema_registry.secret}
 EOT
+
+  depends_on = [
+    confluent_api_key.kafka_producer,
+    confluent_api_key.schema_registry
+  ]
 }
 ```
 
@@ -662,6 +695,16 @@ Before delivering the streaming system, validate:
 - [ ] Correct API key associations
 - [ ] Correct role binding patterns
 - [ ] .env file auto-generated
+- [ ] No `stream_governance` block on `confluent_environment`
+- [ ] No `compression.type` in any Kafka topic `config` block
+- [ ] All Flink DDL uses plain `CREATE TABLE` (not `CREATE TABLE IF NOT EXISTS`)
+
+**Re-apply on a Partially-Provisioned Environment:**
+If a previous `terraform apply` failed mid-run (e.g. a Flink statement errored), the Confluent Flink catalog may hold orphaned tables while Terraform state is out of sync. Before re-applying:
+1. Run `terraform state rm confluent_flink_statement.<name>` for each failed/tainted Flink statement resource
+2. Manually drop the orphaned table via the Confluent Console or Flink SQL shell: `DROP TABLE IF EXISTS <table_name>;`
+3. Then re-run `terraform apply` — the plain `CREATE TABLE` will recreate cleanly
+Never add `DROP TABLE IF EXISTS` as a `confluent_flink_statement` resource in Terraform; it creates fragile ordering dependencies and leaves ghost resources in state.
 
 **Flink SQL Validation:**
 - [ ] No forbidden properties (connector, topic, kafka.topic, bootstrap.servers)
@@ -701,6 +744,8 @@ Before delivering the streaming system, validate:
 7. ❌ Omitting inline `credentials` in `confluent_flink_statement`
 8. ❌ Setting only partial provider-level Flink settings; if one of `flink_api_key`, `flink_api_secret`, `flink_rest_endpoint`, `organization_id`, `environment_id`, `flink_compute_pool_id`, or `flink_principal_id` is set, all must be set
 9. ❌ Omitting `properties.sql.current-catalog` and `properties.sql.current-database` on Flink statements when creating tables/jobs
+10. ❌ Adding a `stream_governance` block to `confluent_environment` — omit it entirely; Confluent auto-provisions Schema Registry without it. `ESSENTIALS` does not provision Schema Registry and will cause `data.confluent_schema_registry_cluster` to fail with "no schema registry clusters found".
+11. ❌ Adding `"compression.type"` to Kafka topic `config` — this property is **read-only after topic creation**; Terraform will error on every subsequent `apply` trying to update it. Only use `"cleanup.policy"` and `"retention.ms"` in topic configs.
 
 ### Flink SQL Pitfalls
 1. ❌ Using `connector`, `topic`, `kafka.topic`, or `bootstrap.servers` properties
@@ -708,6 +753,8 @@ Before delivering the streaming system, validate:
 3. ❌ Using deprecated GROUP BY TUMBLE syntax (use TVF instead)
 4. ❌ Missing DISTRIBUTED BY for tables without PRIMARY KEY
 5. ❌ Key columns not first in schema when using DISTRIBUTED BY
+6. ❌ Using `CREATE TABLE IF NOT EXISTS` in Flink DDL statements — always use plain `CREATE TABLE`. Confluent Flink is not Terraform-idempotent: `IF NOT EXISTS` silently re-uses stale schema from a previous (possibly failed) run, which breaks watermark registration (time attributes) and causes `The window function requires the timecol is a time attribute type` on subsequent jobs. A fresh environment always gets a clean `CREATE TABLE`; a re-run should destroy and re-create.
+7. ❌ Using backtick-quoted or `$rowtime` in `DESCRIPTOR()` — always use `DESCRIPTOR(column_name)` with no backticks, e.g. `DESCRIPTOR(transaction_time)`. Backtick quoting causes `Unknown identifier` errors in Confluent Flink SQL.
 
 ### Python Pitfalls
 1. ❌ Using string key instead of object: `"LAPTOP-001"` vs `{"sku": "LAPTOP-001"}`
