@@ -25,3 +25,9 @@ The official installer version endpoint returned 2.0.4 on September 22, 2026. Th
 Built and tested local Linux ARM64 image `headlessbob:2.0.4-acp` (Bob 2.0.4, Node 24.21.0). Live in-container tests passed for partner discovery, sync execution/file creation, SSE, session continuation across Bob processes, REST thread execution/history, and cancellation with tool-process cleanup. An initial continuation attempt lost prior context; after adding advertised `session/close` before terminating a completed per-run process, continuation passed. A fixture assertion verifies explicit session closure. `npm run check` passed all 52 tests after the update.
 
 No cluster rollout or registry image push has been performed. Existing 2.0.1 readiness remains supported; compatibility with pre-existing deployed 2.0.1 task storage has not been tested against 2.0.4.
+
+## OpenShift rollout — September 22, 2026
+
+Build `headlessbob-13` deployed successfully to the existing `binb/headlessbob` deployment, pinned to image digest `sha256:e61520639ef9886def125c1ad90ea58e6cc7292b8b18d7b732728c4d6e867d3d`. The running pod reports Bob Shell 2.0.4 and Node 24.21.0. No runs were active before rollout; service data and Bob history were backed up on the persistent volume.
+
+Post-rollout checks passed for HTTPS health/authentication/readiness, REST execution with file creation and authenticated download, conversation continuation across Bob processes, and partner Agent Communication Protocol SSE. The new runtime is serving both APIs. Earlier statements about deployment status describe the pre-rollout checks.
