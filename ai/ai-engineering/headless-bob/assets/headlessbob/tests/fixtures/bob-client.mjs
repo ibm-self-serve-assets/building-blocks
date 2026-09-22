@@ -9,7 +9,8 @@ const chunk = (text, id = sessionId, kind = 'agent_message_chunk') => send({ met
 const finish = text => { chunk(text); if (existsSync('executing.lock')) unlinkSync('executing.lock'); send({ id: promptId, result: { stopReason: 'end_turn' } }); };
 createInterface({ input: process.stdin }).on('line', async line => {
   const m = JSON.parse(line);
-  if (m.method === 'initialize') send({ id: m.id, result: { protocolVersion: 1, agentCapabilities: { sessionCapabilities: { resume: {} } } } });
+  if (m.method === 'initialize') send({ id: m.id, result: { protocolVersion: 1, agentCapabilities: { sessionCapabilities: { resume: {}, close: {} } } } });
+  else if (m.method === 'session/close') { writeFileSync('closed.txt', 'yes'); send({ id: m.id, result: {} }); }
   else if (m.method === 'session/new') { writeFileSync('task.txt', sessionId); send({ id: m.id, result: { sessionId, modes: { currentModeId: 'agent' } } }); }
   else if (m.method === 'session/resume') {
     if (!existsSync('task.txt')) return send({ id: m.id, error: { code: -32602, message: 'secret missing history' } });

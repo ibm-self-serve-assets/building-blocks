@@ -17,3 +17,11 @@ ACP discoverability coverage verifies the public guide and contract, capability 
 Python examples were exercised against a temporary service using the Bob fixture: ACP sync/async/stream, session continuation, REST thread continuation, reported usage, event streaming, file download, both cancellation routes and authentication failure passed. Python syntax compilation passed. No third-party Python packages are required.
 
 HTML guide checks verified navigation anchors and copy controls in JSDOM. HTTP tests verify the guide, capability link and exact source downloads for the five allowlisted sample files; arbitrary filesystem paths are not exposed. Docker packaging includes the sample source directory.
+
+## Container upgrade — Bob Shell 2.0.4
+
+The official installer version endpoint returned 2.0.4 on September 22, 2026. The package records release commit `01dddf68472ba478a915ead0c13a348d30257fbb` and release date September 16. Its downloaded archive matches the published SHA-256 `10de047ffdc23a50f3e1ef69fad3b6313ff6dda0010589a22efe26b24685254b`. The container pins this archive and uses Node.js 24; `sh scripts/download-bob.sh` fetches and verifies it without committing the licensed binary.
+
+Built and tested local Linux ARM64 image `headlessbob:2.0.4-acp` (Bob 2.0.4, Node 24.21.0). Live in-container tests passed for partner discovery, sync execution/file creation, SSE, session continuation across Bob processes, REST thread execution/history, and cancellation with tool-process cleanup. An initial continuation attempt lost prior context; after adding advertised `session/close` before terminating a completed per-run process, continuation passed. A fixture assertion verifies explicit session closure. `npm run check` passed all 52 tests after the update.
+
+No cluster rollout or registry image push has been performed. Existing 2.0.1 readiness remains supported; compatibility with pre-existing deployed 2.0.1 task storage has not been tested against 2.0.4.

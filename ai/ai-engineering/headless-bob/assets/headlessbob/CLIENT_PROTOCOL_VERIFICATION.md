@@ -50,3 +50,11 @@ Additional validation: `npm run check` passed the build and all 52 tests. REST a
 6. **Existing-session compatibility.** A separate live migration probe created a task using the legacy `bob run` runtime, then resumed the same task ID and workspace using Agent Client Protocol. Bob recalled `MAPLE_862` from the original conversation without replaying the previous response. This verifies the local 2.0.1 migration path; deployed service restart recovery has not been live-tested with this adapter.
 
 The partner API can remain unchanged for the currently supported text subset. Rich tool events, images and interactive permissions would need an explicit external API mapping.
+
+## Container upgrade — Bob Shell 2.0.4
+
+The official installer version endpoint returned 2.0.4 on September 22, 2026. The package records release commit `01dddf68472ba478a915ead0c13a348d30257fbb` and release date September 16. Its downloaded archive matches the published SHA-256 `10de047ffdc23a50f3e1ef69fad3b6313ff6dda0010589a22efe26b24685254b`. The container pins this archive and uses Node.js 24; `sh scripts/download-bob.sh` fetches and verifies it without committing the licensed binary.
+
+Built and tested local Linux ARM64 image `headlessbob:2.0.4-acp` (Bob 2.0.4, Node 24.21.0). Live in-container tests passed for partner discovery, sync execution/file creation, SSE, session continuation across Bob processes, REST thread execution/history, and cancellation with tool-process cleanup. An initial continuation attempt lost prior context; after adding advertised `session/close` before terminating a completed per-run process, continuation passed. A fixture assertion verifies explicit session closure. `npm run check` passed all 52 tests after the update.
+
+No cluster rollout or registry image push has been performed. Existing 2.0.1 readiness remains supported; compatibility with pre-existing deployed 2.0.1 task storage has not been tested against 2.0.4.

@@ -12,7 +12,7 @@ export class BobRuntime implements Runtime {
       let output = '';
       child.stdout.on('data', (data) => { if (output.length < 4096) output += data.toString(); });
       child.on('error', () => resolve({ ready: false, reason: 'Bob executable is unavailable' }));
-      child.on('close', (code) => resolve(code === 0 && /^2\.0\.1(?:\s|$)/.test(output) ? { ready: true } : { ready: false, reason: 'Expected Bob Shell 2.0.1' }));
+      child.on('close', (code) => resolve(code === 0 && /^2\.0\.(?:1|4)(?:\s|$)/.test(output) ? { ready: true } : { ready: false, reason: 'Expected Bob Shell 2.0.1 or 2.0.4' }));
     });
   }
   run(execution: Execution): Promise<Result> {

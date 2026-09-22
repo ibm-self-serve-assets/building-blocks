@@ -1,6 +1,6 @@
 # headlessbob
 
-A standalone TypeScript service that runs **IBM Bob Shell 2.0.1** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
+A standalone TypeScript service that runs **IBM Bob Shell 2.0.4** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
 
 Both the REST API (including the web UI) and partner Agent Communication Protocol API use the same **Agent Client Protocol v1** runtime over stdio to `bob acp`. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) and run `npm run smoke:client-bridge` for live verification.
 
@@ -30,7 +30,7 @@ flowchart LR
     subgraph Storage & Engine
         Store[(SQLite runs.sqlite)]
         Workspaces[(File Workspaces)]
-        Bob[IBM Bob Shell 2.0.1 Subprocess]
+        Bob[IBM Bob Shell 2.0.4 Subprocess]
     end
 
     UI --> REST
@@ -249,7 +249,7 @@ oc apply -n binb -f openshift/build.yaml
 
 # Build image from local archive (including vendor Bob binary)
 tar -czf /tmp/headlessbob-build.tgz Dockerfile package.json package-lock.json \
-  tsconfig.json src browser spec public examples scripts/container-entrypoint.sh vendor/bobshell-2.0.1.tgz
+  tsconfig.json src browser spec public examples scripts/container-entrypoint.sh vendor/bobshell-2.0.4.tgz
 oc start-build headlessbob -n binb --from-archive=/tmp/headlessbob-build.tgz --follow
 
 # Generate OpenShift Secrets/ConfigMap from local .env
@@ -266,3 +266,7 @@ oc rollout status deployment/headlessbob -n binb
 - [Agentic SDLC](../../agentic-sdlc/README.md)
 - [Code Modernization](../../code-modernization/README.md)
 - [Integrate as Code](../../integrate-as-code/README.md)
+
+## Container Bob Shell version
+
+The container pins Bob Shell **2.0.4** (released September 16, 2026) on Node.js 24. Download the licensed package with `sh scripts/download-bob.sh` before building. Both the download script and Docker build verify its pinned SHA-256 checksum. The package remains excluded from Git. Runtime readiness accepts the previously tested 2.0.1 and 2.0.4 releases.

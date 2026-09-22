@@ -117,6 +117,11 @@ export class BobClientRuntime implements Runtime {
       if (failure) throw failure;
       if (execution.signal.aborted) throw new RuntimeError('cancelled', 'Run cancelled');
       if (result?.stopReason !== 'end_turn') throw new RuntimeError(result?.stopReason === 'cancelled' ? 'cancelled' : 'execution_limit', 'Bob ACP stopped without completing the turn');
+      // Flush Bob session resources before terminating a per-run ACP process.
+      if (init.agentCapabilities?.sessionCapabilities?.close) {
+        await rpc('session/close', { sessionId });
+        this.observe({ method: 'session/close', detail: 'success' });
+      }
       completed = true;
       return { text, taskId: sessionId };
     } finally {

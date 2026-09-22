@@ -17,8 +17,9 @@ function setup(t: any, options: Record<string, string> = {}) {
   return { runtime, workspace, run: (prompt: string, signal = new AbortController().signal) => runtime.run({ workspace, mode: 'agent', prompt, signal, onText() {} }) };
 }
 test('fixture runner supports success and filters the child environment', async t => {
-  const { run } = setup(t);
+  const { run, workspace } = setup(t);
   assert.deepEqual(await run('hello'), { text: 'hello', taskId: 'fixture-task' });
+  assert.ok(existsSync(join(workspace, 'closed.txt')), 'session is closed before process cleanup');
 });
 for (const [prompt, reason] of [['MALFORMED', 'invalid_output'], ['NO_RESULT', 'bob_exit'], ['ERROR_ZERO', 'execution_limit'], ['NONZERO', 'bob_exit'], ['OVERFLOW', 'output_limit'], ['RPC_ERROR', 'acp_error'], ['WRONG_TASK', 'session_recovery']]) test(`runner handles ${prompt}`, async t => {
   const { run } = setup(t, { MAX_OUTPUT_BYTES: '4096' });
