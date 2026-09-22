@@ -3,6 +3,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { spawn } from 'node:child_process';
 const args = process.argv.slice(2);
 if (args[0] === '--version') { console.log('2.0.1'); process.exit(0); }
+if (args[0] === 'acp') { await import('./bob-client.mjs'); await new Promise(() => {}); }
 const prompt = readFileSync(0, 'utf8');
 const emit = value => console.log(JSON.stringify(value));
 if (process.env.AUTH_TOKENS || process.env.UNRELATED_SECRET) { console.error('Environment was not filtered'); process.exit(9); }

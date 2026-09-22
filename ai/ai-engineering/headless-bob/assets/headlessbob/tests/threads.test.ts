@@ -8,13 +8,15 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { createApp } from '../src/app.js';
 import { loadConfig } from '../src/config.js';
 import { terminal } from '../src/types.js';
+import { BobRuntime } from '../src/runtime/bob.js';
 
 const binary = fileURLToPath(new URL('./fixtures/bob.mjs', import.meta.url)); chmodSync(binary, 0o755);
 const alice = 'alice-token-'.padEnd(32, 'a'), bob = 'bob-token-'.padEnd(32, 'b');
-async function setup(t: any) {
+async function setup(t: any, legacyUsage = false) {
   const dataDir = mkdtempSync(join(tmpdir(), 'headlessbob-threads-'));
   const config = loadConfig({ PATH: process.env.PATH, HOME: process.env.HOME, BOB_BIN: binary, BOB_API_KEY: 'fixture', DATA_DIR: dataDir, PORT: '0', BOB_ENABLE_CONTINUATION: 'true', KILL_GRACE_MS: '25', RUN_TIMEOUT_MS: '3000', AUTH_TOKENS: JSON.stringify({ alice, bob }) });
-  let app = await createApp(config); await app.listen();
+  const runtime = legacyUsage ? new BobRuntime(config) : undefined;
+  let app = await createApp(config, runtime); await app.listen();
   const base = () => `http://127.0.0.1:${(app.server.address() as { port: number }).port}`;
   t.after(async () => { await app.close(); rmSync(dataDir, { recursive: true, force: true }); });
   const raw = (path: string, options: RequestInit = {}) => fetch(base() + path, { ...options, headers: { authorization: `Bearer ${alice}`, ...options.headers } });
@@ -26,7 +28,7 @@ async function setup(t: any) {
     for (let i = 0; i < 150; i++) { const r = await request(`/runs/${id}`); if (terminal(r.data)) return r.data; await delay(20); }
     throw new Error('Run did not complete');
   };
-  return { raw, request, done, base, get app() { return app; }, async restart() { await app.close(); app = await createApp(config); await app.listen(); } };
+  return { raw, request, done, base, get app() { return app; }, async restart() { await app.close(); app = await createApp(config, runtime); await app.listen(); } };
 }
 test('UI assets are public; REST remains authenticated and accepts only same-origin browsers', async t => {
   const { raw, request, base } = await setup(t);
@@ -185,7 +187,8 @@ test('workspace downloads preserve bytes and reject unauthorized or unsafe paths
 });
 
 test('usage survives storage restart and appears in run, replayed completion and assistant history', async t => {
-  const api = await setup(t);
+  // Historical CLI usage remains readable even though the ACP runtime omits unavailable totals.
+  const api = await setup(t, true);
   const id = (await api.request('/threads', 'POST', {})).data.id;
   const run = (await api.request(`/threads/${id}/messages`, 'POST', { content: 'USAGE' })).data.run;
   const expected = {duration_ms:1000,session_costs:0.01,tool_calls:0,input_tokens:100,output_tokens:20};
@@ -209,6 +212,9 @@ test('ACP is discoverable from UI and capabilities with its own implemented cont
   assert.deepEqual(contract.security, [{bearerAuth:[]}]);
   assert.equal(contract.components.schemas.RunCreateRequest.properties.session, undefined);
   const caps = (await request('/capabilities')).data;
+  assert.equal(caps.runtime_protocol, 'agent-client-protocol');
+  assert.equal(caps.runtime_protocol_version, 1);
+  assert.equal(caps.limits.max_cost, null); assert.equal(caps.limits.max_turns, null);
   assert.equal(caps.apis.acp.openapi_url, '/acp/openapi.json');
   assert.equal(caps.apis.rest.base_path, '/api/v1');
   assert.equal((await fetch(base() + '/agents')).status, 401);
