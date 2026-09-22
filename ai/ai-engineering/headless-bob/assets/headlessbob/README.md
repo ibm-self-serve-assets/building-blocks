@@ -2,9 +2,9 @@
 
 A standalone TypeScript service that runs **IBM Bob Shell 2.0.4** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
 
-Both the REST API (including the web UI) and partner Agent Communication Protocol API use the same **Agent Client Protocol v1** runtime over stdio to `bob acp`. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) and run `npm run smoke:client-bridge` for live verification.
+Both the REST API (including the web UI) and partner Agent Communication Protocol API use the same **Agent Client Protocol** connector to Bob Shell. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) and run `npm run smoke:client-bridge` for live verification.
 
-The runtime enforces timeout, output-byte and event limits. Bob 2.0.1's `acp` command does not expose the old CLI cost/turn controls: `BOB_MAX_COST` and `BOB_MAX_TURNS` apply only to the retained legacy runtime, and `/api/v1/capabilities` reports those limits as `null`. New runs omit usage totals that Bob does not report. Trusted headless execution grants tool requests once per invocation; interactive approvals are not exposed through HTTP.
+The runtime enforces timeout, output-byte and event limits. Bob 2.0.4's `acp` command does not expose the old CLI cost/turn controls: `BOB_MAX_COST` and `BOB_MAX_TURNS` apply only to the retained legacy runtime, and `/api/v1/capabilities` reports those limits as `null`. New runs omit usage totals that Bob does not report. Trusted headless execution grants tool requests once per invocation; interactive approvals are not exposed through HTTP.
 
 For official IBM Bob protocol capabilities, see the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
 
@@ -39,7 +39,7 @@ flowchart LR
     REST --> Manager
     ACP --> Manager
     REST --> Files
-    Manager --> ClientProtocol[Agent Client Protocol v1 over stdio]
+    Manager --> ClientProtocol[Agent Client Protocol]
     ClientProtocol --> Bob
     Manager --> Store
     Manager --> Workspaces
@@ -212,7 +212,7 @@ npm run client -- /runs examples/run.json
 
 ## Running Locally
 
-Requires macOS/Linux, Node.js 22.22+, Bob Shell 2.0.1, and an active Bob API key.
+Requires macOS/Linux, Node.js 22.22+, Bob Shell 2.0.4, and an active Bob API key.
 
 ```sh
 npm ci

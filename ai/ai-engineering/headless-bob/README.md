@@ -1,6 +1,6 @@
 # Headless Bob
 
-headlessbob runs IBM Bob Shell as a Node.js/TypeScript service with REST and Agent Communication Protocol (ACP) APIs and an integrated browser UI. Both HTTP APIs share an Agent Client Protocol v1 connector to IBM Bob Shell over stdio. Agent Communication Protocol is the partner HTTP interface; Agent Client Protocol is the internal Bob interface. You can find more about ACP integration in the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
+headlessbob runs IBM Bob Shell as a Node.js/TypeScript service with REST and Agent Communication Protocol (ACP) APIs and an integrated browser UI. Both HTTP APIs share an Agent Client Protocol connector to IBM Bob Shell. Agent Communication Protocol is the partner HTTP interface; Agent Client Protocol is the internal Bob interface. You can find more about ACP integration in the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
 
 📚 **[View Full Documentation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-engineering/headless-bob/)** · 📦 **Runnable Asset:** [assets/headlessbob/](assets/headlessbob/README.md)
 
@@ -12,7 +12,7 @@ headlessbob runs IBM Bob Shell as a Node.js/TypeScript service with REST and Age
 - **Asynchronous Execution & Streaming**: Queued runs with real-time Server-Sent Events (SSE) streaming and execution cancellation.
 - **Dual Protocols**: Native text-based **ACP 0.2.0** endpoints (`/agents`, `/runs`, `/session`) alongside thread-based **REST APIs** (`/api/v1`).
 - **Integrated Browser UI**: Single-page chat interface with live markdown rendering, code block copying, run JSON inspection, and workspace file browsing/downloads.
-- **Usage History**: Retains previously reported usage. New Client Protocol runs omit unavailable totals; cost/turn limits are not exposed by Bob 2.0.1 ACP, while timeout, output and event limits remain enforced.
+- **Usage History**: Retains previously reported usage. New Client Protocol runs omit unavailable totals; cost/turn limits are not exposed by Bob 2.0.4 ACP, while timeout, output and event limits remain enforced.
 - **Security & Authorization**: Bearer-token authentication, caller-isolated workspaces, path traversal guards, and sub-process lifecycle termination.
 
 ```mermaid
@@ -22,7 +22,7 @@ flowchart LR
     Agent[ACP Client] --> ACP[ACP API /agents /runs]
     REST --> Manager[Run Manager]
     ACP --> Manager
-    Manager --> Runtime[Agent Client Protocol v1 over stdio]
+    Manager --> Runtime[Agent Client Protocol]
     Runtime --> Bob[Bob Shell Subprocess]
     Manager --> Store[(SQLite & Workspaces)]
 ```
@@ -74,7 +74,7 @@ OpenAPI specifications are available at `/api/openapi.json` (REST) and `/acp/ope
 
 ### Prerequisites
 - Node.js 22.22 or newer
-- Licensed **IBM Bob Shell 2.0.1** binary available on your `PATH`
+- Licensed **IBM Bob Shell 2.0.4** binary available on your `PATH`
 - `BOB_API_KEY` configured with valid credentials
 
 ### Local Setup

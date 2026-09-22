@@ -2,18 +2,18 @@
 
 ## Result
 
-Verified locally with real Bob Shell 2.0.1 (commit e6a3e508): the existing Agent Communication Protocol 0.2.0 HTTP service can wrap Bob's Agent Client Protocol v1 stdio server.
+Verified in the container with Bob Shell 2.0.4 (commit 01dddf684): both REST and Agent Communication Protocol 0.2.0 HTTP APIs use Bob's Agent Client Protocol.
 
 ```text
 Partner → Agent Communication Protocol HTTP/SSE → RunManager
-        → BobClientRuntime → JSON-RPC over stdio → bob acp
+        → BobClientRuntime → Agent Client Protocol → bob acp
 ```
 
 Both `/api/v1` REST requests (including the web UI) and partner Agent Communication Protocol requests now use `BobClientRuntime` by default in `createApp`. The old `BobRuntime` is retained for historical-contract tests and migration verification. These changes are local; the deployed service has not been updated.
 
 ## Reproduce
 
-With Bob 2.0.1 installed and `BOB_API_KEY` configured in `.env`:
+With Bob 2.0.4 installed and `BOB_API_KEY` configured in `.env`:
 
 ```sh
 npm run smoke:client-bridge

@@ -2,7 +2,7 @@
 
 ## Local runtime update — 2026-09-22
 
-REST and partner ACP now use the shared Agent Client Protocol v1 runtime by default. `npm run check` passes all 52 tests. Live tests passed for REST thread execution/history, partner sync/SSE runs, file creation, continuation, cancellation and tool-process cleanup. A legacy CLI task was also resumed successfully through the new runtime. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) for details and the cost/turn limit and usage-reporting differences. This update has not been deployed; the verification notes below describe prior releases.
+REST and partner ACP now use the shared Agent Client Protocol runtime by default. `npm run check` passes all 52 tests. Live tests passed for REST thread execution/history, partner sync/SSE runs, file creation, continuation, cancellation and tool-process cleanup. A legacy CLI task was also resumed successfully through the new runtime. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) for details and the cost/turn limit and usage-reporting differences. This update has not been deployed; the verification notes below describe prior releases.
 
 
 - `npm run check`: 38 tests covering ACP/REST contracts, parsing, ownership, persistence/recovery, cancellation/process cleanup, thread lifecycle, Markdown sanitization, workspace downloads and usage statistics.
