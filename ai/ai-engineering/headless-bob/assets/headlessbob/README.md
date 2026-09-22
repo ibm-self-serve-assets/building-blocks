@@ -1,6 +1,10 @@
 # headlessbob
 
-A standalone TypeScript service that runs **IBM Bob Shell 2.0.1** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
+A standalone TypeScript service that runs **IBM Bob Shell 2.0.4** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
+
+Both the REST API (including the web UI) and partner Agent Communication Protocol API use the same **Agent Client Protocol** connector to Bob Shell. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) and run `npm run smoke:client-bridge` for live verification.
+
+The runtime enforces timeout, output-byte and event limits. Bob 2.0.4's `acp` command does not expose the old CLI cost/turn controls: `BOB_MAX_COST` and `BOB_MAX_TURNS` apply only to the retained legacy runtime, and `/api/v1/capabilities` reports those limits as `null`. New runs omit usage totals that Bob does not report. Trusted headless execution grants tool requests once per invocation; interactive approvals are not exposed through HTTP.
 
 For official IBM Bob protocol capabilities, see the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
 
@@ -26,7 +30,7 @@ flowchart LR
     subgraph Storage & Engine
         Store[(SQLite runs.sqlite)]
         Workspaces[(File Workspaces)]
-        Bob[IBM Bob Shell 2.0.1 Subprocess]
+        Bob[IBM Bob Shell 2.0.4 Subprocess]
     end
 
     UI --> REST
@@ -35,7 +39,8 @@ flowchart LR
     REST --> Manager
     ACP --> Manager
     REST --> Files
-    Manager --> Bob
+    Manager --> ClientProtocol[Agent Client Protocol]
+    ClientProtocol --> Bob
     Manager --> Store
     Manager --> Workspaces
     Files --> Workspaces
@@ -207,7 +212,7 @@ npm run client -- /runs examples/run.json
 
 ## Running Locally
 
-Requires macOS/Linux, Node.js 22.22+, Bob Shell 2.0.1, and an active Bob API key.
+Requires macOS/Linux, Node.js 22.22+, Bob Shell 2.0.4, and an active Bob API key.
 
 ```sh
 npm ci
@@ -228,7 +233,7 @@ npm run smoke  # End-to-end smoke test invoking real Bob binary (consumes small 
 ## Limits, Persistence, and Trust Model
 
 - **Storage**: SQLite stores run metadata, session ownership, task mappings, and ordered events in `DATA_DIR/runs.sqlite`. Bob workspaces are UUID directories under `DATA_DIR/workspaces`. Bob's internal history database lives under `$HOME/.bob`.
-- **Concurrency & Limits**: Defaults: 2 concurrent runs, 100 queued tasks, 5-minute timeout, 20 max turns, $1 Bob cost limit, 2 MiB stdout/stderr buffers, and 10,000 events max per run.
+- **Concurrency & Limits**: Defaults: 2 concurrent runs, 100 queued tasks, 5-minute timeout, 2 MiB combined stdout/stderr output, and 10,000 protocol events max per run. Agent Client Protocol does not expose cost/turn limits; capabilities report them as `null`.
 - **Trust Boundary**: Intended for trusted operators. Bob Shell can execute arbitrary terminal commands; workspace token checks prevent caller crossover but do not provide an OS sandbox between untrusted actors.
 - **Process Cleanup**: Subprocesses are spawned in their own process groups and cleaned up with `SIGTERM` followed by `SIGKILL` escalation via `KILL_GRACE_MS`.
 
@@ -244,7 +249,7 @@ oc apply -n binb -f openshift/build.yaml
 
 # Build image from local archive (including vendor Bob binary)
 tar -czf /tmp/headlessbob-build.tgz Dockerfile package.json package-lock.json \
-  tsconfig.json src browser spec public examples scripts/container-entrypoint.sh vendor/bobshell-2.0.1.tgz
+  tsconfig.json src browser spec public examples scripts/container-entrypoint.sh vendor/bobshell-2.0.4.tgz
 oc start-build headlessbob -n binb --from-archive=/tmp/headlessbob-build.tgz --follow
 
 # Generate OpenShift Secrets/ConfigMap from local .env
@@ -261,3 +266,7 @@ oc rollout status deployment/headlessbob -n binb
 - [Agentic SDLC](../../agentic-sdlc/README.md)
 - [Code Modernization](../../code-modernization/README.md)
 - [Integrate as Code](../../integrate-as-code/README.md)
+
+## Container Bob Shell version
+
+The container pins Bob Shell **2.0.4** (released September 16, 2026) on Node.js 24. Download the licensed package with `sh scripts/download-bob.sh` before building. Both the download script and Docker build verify its pinned SHA-256 checksum. The package remains excluded from Git. Runtime readiness accepts the previously tested 2.0.1 and 2.0.4 releases.

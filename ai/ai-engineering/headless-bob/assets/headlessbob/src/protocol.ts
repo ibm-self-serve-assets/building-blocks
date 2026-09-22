@@ -33,7 +33,7 @@ export function validateCreate(body: unknown): CreateRequest {
   return value;
 }
 export function manifest(continuation: boolean) {
-  return { name: 'headlessbob', description: 'Bob Shell 2.0.1 running in managed workspaces for trusted callers.', input_content_types: ['text/plain'], output_content_types: ['text/plain'],
+  return { name: 'headlessbob', description: 'Bob Shell running in managed workspaces for trusted callers.', input_content_types: ['text/plain'], output_content_types: ['text/plain'],
     metadata: { programming_language: 'TypeScript', annotations: { protocol: 'ACP 0.2.0', await_resume: false, task_continuation: continuation, artifact_transfer: false },
       capabilities: [{ name: 'Headless execution', description: 'Synchronous, asynchronous and streamed text runs with cancellation.' }, ...(continuation ? [{ name: 'Sessions', description: 'Continue a Bob task in the same caller-owned workspace and mode.' }] : [])] }
   };

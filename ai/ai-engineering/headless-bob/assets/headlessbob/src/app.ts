@@ -4,7 +4,8 @@ import { readFileSync } from 'node:fs';
 import type { Config } from './config.js';
 import { Store } from './storage.js';
 import { RunManager } from './runs.js';
-import { BobRuntime, type Runtime } from './runtime/bob.js';
+import type { Runtime } from './runtime/bob.js';
+import { BobClientRuntime } from './runtime/client.js';
 import { manifest, validateCreate } from './protocol.js';
 import { ApiError, terminal, type Event } from './types.js';
 import { Threads } from './threads.js';
@@ -35,7 +36,7 @@ async function readBody(request: IncomingMessage, limit: number): Promise<unknow
     request.on('data', data); request.on('end', end); request.on('error', error); request.on('aborted', aborted);
   });
 }
-export async function createApp(config: Config, runtime: Runtime = new BobRuntime(config)) {
+export async function createApp(config: Config, runtime: Runtime = new BobClientRuntime(config)) {
   const store = new Store(config.dataDir);
   const manager = new RunManager(store, runtime, config);
   const threads = new Threads(manager);
@@ -129,7 +130,8 @@ export async function createApp(config: Config, runtime: Runtime = new BobRuntim
       if (shuttingDown) throw new ApiError(503, 'server_error', 'Service is shutting down');
       if (method === 'GET' && path === '/api/v1/capabilities') return json(response, 200, {
         caller: owner, runtime: readiness, apis: { docs_url: '/docs', rest: { base_path: '/api/v1', openapi_url: '/api/openapi.json' }, acp: { version: '0.2.0', base_path: '/', docs_url: '/acp', openapi_url: '/acp/openapi.json', discovery_url: '/agents' } }, features: { threads: true, archive_threads: true, delete_threads: true, streaming: true, cancellation: true, continuation: config.continuation, file_downloads: true, attachments: false, thread_forking: false },
-        limits: { max_download_bytes: MAX_DOWNLOAD_BYTES, max_message_characters: 20000, max_concurrent_runs: config.maxConcurrent, max_turns: config.maxTurns, max_cost: config.maxCost, timeout_ms: config.timeoutMs }
+        limits: { max_download_bytes: MAX_DOWNLOAD_BYTES, max_message_characters: 20000, max_concurrent_runs: config.maxConcurrent, max_turns: null, max_cost: null, timeout_ms: config.timeoutMs },
+        runtime_protocol: 'agent-client-protocol', runtime_protocol_version: 1
       });
       if (path === '/api/v1/threads') {
         if (method === 'GET') return json(response, 200, threads.list(url.searchParams, owner));
