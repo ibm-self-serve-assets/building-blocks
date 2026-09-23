@@ -4,7 +4,7 @@ name: "Automated Resilience & Compliance"
 group: optimize
 capability: automation
 description: CVE monitoring, compliance drift detection, certificate lifecycle management, and security posture assessment via IBM Concert
-repo_path: optimize/automated-resilience-and-compliance
+repo_path: automation/secure/application-risk-and-continuous-compliance
 docs_path: automation-core/optimize/automated-resilience.md
 products:
   - IBM Concert
@@ -21,7 +21,7 @@ tags:
 
 CVE monitoring, compliance drift detection, certificate lifecycle management, and security posture assessment via IBM Concert
 
-- **Repo**: [optimize/automated-resilience-and-compliance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/automated-resilience-and-compliance)
+- **Repo**: [automation/secure/application-risk-and-continuous-compliance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/secure/application-risk-and-continuous-compliance)
 - **Docs**: [automation-core/optimize/automated-resilience.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/optimize/automated-resilience)
 
 <!--

@@ -4,7 +4,7 @@ name: Text2SQL
 group: intelligence
 capability: data
 description: Natural language to SQL conversion using watsonx.data Intelligence with metadata enrichment for accurate query generation
-repo_path: data/intelligence/text2sql
+repo_path: data/pipelines/text2sql
 docs_path: data-core/intelligence/text2sql/index.md
 products:
   - watsonx.data
@@ -22,7 +22,7 @@ tags:
 
 Natural language to SQL conversion using watsonx.data Intelligence with metadata enrichment for accurate query generation
 
-- **Repo**: [data/intelligence/text2sql](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/intelligence/text2sql)
+- **Repo**: [data/pipelines/text2sql](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/pipelines/text2sql)
 - **Docs**: [data-core/intelligence/text2sql/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/intelligence/text2sql/index)
 
 <!--

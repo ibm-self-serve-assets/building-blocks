@@ -4,7 +4,7 @@ name: AI Compliance
 group: ai-trust
 capability: ai
 description: Streamline regulatory alignment and industry compliance standards for AI systems
-repo_path: ai-trust/ai-compliance
+repo_path: ai/ai-trust/ai-compliance
 docs_path: ai-core/ai-trust/ai-compliance.md
 products:
   - watsonx.governance
@@ -20,7 +20,7 @@ tags:
 
 Streamline regulatory alignment and industry compliance standards for AI systems
 
-- **Repo**: [ai-trust/ai-compliance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai-trust/ai-compliance)
+- **Repo**: [ai/ai-trust/ai-compliance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-trust/ai-compliance)
 - **Docs**: [ai-core/ai-trust/ai-compliance.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-trust/ai-compliance)
 
 <!--

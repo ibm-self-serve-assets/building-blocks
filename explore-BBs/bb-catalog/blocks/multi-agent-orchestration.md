@@ -4,7 +4,7 @@ name: Multi-Agent Orchestration
 group: agents
 capability: ai
 description: Enable specialized agents to collaborate on complex workflows through context sharing, task routing, and feedback loops via MCP and A2A protocols
-repo_path: agents/multi-agent-orchestration
+repo_path: ai/agents/multi-agent-orchestration
 docs_path: ai-core/agents/multi-agent-orchestration.md
 products:
   - watsonx Orchestrate
@@ -21,7 +21,7 @@ tags:
 
 Enable specialized agents to collaborate on complex workflows through context sharing, task routing, and feedback loops via MCP and A2A protocols
 
-- **Repo**: [agents/multi-agent-orchestration](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/agents/multi-agent-orchestration)
+- **Repo**: [ai/agents/multi-agent-orchestration](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/agents/multi-agent-orchestration)
 - **Docs**: [ai-core/agents/multi-agent-orchestration.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/multi-agent-orchestration)
 
 <!--

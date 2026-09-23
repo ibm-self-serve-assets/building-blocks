@@ -4,7 +4,7 @@ name: Data Quality
 group: intelligence
 capability: data
 description: Data quality management with automated validation, profiling, and rule-based checks across data sources
-repo_path: data/intelligence/data-quality
+repo_path: data/context/metadata-enrichment/data-quality
 docs_path: data-core/intelligence/data-quality/index.md
 products:
   - watsonx.data
@@ -21,7 +21,7 @@ tags:
 
 Data quality management with automated validation, profiling, and rule-based checks across data sources
 
-- **Repo**: [data/intelligence/data-quality](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/intelligence/data-quality)
+- **Repo**: [data/context/metadata-enrichment/data-quality](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/metadata-enrichment/data-quality)
 - **Docs**: [data-core/intelligence/data-quality/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/intelligence/data-quality/index)
 
 <!--

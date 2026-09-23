@@ -4,7 +4,7 @@ name: Budget and Forecasting
 group: optimize
 capability: automation
 description: Budgeting, planning, and forecasting solutions built on IBM Planning Analytics
-repo_path: optimize/budget-and-forecasting
+repo_path: automation/optimize/budget-and-forecasting
 docs_path: automation-core/optimize/budget-and-forecasting.md
 products:
   - IBM Planning Analytics
@@ -22,7 +22,7 @@ tags:
 
 Budgeting, planning, and forecasting solutions built on IBM Planning Analytics. Ships assets, Bob modes, and a Bob skill for building Planning Analytics-backed planning applications.
 
-- **Repo**: [optimize/budget-and-forecasting](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/budget-and-forecasting)
+- **Repo**: [automation/optimize/budget-and-forecasting](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/optimize/budget-and-forecasting)
 - **Docs**: [automation-core/optimize/budget-and-forecasting.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/optimize/budget-and-forecasting)
 
 <!--

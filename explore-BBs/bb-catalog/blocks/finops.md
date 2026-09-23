@@ -4,7 +4,7 @@ name: FinOps
 group: optimize
 capability: automation
 description: Cost visibility across teams, budget forecasting, spend anomaly detection, cost allocation, and ROI evaluation via Apptio
-repo_path: optimize/finops
+repo_path: automation/optimize/technology-financial-management-and-finops
 docs_path: automation-core/optimize/finops.md
 products:
   - Apptio
@@ -21,7 +21,7 @@ tags:
 
 Cost visibility across teams, budget forecasting, spend anomaly detection, cost allocation, and ROI evaluation via Apptio
 
-- **Repo**: [optimize/finops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/finops)
+- **Repo**: [automation/optimize/technology-financial-management-and-finops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/optimize/technology-financial-management-and-finops)
 - **Docs**: [automation-core/optimize/finops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/optimize/finops)
 
 <!--

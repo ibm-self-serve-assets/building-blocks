@@ -4,7 +4,7 @@ name: Asset Management
 group: build
 capability: automation
 description: AI-powered IBM Maximo modernization — automation script analysis and optimization, plus Java-to-automation-script conversion with security scanning and deployment support
-repo_path: build-and-deploy/asset-management
+repo_path: automation/operate/asset-management
 docs_path: automation-core/build/asset-management.md
 products:
   - IBM Maximo Application Suite
@@ -22,7 +22,7 @@ tags:
 
 AI-powered IBM Maximo Application Suite (MAS) code modernization: automation script analysis and optimization (security, performance, best practices) and Java-to-automation-script conversion. Includes a full-stack web application (Maximo Modernization Asset) and Bob skills for both capabilities.
 
-- **Repo**: [build-and-deploy/asset-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/asset-management)
+- **Repo**: [automation/operate/asset-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/operate/asset-management)
 - **Docs**: [automation-core/build/asset-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/build/asset-management)
 
 <!--

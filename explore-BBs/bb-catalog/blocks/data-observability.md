@@ -4,7 +4,7 @@ name: Data Observability
 group: integration
 capability: data
 description: Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time
-repo_path: data/integration/data-observability
+repo_path: data/context/data-observability
 docs_path: data-core/integration/data-observability/index.md
 products:
   - watsonx.data
@@ -21,7 +21,7 @@ tags:
 
 Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time
 
-- **Repo**: [data/integration/data-observability](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/integration/data-observability)
+- **Repo**: [data/context/data-observability](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/data-observability)
 - **Docs**: [data-core/integration/data-observability/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/integration/data-observability/index)
 
 <!--

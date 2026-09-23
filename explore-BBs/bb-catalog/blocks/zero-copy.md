@@ -4,7 +4,7 @@ name: Zero Copy
 group: retrieval
 capability: data
 description: Query across data sources without duplication using open table formats and federated query engines for lakehouse access
-repo_path: data/retrieval/zero-copy
+repo_path: data/query-engines/zero-copy-lakehouse
 docs_path: data-core/retrieval/zero-copy/index.md
 products:
   - watsonx.data
@@ -22,7 +22,7 @@ tags:
 
 Query across data sources without duplication using open table formats and federated query engines for lakehouse access
 
-- **Repo**: [data/retrieval/zero-copy](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/retrieval/zero-copy)
+- **Repo**: [data/query-engines/zero-copy-lakehouse](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/query-engines/zero-copy-lakehouse)
 - **Docs**: [data-core/retrieval/zero-copy/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/retrieval/zero-copy/index)
 
 <!--

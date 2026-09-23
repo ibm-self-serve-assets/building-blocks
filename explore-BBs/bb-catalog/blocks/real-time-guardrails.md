@@ -4,7 +4,7 @@ name: Real-Time Guardrails
 group: ai-trust
 capability: ai
 description: Real-time validation and guardrails for AI model inputs and outputs in production
-repo_path: ai-trust/real-time-guardrails
+repo_path: ai/ai-trust/real-time-guardrails
 docs_path: ai-core/ai-trust/real-time-guardrails.md
 products:
   - watsonx.governance
@@ -25,7 +25,7 @@ bob_modes:
 
 Real-time validation and guardrails for AI model inputs and outputs in production
 
-- **Repo**: [ai-trust/real-time-guardrails](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai-trust/real-time-guardrails)
+- **Repo**: [ai/ai-trust/real-time-guardrails](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-trust/real-time-guardrails)
 - **Docs**: [ai-core/ai-trust/real-time-guardrails.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-trust/real-time-guardrails)
 
 <!--

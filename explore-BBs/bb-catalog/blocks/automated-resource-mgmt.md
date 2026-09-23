@@ -4,7 +4,7 @@ name: Automated Resource Management
 group: optimize
 capability: automation
 description: Real-time resource scaling, workload placement, bottleneck prevention, SLA protection, and cost-performance optimization via IBM Turbonomic
-repo_path: optimize/automated-resource-mgmt
+repo_path: automation/optimize/application-performance
 docs_path: automation-core/optimize/automated-resource-management.md
 products:
   - IBM Turbonomic
@@ -21,7 +21,7 @@ tags:
 
 Real-time resource scaling, workload placement, bottleneck prevention, SLA protection, and cost-performance optimization via IBM Turbonomic
 
-- **Repo**: [optimize/automated-resource-mgmt](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/optimize/automated-resource-mgmt)
+- **Repo**: [automation/optimize/application-performance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/optimize/application-performance)
 - **Docs**: [automation-core/optimize/automated-resource-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/optimize/automated-resource-management)
 
 <!--

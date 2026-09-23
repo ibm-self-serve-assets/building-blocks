@@ -4,7 +4,7 @@ name: iPaaS
 group: build
 capability: automation
 description: Cloud-native integration with 600+ pre-built connectors, low-code model, API lifecycle management, and event-driven integration via IBM webMethods
-repo_path: build-and-deploy/ipaas
+repo_path: ai/ai-engineering/integrate-as-code
 docs_path: automation-core/build/ipaas.md
 products:
   - IBM webMethods
@@ -20,7 +20,7 @@ tags:
 
 Cloud-native integration with 600+ pre-built connectors, low-code model, API lifecycle management, and event-driven integration via IBM webMethods
 
-- **Repo**: [build-and-deploy/ipaas](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/ipaas)
+- **Repo**: [ai/ai-engineering/integrate-as-code](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-engineering/integrate-as-code)
 - **Docs**: [automation-core/build/ipaas.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/build/ipaas)
 
 <!--

@@ -4,7 +4,7 @@ name: Code Modernization
 group: build
 capability: automation
 description: Modernize legacy middleware and application code for cloud-native architectures
-repo_path: build-and-deploy/code-modernisation
+repo_path: ai/ai-engineering/code-modernization
 docs_path: automation-core/build/middleware-modernization.md
 products: []
 tags:
@@ -20,7 +20,7 @@ tags:
 
 Modernize legacy middleware and application code for cloud-native architectures
 
-- **Repo**: [build-and-deploy/code-modernisation](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/build-and-deploy/code-modernisation)
+- **Repo**: [ai/ai-engineering/code-modernization](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-engineering/code-modernization)
 - **Docs**: [automation-core/build/middleware-modernization.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/build/middleware-modernization)
 
 <!--

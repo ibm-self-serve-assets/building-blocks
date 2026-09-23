@@ -4,7 +4,7 @@ name: Data Lineage
 group: intelligence
 capability: data
 description: Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust
-repo_path: data/intelligence/data-lineage
+repo_path: data/context/metadata-enrichment/data-lineage
 docs_path: data-core/intelligence/data-lineage/index.md
 products:
   - watsonx.data
@@ -21,7 +21,7 @@ tags:
 
 Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust
 
-- **Repo**: [data/intelligence/data-lineage](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/intelligence/data-lineage)
+- **Repo**: [data/context/metadata-enrichment/data-lineage](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/metadata-enrichment/data-lineage)
 - **Docs**: [data-core/intelligence/data-lineage/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/intelligence/data-lineage/index)
 
 <!--

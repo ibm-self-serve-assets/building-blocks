@@ -111,6 +111,9 @@ pages:
   - title: Zero Copy
     section: "Data > Retrieval"
     path: data-core/retrieval/zero-copy/index.md
+  - title: Serverless Vector
+    section: "Data > Query Engines"
+    path: data-core/query-engines/serverless-vector/index.md
   - title: Automation Overview
     section: Automation
     path: automation-core/index.md

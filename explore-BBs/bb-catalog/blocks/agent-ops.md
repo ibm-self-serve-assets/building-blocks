@@ -4,7 +4,7 @@ name: Agent Ops
 group: ai-trust
 capability: ai
 description: Operational monitoring and management of AI agents in production environments
-repo_path: ai-trust/agent-ops
+repo_path: ai/ai-trust/agent-ops
 docs_path: ai-core/ai-trust/agent-ops.md
 products:
   - watsonx.governance
@@ -21,7 +21,7 @@ tags:
 
 Operational monitoring and management of AI agents in production environments
 
-- **Repo**: [ai-trust/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai-trust/agent-ops)
+- **Repo**: [ai/ai-trust/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-trust/agent-ops)
 - **Docs**: [ai-core/ai-trust/agent-ops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-trust/agent-ops)
 
 <!--

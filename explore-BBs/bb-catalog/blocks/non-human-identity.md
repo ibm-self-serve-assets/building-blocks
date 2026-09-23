@@ -4,7 +4,7 @@ name: Non-Human Identity
 group: secure
 capability: automation
 description: Identity and secrets management for non-human entities including service accounts, APIs, and machine identities, with HashiCorp Vault integration
-repo_path: secure/non-human-identity
+repo_path: automation/secure/non-human-identity-and-secret-management
 docs_path: automation-core/secure/non-human-identity.md
 products:
   - IBM Verify
@@ -23,7 +23,7 @@ tags:
 
 Identity and secrets management for non-human entities including service accounts, APIs, and machine identities, with HashiCorp Vault integration
 
-- **Repo**: [secure/non-human-identity](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/secure/non-human-identity)
+- **Repo**: [automation/secure/non-human-identity-and-secret-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/secure/non-human-identity-and-secret-management)
 - **Docs**: [automation-core/secure/authentication-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/secure/authentication-management)
 
 <!--
