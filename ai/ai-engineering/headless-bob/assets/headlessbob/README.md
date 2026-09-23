@@ -270,3 +270,64 @@ oc rollout status deployment/headlessbob -n binb
 ## Container Bob Shell version
 
 The container pins Bob Shell **2.0.4** (released September 16, 2026) on Node.js 24. Download the licensed package with `sh scripts/download-bob.sh` before building. Both the download script and Docker build verify its pinned SHA-256 checksum. The package remains excluded from Git. Runtime readiness accepts the previously tested 2.0.1 and 2.0.4 releases.
+
+
+## MCP access to Bob
+
+Connect a remote MCP client to `https://<your-host>/mcp` using Streamable HTTP
+and the header `Authorization: Bearer <service-token>`. Use the service token
+from `AUTH_TOKENS`, not `BOB_API_KEY`. The client must support configured bearer
+headers; OAuth discovery/sign-in is not implemented. Tokens resolve to the same
+caller identities and ownership checks used by REST. Every request is authenticated.
+As with REST, token-free access is available only in the existing local development
+configuration; configure `AUTH_TOKENS` for authenticated access. Browser Origin
+requests are rejected on this endpoint.
+
+Available tools:
+
+| Tool | Arguments | Result |
+| --- | --- | --- |
+| `bob_create_thread` | Optional `title` | Thread including `id` |
+| `bob_send_message` | `thread_id`, `content`, `request_id` | Thread, run, message ID |
+| `bob_get_run` | `run_id` | Status, completed output, reported usage |
+| `bob_cancel_run` | `run_id` | Current cancellation/run status |
+
+Create a thread, send a message, then poll `bob_get_run` every few seconds until
+`completed`, `failed`, or `cancelled`. Save the thread ID for follow-ups. These
+threads appear in the web UI for the same caller. Bob operates in the server
+workspace; this interface does not transfer files from the client's machine.
+
+`request_id` is required when sending: use a unique value per intended message
+(1–128 letters, digits, dots, underscores, colons or hyphens). On retry, reuse it
+with the same thread and content to retrieve the original run. Reusing it with
+different content returns a tool error. Thread creation itself is not idempotent.
+
+The transport is stateless with JSON responses: no MCP session ID, GET event
+stream or DELETE session endpoint is required. Bob state persists separately in
+SQLite. Disconnecting does not cancel a run; use `bob_cancel_run`. Existing run
+limits, queueing, thread recovery rules and trusted-operator requirements apply.
+Tool failures return `isError: true`; missing/invalid credentials return HTTP 401.
+
+Example with the MCP TypeScript SDK (read credentials from your environment):
+
+```js
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+
+const client = new Client({ name: 'bob-client', version: '1.0.0' });
+await client.connect(new StreamableHTTPClientTransport(
+  new URL('/mcp', process.env.HEADLESSBOB_URL),
+  { requestInit: { headers: { Authorization: `Bearer ${process.env.HEADLESSBOB_TOKEN}` } } }
+));
+const thread = await client.callTool({ name: 'bob_create_thread', arguments: { title: 'Demo' } });
+const started = await client.callTool({
+  name: 'bob_send_message',
+  arguments: { thread_id: thread.structuredContent.id, content: 'Create hello.txt containing hello.', request_id: 'demo-1' }
+});
+console.log(started.structuredContent.run.run_id);
+await client.close(); // The Bob run continues; reconnect and use bob_get_run.
+```
+
+Run `npx tsx --test tests/mcp.test.ts` for SDK client integration coverage using
+the Bob fixture. It verifies authentication, ownership, retries, continuation,
+cancellation, and shared REST history without spending Bob credit.
