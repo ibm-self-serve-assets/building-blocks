@@ -58,3 +58,11 @@ modes:
     domain: Automation
     description: "This building block provides Infrastructure as Code (IaC) solutions for deploying applications on IBM Cloud and Red Hat OpenShift."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/automation/operate/infrastructure-as-code/bob-modes/base-modes/infrastructure-as-code.zip"
+
+  # ─── BUILDING BLOCKS EXPLORER ───
+  - name: IBM Building Blocks Explorer
+    folderName: building-blocks-explorer
+    category: base
+    domain: General
+    description: "IBM Building Blocks Explorer: Go from a business use case to a build-ready workspace — discover the right building blocks across AI, Data, and Automation, then install the matching Bob skills and modes."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/explore-BBs/building-blocks-explorer.zip"
