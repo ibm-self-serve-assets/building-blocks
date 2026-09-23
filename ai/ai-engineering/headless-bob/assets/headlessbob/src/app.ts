@@ -11,6 +11,7 @@ import { ApiError, terminal, type Event } from './types.js';
 import { Threads } from './threads.js';
 import { WorkspaceFiles, MAX_DOWNLOAD_BYTES } from './files.js';
 import { pipeline } from 'node:stream/promises';
+import { handleMcp } from './mcp.js';
 
 function json(response: ServerResponse, status: number, body: unknown) {
   if (response.destroyed) return;
@@ -128,8 +129,18 @@ export async function createApp(config: Config, runtime: Runtime = new BobClient
       const owner = authenticate(request, wrapper);
       if (method === 'GET' && path === '/readyz') return json(response, readiness.ready && !shuttingDown ? 200 : 503, shuttingDown ? { ready: false, reason: 'Shutting down' } : readiness);
       if (shuttingDown) throw new ApiError(503, 'server_error', 'Service is shutting down');
+      if (path === '/mcp') {
+        if (method !== 'POST') {
+          response.setHeader('allow', 'POST');
+          return json(response, 405, { jsonrpc: '2.0', id: null, error: { code: -32000, message: 'Method not allowed' } });
+        }
+        const body = await readBody(request, config.maxBodyBytes);
+        return handleMcp(request, response, body, owner, threads, manager, () => {
+          if (!readiness.ready) throw new ApiError(503, 'server_error', readiness.reason ?? 'Runtime is not ready', 'runtime_unavailable');
+        });
+      }
       if (method === 'GET' && path === '/api/v1/capabilities') return json(response, 200, {
-        caller: owner, runtime: readiness, apis: { docs_url: '/docs', rest: { base_path: '/api/v1', openapi_url: '/api/openapi.json' }, acp: { version: '0.2.0', base_path: '/', docs_url: '/acp', openapi_url: '/acp/openapi.json', discovery_url: '/agents' } }, features: { threads: true, archive_threads: true, delete_threads: true, streaming: true, cancellation: true, continuation: config.continuation, file_downloads: true, attachments: false, thread_forking: false },
+        caller: owner, runtime: readiness, apis: { docs_url: '/docs', mcp: { url: '/mcp', transport: 'streamable-http', authentication: 'service-token', oauth: false }, rest: { base_path: '/api/v1', openapi_url: '/api/openapi.json' }, acp: { version: '0.2.0', base_path: '/', docs_url: '/acp', openapi_url: '/acp/openapi.json', discovery_url: '/agents' } }, features: { threads: true, archive_threads: true, delete_threads: true, streaming: true, cancellation: true, continuation: config.continuation, file_downloads: true, attachments: false, thread_forking: false },
         limits: { max_download_bytes: MAX_DOWNLOAD_BYTES, max_message_characters: 20000, max_concurrent_runs: config.maxConcurrent, max_turns: null, max_cost: null, timeout_ms: config.timeoutMs },
         runtime_protocol: 'agent-client-protocol', runtime_protocol_version: 1
       });
