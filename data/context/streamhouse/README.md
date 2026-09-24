@@ -22,61 +22,50 @@ Apache Kafka and Apache Flink are implementation technologies within the IBM Con
 
 ```mermaid
 flowchart TD
-    sources["🏭 Enterprise Data Sources\nERP · Suppliers · Logistics\nRisk Feeds · IoT · SaaS"]
+    sources["Enterprise Data Sources\nERP · Suppliers · Logistics · Risk Feeds · IoT · SaaS"]
 
-    subgraph CAPTURE["CAPTURE"]
+    subgraph CAPTURE["① CAPTURE"]
         connect["Connect"]
     end
 
-    subgraph TRANSPORT["TRANSPORT"]
-        kafka["Kafka"]
-        schema["Schema Registry"]
+    subgraph TRANSPORT["② TRANSPORT"]
+        kafka["Kafka + Schema Registry"]
     end
 
-    subgraph PROCESS["PROCESS"]
+    subgraph PROCESS["③ PROCESS"]
         python["Python Risk Engine"]
         flink["Flink SQL Reference"]
     end
 
-    subgraph GOVERN["GOVERN"]
-        sr["Schema Registry"]
-        lineage["Stream Lineage"]
-        quality["Stream Quality"]
-        portal["Data Portal"]
+    subgraph GOVERN["④ GOVERN"]
+        govern_detail["Schema Registry · Stream Lineage\nStream Quality · Data Portal"]
     end
 
-    subgraph SERVE["SERVE"]
-        tableflow["Tableflow /\nApache Iceberg"]
-        rtce["Real-Time\nContext Engine"]
+    subgraph SERVE["⑤ SERVE"]
+        tableflow["Tableflow / Apache Iceberg"]
+        rtce["Real-Time Context Engine"]
     end
 
-    wx["watsonx.data /\nAnalytics"]
-    apps["Applications /\nAI Agents / MCP"]
+    wx["watsonx.data / Analytics"]
+    apps["Applications / AI Agents / MCP"]
 
     sources --> connect
     connect --> kafka
-    kafka --- schema
-    kafka --> python
-    kafka --> flink
-    python --> sr
-    flink --> sr
-    sr --- lineage
-    lineage --- quality
-    quality --- portal
-    portal --> tableflow
-    portal --> rtce
+    kafka --> python & flink
+    python & flink --> govern_detail
+    govern_detail --> tableflow & rtce
     tableflow --> wx
     rtce --> apps
 ```
 
 ## Included assets
 
-| Path | Purpose |
+| Asset | Purpose |
 |---|---|
-| [`assets/supply-chain-risk-control-tower/`](assets/supply-chain-risk-control-tower/) | Runnable supply-chain streaming reference solution |
-| [`assets/live-context-for-supply-chain-resilience/`](assets/live-context-for-supply-chain-resilience/) | Full-stack AI demo: real-time risk detection + watsonx Orchestrate agents + Carbon React control tower |
-| [`bob-skills/data-streaming-confluent.zip`](bob-skills/data-streaming-confluent.zip) | IBM Bob streaming skill |
-| [`bob-skills/confluent-iac-terraform.zip`](bob-skills/confluent-iac-terraform.zip) | IBM Bob Terraform/IaC skill |
+| [Supply Chain Risk Control Tower](assets/supply-chain-risk-control-tower/) | Runnable supply-chain streaming reference solution |
+| [Live Context for Supply Chain Resilience](assets/live-context-for-supply-chain-resilience/) | Full-stack AI demo: real-time risk detection + watsonx Orchestrate agents + Carbon React control tower |
+| [data-streaming-confluent skill](bob-skills/data-streaming-confluent.zip) | IBM Bob streaming skill |
+| [confluent-iac-terraform skill](bob-skills/confluent-iac-terraform.zip) | IBM Bob Terraform/IaC skill |
 
 ## Quick start
 
@@ -101,25 +90,23 @@ python -m scrc.risk_engine --dry-run
 
 ### 3. Full IBM Confluent deployment
 
-The asset includes Terraform, schemas, producers, a risk engine, and UI bridge. Start here:
-
-[`assets/supply-chain-risk-control-tower/README.md`](assets/supply-chain-risk-control-tower/README.md)
+The asset includes Terraform, schemas, producers, a risk engine, and UI bridge. See the [Supply Chain Risk Control Tower README](assets/supply-chain-risk-control-tower/README.md) to get started.
 
 ## What to customize for a real project
 
-- topic names, partitions, retention, and schema-compatibility policy;
-- source/sink connectors (Connect layer);
-- risk/scoring logic;
-- Flink SQL transformations;
-- Stream Quality data contracts and schema-compatibility rules;
-- IAM/service-account strategy;
-- Tableflow/Iceberg sink configuration for lakehouse analytics;
-- Real-Time Context Engine endpoints for operational applications and AI agents;
-- downstream application and alerting integrations.
+- Topic names, partitions, retention, and schema-compatibility policy
+- Source/sink connectors (Connect layer)
+- Risk/scoring logic
+- Flink SQL transformations
+- Stream Quality data contracts and schema-compatibility rules
+- IAM/service-account strategy
+- Tableflow/Iceberg sink configuration for lakehouse analytics
+- Real-Time Context Engine endpoints for operational applications and AI agents
+- Downstream application and alerting integrations
 
 The included risk model is a demo/reference implementation, not a universal production risk model.
 
 ## IBM references
 
-- IBM Confluent (Streamhouse): https://www.ibm.com/products/confluent
-- Confluent Tableflow / Iceberg Sink integration with watsonx.data: https://www.ibm.com/docs/en/watsonxdata/saas?topic=integrations-integrating-confluent-apache-iceberg-sink-connector
+- [IBM Confluent (Streamhouse)](https://www.ibm.com/products/confluent)
+- [Confluent Tableflow / Iceberg Sink integration with watsonx.data](https://www.ibm.com/docs/en/watsonxdata/saas?topic=integrations-integrating-confluent-apache-iceberg-sink-connector)
