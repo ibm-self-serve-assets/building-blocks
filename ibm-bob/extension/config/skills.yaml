@@ -16,149 +16,179 @@ skills:
   - folderName: agent
     domain: AI
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
 
   # AI Control Plane: Real-Time Guardrails
   - folderName: real-time-guardrails
     domain: AI
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
 
   # AI Control Plane: Agent Ops
   - folderName: agent-ops
     domain: AI
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
 
   # AI Control Plane: Model Evaluation (build-time GenAI evals)
   - folderName: build-time-gen-ai-evals
     domain: AI
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
 
   # ─── Data / Context ───────────────────────────────────────────────────────
   # Data-streaming: Confluent
   - folderName: data-streaming-confluent
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Data-streaming: Confluent plus Terraform
   - folderName: data-streaming-confluent-terraform
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Confluent IaC Terraform (data streaming — belongs under Data, not Automation)
   - folderName: confluent-iac-terraform
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # SDD Pipeline Builder
   - folderName: sdd-pipeline-builder
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Data Ingestion: Structured
   - folderName: data-ingestion-structured
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Data Ingestion: Unstructured
   - folderName: data-ingestion-unstructured
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Data Ingestion: UDI + OpenSearch
   - folderName: udi-opensearch
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # ─── Data / Pipelines ─────────────────────────────────────────────────────
   # Text2SQL: Metadata Enrichment
   - folderName: text2sql-metadata-enrichment
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Text2SQL: Query Optimizer
   - folderName: text2sql-query-optimizer
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Data Quality: Rules
   - folderName: data-quality-rules
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # ─── Data / Query Engines ─────────────────────────────────────────────────
   # RAG Pipeline Builder
   - folderName: rag-pipeline-builder
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # RAG MCP Server Builder
   - folderName: rag-mcp-server-builder
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Vector Search: OpenSearch
   - folderName: opensearch-vector-search
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # Vector Search: AstraDB
   - folderName: astradb-nosql-design
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # watsonx.data Lakehouse
   - folderName: watsonxdata-lakehouse
     domain: Data
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
 
   # ─── Automation / Operate ─────────────────────────────────────────────────
   # IBM Cloud CLI
   - folderName: ibm-cloud
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Infrastructure-as-Code: Ansible
   - folderName: infrastructure-as-code-ansible
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Infrastructure-as-Code: Terraform
   - folderName: infrastructure-as-code-terraform
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Maximo Code Optimization
   - folderName: maximo-code-optimization
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Maximo Java Conversion
   - folderName: code-modernization-java
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # ─── Automation / Secure ──────────────────────────────────────────────────
   # Non-human Identity: Vault
   - folderName: non-human-identity-vault
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Application Risk & Continuous Compliance (IBM Concert)
   - folderName: code-modernization-expert
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Cryptographic & Quantum-Safe Readiness
   - folderName: pipeline-standards
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # ─── Automation / Optimize ────────────────────────────────────────────────
   # Automated Resource Management (ARM): Turbonomic
   - folderName: automated-resource-mgmt-turbonomic
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
 
   # Full-Stack Application Observability (Instana — under Automation/Operate, NOT Data)
   - folderName: application-observability
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
