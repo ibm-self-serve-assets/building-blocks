@@ -11,7 +11,7 @@ This repository is intentionally code-first. Each building block gives developer
 | Group | Building block | IBM product anchor | What you can build |
 |---|---|---|---|
 | Context | [Context Hub](context/context-hub/) | IBM Confluent, IBM watsonx.data, IBM watsonx.data intelligence | Live + governed context for apps and AI |
-| Context | [Real-Time Streaming](context/real-time-streaming/) | IBM Confluent | Event streaming, schema governance, stream processing |
+| Context | [Streamhouse](context/streamhouse/) | IBM Confluent | Event streaming, schema governance, stream processing |
 | Context | [Metadata Enrichment & Data Quality](context/metadata-enrichment/) | IBM watsonx.data intelligence | Metadata enrichment, quality, lineage |
 | Context | [Data Observability](context/data-observability/) | IBM watsonx.data integration — Data Observability | Pipeline health, anomaly detection, alerts |
 | Pipelines | [RAG](pipelines/rag/) | IBM watsonx.data OpenRAG, IBM watsonx.ai | Retrieval and grounded generation |

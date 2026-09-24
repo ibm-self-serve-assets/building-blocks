@@ -7,7 +7,7 @@ Context building blocks help developers combine **live events, governed metadata
 | Building block | IBM product anchor | Developer use |
 |---|---|---|
 | [Context Hub](context-hub/) | IBM Confluent + IBM watsonx.data + IBM watsonx.data intelligence | Compose live and governed context across streaming and data-at-rest |
-| [Real-Time Streaming](real-time-streaming/) | IBM Confluent | Build Kafka/Flink event-streaming solutions and streaming demos |
+| [Streamhouse](streamhouse/) | IBM Confluent | Build Kafka/Flink event-streaming solutions and streaming demos |
 | [Metadata Enrichment & Data Quality](metadata-enrichment/) | IBM watsonx.data intelligence | Add business context, quality rules, and lineage |
 | [Data Observability](data-observability/) | IBM watsonx.data integration — Data Observability | Monitor pipeline/run health, anomalies, SLAs, and alerts |
 

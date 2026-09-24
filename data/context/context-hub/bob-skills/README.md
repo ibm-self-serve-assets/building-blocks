@@ -64,5 +64,5 @@ Before using this skill, ensure you have:
 
 - [`../bob-modes/`](../bob-modes/) — Context Hub Builder Bob Mode
 - [`../README.md`](../README.md) — Context Hub building block overview
-- [`../../real-time-streaming/bob-skills/`](../../real-time-streaming/bob-skills/) — Real-Time Streaming skills
+- [Streamhouse Bob skills](../../streamhouse/bob-skills/) — Streamhouse skills
 - [`../../metadata-enrichment/`](../../metadata-enrichment/) — Metadata Enrichment building block

@@ -78,7 +78,7 @@ The **[Data Building Blocks](data/README.md)** provide a composable foundation f
 | Group | Building Block | Primary Products |
 |---|---|---|
 | **Context** | [Context Hub](data/context/context-hub/) | IBM Confluent + IBM watsonx.data + IBM watsonx.data intelligence |
-| **Context** | [Real-Time Streaming](data/context/real-time-streaming/) | IBM Confluent (Kafka + Flink + connectors + governance) |
+| **Context** | [Streamhouse](data/context/streamhouse/) | IBM Confluent (Kafka + Flink + connectors + governance) |
 | **Context** | [Metadata Enrichment & Data Quality](data/context/metadata-enrichment/) | IBM watsonx.data intelligence |
 | **Context** | [Data Observability](data/context/data-observability/) | IBM watsonx.data integration + IBM Data Observability by Databand |
 | **Pipelines** | [RAG](data/pipelines/rag/) | IBM watsonx.data OpenRAG + OpenSearch |

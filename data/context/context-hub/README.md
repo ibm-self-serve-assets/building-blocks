@@ -46,7 +46,7 @@ A common implementation path is to materialize selected Kafka topics into Apache
 
 | Capability | Building block |
 |---|---|
-| Kafka/Flink event streaming | [`../real-time-streaming/`](../real-time-streaming/) |
+| Kafka/Flink event streaming | [Streamhouse](../streamhouse/) |
 | Metadata, quality, lineage | [`../metadata-enrichment/`](../metadata-enrichment/) |
 | Pipeline health and alerts | [`../data-observability/`](../data-observability/) |
 | Lakehouse/federated query | [`../../query-engines/zero-copy-lakehouse/`](../../query-engines/zero-copy-lakehouse/) |
@@ -58,7 +58,7 @@ There is no standalone runnable `assets/` implementation in this folder. Build t
 
 Recommended sequence:
 
-1. Start with a working event stream in [Real-Time Streaming](../real-time-streaming/).
+1. Start with a working event stream in [Streamhouse](../streamhouse/).
 2. Materialize the required stream into a watsonx.data-supported lakehouse target where appropriate.
 3. Validate the data with watsonx.data query engines.
 4. Enrich/catalog the resulting assets through [Metadata Enrichment](../metadata-enrichment/).

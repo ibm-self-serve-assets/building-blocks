@@ -56,5 +56,5 @@ Installation instructions will be added when the zip is available.
 
 - [`../bob-skills/`](../bob-skills/) — Context Hub knowledge skill
 - [`../README.md`](../README.md) — Context Hub building block overview
-- [`../../real-time-streaming/`](../../real-time-streaming/) — Real-Time Streaming building block
+- [Streamhouse](../../streamhouse/) — Streamhouse building block
 - [`../../metadata-enrichment/`](../../metadata-enrichment/) — Metadata Enrichment building block
