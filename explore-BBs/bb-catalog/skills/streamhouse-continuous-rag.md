@@ -1,0 +1,28 @@
+---
+id: streamhouse-continuous-rag
+name: streamhouse-continuous-rag
+description: Build, review, explain, and extend the FactoryPulse Continuous RAG Streamhouse demo on
+  Confluent Cloud. Use this skill for Kafka/Flink continuous knowledge ingestion, manufacturing
+  exception-to-action flows, RAG freshness, Confluent configuration, API/UI changes,
+  Bob-assisted development, and IBM Code Engine deployment in this repository.
+blocks:
+- data-streaming
+status: active
+sources:
+- location: block
+  path: data/context/streamhouse/bob-skills/streamhouse-continuous-rag.zip
+  layout: bare
+- location: central
+  path: ibm-bob/skills/streamhouse-continuous-rag
+  layout: dir
+subskills: []
+download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/streamhouse/bob-skills/streamhouse-continuous-rag.zip
+---
+
+# streamhouse-continuous-rag
+
+Build, review, explain, and extend the FactoryPulse Continuous RAG Streamhouse demo on Confluent Cloud. Use this skill for Kafka/Flink continuous knowledge ingestion, manufacturing exception-to-action flows, RAG freshness, Confluent configuration, API/UI changes, Bob-assisted development, and IBM Code Engine deployment in this repository.
+
+Sources in this repo:
+- `data/context/streamhouse/bob-skills/streamhouse-continuous-rag.zip` (block, layout: bare)
+- `ibm-bob/skills/streamhouse-continuous-rag` (central, layout: dir)

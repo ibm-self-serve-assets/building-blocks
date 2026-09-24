@@ -64,6 +64,7 @@ flowchart TD
 |---|---|
 | [Supply Chain Risk Control Tower](assets/supply-chain-risk-control-tower/) | Runnable supply-chain streaming reference solution |
 | [Live Context for Supply Chain Resilience](assets/live-context-for-supply-chain-resilience/) | Full-stack AI demo: real-time risk detection + watsonx Orchestrate agents + Carbon React control tower |
+| [streamhouse-continuous-rag skill](bob-skills/streamhouse-continuous-rag.zip) | IBM Bob skill — FactoryPulse Continuous RAG on Confluent Cloud |
 | [data-streaming-confluent skill](bob-skills/data-streaming-confluent.zip) | IBM Bob streaming skill |
 | [confluent-iac-terraform skill](bob-skills/confluent-iac-terraform.zip) | IBM Bob Terraform/IaC skill |
 
