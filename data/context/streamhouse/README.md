@@ -20,47 +20,53 @@ Apache Kafka and Apache Flink are implementation technologies within the IBM Con
 
 ## Architecture
 
-```text
-Enterprise Data Sources
-(ERP / suppliers / logistics / risk feeds / IoT / SaaS)
-                 |
-                 v
-          ┌─────────────┐
-          │   CAPTURE   │
-          │   Connect   │
-          └──────┬──────┘
-                 |
-                 v
-          ┌─────────────┐
-          │  TRANSPORT  │
-          │    Kafka    │
-          │  + Schema   │
-          │  Registry   │
-          └──────┬──────┘
-                 |
-          ┌──────┴──────┐
-          v             v
-   Python risk      Flink SQL
-     engine         reference
-          └──────┬──────┘
-                 |
-                 v
-          ┌──────────────────┐
-          │     GOVERN       │
-          │ Schema Registry  │
-          │ Stream Lineage   │
-          │ Stream Quality   │
-          │  Data Portal     │
-          └──────┬───────────┘
-                 |
-          ┌──────┴──────┐
-          v             v
-   Tableflow /     Real-Time
-Apache Iceberg   Context Engine
-          |             |
-          v             v
-  watsonx.data /   Applications /
-   Analytics      AI Agents / MCP
+```mermaid
+flowchart TD
+    sources["🏭 Enterprise Data Sources\nERP · Suppliers · Logistics\nRisk Feeds · IoT · SaaS"]
+
+    subgraph CAPTURE["CAPTURE"]
+        connect["Connect"]
+    end
+
+    subgraph TRANSPORT["TRANSPORT"]
+        kafka["Kafka"]
+        schema["Schema Registry"]
+    end
+
+    subgraph PROCESS["PROCESS"]
+        python["Python Risk Engine"]
+        flink["Flink SQL Reference"]
+    end
+
+    subgraph GOVERN["GOVERN"]
+        sr["Schema Registry"]
+        lineage["Stream Lineage"]
+        quality["Stream Quality"]
+        portal["Data Portal"]
+    end
+
+    subgraph SERVE["SERVE"]
+        tableflow["Tableflow /\nApache Iceberg"]
+        rtce["Real-Time\nContext Engine"]
+    end
+
+    wx["watsonx.data /\nAnalytics"]
+    apps["Applications /\nAI Agents / MCP"]
+
+    sources --> connect
+    connect --> kafka
+    kafka --- schema
+    kafka --> python
+    kafka --> flink
+    python --> sr
+    flink --> sr
+    sr --- lineage
+    lineage --- quality
+    quality --- portal
+    portal --> tableflow
+    portal --> rtce
+    tableflow --> wx
+    rtce --> apps
 ```
 
 ## Included assets
