@@ -22,7 +22,7 @@ All paths are relative to `https://<unit>.instana.io`.
 | GET | `/api/application-monitoring/endpoints` | `serviceId`, `page`, `pageSize` |
 | POST | `/api/application-monitoring/analyze/call-groups` | `tagFilters`, `group`, `metrics`, `timeFrame` |
 | POST | `/api/application-monitoring/analyze/traces` | `tagFilters`, `timeFrame`, `pagination` |
-| GET | `/api/application-monitoring/analyze/traces/{traceId}` | Returns full trace tree |
+| GET | `/api/application-monitoring/v2/analyze/traces/{traceId}` | Returns span list for a single trace — **verified working** |
 
 ---
 
@@ -115,31 +115,41 @@ The filter field is a flat **array** named `tagFilters` — not `tagFilterExpres
 ```
 Omitting `group` or sending `null` returns HTTP **422** — `"group must not be null"`.
 
-### Metrics (call-groups)
+### Metrics (call-groups, metrics/services, metrics/endpoints)
 Confirmed working metric names and aggregations (verified against live Instana API):
 
 | Purpose | `metric` | `aggregation` |
 |---------|----------|---------------|
 | Call count | `"calls"` | `"SUM"` |
 | Error count | `"erroneousCalls"` | `"SUM"` |
+| Latency mean | `"latency"` | `"MEAN"` |
 | Latency median | `"latency"` | `"P50"` |
 | Latency 95th pct | `"latency"` | `"P95"` |
 | Latency 99th pct | `"latency"` | `"P99"` |
+| Latency max | `"latency"` | `"MAX"` |
+| Latency min | `"latency"` | `"MIN"` |
 
-> ⚠️  Do **not** use `"calls.count"`, `"calls.erroneous.count"`, or `"latency.p95"` as metric names — these return 422 `"Metric type unknown"`. The metric name is always the short form; the aggregation carries the percentile.
+> ⚠️  **Do NOT** use `"latency.mean"`, `"latency.p95"`, `"latency.p99"` as the `metric` field name in **any** endpoint (`analyze/call-groups`, `metrics/services`, `metrics/endpoints`, `metrics/applications`). These all return HTTP **400** `"Missing metrics"`. The metric name is always the short form `"latency"`; the aggregation carries the statistic type.
 
-### Response Keys (call-groups)
-Each item in the `items[]` array has a `name` field (the group value, e.g. the service name) and a `metrics` map:
+> ⚠️  Do **not** use `"calls.count"`, `"calls.erroneous.count"` — these return 422 `"Metric type unknown"`.
 
-| Requested | Response key |
-|-----------|-------------|
-| `calls` SUM | `calls.sum` |
-| `erroneousCalls` SUM | `erroneousCalls.sum` |
-| `latency` P50 | `latency.p50` |
-| `latency` P95 | `latency.p95` |
-| `latency` P99 | `latency.p99` |
+### Response Keys (all metrics endpoints)
+Each item's `metrics` map uses keys of the form `<metric>.<aggregation_lowercase>`:
+
+| Requested `metric` + `aggregation` | Response key |
+|------------------------------------|-------------|
+| `"calls"` + `"SUM"` | `calls.sum` |
+| `"erroneousCalls"` + `"SUM"` | `erroneousCalls.sum` |
+| `"latency"` + `"MEAN"` | `latency.mean` |
+| `"latency"` + `"P50"` | `latency.p50` |
+| `"latency"` + `"P95"` | `latency.p95` |
+| `"latency"` + `"P99"` | `latency.p99` |
+| `"latency"` + `"MAX"` | `latency.max` |
+| `"latency"` + `"MIN"` | `latency.min` |
 
 Each value is a `[[timestamp_ms, value]]` array. For rollup queries each array has one entry per time bucket.
+
+> ⚠️  **Do NOT** read `metrics['latency.mean.mean']`, `metrics['latency.p95.p95']` — these keys do not exist. The response key is just `latency.mean` / `latency.p95`, never double-suffixed.
 
 ### Time-Series / Rollup
 Add top-level `rollupWindow` (milliseconds per bucket) to get multiple time-series data points per item:
@@ -150,10 +160,10 @@ Minimum `rollupWindow` is `60000` (1 minute). Do **not** add `granularity` insid
 
 ### Pagination Cursor (traces)
 ```json
-{ "retrievalSize": 50, "offset": 0 }
+{ "page": 1, "pageSize": 50 }
 ```
 
-> ⚠️ Do **not** add `"order"` to the traces request body — it is not accepted and causes silent failures on some Instana SaaS versions. Default ordering is reverse-chronological.
+> ⚠️ The `"order"` field behaviour varies by Instana version — it is accepted on some instances (e.g. `{ "by": "LATENCY", "direction": "DESC" }`) but silently ignored or rejected on others. Default ordering is reverse-chronological. Omit `"order"` if consistent cross-version behaviour is needed.
 
 ---
 
@@ -247,4 +257,86 @@ const items = (raw.items ?? []).map((item) => ({
   erroneous:   item.trace.erroneous ?? false,
   timestamp:   item.trace.startTime ?? 0,
 }));
+```
+
+---
+
+### Trace Detail Response Shape (`GET /api/application-monitoring/v2/analyze/traces/{traceId}`)
+
+> ⚠️ **Verified against live Instana instance (`unit0-techzone.150-240-162-27.nip.io`).**
+>
+> **Do NOT use any of these paths — all return 404:**
+> - `/api/application-monitoring/trace/{traceId}`
+> - `/api/application-monitoring/analyze/traces/{traceId}` ← **this is the most common mistake — no `/v2/`**
+> - `/api/application-monitoring/traces/{traceId}`
+>
+> The only working path is: **`/api/application-monitoring/v2/analyze/traces/{traceId}`**
+>
+> The response has **no top-level trace object** — only an `items` array of spans. All trace metadata (startTime, duration, root service) must be derived from the spans array by finding the root span (`parentId === null`).
+
+The response is an **object with an `items` array** — each item is a span/call node (not a flat array).
+
+**Response shape:**
+```json
+{
+  "items": [
+    {
+      "id": "6955fb70a5d1de16",
+      "parentId": null,
+      "foreignParentId": null,
+      "name": "POST /api/auth/logout",
+      "timestamp": 1787567699906,
+      "duration": 2,
+      "errorCount": 0,
+      "callCount": 1,
+      "destination": {
+        "service":  { "id": "...", "label": "backend" },
+        "endpoint": { "id": "...", "label": "POST /api/auth/logout", "type": "HTTP" }
+      },
+      "cursor": { "type": "IngestionOffsetCursor", "ingestionTime": 0, "offset": 1 }
+    }
+  ],
+  "canLoadMore": false,
+  "totalHits": 1
+}
+```
+
+**Field mapping:**
+
+| Purpose | Path | Notes |
+|---------|------|-------|
+| Span ID | `item.id` | hex string |
+| Parent span ID | `item.parentId` | `null` for root span |
+| Span name | `item.name` | e.g. `"POST /api/auth/logout"` |
+| Service name | `item.destination.service.label` | |
+| Endpoint label | `item.destination.endpoint.label` | falls back to `item.name` |
+| Timestamp | `item.timestamp` | epoch ms |
+| Duration | `item.duration` | ms |
+| Has errors | `item.errorCount > 0` | integer, **not** a boolean `erroneous` field |
+
+> ❌ **Do NOT read** `item.spanId`, `item.parentSpanId`, `item.erroneous`, `item.serviceName` — these fields do not exist.
+
+**Correct mapper:**
+```js
+const spanArray = result?.items ?? [];
+
+const spans = spanArray.map((s) => ({
+  spanId:       s.id       || '',
+  parentSpanId: s.parentId || null,
+  name:         s.name     || '—',
+  serviceName:  s.destination?.service?.label  || '—',
+  endpoint:     s.destination?.endpoint?.label || s.name || '—',
+  duration:     s.duration  || 0,
+  erroneous:    (s.errorCount ?? 0) > 0,
+  errorMessage: (s.errorCount ?? 0) > 0 ? `${s.errorCount} error(s)` : null,
+}));
+
+const firstSpan = spanArray[0] ?? {};
+return {
+  traceId:   traceId,
+  startTime: firstSpan.timestamp ?? Date.now(),
+  duration:  firstSpan.duration  ?? 0,
+  erroneous: spanArray.some((s) => (s.errorCount ?? 0) > 0),
+  spans,
+};
 ```

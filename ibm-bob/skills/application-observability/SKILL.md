@@ -12,7 +12,47 @@ metadata:
 
 # Application Observability with Instana
 
-This skill covers four workflows. Identify which applies to the current task and follow that section. Supporting reference files are in the sub-folders alongside this skill.
+This skill covers five workflows. Identify which applies to the current task and follow that section. Supporting reference files are in the sub-folders alongside this skill.
+
+---
+
+## MANDATORY — Deterministic Dashboard Rules
+
+**Read this section before any dashboard generation task.**
+
+When generating an Application Observability dashboard using this skill, IBM Bob **must** produce an identical UI architecture across every invocation. The following rules are absolute and override any personal judgment about alternative visualizations, layouts, or designs.
+
+### You MUST NOT:
+- Invent new dashboards, tabs, or layouts
+- Change chart types
+- Change chart titles
+- Rearrange charts or KPI cards
+- Rename tabs
+- Add or remove primary tabs
+- Replace Carbon components with another UI framework
+- Generate alternative visual themes
+- Change navigation patterns
+- Create different layouts based on personal interpretation
+- Replace required charts because another visualization seems more appropriate
+
+### You MUST:
+- Use exactly 3 primary tabs: **Service Overview**, **Trace Details**, **Intelligent Analysis & Insights** — in that order
+- Use exactly 5 KPI cards in the Service Overview tab: **Calls / Requests**, **Mean Latency**, **P95 Latency**, **Error Rate**, **Affected Services** — in that order
+- Use exactly 5 charts in the Service Overview tab in a 3-row 2-column grid layout (the 3 time-series charts — Calls Over Time, Latency Over Time, Error Rate Over Time — have been removed because this Instana instance returns too few buckets for meaningful line charts on sparse traffic)
+- Use the IBM Carbon Design System with IBM Dark Theme (`g100` via `<Theme theme="g100">`) for all UI components
+- Use Plotly for all charts with dark-theme styled layout and coordinates
+- Retain every defined component even when telemetry is unavailable — display a standardised `No data available` state instead of removing the component
+- Use the centralized `dashboardConfig.js` to drive all layout, tab order, KPI order, chart order, and component configuration
+- Externalise all environment-specific configuration through `.env`
+
+### Application Title (mandatory, unchanging):
+```
+Application Observability using IBM Instana
+With IBM Bob and Instana
+```
+
+### Validation Checklist (run before marking generation complete):
+Verify all items in `instana-dashboard/ui-spec.md` → **Section 15: Validation Checklist**.
 
 ---
 
@@ -114,16 +154,18 @@ Run `npm test` and confirm lint passes (`eslint`, `tsc --noEmit`). Summarise fil
 
 ## Workflow 2 — Monitoring Dashboard
 
-Use when building or enhancing an Instana-backed React observability dashboard with interactive visualizations, clickable trace IDs, error modals, or service health panels.
+Use when building or enhancing an Instana-backed React observability dashboard.
+
+**⚠️ When building a new dashboard from scratch, use Workflow 5 instead.** Workflow 2 applies only to enhancements to an existing dashboard that does not yet follow the canonical structure.
 
 <Steps>
 <Step>
 **Clarify requirements.**
 Ask or identify:
 - What data to display (services, traces, error rates, latency, call patterns, events, SLOs, infrastructure).
-- React + TypeScript is the target stack; use Vite as the build tool unless the project already has a different setup.
+- React + CRA (`react-scripts`) or Vite is the target stack.
 - Whether clickable trace IDs opening a detail modal/drawer are needed.
-- Time range controls required (fixed window, rolling, or date picker via `react-datepicker`).
+- Time range controls required.
 - New app or enhancement to an existing file.
 
 Read existing source files before making any changes.
@@ -131,28 +173,8 @@ Read existing source files before making any changes.
 
 <Step>
 **Scaffold the React app (if new).**
-```bash
-npm create vite@latest instana-dashboard -- --template react-ts
-cd instana-dashboard
-npm install axios recharts @tanstack/react-query date-fns
-```
-Structure:
-```
-src/
-  lib/instanaClient.ts     ← API client (Workflow 1)
-  hooks/useInstanaData.ts  ← React Query data-fetch hooks
-  components/
-    Header.tsx
-    KpiCard.tsx
-    TraceTable.tsx
-    TraceDetailModal.tsx
-    charts/ErrorRateChart.tsx
-    charts/LatencyChart.tsx
-    charts/CallVolumeChart.tsx
-  App.tsx
-```
 
-Refer to `instana-dashboard/dashboard-patterns.md` for component and hook skeletons.
+> **For a new canonical dashboard, use Workflow 5.** The scaffold below is for lightweight, non-canonical enhancements only.
 
 > **CRA (react-scripts) users — critical setup notes:**
 >
@@ -222,14 +244,9 @@ See `instana-dashboard/trace-modal-template.md` for the modal and `SpanTree` com
 </Step>
 
 <Step>
-**Apply observability-appropriate styling.**
-Follow `instana-dashboard/dashboard-style-guide.md`:
-- Dark/neutral background; CSS custom properties for all theme colours.
-- Status colours: `--color-error: #ef4444`, `--color-degraded: #f59e0b`, `--color-healthy: #22c55e`.
-- No 3D, gradients, or decorative chrome.
-- Trace IDs in `font-family: monospace`, colour `#7dd3fc`, `cursor: pointer`.
-
-Use Recharts chart components from `instana-dashboard/chart-templates.md`.
+**Apply Carbon Design System styling.**
+Follow `instana-dashboard/carbon-components.md` for all Carbon component usage.
+All charts must use Plotly per `instana-dashboard/plotly-chart-templates.md`.
 </Step>
 
 <Step>
@@ -327,7 +344,9 @@ Then use **relative paths** in all `fetch()` calls (e.g. `/api/application-monit
 
 <Step>
 **Install dependencies.**
-React app: `axios`, `@tanstack/react-query`, `recharts`, `date-fns`. Node.js backend/script: `axios`, `dotenv`. Update `package.json` and run `npm install`. Confirm no peer-dependency conflicts.
+React app: `axios`, `@tanstack/react-query`, `plotly.js`, `react-plotly.js`, `@carbon/react`, `@carbon/icons-react`, `date-fns`.
+Node.js backend/script: `axios`, `dotenv`.
+Update `package.json` and run `npm install`. Confirm no peer-dependency conflicts.
 </Step>
 
 <Step>
@@ -353,10 +372,232 @@ Work through the checklist in `instana-monitoring-setup/setup-checklist.md`. Con
 
 ---
 
+## Workflow 5 — Deterministic Dashboard Generation
+
+**Use this workflow when generating a new Application Observability dashboard from scratch.** This workflow produces a deterministic, standardized dashboard. Every generated dashboard must be identical in UI structure, tabs, KPI cards, charts, layout, and Carbon/Plotly usage.
+
+<Steps>
+<Step>
+**Collect environment-specific inputs only.**
+Ask or identify:
+- Instana URL (e.g. `https://instana.example.com`)
+- Instana API token
+- Application Perspective ID
+- Application name (display label)
+- Service names (for reference — do not change the dashboard structure based on these)
+- Endpoint names (for reference only)
+- Preferred time range (default: last 1 hour)
+- Refresh interval (default: 30 seconds)
+
+Do not ask about dashboard design, chart types, layout, or component choices — these are fixed by this skill.
+</Step>
+
+<Step>
+**Scaffold the project using the mandatory structure.**
+
+Generate the project with exactly this directory layout — no deviations:
+
+```text
+application-observability/
+├── .env                          ← populated with user inputs (gitignored)
+├── .env.example                  ← from instana-monitoring-setup/env-template-carbon.env
+├── README.md
+├── package.json
+├── public/
+│   └── index.html
+└── src/
+    ├── components/
+    │   ├── KPICard.jsx
+    │   ├── ChartCard.jsx
+    │   ├── LoadingState.jsx
+    │   ├── ErrorState.jsx
+    │   ├── EmptyState.jsx
+    │   ├── TraceTable.jsx
+    │   ├── TraceDetailView.jsx
+    │   └── InsightPanel.jsx
+    ├── charts/
+    │   ├── ServiceCallsChart.jsx
+    │   ├── ServiceLatencyChart.jsx
+    │   ├── EndpointCallsChart.jsx
+    │   ├── EndpointLatencyChart.jsx
+    │   └── StatusDistributionChart.jsx
+    ├── tabs/
+    │   ├── ServiceOverview.jsx
+    │   ├── TraceDetails.jsx
+    │   └── IntelligentAnalysis.jsx
+    ├── services/
+    │   ├── instanaApi.js
+    │   └── analysisService.js
+    ├── config/
+    │   └── dashboardConfig.js
+    ├── App.jsx
+    └── index.jsx
+```
+
+Do not collapse components. Do not merge tabs. Do not omit any file.
+</Step>
+
+<Step>
+**Generate `src/config/dashboardConfig.js` from the canonical template.**
+
+Copy the configuration verbatim from `instana-dashboard/dashboard-config-template.js`.
+Only populate these environment-specific fields:
+- `applicationId` from `process.env.REACT_APP_APPLICATION_ID`
+- `applicationName` from `process.env.REACT_APP_APPLICATION_NAME`
+- `instanaUrl` from `process.env.REACT_APP_INSTANA_URL`
+- `refreshInterval` from `process.env.REACT_APP_REFRESH_INTERVAL`
+- `defaultTimeRange` from `process.env.REACT_APP_DEFAULT_TIME_RANGE`
+
+Do not change tab names, KPI order, chart order, or chart types from the template.
+</Step>
+
+<Step>
+**Generate all reusable components.**
+
+Generate each component exactly as defined in `instana-dashboard/component-templates.md`. Do not redesign any component.
+
+Components to generate:
+- `KPICard.jsx` — Carbon Tile with metric, label, status indicator
+- `ChartCard.jsx` — Carbon Tile wrapping a Plotly chart
+- `LoadingState.jsx` — Carbon InlineLoading
+- `ErrorState.jsx` — Carbon InlineNotification (error kind)
+- `EmptyState.jsx` — Carbon InlineNotification (info kind) with "No data" message
+- `TraceTable.jsx` — Carbon DataTable with defined columns
+- `TraceDetailView.jsx` — Carbon Modal/SidePanel with span hierarchy
+- `InsightPanel.jsx` — Carbon Tile with finding, evidence, impact, action
+</Step>
+
+<Step>
+**Generate all chart components using Plotly.**
+
+Generate each chart exactly as defined in `instana-dashboard/plotly-chart-templates.md`. Do not substitute Recharts, D3, or any other library.
+
+Charts to generate (in defined order):
+1. `ServiceCallsChart.jsx` — Top Services by Calls (Horizontal Bar)
+2. `ServiceLatencyChart.jsx` — Top Services by Latency (Horizontal Bar)
+3. `EndpointCallsChart.jsx` — Top Endpoints by Calls (Horizontal Bar)
+4. `EndpointLatencyChart.jsx` — Top Endpoints by Latency (Horizontal Bar)
+5. `StatusDistributionChart.jsx` — HTTP Status / Error Distribution (Donut)
+
+> ⚠️ `CallsChart.jsx`, `LatencyChart.jsx`, and `ErrorRateChart.jsx` exist in the `src/charts/` directory for backward compatibility but are NOT referenced by `dashboardConfig.js` or `ServiceOverview.jsx`. Do not add them back to the dashboard.
+</Step>
+
+<Step>
+**Generate the three tab components.**
+
+Generate each tab exactly as defined in `instana-dashboard/tab-templates.md`:
+
+**`ServiceOverview.jsx`** — must contain, in order:
+1. KPI row: 5 cards in defined order
+2. Chart row 1: ServiceCallsChart + ServiceLatencyChart (2-column grid)
+3. Chart row 2: EndpointCallsChart + EndpointLatencyChart (2-column grid)
+4. Chart row 3: StatusDistributionChart (col 1 only)
+
+**`TraceDetails.jsx`** — must contain, in order:
+1. Filter bar: Time Range, Service, Endpoint, Min Latency, Error Status
+2. Trace summary KPI row: Total Traces, Slow Traces, Error Traces, Mean Duration
+3. TraceTable with all defined columns
+4. TraceDetailView (shown when a row is selected)
+
+**`IntelligentAnalysis.jsx`** — must contain, in order:
+1. Application Health Summary section
+2. Performance Insights section
+3. Error Analysis section
+4. Bottleneck Analysis section
+5. Recommended Actions section (each item: Finding, Evidence, Impact, Action)
+</Step>
+
+<Step>
+**Generate `src/App.jsx` with the fixed header and tab navigation.**
+
+The application header must display exactly:
+```
+Title:    Application Observability using IBM Instana
+Subtitle: With IBM Bob and Instana
+```
+
+Use `@carbon/react` `Theme` (with `theme="g100"` for the IBM Dark theme), `Header`, `HeaderName` components.
+Use `@carbon/react` `Tabs`, `Tab`, `TabList`, `TabPanels`, `TabPanel` for navigation.
+Tab order and names are fixed — do not deviate.
+</Step>
+
+<Step>
+**Generate `src/services/instanaApi.js`.**
+
+Implement all data fetching as async functions using the CRA proxy pattern (relative paths).
+Required functions:
+- `fetchMetrics(applicationId, timeRange)` — parallel fetch of all Service Overview metrics
+- `fetchTraces(applicationId, filters)` — fetch trace list with filter support
+- `fetchTraceDetail(traceId)` — fetch single trace span tree
+- `fetchServiceMetrics(applicationId, timeRange)` — service-level metrics
+- `fetchEndpointMetrics(applicationId, timeRange)` — endpoint-level metrics
+
+All functions must:
+- Be async
+- Support request cancellation via AbortController
+- Handle 401, 403, 429, 5xx
+- Return structured data objects (not raw responses)
+- Never include the API token in source code
+
+**⚠️ MANDATORY — verified API field names (use these exactly, any deviation produces silent failures or 404s):**
+
+Read `instana-api-client/api-patterns.md` § `metrics/services and metrics/endpoints` and `instana-dashboard/tab-templates.md` § `src/services/instanaApi.js — Verified Correct Patterns` before writing any line of `instanaApi.js`. The following rules are non-negotiable:
+
+| Function | Rule |
+|----------|------|
+| `fetchServiceMetrics` | Metric name is `"latency"` (not `"latency.mean"`). Send **two separate parallel requests** — one for calls, one for latency. Service name is `item.service.label` (not `.name`). Response keys are `latency.mean` / `latency.p95` (never `latency.mean.mean`). |
+| `fetchEndpointMetrics` | Same as above. Endpoint name is `item.endpoint.label` (not `.name`). |
+| `fetchMetrics` | Same latency metric name rule applies to `metrics/applications`. Response keys are `latency.mean` / `latency.p95`. |
+| `fetchTraces` | Each item is `{ trace: {...}, cursor: {...} }`. Unwrap with `const t = item.trace ?? item`. Trace ID is `t.id`, service is `t.service?.label`, endpoint is `t.endpoint?.label ?? t.label`. |
+| `fetchTraceDetail` | Path is **`/api/application-monitoring/v2/analyze/traces/{id}`** — the path without `/v2/` returns HTTP 404. Response is `{ items: [...spans] }` with no top-level trace object. Span fields: `s.id` (not `s.spanId`), `s.parentId` (not `s.parentSpanId`), `s.destination?.service?.label` (not `s.serviceName`), `s.timestamp` (not `s.startTime`), `(s.errorCount ?? 0) > 0` (not `s.erroneous`). Derive trace metadata from the root span where `parentId === null`. |
+</Step>
+
+<Step>
+**Generate `src/services/analysisService.js`.**
+
+Implement deterministic analysis functions:
+- `analyzeHealth(metrics)` — overall health assessment
+- `identifySlowServices(serviceMetrics)` — services exceeding latency thresholds
+- `identifySlowEndpoints(endpointMetrics)` — endpoints exceeding latency thresholds
+- `analyzeErrors(metrics)` — error pattern analysis
+- `identifyBottlenecks(traces, serviceMetrics)` — bottleneck detection
+- `generateRecommendations(analysisResults)` — actionable recommendations
+
+Each function must return a structured object. Logic must be deterministic — same inputs must always produce the same outputs.
+</Step>
+
+<Step>
+**Generate `.env`, `.env.example`, `package.json`, and `README.md`.**
+
+- `.env` — populated with the collected environment-specific inputs (user must add API token)
+- `.env.example` — verbatim copy from `instana-monitoring-setup/env-template-carbon.env`
+- `package.json` — include mandatory dependencies: `react`, `react-dom`, `react-scripts`, `@carbon/react`, `@carbon/icons-react`, `plotly.js`, `react-plotly.js`, `axios`; include `GENERATE_SOURCEMAP=false` in start/build scripts
+- `README.md` — setup, environment variable documentation, proxy configuration instructions
+</Step>
+
+<Step>
+**Run the validation checklist.**
+
+Before considering the dashboard complete, verify every item in `instana-dashboard/ui-spec.md` → **Section 15: Validation Checklist**.
+
+If any item fails, correct the generated code before proceeding.
+Do not mark the task complete until all checklist items pass.
+</Step>
+</Steps>
+
+---
+
 ## Supporting Files
 
 | File | Workflow | Purpose |
 |------|----------|---------|
+| `instana-dashboard/ui-spec.md` | 5 | **Canonical UI specification** — mandatory tabs, KPIs, charts, layout, validation checklist |
+| `instana-dashboard/carbon-components.md` | 2, 5 | Mandatory Carbon Design System component patterns and usage |
+| `instana-dashboard/plotly-chart-templates.md` | 2, 5 | All 8 mandatory Plotly chart definitions with exact configuration |
+| `instana-dashboard/dashboard-config-template.js` | 5 | Canonical `dashboardConfig.js` — drives all layout and component configuration |
+| `instana-dashboard/component-templates.md` | 5 | All mandatory reusable component implementations |
+| `instana-dashboard/tab-templates.md` | 5 | ServiceOverview, TraceDetails, IntelligentAnalysis reference implementations |
+| `instana-monitoring-setup/env-template-carbon.env` | 4, 5 | `.env` template for Carbon+Plotly dashboard |
 | `instana-api-client/api-patterns.md` | 1 | Client structure, pagination helper, request wrapper |
 | `instana-api-client/endpoint-reference.md` | 1 | Common Instana endpoint signatures |
 | `instana-api-client/error-handling.md` | 1 | Exception hierarchy and retry logic |
@@ -364,7 +605,7 @@ Work through the checklist in `instana-monitoring-setup/setup-checklist.md`. Con
 | `instana-api-client/performance-patterns.md` | 1 | TTL cache helper, parallel-fetch examples, timeout config |
 | `instana-api-client/api-doc-template.md` | 1 | README template for documenting API usage patterns |
 | `instana-dashboard/dashboard-patterns.md` | 2 | React component skeleton, hooks, React Query templates |
-| `instana-dashboard/chart-templates.md` | 2 | Recharts components for error rate, latency, call volume |
+| `instana-dashboard/chart-templates.md` | 2 | Legacy Recharts components (retained for existing dashboards) |
 | `instana-dashboard/trace-modal-template.md` | 2 | Trace detail modal and span tree renderer |
 | `instana-dashboard/dashboard-style-guide.md` | 2 | Colour palette, status conventions, chart rules |
 | `instana-trace-analysis/analysis-queries.md` | 3 | Ready-made Instana API request bodies |

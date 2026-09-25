@@ -1,5 +1,18 @@
 # Dashboard Patterns (React + TypeScript)
 
+> ⚠️ **This file covers legacy Recharts / Vite patterns for existing dashboards.**
+> For new Application Observability dashboards, follow **Workflow 5** in `SKILL.md` and use:
+> - `ui-spec.md` — canonical tab/KPI/chart specification
+> - `carbon-components.md` — mandatory Carbon component patterns
+> - `plotly-chart-templates.md` — mandatory Plotly chart definitions
+> - `dashboard-config-template.js` — centralized config
+> - `component-templates.md` — all reusable component implementations
+> - `tab-templates.md` — ServiceOverview, TraceDetails, IntelligentAnalysis implementations
+>
+> The patterns below are retained only for backward compatibility with existing dashboards.
+
+---
+
 ## App Layout Skeleton (`src/App.tsx`)
 
 ```tsx
@@ -135,7 +148,12 @@ export function useTraces(appId: string | null, windowMinutes: number, errorsOnl
   });
 }
 
-/** Lazy-fetch a single trace tree — only fires when traceId is set */
+/** Lazy-fetch a single trace tree — only fires when traceId is set.
+ *
+ * ⚠️ getTraceDetail MUST call /api/application-monitoring/v2/analyze/traces/{id}
+ *    The path without /v2/ returns HTTP 404.
+ *    See instana-api-client/api-patterns.md § getTraceDetail for the correct mapper.
+ */
 export function useTraceDetail(traceId: string | null) {
   return useQuery({
     queryKey: ['trace', traceId],
