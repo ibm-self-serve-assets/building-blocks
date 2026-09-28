@@ -69,14 +69,24 @@ export default function TraceDetailModal({ traceId, onClose }: Props) {
 
 ## `SpanTree` Component (`src/components/SpanTree.tsx`)
 
+> ⚠️ **Verified span field names from `GET /api/application-monitoring/v2/analyze/traces/{id}`.**
+> The span objects returned by `fetchTraceDetail` use these fields after mapping in `instanaApi.js`:
+> - `span.spanId` ← mapped from `s.id` (raw API field is `id`, not `spanId`)
+> - `span.parentSpanId` ← mapped from `s.parentId` (raw API field is `parentId`, not `parentSpanId`)
+> - `span.serviceName` ← mapped from `s.destination?.service?.label`
+> - `span.erroneous` ← mapped from `(s.errorCount ?? 0) > 0` (raw API has integer `errorCount`, not boolean)
+>
+> These are the **mapped** names used inside the component after `instanaApi.js` normalises them.
+> Do not change the field names below — they match what `fetchTraceDetail` returns.
+
 ```tsx
 interface Span {
-  spanId: string;
-  parentSpanId?: string;
+  spanId: string;        // mapped from s.id in fetchTraceDetail
+  parentSpanId?: string; // mapped from s.parentId in fetchTraceDetail
   name: string;
-  serviceName: string;
+  serviceName: string;   // mapped from s.destination?.service?.label in fetchTraceDetail
   duration: number;
-  erroneous: boolean;
+  erroneous: boolean;    // mapped from (s.errorCount ?? 0) > 0 in fetchTraceDetail
   errorMessage?: string;
   _children?: Span[];
 }
@@ -107,7 +117,7 @@ export default function SpanTree({ spans }: { spans: Span[] }) {
 function SpanNode({ span, depth }: { span: Span; depth: number }) {
   const colour = span.erroneous ? 'var(--color-error)' : 'var(--color-healthy)';
   return (
-    <li role="treeitem" style={{ paddingLeft: depth * 20 }}>
+    <li role="treeitem" aria-selected={false} style={{ paddingLeft: depth * 20 }}>
       <div className="span-row">
         <span className="span-dot" style={{ color: colour }}>●</span>
         <span className="span-name">{span.name}</span>

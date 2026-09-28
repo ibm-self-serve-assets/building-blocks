@@ -15,6 +15,19 @@ These skills empower IBM Bob to design and build Confluent-based streaming pipel
 
 ---
 
+### `streamhouse-continuous-rag`
+
+A skill for building and extending the FactoryPulse Continuous RAG demo on Confluent Cloud:
+
+- Continuous knowledge ingestion from operational events (`rag.knowledge.raw` → `rag.knowledge.embeddings`)
+- Kafka/Flink RAG profiles: `local` (deterministic demo embeddings) and `flink` (managed `AI_EMBEDDING`)
+- Manufacturing exception-to-action flows: machine telemetry, CMMS work orders, SOP updates
+- Schema Registry-backed `KnowledgeDocument` event contracts
+- FastAPI backend with live RAG freshness and evidence retrieval
+- IBM Carbon-based operational UI (Operations, RAG, Knowledge, Streamhouse, Live Events, Settings)
+- IBM Cloud Code Engine stateless deployment
+- Industry blueprints: manufacturing, supply chain, energy, healthcare
+
 ### `data-streaming-confluent`
 
 A comprehensive skill for building Confluent-based streaming pipelines on IBM Cloud:
@@ -115,16 +128,18 @@ Before using these skills, ensure you have:
 
 ## Skill Capabilities Summary
 
-| Capability | data-streaming-confluent | confluent-iac-terraform |
-|---|---|---|
-| Terraform IaC | ✅ | ✅ |
-| Kafka Topic Design | ✅ | ✅ |
-| Avro/JSON Schema Registry | ✅ | ✅ |
-| Python Producer/Consumer | ✅ | — |
-| Apache Flink SQL | ✅ | — |
-| Connector Config (COS, Db2) | ✅ | — |
-| Stream Governance | ✅ | — |
-| ACL & RBAC Patterns | ✅ | ✅ |
+| Capability | streamhouse-continuous-rag | data-streaming-confluent | confluent-iac-terraform |
+|---|---|---|---|
+| Continuous RAG (Kafka/Flink) | ✅ | — | — |
+| Terraform IaC | — | ✅ | ✅ |
+| Kafka Topic Design | ✅ | ✅ | ✅ |
+| Avro/JSON Schema Registry | ✅ | ✅ | ✅ |
+| Python Producer/Consumer | ✅ | ✅ | — |
+| Apache Flink SQL | ✅ | ✅ | — |
+| Connector Config (COS, Db2) | — | ✅ | — |
+| Stream Governance | ✅ | ✅ | — |
+| Code Engine Deployment | ✅ | — | — |
+| ACL & RBAC Patterns | — | ✅ | ✅ |
 
 ## Confluent Resource Reference
 

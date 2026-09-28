@@ -1,4 +1,4 @@
-name: Create Agents Zip then Push Zip
+name: Create skills.zip
 on: [push]
 
 jobs:

@@ -282,7 +282,7 @@ Runs the Python risk engine against synthetic events without connecting to Kafka
 
 ```
 git clone https://github.com/ibm-self-serve-assets/building-blocks.git
-cd building-blocks/data/context/real-time-streaming/assets/supply-chain-risk-control-tower
+cd building-blocks/data/context/streamhouse/assets/supply-chain-risk-control-tower
 ```
 
 ### Step 2: Create a virtual environment
@@ -350,7 +350,7 @@ Work through each step in order. All commands are run from the project root dire
 
 ```
 git clone https://github.com/ibm-self-serve-assets/building-blocks.git
-cd building-blocks/data/context/real-time-streaming/assets/supply-chain-risk-control-tower
+cd building-blocks/data/context/streamhouse/assets/supply-chain-risk-control-tower
 ```
 
 ---

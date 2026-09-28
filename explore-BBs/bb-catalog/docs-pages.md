@@ -54,9 +54,9 @@ pages:
   - title: Context Hub
     section: "Data > Context"
     path: data-core/context/context-hub/index.md
-  - title: Real-Time Streaming
+  - title: Streamhouse
     section: "Data > Context"
-    path: data-core/context/real-time-streaming/index.md
+    path: data-core/context/streamhouse/index.md
   - title: "Metadata Enrichment & Data Quality"
     section: "Data > Context"
     path: data-core/context/metadata-enrichment/index.md

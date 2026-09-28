@@ -1,11 +1,11 @@
 ---
 id: data-streaming
-name: Data Streaming
+name: Streamhouse
 group: context
 capability: data
-description: Real-time data streaming capabilities for continuous data processing and event-driven architectures
-repo_path: data/context/real-time-streaming
-docs_path: data-core/context/real-time-streaming/index.md
+description: Streamhouse — real-time data streaming capabilities for continuous data processing and event-driven architectures
+repo_path: data/context/streamhouse
+docs_path: data-core/context/streamhouse/index.md
 products:
   - watsonx.data
 tags:
@@ -16,12 +16,12 @@ tags:
 ---
 <!-- Migrated from registry.py. Edit freely; this is the v2 source of truth. -->
 
-# Data Streaming
+# Streamhouse
 
-Real-time data streaming capabilities for continuous data processing and event-driven architectures
+Streamhouse — real-time data streaming capabilities for continuous data processing and event-driven architectures
 
-- **Repo**: [data/context/real-time-streaming](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/real-time-streaming)
-- **Docs**: [data-core/context/real-time-streaming/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/context/real-time-streaming/)
+- **Repo**: [data/context/streamhouse](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/streamhouse)
+- **Docs**: [data-core/context/streamhouse/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/context/streamhouse/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and
