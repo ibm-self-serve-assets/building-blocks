@@ -1,11 +1,11 @@
 ---
 id: infrastructure-as-code
 name: Infrastructure as Code
-group: build
+group: operate
 capability: automation
 description: Terraform and Ansible for automated, consistent environment provisioning and deployment
 repo_path: automation/operate/infrastructure-as-code
-docs_path: automation-core/build/infrastructure-as-code.md
+docs_path: automation-core/operate/infrastructure-as-code.md
 products:
   - Terraform
   - Ansible
@@ -23,7 +23,7 @@ tags:
 Terraform and Ansible for automated, consistent environment provisioning and deployment
 
 - **Repo**: [automation/operate/infrastructure-as-code](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/operate/infrastructure-as-code)
-- **Docs**: [automation-core/build/infrastructure-as-code.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/build/infrastructure-as-code)
+- **Docs**: [automation-core/operate/infrastructure-as-code.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/operate/infrastructure-as-code/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

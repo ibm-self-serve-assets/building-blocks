@@ -4,12 +4,12 @@
 
 ## Source-of-truth model
 
-The canonical development workspace for this package lives outside this Building Block repo. The copy you see here under `ai-trust/real-time-guardrails/assets/sdk/` is a **published mirror** — kept in sync via a tracked workflow rather than edited in-place.
+The canonical development workspace for this package lives outside this Building Block repo. The copy you see here under `ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk/` is a **published mirror** — kept in sync via a tracked workflow rather than edited in-place.
 
 | Location | Role |
 |---|---|
 | Dev workspace (not in this repo) | Canonical source. Active development, tests, day-to-day changes happen here. |
-| `ai-trust/real-time-guardrails/assets/sdk/` (this folder) | Published mirror that partners consume from this public BB repo. |
+| `ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk/` (this folder) | Published mirror that partners consume from this public BB repo. |
 
 **Do not edit files in `assets/sdk/` directly** — any change you make here will be overwritten by the next sync. Edit in the dev workspace, run the tests, then re-publish.
 
@@ -19,7 +19,7 @@ The sync is a one-direction rsync from the dev workspace into this folder, with 
 
 ```bash
 SRC=/path/to/dev/real-time-guardrails           # canonical source (not in this repo)
-DST=ai-trust/real-time-guardrails/assets/sdk    # this folder
+DST=ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk    # this folder
 
 rsync -av --delete \
   --exclude='.env' \
@@ -50,7 +50,7 @@ After running the rsync into this folder:
 
 1. **Security scan**:
    ```bash
-   DST=ai-trust/real-time-guardrails/assets/sdk
+   DST=ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk
    find "$DST" -name '.env' -type f                       # MUST be empty
    find "$DST" -type d \( -name '.venv' -o -name '__pycache__' -o -name '.pytest_cache' \)  # MUST be empty
    grep -rE 'WATSONX_APIKEY=[A-Za-z0-9_-]{20,}' "$DST"    # MUST be empty
@@ -66,7 +66,7 @@ After running the rsync into this folder:
 3. **Diff review**:
    ```bash
    cd <root of building-blocks repo>
-   git status && git diff --stat ai-trust/real-time-guardrails/assets/sdk
+   git status && git diff --stat ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk
    ```
    Scan for any file you didn't expect — especially anything matching the exclude patterns that snuck in.
 4. **Commit + open PR** — never `git push` directly to `main` on this public repo.

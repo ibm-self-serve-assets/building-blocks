@@ -4,6 +4,14 @@ name: Validate bb-catalog
 # (explore-BBs/bb-catalog/). Fails PRs that introduce dangling references,
 # broken repo paths, or docs-page drift. The catalog is live-fetched by the
 # Explorer MCP server, so errors here reach users within minutes of merge.
+#
+# The catalog cross-references the domain folders (block repo_paths, skill
+# zips), so it also runs on pushes to main that touch those folders — a
+# folder move or rename that strands the catalog then fails here, visibly,
+# instead of silently freezing the skills sync (whose commit is gated on this
+# same validator). Domain-folder PRs are deliberately NOT gated: the fix for
+# a moved folder lives in explore-BBs/, not in that PR. A daily cron is the
+# backstop for anything that slips through.
 
 on:
   pull_request:
@@ -15,6 +23,14 @@ on:
     paths:
       - 'explore-BBs/bb-catalog/**'
       - '.github/workflows/validate-bb-catalog.yml'
+      # domain folders referenced by block repo_paths and skill sources
+      - 'ai/**'
+      - 'automation/**'
+      - 'data/**'
+      - 'ibm-bob/skills/**'
+  schedule:
+    - cron: '47 6 * * *'   # daily backstop, after the skills sync at 06:17
+  workflow_dispatch:
 
 jobs:
   validate:

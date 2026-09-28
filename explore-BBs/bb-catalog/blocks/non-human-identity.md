@@ -24,7 +24,7 @@ tags:
 Identity and secrets management for non-human entities including service accounts, APIs, and machine identities, with HashiCorp Vault integration
 
 - **Repo**: [automation/secure/non-human-identity-and-secret-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/secure/non-human-identity-and-secret-management)
-- **Docs**: [automation-core/secure/authentication-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/secure/authentication-management)
+- **Docs**: [automation-core/secure/non-human-identity.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/secure/non-human-identity/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

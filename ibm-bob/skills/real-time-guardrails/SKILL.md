@@ -19,7 +19,7 @@ Read every time. Violating any of these causes silent or costly failures in prod
 
 **RULE 3 — Python 3.11–3.13 only.** The IBM SDK chain doesn't support 3.14 yet. If the user is on 3.14, rebuild their venv with 3.11/3.12/3.13.
 
-**RULE 4 — Install from source with the `[all]` extra; use a dedicated venv.** The package is not on PyPI today — partners install from a building-blocks repo clone via `pip install -e "<repo>/ai-trust/real-time-guardrails/assets/sdk[all]"`. **The quotes are required on zsh** (macOS default) — without them, the shell parses `[all]` as an array subscript, silently produces an empty path, and pip errors with `is not a valid editable requirement`. The bundled `setup.sh` quotes correctly. Without `[metrics,llmaj]` (always part of base install), registry build fails with `ModuleNotFoundError: No module named 'unitxt'`. If the user reports `ResolutionImpossible` during install, their existing venv has stricter pins than the SDK can accept (typically on `pydantic` or `httpx`) — load `reference/setup-and-credentials.md` for the conflict matrix + dry-run recipe.
+**RULE 4 — Install from source with the `[all]` extra; use a dedicated venv.** The package is not on PyPI today — partners install from a building-blocks repo clone via `pip install -e "<repo>/ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk[all]"`. **The quotes are required on zsh** (macOS default) — without them, the shell parses `[all]` as an array subscript, silently produces an empty path, and pip errors with `is not a valid editable requirement`. The bundled `setup.sh` quotes correctly. Without `[metrics,llmaj]` (always part of base install), registry build fails with `ModuleNotFoundError: No module named 'unitxt'`. If the user reports `ResolutionImpossible` during install, their existing venv has stricter pins than the SDK can accept (typically on `pydantic` or `httpx`) — load `reference/setup-and-credentials.md` for the conflict matrix + dry-run recipe.
 
 **RULE 5 — Tool-call payloads use OpenAI ToolSpec format.** `tool_calls: [{"type": "function", "function": {"name": "...", "arguments": "..."}}]`. Flat dicts like `{"name": "...", "parameters": "..."}` are rejected by the SDK.
 
@@ -184,7 +184,7 @@ Read every time. Violating any of these causes silent or costly failures in prod
 
 1. **Deploy** — pick one mode:
    - **Library**: pip-install into agent container. Lowest latency. Python-only.
-   - **REST**: Dockerize using the source SDK's Dockerfile (lives in the building-blocks repo at `ai-trust/real-time-guardrails/assets/sdk/Dockerfile`, not bundled with this skill). `real-time-guardrails serve --port 8090`. Co-locate with agent in same VPC.
+   - **REST**: Dockerize using the source SDK's Dockerfile (lives in the building-blocks repo at `ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk/Dockerfile`, not bundled with this skill). `real-time-guardrails serve --port 8090`. Co-locate with agent in same VPC.
    - **MCP**: register as MCP tool in agent's config.
 2. **Wire audit to log aggregation:**
    ```python

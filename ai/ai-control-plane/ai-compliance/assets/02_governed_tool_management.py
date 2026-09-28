@@ -123,7 +123,7 @@ SAMPLE_TOOLS = [
         "category": "guardrails",
         "framework": "ibm-watsonx-gov",
         "version": "1.4.2",
-        "owner": "AI Trust Team",
+        "owner": "AI Control Plane Team",
         "deployment": "Code Engine",
     },
 ]

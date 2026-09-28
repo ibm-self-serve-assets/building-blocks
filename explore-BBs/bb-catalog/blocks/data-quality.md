@@ -1,11 +1,11 @@
 ---
 id: data-quality
 name: Data Quality
-group: intelligence
+group: context
 capability: data
 description: Data quality management with automated validation, profiling, and rule-based checks across data sources
 repo_path: data/context/metadata-enrichment/data-quality
-docs_path: data-core/intelligence/data-quality/index.md
+docs_path: data-core/context/metadata-enrichment/index.md
 products:
   - watsonx.data
 tags:
@@ -22,7 +22,7 @@ tags:
 Data quality management with automated validation, profiling, and rule-based checks across data sources
 
 - **Repo**: [data/context/metadata-enrichment/data-quality](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/metadata-enrichment/data-quality)
-- **Docs**: [data-core/intelligence/data-quality/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/intelligence/data-quality/index)
+- **Docs**: [data-core/context/metadata-enrichment/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/context/metadata-enrichment/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

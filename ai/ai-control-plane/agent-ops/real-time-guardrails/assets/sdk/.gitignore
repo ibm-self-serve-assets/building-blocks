@@ -14,7 +14,7 @@ env/
 
 # Partner-facing template files (placeholders only, NOT real .env files).
 # Whitelist re-includes them despite the broader `.env.*` rule in the
-# parent ai-trust/.gitignore when this SDK lives inside the BB tree.
+# parent ai-control-plane/.gitignore when this SDK lives inside the BB tree.
 !.env.example
 !examples/.env.thresholds.example
 .pytest_cache/

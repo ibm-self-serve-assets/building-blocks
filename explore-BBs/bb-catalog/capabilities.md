@@ -2,7 +2,7 @@
 capabilities:
   - id: ai
     name: AI
-    description: AI agents, multi-agent orchestration, AI trust, model evaluation, and governance
+    description: AI agents, multi-agent orchestration, AI control plane (agent ops, governance, compliance), and AI engineering
   - id: data
     name: Data
     description: Data integration, intelligence, and retrieval capabilities for AI-powered applications
@@ -13,4 +13,4 @@ capabilities:
 
 # Core Capabilities
 
-Top-level hierarchy of the Building Blocks portfolio (3 capabilities → 8 groups → 25 blocks).
+Top-level hierarchy of the Building Blocks portfolio (3 capabilities → 9 groups → 26 blocks).

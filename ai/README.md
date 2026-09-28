@@ -1,6 +1,6 @@
 # AI Building Blocks
 
-Reusable implementation assets for **IBM Data and AI**, organized by **Agents**, **AI Engineering**, and **AI Trust**.
+Reusable implementation assets for **IBM Data and AI**, organized by **Agents**, **AI Engineering**, and **AI Control Plane**.
 
 This repository is intentionally code-first. Each building block gives developers enough information to understand the pattern, identify the IBM products involved, find the runnable/reference assets, and get to the detailed setup instructions quickly.
 
@@ -16,7 +16,7 @@ This repository is intentionally code-first. Each building block gives developer
 | **AI Engineering** | [Code Modernization](ai-engineering/code-modernization/) | IBM Bob, watsonx Code Assistant | Automated legacy codebase refactoring, debt analysis, and Java/Maximo modernization |
 | **AI Engineering** | [Headless Bob](ai-engineering/headless-bob/) | IBM Bob Shell, Bobserver | Server-side and pipeline-driven autonomous execution via REST and MCP APIs |
 | **AI Engineering** | [Integrate as Code](ai-engineering/integrate-as-code/) | IBM iPaaS, watsonx Orchestrate | Enterprise integration flows, event-driven connectors, and automated iPaaS patterns |
-| **AI Trust** | [AI Trust Overview](ai-trust/) | IBM watsonx.governance | Comprehensive governance, model evaluation, agent ops, and real-time guardrails |
+| **AI Control Plane** | [AI Control Plane Overview](ai-control-plane/) | IBM watsonx.governance, IBM watsonx Orchestrate | Agent evaluation and observability, runtime policy controls, AI cost management, and compliance |
 
 ---
 
@@ -28,7 +28,7 @@ Start at a building-block README and then move into the implementation you need:
 ai/
 ├── agents/             # watsonx Orchestrate agent authoring & multi-agent orchestration
 ├── ai-engineering/     # IDE and headless agentic engineering, code modernization, and iPaaS
-└── ai-trust/           # watsonx.governance evaluations, real-time guardrails, and compliance
+└── ai-control-plane/   # AI Control Plane — agent ops, runtime controls, cost, compliance (watsonx.governance)
 ```
 
 ---

@@ -21,7 +21,7 @@ tags:
 Build autonomous, task-driven AI agents using watsonx Orchestrate ADK
 
 - **Repo**: [ai/agents/agent-builder](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/agents/agent-builder)
-- **Docs**: [ai-core/agents/agent-builder.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/agent-builder)
+- **Docs**: [ai-core/agents/agent-builder.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/agents/agent-builder/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

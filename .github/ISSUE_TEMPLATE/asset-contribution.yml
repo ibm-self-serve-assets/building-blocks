@@ -29,7 +29,7 @@ body:
       description: Select one or more applicable domains
       options:
         - label: Agents
-        - label: AI Trust
+        - label: AI Control Plane
         - label: Data for AI
         - label: Automation
     validations:
@@ -46,7 +46,7 @@ body:
         - label: Multi Agent Orchestration
         - label: Agentic SDLC
 
-        # AI Trust
+        # AI Control Plane
         - label: Agent Ops
         - label: AI Compliance
         - label: Model Evaluation

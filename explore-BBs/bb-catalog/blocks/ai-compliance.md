@@ -1,11 +1,11 @@
 ---
 id: ai-compliance
 name: AI Compliance
-group: ai-trust
+group: ai-control-plane
 capability: ai
 description: Streamline regulatory alignment and industry compliance standards for AI systems
-repo_path: ai/ai-trust/ai-compliance
-docs_path: ai-core/ai-trust/ai-compliance.md
+repo_path: ai/ai-control-plane/ai-compliance
+docs_path: ai-core/ai-control-plane/ai-compliance.md
 products:
   - watsonx.governance
 tags:
@@ -20,8 +20,8 @@ tags:
 
 Streamline regulatory alignment and industry compliance standards for AI systems
 
-- **Repo**: [ai/ai-trust/ai-compliance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-trust/ai-compliance)
-- **Docs**: [ai-core/ai-trust/ai-compliance.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-trust/ai-compliance)
+- **Repo**: [ai/ai-control-plane/ai-compliance](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-control-plane/ai-compliance)
+- **Docs**: [ai-core/ai-control-plane/ai-compliance.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-control-plane/ai-compliance/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

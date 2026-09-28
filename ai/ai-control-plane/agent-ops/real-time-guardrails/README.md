@@ -1,5 +1,7 @@
 # Real-Time Guardrails
 
+Part of the **[Agent Ops](../)** building block in the **[AI Control Plane](../../)** — the runtime enforcement layer for any agent framework. For watsonx Orchestrate-native, configuration-only enforcement see [Agent Controls](../#agent-controls--runtime-policy-enforcement).
+
 Enforce safety boundaries and operational constraints to keep your AI applications within desired behavior in production.
 
 ---
@@ -42,7 +44,7 @@ Under the hood, the mode enforces **19 mandatory rules** covering credential hyg
 
 ```bash
 cd <your-project-root>
-cp -r .../building-blocks/ai-trust/real-time-guardrails/bob-modes/base-modes/real-time-guardrails/.bob .
+cp -r .../building-blocks/ai/ai-control-plane/agent-ops/real-time-guardrails/bob-modes/base-modes/real-time-guardrails/.bob .
 ```
 
 Open Bob, select the **🛡️ Real-Time Guardrails** mode, and ask Bob to help you integrate guardrails into your agent. Full details in [`bob-modes/README.md`](bob-modes/README.md).
@@ -95,4 +97,4 @@ Four numbered Python scripts (`01_…` through `04_…`) that show how to use th
 1. Review the numbered scripts in [`assets/`](assets/) — start with `01_content_safety_guardrails.py`
 2. Follow the setup instructions in [`assets/README.md`](assets/README.md)
 
-
+📖 Docs: [Real-Time Guardrails](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-control-plane/real-time-guardrails/) · [Agent Ops](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-control-plane/agent-ops/)

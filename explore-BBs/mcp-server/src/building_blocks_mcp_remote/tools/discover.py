@@ -28,7 +28,7 @@ def list_building_blocks(
     source of truth for which blocks exist — the catalog changes over time.
 
     Args:
-        group: Filter by group. Valid values: "agents", "ai-trust" (AI);
+        group: Filter by group. Valid values: "agents", "ai-control-plane" (AI);
             "integration", "intelligence", "retrieval" (Data);
             "build", "secure", "optimize" (Automation). Omit to list all.
         capability: Filter by core capability ("ai", "data", "automation"). Omit for all.

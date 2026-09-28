@@ -91,7 +91,7 @@ Then ask Bob something like:
 
 Earlier versions of this skill talked to a hosted MCP server on IBM Code Engine. We removed that path because:
 
-1. **Portfolio consistency.** All three AI Trust skills (real-time-guardrails, agent-ops, this one) now follow the same shape: partner installs the SDK, configures auth, asks Bob.
+1. **Portfolio consistency.** All three AI Control Plane skills (real-time-guardrails, agent-ops, this one) now follow the same shape: partner installs the SDK, configures auth, asks Bob.
 2. **Data sovereignty.** Partner records stay on the partner's machine. The hosted MCP path required sending all records to a centralized endpoint.
 3. **EU / JP / on-prem coverage.** The hosted MCP was US-South-only and didn't survive air-gap or data-residency constraints.
 4. **Custom LLM-as-judge support.** The hosted MCP's install profile omitted the `[llmaj]` extra; custom LLM-judge authoring (`LLMAsJudgeMetric`, `LLMValidationMetric`) only works via direct SDK install.
@@ -101,4 +101,4 @@ If IBM ships an official, supported, multi-region MCP for watsonx.governance in 
 
 ## Source
 
-This skill is derived from the [Build-Time GenAI Evaluations Bob mode](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai-trust/model-evaluation/gen-ai-evaluations) in the IBM Building Blocks portfolio. The underlying SDK is `ibm-watsonx-gov`. Source of truth for watsonx.governance: https://www.ibm.com/products/watsonx-governance.
+This skill is derived from the [Build-Time GenAI Evaluations Bob mode](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-control-plane/agent-ops/model-evaluation/gen-ai-evaluations) in the IBM Building Blocks portfolio. The underlying SDK is `ibm-watsonx-gov`. Source of truth for watsonx.governance: https://www.ibm.com/products/watsonx-governance.

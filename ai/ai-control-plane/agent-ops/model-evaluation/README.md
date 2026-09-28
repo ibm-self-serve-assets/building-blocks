@@ -1,5 +1,7 @@
 # Model Evaluation
 
+Part of the **[Agent Ops](../)** building block in the **[AI Control Plane](../../)** — the build-time evaluation layer. Evaluate here before deployment; enforce at runtime with [Real-Time Guardrails](../real-time-guardrails/) or Agent Controls.
+
 Evaluate your AI and ML models for a range of key metrics such as performance quality, fairness, reliability, and more.
 
 ---
@@ -32,3 +34,5 @@ Coming soon.
 ## Getting Started
 1. Choose the evaluation type that matches your model (generative AI or predictive ML).
 2. Explore the `assets/` folder for ready-to-use code and the `bob-modes/` folder for guided AI-assisted workflows.
+
+📖 Docs: [Model Evaluation](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-control-plane/model-evaluation/) · [Agent Ops](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-control-plane/agent-ops/)

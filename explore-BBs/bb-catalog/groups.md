@@ -3,37 +3,44 @@ groups:
   - id: agents
     name: Agents
     capability: ai
-    description: Build and orchestrate AI agents using watsonx Orchestrate ADK, multi-agent patterns, and agentic SDLC
-  - id: ai-trust
-    name: AI Trust
+    description: Build, orchestrate, and deploy autonomous AI agents with the watsonx Orchestrate ADK and multi-agent patterns
+  - id: ai-control-plane
+    name: AI Control Plane
     capability: ai
-    description: Model evaluation, agent operations monitoring, real-time guardrails, and AI compliance
-  - id: integration
-    name: Integration
+    description: Visibility and control across the AI lifecycle — agent observability and evaluation, runtime guardrails, cost management, and regulatory compliance, powered by watsonx.governance
+  - id: ai-engineering
+    name: AI Engineering
+    capability: ai
+    description: Bob-powered development layer across the software lifecycle — agentic SDLC, code modernization, headless Bob, and integration as code
+  - id: context
+    name: Context
     capability: data
-    description: AI-generated data pipelines, data streaming, and data observability for ingestion and processing
-  - id: intelligence
-    name: Intelligence
+    description: Data in motion, data at rest, metadata, governance, and observability so applications and agents operate on current, understandable information
+  - id: pipelines
+    name: Pipelines
     capability: data
-    description: Data quality, lineage tracking, and natural-language to SQL query generation
-  - id: retrieval
-    name: Retrieval
+    description: Prepare, transform, move, and index structured and unstructured data for analytics, RAG, search, and AI applications
+  - id: query-engines
+    name: Query Engines
     capability: data
-    description: Vector search, NoSQL databases, and zero-copy lakehouse access for unified data retrieval
-  - id: build
-    name: Build and Deploy
+    description: Fit-for-purpose execution for SQL analytics, open lakehouse interoperability, and vector retrieval — matching the engine to the workload
+  - id: operate
+    name: Operate
     capability: automation
-    description: iPaaS integration, Infrastructure as Code, and code modernization
+    description: Provision, configure, and schedule the infrastructure and workloads behind hybrid applications — Infrastructure as Code, configuration automation, workload orchestration, and asset management
   - id: secure
     name: Secure
     capability: automation
-    description: Non-human identity management and quantum-safe cryptography
+    description: Non-human identity and secrets management, application risk and continuous compliance, and quantum-safe cryptographic readiness
   - id: optimize
     name: Optimize
     capability: automation
-    description: Automated resource management, FinOps cost optimization, and resilience/compliance
+    description: Observability, application performance, technology financial management and FinOps, and network health across hybrid cloud
 ---
 
 # Groups
 
-8 groups across the 3 core capabilities. Each building block belongs to exactly one group.
+9 groups across the 3 core capabilities. Each building block belongs to exactly one group.
+Group ids mirror the section folders of the docs site (`mkdocs.yml` nav in
+[building-blocks-docs](https://github.com/ibm-self-serve-assets/building-blocks-docs)) and the
+second-level folders of this repository (`ai/`, `data/`, `automation/`).

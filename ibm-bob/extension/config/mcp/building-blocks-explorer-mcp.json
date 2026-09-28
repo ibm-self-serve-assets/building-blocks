@@ -1,0 +1,40 @@
+{
+  "mcpServers": {
+    "building-blocks": {
+      "type": "streamable-http",
+      "url": "https://building-blocks-explorer-mcp.23rbzktsxcbt.us-south.codeengine.appdomain.cloud/mcp",
+      "alwaysAllow": [
+        "list_building_blocks",
+        "search_building_blocks",
+        "get_building_block",
+        "get_building_block_readme",
+        "list_docs_pages",
+        "get_docs_page",
+        "list_assets",
+        "get_asset_file",
+        "list_bob_modes",
+        "get_bob_mode_info",
+        "download_bob_mode",
+        "list_skills",
+        "get_skill",
+        "download_skill"
+      ],
+      "disabled": false
+    },
+    "building-blocks-installer": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "building-blocks-installer @ https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/1ff4d793797f6b97d55cee67892d676c9159da66/explore-BBs/local-installer/dist/building_blocks_installer-0.1.2-py3-none-any.whl",
+        "building-blocks-installer"
+      ],
+      "alwaysAllow": [
+        "install_skill",
+        "install_bob_mode",
+        "render_diagram",
+        "verify_install"
+      ],
+      "disabled": false
+    }
+  }
+}

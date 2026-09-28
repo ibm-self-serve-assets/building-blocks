@@ -30,7 +30,7 @@ Embeddable capabilities across key domains:
 
 ---
 
-## AI — Artificial Intelligence, Agents, & Trust
+## AI — Artificial Intelligence, Agents, & Control Plane
 
 The **[AI Building Blocks](ai/README.md)** deliver reusable engineering patterns, agent creation frameworks, governance tooling, and full-lifecycle software development automation. They are organized into three domains:
 
@@ -42,7 +42,7 @@ The **[AI Building Blocks](ai/README.md)** deliver reusable engineering patterns
 | **AI Engineering** | [Code Modernization](ai/ai-engineering/code-modernization/) | IBM Bob + Legacy Refactoring + Java/Maximo |
 | **AI Engineering** | [headlessbob](ai/ai-engineering/headless-bob/) | Node.js + REST/ACP APIs + Threads UI |
 | **AI Engineering** | [Integrate as Code](ai/ai-engineering/integrate-as-code/) | IBM iPaaS + watsonx Orchestrate Workflows |
-| **AI Trust** | [AI Trust](ai/ai-trust/) | IBM watsonx.governance + Model Eval + Guardrails |
+| **AI Control Plane** | [AI Control Plane](ai/ai-control-plane/) | IBM watsonx.governance + watsonx Orchestrate + Agent Ops + AI Compliance |
 
 [Explore all AI building blocks →](ai/README.md)
 

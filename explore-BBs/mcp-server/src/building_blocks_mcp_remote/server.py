@@ -46,7 +46,7 @@ mcp = FastMCP(
         "in the building-blocks repo — content updates ship by PR.\n\n"
         "Building Blocks are pre-built, embeddable capabilities organized as "
         "3 core capabilities → 8 groups → individual blocks:\n"
-        "  AI: agents, ai-trust\n"
+        "  AI: agents, ai-control-plane\n"
         "  Data: integration, intelligence, retrieval\n"
         "  Automation: build, secure, optimize\n\n"
         "The set of blocks changes over time — always call list_building_blocks "

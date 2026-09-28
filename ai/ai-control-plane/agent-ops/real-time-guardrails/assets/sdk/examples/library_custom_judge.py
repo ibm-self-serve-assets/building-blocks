@@ -49,7 +49,7 @@ def build_judge_from_env() -> object:
 def main() -> None:
     judge = build_judge_from_env()
 
-    # Style A — prompt_template (ported from ai-trust/assets/03_custom_guardrails.py)
+    # Style A — prompt_template (ported from ai-control-plane/real-time-guardrails/assets/03_custom_guardrails.py)
     completeness_metric = build_answer_completeness(judge)
 
     # Style B — criteria + Option (the new helper)

@@ -7,6 +7,9 @@ modes:
     domain: Agents
     description: "Agent Builder Base Mode: Foundation mode for building and testing autonomous agents with the watsonx Orchestrate ADK."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/base-modes/agent-builder-base-mode.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
 
   - name: Domain Agent Builder
     folderName: domain-agent-builder
@@ -14,6 +17,9 @@ modes:
     domain: Agents
     description: "Domain Agent Builder: Build domain-specific agents (healthcare, retail, finance, HR, IT) with custom tools and RAG knowledge bases."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/custom-modes/domain-agent-builder.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
 
   - name: Voice Agent Builder
     folderName: voice-agent-builder
@@ -21,6 +27,9 @@ modes:
     domain: Agents
     description: "Voice Agent Builder: Configure and deploy voice-enabled agents with STT/TTS channels (phone, WhatsApp, SMS, Slack)."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/custom-modes/voice-agent-builder.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
 
   - name: Agent REST Integration
     folderName: agent-rest-integration
@@ -28,6 +37,9 @@ modes:
     domain: Agents
     description: "Agent REST Integration: Connect agents to external enterprise systems and web applications via REST APIs."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/agent-builder/bob-modes/custom-modes/agent-rest-integration.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
 
   - name: Multi-Agent Orchestration Base Mode
     folderName: multi-agent-orchestration-base-mode
@@ -35,6 +47,9 @@ modes:
     domain: Agents
     description: "Multi-Agent Orchestration Base Mode: Foundation mode for defining coordinator agents, task delegation strategies, shared context, and agent-to-agent (A2A) communication."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/multi-agent-orchestration/bob-modes/base-modes/multi-agent-orchestration-base-mode.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
 
   - name: Agent Model Gateway Mode
     folderName: agent-model-gateway-bob-mode
@@ -42,6 +57,41 @@ modes:
     domain: Agents
     description: "Agent Model Gateway Mode: Configure agent routing through the watsonx.ai AI Gateway for load balancing, multi-model fallback, and rate limiting."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/agents/multi-agent-orchestration/bob-modes/custom-modes/agent-model-gateway-bob-mode.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
+
+  # ─── AI CONTROL PLANE BUILDING BLOCK ───
+  # Zips moved with the AI Trust → AI Control Plane restructure: ai/ai-control-plane/agent-ops/...
+  - name: Agent Ops
+    folderName: agent-ops
+    category: base
+    domain: AI Control Plane
+    description: "Agent Ops: Evaluate watsonx Orchestrate agents before deployment — automated benchmarks, metrics analysis, cost and latency tracking via Langfuse, and adversarial red-teaming."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/ai-control-plane/agent-ops/bob-modes/base-modes/agent-ops.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
+
+  # No pre-registered MCP: this mode bundles a local stdio watsonx-gov MCP server (watsonx-gov-mcp/ inside the zip)
+  # that needs an absolute local path and the partner's watsonx API key — wired per the mode README.
+  - name: Build-time GenAI Evaluator
+    folderName: build-time-evals-gen-ai
+    category: base
+    domain: AI Control Plane
+    description: "Build-time GenAI Evaluator: Evaluate GenAI applications — RAG pipelines, LLM outputs, chatbot safety — with IBM watsonx.governance metrics before deployment."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/ai-control-plane/agent-ops/model-evaluation/gen-ai-evaluations/bob-modes/base-modes/build-time-evals-gen-ai.zip"
+    mcps: []
+
+
+  - name: Real-Time Guardrails
+    folderName: real-time-guardrails
+    category: base
+    domain: AI Control Plane
+    description: "Real-Time Guardrails: Wire watsonx.governance-backed Pass/Flag/Block guardrails into an AI or RAG agent across input, retrieval, generation, and output — with audit logging and production integration code."
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/ai-control-plane/agent-ops/real-time-guardrails/bob-modes/base-modes/real-time-guardrails.zip"
+    mcps: []
+
 
   # ─── DATA BUILDING BLOCK ───
   - name: Data Observability Builder
@@ -66,3 +116,5 @@ modes:
     domain: General
     description: "IBM Building Blocks Explorer: Go from a business use case to a build-ready workspace — discover the right building blocks across AI, Data, and Automation, then install the matching Bob skills and modes."
     zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/explore-BBs/building-blocks-explorer.zip"
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/building-blocks-explorer-mcp.json"

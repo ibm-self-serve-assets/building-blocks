@@ -5,7 +5,7 @@ group: optimize
 capability: automation
 description: Cost visibility across teams, budget forecasting, spend anomaly detection, cost allocation, and ROI evaluation via Apptio
 repo_path: automation/optimize/technology-financial-management-and-finops
-docs_path: automation-core/optimize/finops.md
+docs_path: automation-core/optimize/technology-financial-management.md
 products:
   - Apptio
 tags:
@@ -22,7 +22,7 @@ tags:
 Cost visibility across teams, budget forecasting, spend anomaly detection, cost allocation, and ROI evaluation via Apptio
 
 - **Repo**: [automation/optimize/technology-financial-management-and-finops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/automation/optimize/technology-financial-management-and-finops)
-- **Docs**: [automation-core/optimize/finops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/optimize/finops)
+- **Docs**: [automation-core/optimize/technology-financial-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/optimize/technology-financial-management/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

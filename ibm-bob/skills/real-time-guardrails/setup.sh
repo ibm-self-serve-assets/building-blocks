@@ -24,7 +24,7 @@ VENV_DIR="${VENV_DIR:-$HOME/guardrails-venv}"
 PYTHON_BIN="${PYTHON_BIN:-python3.11}"
 BB_REPO_DIR="${BB_REPO_DIR:-$HOME/src/building-blocks}"
 BB_REPO_URL="${BB_REPO_URL:-https://github.com/ibm-self-serve-assets/building-blocks}"
-SDK_SUBPATH="ai-trust/real-time-guardrails/assets/sdk"
+SDK_SUBPATH="ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk"
 
 # --- 1. Python check ------------------------------------------------------
 if ! command -v "$PYTHON_BIN" >/dev/null 2>&1; then
