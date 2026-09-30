@@ -21,7 +21,7 @@
 
 ## Dockerfile
 
-**Location:** in the building-blocks source repo at `ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk/Dockerfile` — NOT bundled with this skill. Pull from the source repo if you need the canonical Dockerfile.
+**Location:** in the building-blocks source repo at `ai/control/guardrails/assets/sdk/Dockerfile` — NOT bundled with this skill. Pull from the source repo if you need the canonical Dockerfile.
 **Base:** `python:3.11-slim`
 **Expose:** 8080
 **Cmd:** `real-time-guardrails serve --host 0.0.0.0 --port 8080`

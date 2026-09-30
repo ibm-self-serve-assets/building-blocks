@@ -88,7 +88,7 @@ chmod 600 .env
   ```bash
   python3.11 -m venv /tmp/resolve-check && source /tmp/resolve-check/bin/activate
   pip install --upgrade pip
-  pip install --dry-run -e "<building-blocks>/ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk[all]"
+  pip install --dry-run -e "<building-blocks>/ai/control/guardrails/assets/sdk[all]"
   # Note: quotes around the path+extras are required on zsh — without them
   # zsh interprets [all] as an array subscript and pip sees an empty path.
   # If output ends with "Would install <list>", clean. If "ResolutionImpossible",

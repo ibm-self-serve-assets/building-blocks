@@ -30,21 +30,24 @@ Embeddable capabilities across key domains:
 
 ---
 
-## AI — Artificial Intelligence, Agents, & Control Plane
+## AI Control Plane — Agents, Control, and Engineering
 
-The **[AI Building Blocks](ai/README.md)** deliver reusable engineering patterns, agent creation frameworks, governance tooling, and full-lifecycle software development automation. They are organized into three domains:
+The **[AI Control Plane](ai/README.md)** is a composable foundation for building, controlling, and engineering enterprise AI systems. Its building blocks are organized into three groups:
 
-| Domain | Building Block | Primary Products / Capabilities |
+| Group | Building Block | Primary Products / Capabilities |
 |---|---|---|
 | **Agents** | [Agent Builder](ai/agents/agent-builder/) | IBM watsonx Orchestrate ADK + Tools + Knowledge Bases |
 | **Agents** | [Multi-Agent Orchestration](ai/agents/multi-agent-orchestration/) | IBM watsonx Orchestrate + AI Gateway + MCP/A2A |
-| **AI Engineering** | [Agentic SDLC](ai/ai-engineering/agentic-sdlc/) | IBM Bob + In-IDE Agentic Development |
-| **AI Engineering** | [Code Modernization](ai/ai-engineering/code-modernization/) | IBM Bob + Legacy Refactoring + Java/Maximo |
-| **AI Engineering** | [headlessbob](ai/ai-engineering/headless-bob/) | Node.js + REST/ACP APIs + Threads UI |
-| **AI Engineering** | [Integrate as Code](ai/ai-engineering/integrate-as-code/) | IBM iPaaS + watsonx Orchestrate Workflows |
-| **AI Control Plane** | [AI Control Plane](ai/ai-control-plane/) | IBM watsonx.governance + watsonx Orchestrate + Agent Ops + AI Compliance |
+| **Control** | [Agent Ops](ai/control/agent-ops/) | IBM watsonx Orchestrate + watsonx.governance — evaluation, red-teaming, traces |
+| **Control** | [Guardrails](ai/control/guardrails/) | Agent Controls + Real-Time Guardrails SDK (watsonx.governance) |
+| **Control** | [Cost Management](ai/control/cost-management/) | Per-interaction cost and token tracking with Langfuse |
+| **Control** | [Compliance](ai/control/compliance/) | IBM watsonx.governance + OpenPages — regulation mapping and Enforcement Tracking |
+| **Engineering** | [Agentic SDLC](ai/engineering/agentic-sdlc/) | IBM Bob + In-IDE Agentic Development |
+| **Engineering** | [Code Modernization](ai/engineering/code-modernization/) | IBM Bob + Legacy Refactoring + Java/Maximo |
+| **Engineering** | [headlessbob](ai/engineering/headless-bob/) | Node.js + REST/ACP APIs + Threads UI |
+| **Engineering** | [Integrate as Code](ai/engineering/integrate-as-code/) | IBM iPaaS + watsonx Orchestrate Workflows |
 
-[Explore all AI building blocks →](ai/README.md)
+[Explore the AI Control Plane →](ai/README.md)
 
 ---
 

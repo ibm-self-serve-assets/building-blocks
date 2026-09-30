@@ -95,4 +95,4 @@ Bob will load this skill and drive the workflow.
 
 ## Source
 
-This skill is derived from the [Real-Time Guardrails Bob mode](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-control-plane/agent-ops/real-time-guardrails) in the IBM Building Blocks portfolio. The underlying Python package is `real-time-guardrails` (built on top of `ibm-watsonx-gov`).
+This skill is derived from the [Real-Time Guardrails Bob mode](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/guardrails) in the IBM Building Blocks portfolio. The underlying Python package is `real-time-guardrails` (built on top of `ibm-watsonx-gov`).

@@ -1,11 +1,11 @@
 ---
 id: agentic-sdlc
 name: Agentic SDLC
-group: ai-engineering
+group: engineering
 capability: ai
 description: Agentic software development lifecycle for building, testing, and deploying AI-powered applications
-repo_path: ai/ai-engineering/agentic-sdlc
-docs_path: ai-core/ai-engineering/agentic-sdlc.md
+repo_path: ai/engineering/agentic-sdlc
+docs_path: ai-core/engineering/agentic-sdlc.md
 products:
   - watsonx Orchestrate
 tags:
@@ -20,8 +20,8 @@ tags:
 
 Agentic software development lifecycle for building, testing, and deploying AI-powered applications
 
-- **Repo**: [ai/ai-engineering/agentic-sdlc](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-engineering/agentic-sdlc)
-- **Docs**: [ai-core/ai-engineering/agentic-sdlc.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-engineering/agentic-sdlc/)
+- **Repo**: [ai/engineering/agentic-sdlc](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/engineering/agentic-sdlc)
+- **Docs**: [ai-core/engineering/agentic-sdlc.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/engineering/agentic-sdlc/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

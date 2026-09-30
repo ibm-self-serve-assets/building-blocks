@@ -1,28 +1,31 @@
 ---
 id: agent-ops
 name: Agent Ops
-group: ai-control-plane
+group: control
 capability: ai
-description: Operational monitoring and management of AI agents in production environments
-repo_path: ai/ai-control-plane/agent-ops
-docs_path: ai-core/ai-control-plane/agent-ops.md
+description: Evaluate, red-team, and observe AI agents from development through production — benchmarks with LLM-simulated users, failure analysis, adversarial testing, traces, and latency — plus metric-level evaluation of GenAI applications
+repo_path: ai/control/agent-ops
+docs_path: ai-core/control/agent-ops.md
 products:
+  - watsonx Orchestrate
   - watsonx.governance
 tags:
-  - trust
-  - monitoring
+  - control
+  - evaluation
+  - red-teaming
+  - observability
   - agents
-  - operations
+  - model-evaluation
   - production
 ---
 <!-- Migrated from registry.py. Edit freely; this is the v2 source of truth. -->
 
 # Agent Ops
 
-Operational monitoring and management of AI agents in production environments
+Evaluate, red-team, and observe AI agents from development through production — benchmarks with LLM-simulated users, failure analysis, adversarial testing, traces, and latency — plus metric-level evaluation of GenAI applications
 
-- **Repo**: [ai/ai-control-plane/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-control-plane/agent-ops)
-- **Docs**: [ai-core/ai-control-plane/agent-ops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-control-plane/agent-ops/)
+- **Repo**: [ai/control/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/agent-ops)
+- **Docs**: [ai-core/control/agent-ops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/agent-ops/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

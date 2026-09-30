@@ -13,7 +13,7 @@
 | `astradb-vector-setup` | serverless-vector | active | block | zip |
 | `automated-resilience-concert` | automated-resilience | active | block | zip |
 | `automated-resource-mgmt-turbonomic` | automated-resource-mgmt | divergent | block, central | zip |
-| `build-time-gen-ai-evals` | model-evaluation | divergent | block, central | zip |
+| `build-time-gen-ai-evals` | agent-ops | divergent | block, central | zip |
 | `code-modernization-expert` | — | active | central | zip (generated) |
 | `confluent-iac-terraform` | data-streaming | active | block, central, central | zip |
 | `data-ingestion-structured` | data-pipeline-ai-generated | divergent | block, central | zip |
@@ -35,7 +35,7 @@
 | `qse` | quantum-safe | active | block | zip |
 | `rag-mcp-server-builder` | rag | divergent | block, central | zip |
 | `rag-pipeline-builder` | rag | divergent | block, central | zip |
-| `real-time-guardrails` | real-time-guardrails | active | block, central | zip |
+| `real-time-guardrails` | guardrails | active | block, central | zip |
 | `sdd-pipeline-builder` | — | active | central | zip (generated) |
 | `streamhouse-continuous-rag` | data-streaming | active | block, central | zip |
 | `text2sql-metadata-enrichment` | text2sql | divergent | block, central | zip |
@@ -48,7 +48,7 @@
 
 - `astradb-nosql-design`: 2 copies with 2 distinct contents — serving data/query-engines/serverless-vector/bob-skills/astradb-nosql-design.zip. Copies: data/query-engines/serverless-vector/bob-skills/astradb-nosql-design.zip [24063aa92234bd5d], ibm-bob/skills/astradb-nosql-design [a265ee3cdffa3b81]
 - `automated-resource-mgmt-turbonomic`: 2 copies with 2 distinct contents — serving automation/optimize/application-performance/bob-skills/automated-resource-mgmt-turbonomic.zip. Copies: automation/optimize/application-performance/bob-skills/automated-resource-mgmt-turbonomic.zip [b54c4254f4c25956], ibm-bob/skills/automated-resource-mgmt-turbonomic [6acad63c62715f5a]
-- `build-time-gen-ai-evals`: 2 copies with 2 distinct contents — serving ai/ai-control-plane/agent-ops/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip. Copies: ai/ai-control-plane/agent-ops/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip [e487c1cab6279a61], ibm-bob/skills/build-time-gen-ai-evals [c079a2cc0f272ddc]
+- `build-time-gen-ai-evals`: 2 copies with 2 distinct contents — serving ai/control/agent-ops/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip. Copies: ai/control/agent-ops/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip [e6733eddbd461a7f], ibm-bob/skills/build-time-gen-ai-evals [a134169a363dba20]
 - `data-ingestion-structured`: 2 copies with 2 distinct contents — serving data/pipelines/udi/bob-skills/data-ingestion-structured.zip. Copies: data/pipelines/udi/bob-skills/data-ingestion-structured.zip [3e5983c00b7f5afc], ibm-bob/skills/data-ingestion-structured [0afe99d4c1bf2a56]
 - `data-ingestion-unstructured`: 2 copies with 2 distinct contents — serving data/pipelines/udi/bob-skills/data-ingestion-unstructured.zip. Copies: data/pipelines/udi/bob-skills/data-ingestion-unstructured.zip [5275b09307590f29], ibm-bob/skills/data-ingestion-unstructured [36bb22ceb3a446d3]
 - `maximo-code-optimization`: 2 copies with 2 distinct contents — serving automation/operate/asset-management/bob-skills/maximo-code-optimization.zip. Copies: automation/operate/asset-management/bob-skills/maximo-code-optimization.zip [6162b6fad4d97a4f], ibm-bob/skills/maximo-code-optimization [75130467204bc8e5]

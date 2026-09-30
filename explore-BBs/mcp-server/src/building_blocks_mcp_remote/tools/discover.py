@@ -24,13 +24,13 @@ def list_building_blocks(
     """List all available IBM Technology Building Blocks, optionally filtered.
 
     Building Blocks are pre-built, embeddable capabilities organized as
-    3 core capabilities → 8 groups → individual blocks. The response is the
+    3 core capabilities → 9 groups → individual blocks. The response is the
     source of truth for which blocks exist — the catalog changes over time.
 
     Args:
-        group: Filter by group. Valid values: "agents", "ai-control-plane" (AI);
-            "integration", "intelligence", "retrieval" (Data);
-            "build", "secure", "optimize" (Automation). Omit to list all.
+        group: Filter by group. Valid values: "agents", "control", "engineering" (AI);
+            "context", "pipelines", "query-engines" (Data);
+            "operate", "secure", "optimize" (Automation). Omit to list all.
         capability: Filter by core capability ("ai", "data", "automation"). Omit for all.
         tag: Case-insensitive partial match against any tag (e.g., "rag", "terraform").
     """

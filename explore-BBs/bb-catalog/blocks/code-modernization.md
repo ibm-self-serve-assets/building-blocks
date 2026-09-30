@@ -1,11 +1,11 @@
 ---
 id: code-modernization
 name: Code Modernization
-group: ai-engineering
+group: engineering
 capability: ai
 description: Modernize legacy middleware and application code for cloud-native architectures
-repo_path: ai/ai-engineering/code-modernization
-docs_path: ai-core/ai-engineering/code-modernization.md
+repo_path: ai/engineering/code-modernization
+docs_path: ai-core/engineering/code-modernization.md
 products: []
 tags:
   - modernize
@@ -20,8 +20,8 @@ tags:
 
 Modernize legacy middleware and application code for cloud-native architectures
 
-- **Repo**: [ai/ai-engineering/code-modernization](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-engineering/code-modernization)
-- **Docs**: [ai-core/ai-engineering/code-modernization.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/ai-engineering/code-modernization/)
+- **Repo**: [ai/engineering/code-modernization](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/engineering/code-modernization)
+- **Docs**: [ai-core/engineering/code-modernization.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/engineering/code-modernization/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

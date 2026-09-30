@@ -4,12 +4,12 @@ groups:
     name: Agents
     capability: ai
     description: Build, orchestrate, and deploy autonomous AI agents with the watsonx Orchestrate ADK and multi-agent patterns
-  - id: ai-control-plane
-    name: AI Control Plane
+  - id: control
+    name: Control
     capability: ai
-    description: Visibility and control across the AI lifecycle — agent observability and evaluation, runtime guardrails, cost management, and regulatory compliance, powered by watsonx.governance
-  - id: ai-engineering
-    name: AI Engineering
+    description: Visibility and control across the AI lifecycle — Agent Ops (evaluate and observe), Guardrails (runtime enforcement), Cost Management, and Compliance, powered by watsonx.governance and watsonx Orchestrate
+  - id: engineering
+    name: Engineering
     capability: ai
     description: Bob-powered development layer across the software lifecycle — agentic SDLC, code modernization, headless Bob, and integration as code
   - id: context

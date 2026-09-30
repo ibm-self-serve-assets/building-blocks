@@ -61,14 +61,14 @@ modes:
       - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
 
 
-  # ─── AI CONTROL PLANE BUILDING BLOCK ───
-  # Zips moved with the AI Trust → AI Control Plane restructure: ai/ai-control-plane/agent-ops/...
+  # ─── CONTROL BUILDING BLOCK ───
+  # Zips live under ai/control/ (Agent Ops, Model Evaluation inside Agent Ops, Guardrails)
   - name: Agent Ops
     folderName: agent-ops
     category: base
-    domain: AI Control Plane
+    domain: Control
     description: "Agent Ops: Evaluate watsonx Orchestrate agents before deployment — automated benchmarks, metrics analysis, cost and latency tracking via Langfuse, and adversarial red-teaming."
-    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/ai-control-plane/agent-ops/bob-modes/base-modes/agent-ops.zip"
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/control/agent-ops/bob-modes/base-modes/agent-ops.zip"
     mcps:
       - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
 
@@ -78,18 +78,18 @@ modes:
   - name: Build-time GenAI Evaluator
     folderName: build-time-evals-gen-ai
     category: base
-    domain: AI Control Plane
+    domain: Control
     description: "Build-time GenAI Evaluator: Evaluate GenAI applications — RAG pipelines, LLM outputs, chatbot safety — with IBM watsonx.governance metrics before deployment."
-    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/ai-control-plane/agent-ops/model-evaluation/gen-ai-evaluations/bob-modes/base-modes/build-time-evals-gen-ai.zip"
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/control/agent-ops/model-evaluation/gen-ai-evaluations/bob-modes/base-modes/build-time-evals-gen-ai.zip"
     mcps: []
 
 
   - name: Real-Time Guardrails
     folderName: real-time-guardrails
     category: base
-    domain: AI Control Plane
+    domain: Control
     description: "Real-Time Guardrails: Wire watsonx.governance-backed Pass/Flag/Block guardrails into an AI or RAG agent across input, retrieval, generation, and output — with audit logging and production integration code."
-    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/ai-control-plane/agent-ops/real-time-guardrails/bob-modes/base-modes/real-time-guardrails.zip"
+    zipDownloadUrl: "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/control/guardrails/bob-modes/base-modes/real-time-guardrails.zip"
     mcps: []
 
 

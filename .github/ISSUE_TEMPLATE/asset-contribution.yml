@@ -28,8 +28,9 @@ body:
       label: Building Block Domain
       description: Select one or more applicable domains
       options:
-        - label: Agents
-        - label: AI Control Plane
+        - label: "AI Control Plane: Agents"
+        - label: "AI Control Plane: Control"
+        - label: "AI Control Plane: Engineering"
         - label: Data for AI
         - label: Automation
     validations:
@@ -46,11 +47,11 @@ body:
         - label: Multi Agent Orchestration
         - label: Agentic SDLC
 
-        # AI Control Plane
+        # Control
         - label: Agent Ops
-        - label: AI Compliance
-        - label: Model Evaluation
-        - label: Real Time Guardrails
+        - label: Guardrails
+        - label: Cost Management
+        - label: Compliance
 
         # Data for AI - Data Integration
         - label: Data Integration

@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1010" width="2400" height="1010" font-family="IBM Plex Sans, Helvetica Neue, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L12,6 L0,12 z" fill="#525252"/>
+    </marker>
+    <marker id="arrs" markerWidth="12" markerHeight="12" refX="2" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M12,0 L0,6 L12,12 z" fill="#525252"/>
+    </marker>
+    <marker id="arrb" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L14,7 L0,14 z" fill="#0f62fe"/>
+    </marker>
+    <style>
+      .title{font-size:56px;font-weight:700;fill:#161616}
+      .subtitle{font-size:27px;fill:#525252}
+      .label{font-size:20px;font-weight:600;fill:#525252;letter-spacing:2px}
+      .node{font-size:26px;font-weight:600;fill:#161616}
+      .chip{font-size:22px;fill:#393939}
+      .hdr{font-size:36px;font-weight:700;fill:#ffffff}
+      .card-title{font-size:30px;font-weight:700;fill:#161616}
+      .card-verb{font-size:20px;font-weight:600;letter-spacing:1px;fill:#0043ce}
+      .card-body{font-size:23px;fill:#393939}
+      .flow{font-size:22px;font-weight:600;fill:#0f62fe}
+      .foot{font-size:24px;fill:#525252}
+    </style>
+  </defs>
+
+  <rect width="2400" height="1010" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="80" y="90" class="title">Agent Ops</text>
+  <text x="80" y="136" class="subtitle">Evaluate, observe, and optimize AI agents from development through production</text>
+
+  <!-- Left: the agent system under test -->
+  <rect x="80" y="190" width="920" height="720" rx="18" fill="#f4f4f4" stroke="#c6c6c6" stroke-width="2"/>
+  <text x="112" y="236" class="label">YOUR AGENT SYSTEM</text>
+
+  <rect x="430" y="270" width="220" height="70" rx="35" fill="#ffffff" stroke="#8d8d8d" stroke-width="2"/>
+  <text x="540" y="314" text-anchor="middle" class="node">Users</text>
+  <line x1="540" y1="342" x2="540" y2="424" stroke="#525252" stroke-width="2.5" marker-end="url(#arr)"/>
+
+  <rect x="120" y="430" width="250" height="84" rx="12" fill="#ffffff" stroke="#161616" stroke-width="2"/>
+  <text x="245" y="482" text-anchor="middle" class="node">Agent 1</text>
+  <rect x="415" y="430" width="250" height="84" rx="12" fill="#ffffff" stroke="#161616" stroke-width="2"/>
+  <text x="540" y="482" text-anchor="middle" class="node">Agent 2</text>
+  <rect x="710" y="430" width="250" height="84" rx="12" fill="#ffffff" stroke="#161616" stroke-width="2"/>
+  <text x="835" y="482" text-anchor="middle" class="node">Agent 3</text>
+  <line x1="374" y1="472" x2="411" y2="472" stroke="#525252" stroke-width="2.5" marker-start="url(#arrs)" marker-end="url(#arr)"/>
+  <line x1="669" y1="472" x2="706" y2="472" stroke="#525252" stroke-width="2.5" marker-start="url(#arrs)" marker-end="url(#arr)"/>
+
+  <line x1="245" y1="516" x2="245" y2="600" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="6 5"/>
+  <line x1="540" y1="516" x2="540" y2="600" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="6 5"/>
+  <line x1="835" y1="516" x2="835" y2="600" stroke="#8d8d8d" stroke-width="2" stroke-dasharray="6 5"/>
+  <rect x="140" y="600" width="210" height="60" rx="30" fill="#ffffff" stroke="#c6c6c6" stroke-width="1.5"/>
+  <text x="245" y="638" text-anchor="middle" class="chip">Tools</text>
+  <rect x="435" y="600" width="210" height="60" rx="30" fill="#ffffff" stroke="#c6c6c6" stroke-width="1.5"/>
+  <text x="540" y="638" text-anchor="middle" class="chip">Knowledge base</text>
+  <rect x="730" y="600" width="210" height="60" rx="30" fill="#ffffff" stroke="#c6c6c6" stroke-width="1.5"/>
+  <text x="835" y="638" text-anchor="middle" class="chip">Tools · Knowledge</text>
+
+  <text x="112" y="760" class="chip">watsonx Orchestrate agents built</text>
+  <text x="112" y="796" class="chip">with the Agent Development Kit (ADK)</text>
+
+  <!-- Flow arrow -->
+  <line x1="1004" y1="550" x2="1104" y2="550" stroke="#0f62fe" stroke-width="4" marker-end="url(#arrb)"/>
+  <text x="1054" y="520" text-anchor="middle" class="flow">tests &amp;</text>
+  <text x="1054" y="596" text-anchor="middle" class="flow">observes</text>
+
+  <!-- Right: Agent Ops -->
+  <rect x="1110" y="190" width="1210" height="720" rx="18" fill="#edf5ff" stroke="#0f62fe" stroke-width="3"/>
+  <path d="M1110,208 a18,18 0 0 1 18,-18 h1174 a18,18 0 0 1 18,18 v58 h-1210 z" fill="#0f62fe"/>
+  <text x="1715" y="246" text-anchor="middle" class="hdr">Agent Ops</text>
+
+  <!-- Card grid -->
+  <rect x="1150" y="306" width="565" height="276" rx="14" fill="#ffffff" stroke="#a6c8ff" stroke-width="2"/>
+  <text x="1180" y="364" class="card-verb">EVALUATE</text>
+  <text x="1180" y="408" class="card-title">Benchmarks &amp; Simulated Users</text>
+  <text x="1180" y="462" class="card-body">Turn user stories into test scenarios</text>
+  <text x="1180" y="496" class="card-body">and run them with LLM-simulated</text>
+  <text x="1180" y="530" class="card-body">users at scale.</text>
+
+  <rect x="1745" y="306" width="535" height="276" rx="14" fill="#ffffff" stroke="#a6c8ff" stroke-width="2"/>
+  <text x="1775" y="364" class="card-verb">ANALYZE</text>
+  <text x="1775" y="408" class="card-title">Journey Success</text>
+  <text x="1775" y="462" class="card-body">Measure whether every goal is met,</text>
+  <text x="1775" y="496" class="card-body">and pinpoint where and why the</text>
+  <text x="1775" y="530" class="card-body">agent went wrong.</text>
+
+  <rect x="1150" y="604" width="565" height="276" rx="14" fill="#ffffff" stroke="#a6c8ff" stroke-width="2"/>
+  <text x="1180" y="662" class="card-verb">RED-TEAM</text>
+  <text x="1180" y="706" class="card-title">Adversarial Testing</text>
+  <text x="1180" y="760" class="card-body">Stress-test the agent against 15</text>
+  <text x="1180" y="794" class="card-body">attack types — prompt injection,</text>
+  <text x="1180" y="828" class="card-body">jailbreaks, social engineering.</text>
+
+  <rect x="1745" y="604" width="535" height="276" rx="14" fill="#ffffff" stroke="#a6c8ff" stroke-width="2"/>
+  <text x="1775" y="662" class="card-verb">OBSERVE</text>
+  <text x="1775" y="706" class="card-title">Traces &amp; Latency</text>
+  <text x="1775" y="760" class="card-body">Trace tool calls and routing, and</text>
+  <text x="1775" y="794" class="card-body">track latency for every interaction.</text>
+
+  <!-- Footer -->
+  <text x="1200" y="968" text-anchor="middle" class="foot">Powered by IBM watsonx Orchestrate and IBM watsonx.governance</text>
+</svg>

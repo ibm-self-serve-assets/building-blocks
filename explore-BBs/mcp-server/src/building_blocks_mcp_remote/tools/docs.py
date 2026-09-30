@@ -24,8 +24,8 @@ def list_docs_pages(
     No external API calls — uses the markdown-driven docs-pages catalog.
 
     Args:
-        section: Filter by section keyword (e.g., "agents", "trust", "data",
-            "retrieval", "build", "secure", "optimize", "bob"). Omit to list all.
+        section: Filter by section keyword (e.g., "agents", "control", "engineering",
+            "streamhouse", "lakehouse", "pipelines", "secure", "optimize", "bob"). Omit to list all.
             Case-insensitive partial match on section name or title.
     """
     try:

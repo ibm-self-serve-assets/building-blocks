@@ -59,7 +59,7 @@ source ~/guardrails-venv/bin/activate
 # IMPORTANT: the quotes around the path+extras are required on zsh (macOS default shell).
 # Without them, zsh interprets [all] as an array subscript, the path resolves to empty,
 # and pip errors with `is not a valid editable requirement`.
-pip install -e "$HOME/src/building-blocks/ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk[all]"
+pip install -e "$HOME/src/building-blocks/ai/control/guardrails/assets/sdk[all]"
 ```
 
 The `[all]` extra adds REST server + MCP server interfaces. The required `[metrics,llmaj]` extras are part of the base install (always pulled in) — without them, registry build fails with `ModuleNotFoundError: No module named 'unitxt'`.
@@ -82,7 +82,7 @@ The SDK sits on top of `ibm-watsonx-gov[metrics,llmaj]`, which transitively pull
 python3.11 -m venv /tmp/resolve-check
 source /tmp/resolve-check/bin/activate
 pip install --upgrade pip
-pip install --dry-run -e "$HOME/src/building-blocks/ai/ai-control-plane/agent-ops/real-time-guardrails/assets/sdk[all]"
+pip install --dry-run -e "$HOME/src/building-blocks/ai/control/guardrails/assets/sdk[all]"
 ```
 
 If output ends with `Would install <long list>`, you're clean. If it ends with `ResolutionImpossible`, the report above it names the exact packages and versions colliding. Match the Python version pip uses to your target deployment (we test with 3.11).

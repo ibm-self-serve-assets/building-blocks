@@ -2,7 +2,7 @@
 capabilities:
   - id: ai
     name: AI
-    description: AI agents, multi-agent orchestration, AI control plane (agent ops, governance, compliance), and AI engineering
+    description: AI Control Plane — agents and multi-agent orchestration, control (agent ops, guardrails, cost management, compliance), and AI engineering with IBM Bob
   - id: data
     name: Data
     description: Data integration, intelligence, and retrieval capabilities for AI-powered applications

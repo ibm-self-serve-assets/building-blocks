@@ -101,4 +101,4 @@ If IBM ships an official, supported, multi-region MCP for watsonx.governance in 
 
 ## Source
 
-This skill is derived from the [Build-Time GenAI Evaluations Bob mode](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/ai-control-plane/agent-ops/model-evaluation/gen-ai-evaluations) in the IBM Building Blocks portfolio. The underlying SDK is `ibm-watsonx-gov`. Source of truth for watsonx.governance: https://www.ibm.com/products/watsonx-governance.
+This skill is derived from the [Build-Time GenAI Evaluations Bob mode](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/agent-ops/model-evaluation/gen-ai-evaluations) in the IBM Building Blocks portfolio. The underlying SDK is `ibm-watsonx-gov`. Source of truth for watsonx.governance: https://www.ibm.com/products/watsonx-governance.

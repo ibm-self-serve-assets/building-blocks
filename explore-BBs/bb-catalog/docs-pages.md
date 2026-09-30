@@ -15,54 +15,57 @@ pages:
   - title: Multi-Agent Orchestration
     section: "AI > Agents"
     path: ai-core/agents/multi-agent-orchestration.md
-  - title: AI Control Plane Overview
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/index.md
+  - title: Control Overview
+    section: "AI > Control"
+    path: ai-core/control/index.md
   - title: Agent Ops
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/agent-ops.md
-  - title: AI Cost Management
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/ai-cost-management.md
-  - title: AI Compliance
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/ai-compliance.md
-  - title: AI Engineering Overview
-    section: "AI > AI Engineering"
-    path: ai-core/ai-engineering/index.md
+    section: "AI > Control"
+    path: ai-core/control/agent-ops.md
+  - title: Guardrails
+    section: "AI > Control"
+    path: ai-core/control/guardrails.md
+  - title: Cost Management
+    section: "AI > Control"
+    path: ai-core/control/cost-management.md
+  - title: Compliance
+    section: "AI > Control"
+    path: ai-core/control/compliance.md
+  - title: Engineering Overview
+    section: "AI > Engineering"
+    path: ai-core/engineering/index.md
   - title: Agentic SDLC
-    section: "AI > AI Engineering"
-    path: ai-core/ai-engineering/agentic-sdlc.md
+    section: "AI > Engineering"
+    path: ai-core/engineering/agentic-sdlc.md
   - title: Code Modernization
-    section: "AI > AI Engineering"
-    path: ai-core/ai-engineering/code-modernization.md
+    section: "AI > Engineering"
+    path: ai-core/engineering/code-modernization.md
   - title: Headless Bob
-    section: "AI > AI Engineering"
-    path: ai-core/ai-engineering/headless-bob.md
+    section: "AI > Engineering"
+    path: ai-core/engineering/headless-bob.md
   - title: Integration as Code
-    section: "AI > AI Engineering"
-    path: ai-core/ai-engineering/integration-as-code.md
+    section: "AI > Engineering"
+    path: ai-core/engineering/integration-as-code.md
   - title: AI Skills and Modes
     section: AI
     path: ai-core/bob-skills-and-modes.md
   - title: Data Overview
     section: Data
     path: data-core/index.md
-  - title: Context Overview
-    section: "Data > Context"
-    path: data-core/context/index.md
-  - title: Context Hub
-    section: "Data > Context"
-    path: data-core/context/context-hub/index.md
-  - title: Streamhouse
-    section: "Data > Context"
-    path: data-core/context/streamhouse/index.md
-  - title: "Metadata Enrichment & Data Quality"
-    section: "Data > Context"
-    path: data-core/context/metadata-enrichment/index.md
-  - title: Data Observability
-    section: "Data > Context"
-    path: data-core/context/data-observability/index.md
+  - title: Streamhouse Overview
+    section: "Data > Streamhouse"
+    path: data-core/streamhouse/index.md
+  - title: Real-Time streaming
+    section: "Data > Streamhouse"
+    path: data-core/streamhouse/real-time-streaming/index.md
+  - title: Transform
+    section: "Data > Streamhouse"
+    path: data-core/streamhouse/transform/index.md
+  - title: Govern
+    section: "Data > Streamhouse"
+    path: data-core/streamhouse/govern/index.md
+  - title: Serve
+    section: "Data > Streamhouse"
+    path: data-core/streamhouse/serve/index.md
   - title: Pipelines Overview
     section: "Data > Pipelines"
     path: data-core/pipelines/index.md
@@ -81,15 +84,21 @@ pages:
   - title: Data Sync
     section: "Data > Pipelines"
     path: data-core/pipelines/data-sync/index.md
-  - title: Query Engines Overview
-    section: "Data > Query Engines"
-    path: data-core/query-engines/index.md
+  - title: Lakehouse Overview
+    section: "Data > Lakehouse"
+    path: data-core/lakehouse/index.md
+  - title: Meta Data Enrichment and Quality
+    section: "Data > Lakehouse"
+    path: data-core/lakehouse/metadata-enrichment/index.md
+  - title: Data Observability
+    section: "Data > Lakehouse"
+    path: data-core/lakehouse/data-observability/index.md
   - title: Zero-Copy Lakehouse
-    section: "Data > Query Engines"
-    path: data-core/query-engines/zero-copy-lakehouse/index.md
+    section: "Data > Lakehouse"
+    path: data-core/lakehouse/zero-copy-lakehouse/index.md
   - title: Serverless Vector
-    section: "Data > Query Engines"
-    path: data-core/query-engines/serverless-vector/index.md
+    section: "Data > Lakehouse"
+    path: data-core/lakehouse/serverless-vector/index.md
   - title: Data Skills and Modes
     section: Data
     path: data-core/bob-skills-and-modes.md
@@ -150,16 +159,15 @@ pages:
   # Present in docs-src but commented out of the site nav (hidden for now);
   # listed here because catalog blocks reference them and get_docs_page serves them.
   - title: Lifecycle Management
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/lifecycle-management.md
+    section: "AI > Control"
+    path: ai-core/control/lifecycle-management.md
+  - title: Shadow AI Discovery
+    section: "AI > Control"
+    path: ai-core/control/shadow-ai-discovery.md
   - title: Model Evaluation
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/model-evaluation.md
-  - title: Real-Time Guardrails
-    section: "AI > AI Control Plane"
-    path: ai-core/ai-control-plane/real-time-guardrails.md
+    section: "AI > Control"
+    path: ai-core/control/model-evaluation.md
 ---
-
 # Documentation Pages
 
 Navigation structure mirroring `mkdocs.yml` in the [building-blocks-docs](https://github.com/ibm-self-serve-assets/building-blocks-docs) repo.

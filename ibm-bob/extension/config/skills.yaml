@@ -19,7 +19,7 @@ skills:
     mcps:
       - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
 
-  # AI Control Plane: Real-Time Guardrails
+  # Control: Guardrails (Real-Time Guardrails skill)
   # No Bob-side MCP. The SDK can itself run as an MCP server for the partner's agent
   # (`real-time-guardrails mcp`), but that needs the SDK installed plus watsonx.governance
   # credentials, so it is wired by the partner, not pre-registered here.
@@ -28,7 +28,7 @@ skills:
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
     mcps: []
 
-  # AI Control Plane: Agent Ops
+  # Control: Agent Ops
   # Uses the watsonx Orchestrate ADK docs MCP server for live ADK doc search (same server as the Agents skills).
   - folderName: agent-ops
     domain: AI
@@ -36,7 +36,7 @@ skills:
     mcps:
       - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
 
-  # AI Control Plane: Model Evaluation (build-time GenAI evals)
+  # Control: Model Evaluation inside Agent Ops (build-time GenAI evals)
   # No MCP — the skill calls the ibm-watsonx-gov SDK directly (the earlier hosted MCP path was retired).
   - folderName: build-time-gen-ai-evals
     domain: AI
