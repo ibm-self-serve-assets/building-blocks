@@ -6,7 +6,7 @@ import logging
 from typing import Optional
 
 from building_blocks_mcp_remote.data_loader import (
-    DOCS_SITE_URL,
+    docs_url,
     REPO_BASE_URL,
     load_registry,
 )
@@ -57,7 +57,7 @@ def list_building_blocks(
                 "description": block["description"],
                 "products": block["products"],
                 "repo_url": f"{REPO_BASE_URL}/tree/main/{block['repo_path']}",
-                "docs_url": f"{DOCS_SITE_URL}/{block['docs_path'].replace('.md', '/')}"
+                "docs_url": docs_url(block['docs_path'])
                 if block.get("docs_path")
                 else None,
             })
@@ -140,7 +140,7 @@ def search_building_blocks(
                         "title": page["title"],
                         "section": page["section"],
                         "path": page["path"],
-                        "url": f"{DOCS_SITE_URL}/{page['path'].replace('.md', '/')}",
+                        "url": docs_url(page['path']),
                     }))
 
         scored.sort(key=lambda x: -x[0])

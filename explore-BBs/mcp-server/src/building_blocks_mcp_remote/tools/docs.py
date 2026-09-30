@@ -7,7 +7,7 @@ from typing import Optional
 
 from building_blocks_mcp_remote.data_loader import (
     DOCS_REPO_NAME,
-    DOCS_SITE_URL,
+    docs_url,
     load_registry,
 )
 from building_blocks_mcp_remote.server import mcp
@@ -35,14 +35,14 @@ def list_docs_pages(
         if section:
             section_lower = section.lower()
             pages = [
-                {**page, "url": f"{DOCS_SITE_URL}/{page['path'].replace('.md', '/')}"}
+                {**page, "url": docs_url(page['path'])}
                 for page in docs_pages
                 if section_lower in page["section"].lower()
                 or section_lower in page["title"].lower()
             ]
         else:
             pages = [
-                {**page, "url": f"{DOCS_SITE_URL}/{page['path'].replace('.md', '/')}"}
+                {**page, "url": docs_url(page['path'])}
                 for page in docs_pages
             ]
 
@@ -84,7 +84,7 @@ def get_docs_page(
         return {
             "status": "success",
             "path": page_path,
-            "url": f"{DOCS_SITE_URL}/{page_path.replace('.md', '/')}",
+            "url": docs_url(page_path),
             "content": content,
         }
     except Exception as exc:

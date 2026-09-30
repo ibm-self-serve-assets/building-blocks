@@ -59,6 +59,24 @@ BLOCKS_DIR = f"{CATALOG_PATH}/blocks"
 REPO_BASE_URL = f"https://github.com/{REPO_OWNER}/{REPO_NAME}"
 DOCS_SITE_URL = "https://ibm-self-serve-assets.github.io/building-blocks-docs"
 
+
+def docs_url(path: str) -> str:
+    """Public URL of a docs-src markdown path on the MkDocs site.
+
+    MkDocs serves ``foo/bar.md`` at ``foo/bar/`` and ``foo/index.md`` at ``foo/``;
+    the site root ``index.md`` is served at ``/``.
+    """
+    path = path.lstrip("/")
+    if path == "index.md":
+        route = ""
+    elif path.endswith("/index.md"):
+        route = path[: -len("index.md")]
+    elif path.endswith(".md"):
+        route = path[: -len(".md")] + "/"
+    else:
+        route = path
+    return f"{DOCS_SITE_URL}/{route}"
+
 LOADER_TTL_SECONDS = 300  # 5 minutes — see plan: "5-min cache means..."
 
 LOCAL_PATH_ENV = "BB_CATALOG_LOCAL_PATH"

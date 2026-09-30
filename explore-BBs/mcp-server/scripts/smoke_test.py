@@ -41,7 +41,7 @@ def main() -> int:
     # --- catalog-driven tools (no GitHub content calls) ---
     check("list_building_blocks()", list_building_blocks(),
           detail=lambda r: f"{r['total']} blocks")
-    check("list_building_blocks(group=retrieval)", list_building_blocks(group="retrieval"),
+    check("list_building_blocks(group=control)", list_building_blocks(group="control"),
           detail=lambda r: f"{r['total']} blocks")
     check("search_building_blocks(rag, registry)", search_building_blocks("rag", scope="registry"),
           detail=lambda r: f"{r['total']} hits")
@@ -56,11 +56,11 @@ def main() -> int:
         print("FAIL  multi-word search returned hits > 0")
     phrase = search_building_blocks("vector search", scope="registry")
     top = (phrase.get("results") or [{}])[0].get("id")
-    if top != "vector-search":
+    if top != "serverless-vector":
         FAILURES.append(f"phrase ranking regressed — top hit for 'vector search' is {top!r}")
         print(f"FAIL  phrase match ranks first (got {top!r})")
     else:
-        print("PASS  phrase match ranks first — 'vector search' -> vector-search")
+        print("PASS  phrase match ranks first — 'vector search' -> serverless-vector")
 
     # Cross-cutting skills are reachable only via query (blocks: []) —
     # regression guard for the Step 4 query sweep.

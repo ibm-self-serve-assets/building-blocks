@@ -6,7 +6,7 @@ import logging
 from typing import Optional
 
 from building_blocks_mcp_remote.data_loader import (
-    DOCS_SITE_URL,
+    docs_url,
     REPO_BASE_URL,
     load_registry,
 )
@@ -53,7 +53,7 @@ def get_building_block(
             "products": block["products"],
             "tags": block["tags"],
             "repo_url": f"{REPO_BASE_URL}/tree/main/{repo_path}",
-            "docs_url": f"{DOCS_SITE_URL}/{block['docs_path'].replace('.md', '/')}"
+            "docs_url": docs_url(block['docs_path'])
             if block.get("docs_path")
             else None,
         }
