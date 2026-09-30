@@ -111,7 +111,7 @@
   </div>
 
   <dialog id="api-dialog">
-    <div class="dialog-heading"><div><p class="eyebrow">BUILT FOR YOUR APPLICATIONS</p><h2>REST and ACP APIs.</h2></div><button id="close-api" class="button quiet" aria-label="Close API reference">Close</button></div>
+    <div class="dialog-heading"><div><p class="eyebrow">BUILT FOR YOUR APPLICATIONS</p><h2>REST, ACP and MCP APIs.</h2></div><button id="close-api" class="button quiet" aria-label="Close API reference">Close</button></div>
     <p>Send your service token as <code>Authorization: Bearer TOKEN</code>. Requests and responses are JSON; live events use SSE.</p>
     <p><a href="/docs" target="_blank" rel="noopener">Developer guide and Python samples ↗</a></p>
     <h3>REST threads API</h3>
@@ -141,6 +141,15 @@
       <dt>GET /session/{session_id}</dt><dd>Read session run history.</dd>
     </dl>
     <p><a href="/acp" target="_blank" rel="noopener">ACP documentation and examples ↗</a> · <a href="/acp/openapi.json" target="_blank" rel="noopener">ACP OpenAPI specification ↗</a></p>
+    <h3>MCP (Model Context Protocol)</h3>
+    <p>Connect any MCP-compatible client to <code>POST /mcp</code> using Streamable HTTP. Use the service token from <code>AUTH_TOKENS</code>. Browser Origin requests are rejected. Each request is stateless — no session handshake needed.</p>
+    <dl class="endpoint-list">
+      <dt>bob_create_thread</dt><dd>Create a persistent Bob conversation thread. Returns a thread <code>id</code> to use for follow-ups. Threads appear in the workspace UI.</dd>
+      <dt>bob_send_message</dt><dd>Start Bob work in a thread. Returns immediately with a run ID. Reuse <code>request_id</code> with the same content to retry safely.</dd>
+      <dt>bob_get_run</dt><dd>Get run status, completed output and usage. Poll every few seconds until <code>completed</code>, <code>failed</code> or <code>cancelled</code>.</dd>
+      <dt>bob_cancel_run</dt><dd>Request cancellation of a queued or active run. Poll <code>bob_get_run</code> for terminal status.</dd>
+    </dl>
+    <p>Disconnecting does not cancel a run. Use <code>bob_cancel_run</code> explicitly. MCP threads are shared with the REST API — conversation history is visible in the UI and <code>GET /api/v1/threads</code>.</p>
     <p class="field-help">Threads and messages survive service restarts. A failed or cancelled execution may require a fresh thread. Attachments and thread branching are not supported yet.</p>
   </dialog>
   <dialog id="delete-dialog">

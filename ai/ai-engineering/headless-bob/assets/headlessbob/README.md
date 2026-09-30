@@ -1,10 +1,22 @@
 # headlessbob
 
-A standalone TypeScript service that runs **IBM Bob Shell 2.0.4** and provides native **Agent Communication Protocol (ACP) 0.2.0** and thread-based **REST APIs** over HTTP, accompanied by a built-in browser UI. Bob is the execution engine; no VS Code, Codex runtime, or OpenAI account is involved.
+Run IBM Bob Shell tasks headlessly over HTTP — from any language, agent framework,
+or MCP-compatible client. headlessbob wraps Bob Shell 2.0.4 as a standalone
+Node.js service and exposes three interfaces on the same port:
 
-Both the REST API (including the web UI) and partner Agent Communication Protocol API use the same **Agent Client Protocol** connector to Bob Shell. See [CLIENT_PROTOCOL_VERIFICATION.md](CLIENT_PROTOCOL_VERIFICATION.md) and run `npm run smoke:client-bridge` for live verification.
+- **REST threads API** (`/api/v1`) — persistent conversation threads with live
+  streaming, workspace file management, and a built-in browser UI
+- **ACP 0.2.0** (`/agents`, `/runs`) — Agent Communication Protocol for
+  server-side agent clients and pipelines
+- **MCP** (`/mcp`) — Streamable HTTP Model Context Protocol for any
+  MCP-compatible client or agent framework
 
-The runtime enforces timeout, output-byte and event limits. Bob 2.0.4's `acp` command does not expose the old CLI cost/turn controls: `BOB_MAX_COST` and `BOB_MAX_TURNS` apply only to the retained legacy runtime, and `/api/v1/capabilities` reports those limits as `null`. New runs omit usage totals that Bob does not report. Trusted headless execution grants tool requests once per invocation; interactive approvals are not exposed through HTTP.
+All three interfaces drive Bob Shell through the same **Agent Client Protocol**
+connector, giving consistent behaviour across REST, ACP, and MCP.
+
+The runtime enforces timeout, output-byte, and event limits. Authentication uses
+service tokens configured in `AUTH_TOKENS`; the Bob API key stays server-side and
+is never exposed to API clients.
 
 For official IBM Bob protocol capabilities, see the [IBM Bob ACP Documentation](https://bob.ibm.com/docs/shell/features/acp).
 
@@ -18,11 +30,13 @@ flowchart LR
         UI[Browser UI]
         RESTClient[REST API Client]
         ACPClient[ACP Agent / Pipeline]
+        MCPClient[MCP Client]
     end
 
     subgraph Service[headlessbob Node.js Service]
         REST[REST API /api/v1]
         ACP[ACP API /agents /runs /session]
+        MCP[MCP /mcp Streamable HTTP]
         Manager[Run Manager & Scheduler]
         Files[Workspace File Manager]
     end
@@ -36,8 +50,10 @@ flowchart LR
     UI --> REST
     RESTClient --> REST
     ACPClient --> ACP
+    MCPClient --> MCP
     REST --> Manager
     ACP --> Manager
+    MCP --> Manager
     REST --> Files
     Manager --> ClientProtocol[Agent Client Protocol]
     ClientProtocol --> Bob
@@ -200,6 +216,11 @@ python3 examples/python/cancel.py
 
 # 4. Test REST Thread conversation and file downloads
 python3 examples/python/rest.py
+
+# 5. Drive Bob over MCP
+python3 examples/python/mcp.py 'Create hello.txt containing Hello from MCP.'
+python3 examples/python/mcp.py 'Show me the contents of hello.txt' --thread <THREAD_ID>
+python3 examples/python/mcp.py --cancel <RUN_ID>
 ```
 
 You can also use the interactive CLI test tool:
@@ -270,3 +291,65 @@ oc rollout status deployment/headlessbob -n binb
 ## Container Bob Shell version
 
 The container pins Bob Shell **2.0.4** (released September 16, 2026) on Node.js 24. Download the licensed package with `sh scripts/download-bob.sh` before building. Both the download script and Docker build verify its pinned SHA-256 checksum. The package remains excluded from Git. Runtime readiness accepts the previously tested 2.0.1 and 2.0.4 releases.
+
+---
+
+## MCP access to Bob
+
+Connect a remote MCP client to `https://<your-host>/mcp` using Streamable HTTP
+and the header `Authorization: Bearer <service-token>`. Use the service token
+from `AUTH_TOKENS`, not `BOB_API_KEY`. The client must support configured bearer
+headers; OAuth discovery/sign-in is not implemented. Tokens resolve to the same
+caller identities and ownership checks used by REST. Every request is authenticated.
+As with REST, token-free access is available only in the existing local development
+configuration; configure `AUTH_TOKENS` for authenticated access. Browser Origin
+requests are rejected on this endpoint.
+
+Available tools:
+
+| Tool | Arguments | Result |
+| --- | --- | --- |
+| `bob_create_thread` | Optional `title` | Thread including `id` |
+| `bob_send_message` | `thread_id`, `content`, `request_id` | Thread, run, message ID |
+| `bob_get_run` | `run_id` | Status, completed output, reported usage |
+| `bob_cancel_run` | `run_id` | Current cancellation/run status |
+
+Create a thread, send a message, then poll `bob_get_run` every few seconds until
+`completed`, `failed`, or `cancelled`. Save the thread ID for follow-ups. These
+threads appear in the web UI for the same caller. Bob operates in the server
+workspace; this interface does not transfer files from the client's machine.
+
+`request_id` is required when sending: use a unique value per intended message
+(1–128 letters, digits, dots, underscores, colons or hyphens). On retry, reuse it
+with the same thread and content to retrieve the original run. Reusing it with
+different content returns a tool error. Thread creation itself is not idempotent.
+
+The transport is stateless with JSON responses: no MCP session ID, GET event
+stream or DELETE session endpoint is required. Bob state persists separately in
+SQLite. Disconnecting does not cancel a run; use `bob_cancel_run`. Existing run
+limits, queueing, thread recovery rules and trusted-operator requirements apply.
+Tool failures return `isError: true`; missing/invalid credentials return HTTP 401.
+
+Example with the MCP TypeScript SDK (read credentials from your environment):
+
+```js
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
+
+const client = new Client({ name: 'bob-client', version: '1.0.0' });
+await client.connect(new StreamableHTTPClientTransport(
+  new URL('/mcp', process.env.HEADLESSBOB_URL),
+  { requestInit: { headers: { Authorization: `Bearer ${process.env.HEADLESSBOB_TOKEN}` } } }
+));
+const thread = await client.callTool({ name: 'bob_create_thread', arguments: { title: 'Demo' } });
+const started = await client.callTool({
+  name: 'bob_send_message',
+  arguments: { thread_id: thread.structuredContent.id, content: 'Create hello.txt containing hello.', request_id: 'demo-1' }
+});
+console.log(started.structuredContent.run.run_id);
+await client.close(); // The Bob run continues; reconnect and use bob_get_run.
+```
+
+Run `npx tsx --test tests/mcp.test.ts` for SDK client integration coverage using
+the Bob fixture. It verifies authentication, ownership, retries, continuation,
+cancellation, and shared REST history without spending Bob credit.
