@@ -18,11 +18,13 @@
     "build:ui": "esbuild browser/markdown.js --bundle --format=iife --global-name=HeadlessMarkdown --platform=browser --target=es2022 --outfile=public/markdown.js --minify"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "dompurify": "^3.4.15",
     "marked": "^18.0.12",
-    "yaml": "^2.8.1"
+    "yaml": "^2.8.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/jsdom": "^30.0.0",
