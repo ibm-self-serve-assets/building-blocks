@@ -62,6 +62,11 @@ skills:
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
     mcps: []
 
+  - folderName: streamhouse-continuous-rag
+    domain: Data
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
+
     
 
   # SDD Pipeline Builder
