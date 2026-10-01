@@ -9,7 +9,7 @@
 ## Step 1 — Download the VSIX
 
 1. Go to the [**building-blocks extension page**](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ibm-bob/extension) on GitHub.
-2. Download `bob-plus-assets-1.0.0.vsix` (the latest version listed under Assets).
+2. Download `bob-plus-assets-1.1.0.vsix` (the latest version listed under Assets).
 3. Save the file locally — you will use it in Step 2.
 
 <p align="center">
@@ -66,7 +66,7 @@
   <img src="images/step-3.1.png" alt="Step 3 — B+ icon highlighted in the Activity Bar" width="400" />
 </p>
 
-2. Bob+ opens showing **Modes** and **Skills**, grouped by domain.
+2. Bob+ opens showing **Building Blocks (Skills)** and **Specs (Demos)**, grouped by domain.
 
 <p align="center">
   <img src="images/step-3.2.png" alt="Step 3 — Bob+ sidebar showing Modes and Skills grouped by domain" width="400" />
