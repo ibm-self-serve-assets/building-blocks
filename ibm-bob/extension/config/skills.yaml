@@ -62,7 +62,10 @@ skills:
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
     mcps: []
   # Confluent IaC Terraform (data streaming — belongs under Data, not Automation)
-  
+  - folderName: streamhouse-continuous-rag
+    domain: Data
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/bob-skills-and-modes/
+    mcps: []
     
 
   # SDD Pipeline Builder
