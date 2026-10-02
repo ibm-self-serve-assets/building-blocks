@@ -1,4 +1,4 @@
-"""Loan underwriting tools for the Agent Ops evaluation demo.
+"""Loan underwriting tools for the Agent Ops loan-underwriting example.
 
 All data is fictitious and deterministic so that evaluation runs are repeatable.
 """
