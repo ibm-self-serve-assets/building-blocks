@@ -8,22 +8,15 @@ Reference assets for serverless vector ingestion/search and NoSQL document acces
 
 ## Architecture
 
-```text
-IBM Cloud Object Storage
-          |
-          v
-     document loader
-          |
-          v
-    IBM watsonx.ai
-       embeddings
-          |
-          v
-IBM watsonx.data
-   Astra DB service
-          |
-          +--> vector similarity search
-          +--> NoSQL document CRUD
+```mermaid
+flowchart TD
+    COS["IBM Cloud Object Storage"]
+    COS --> LOADER["document loader"]
+    LOADER --> WAI["IBM watsonx.ai\nembeddings"]
+    WAI --> ASTRA["IBM watsonx.data\nAstra DB service"]
+
+    ASTRA --> VSS["vector similarity search"]
+    ASTRA --> CRUD["NoSQL document CRUD"]
 ```
 
 ## Included assets

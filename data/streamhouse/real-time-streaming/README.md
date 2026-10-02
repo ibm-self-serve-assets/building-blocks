@@ -6,23 +6,14 @@ Use this building block to capture and transport high-throughput enterprise even
 
 ## Architecture
 
-```text
-Enterprise Data Sources
-Databases / SaaS / IoT / Mainframes
-           |
-           v
-  IBM Confluent Connect
-  (120+ managed source connectors / CDC)
-           |
-           v
-  Apache Kafka Topics
-  (partitioned / ordered / durable / replicated)
-           |
-      +----+----+
-      |         |
-      v         v
-  Transform   Govern
-  (Flink SQL) (Schema Registry)
+```mermaid
+flowchart TD
+    SRC["Enterprise Data Sources\nDatabases / SaaS / IoT / Mainframes"]
+    SRC --> CONNECT["IBM Confluent Connect\n120+ managed source connectors / CDC"]
+    CONNECT --> KAFKA["Apache Kafka Topics\npartitioned · ordered · durable · replicated"]
+
+    KAFKA --> FLINK["Transform\nFlink SQL"]
+    KAFKA --> SREG["Govern\nSchema Registry"]
 ```
 
 ## Included assets

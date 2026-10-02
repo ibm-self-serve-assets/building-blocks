@@ -14,18 +14,13 @@ Use this building block for **structured batch integration**: extracting enterpr
 
 ## Architecture
 
-```text
-Db2 / Oracle / PostgreSQL / files / SaaS
-                  |
-                  v
-       IBM DataStage flows
- connectors + transformations + scheduling
-                  |
-          +-------+-------+
-          |               |
-          v               v
- target database    IBM watsonx.data
-                    Iceberg / Presto
+```mermaid
+flowchart TD
+    SRC["Db2 / Oracle / PostgreSQL / files / SaaS"]
+    SRC --> DS["IBM DataStage flows\nconnectors · transformations · scheduling"]
+
+    DS --> TGT["target database"]
+    DS --> WXD["IBM watsonx.data\nIceberg / Presto"]
 ```
 
 ## Capability boundaries

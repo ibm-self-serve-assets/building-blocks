@@ -17,32 +17,19 @@ IBM delivers the complete Streamhouse architecture through IBM Confluent: Connec
 
 ## Architecture
 
-```text
-Enterprise Data Sources
-Databases / SaaS / IoT / Applications
-           |
-           v
-  Capture & Transport
-  Confluent Connect -> Apache Kafka Topics
-           |
-           v
-       Transform
-     Apache Flink SQL
-           |
-           v
-        Govern
-  Schema Registry / Stream Lineage
-  Stream Quality / Data Portal
-           |
-        +------+
-        |      |
-        v      v
-    Serve
-  RTCE (MCP/REST)   Tableflow / Iceberg Sink
-        |                    |
-        v                    v
-  AI Agents /         IBM watsonx.data
-  Applications    Lakehouse (Presto/Spark)
+```mermaid
+flowchart TD
+    SRC["Enterprise Data Sources\nDatabases / SaaS / IoT / Applications"]
+
+    SRC --> KAFKA["Capture & Transport\nConfluent Connect → Apache Kafka Topics"]
+    KAFKA --> FLINK["Transform\nApache Flink SQL"]
+    FLINK --> GOV["Govern\nSchema Registry · Stream Lineage\nStream Quality · Data Portal"]
+
+    GOV --> RTCE["Serve — RTCE\nMCP / REST"]
+    GOV --> TF["Serve — Tableflow\nIceberg Sink"]
+
+    RTCE --> AI["AI Agents / Applications"]
+    TF   --> WXD["IBM watsonx.data\nLakehouse (Presto / Spark)"]
 ```
 
 ## How to use this section

@@ -8,22 +8,17 @@ Use this building block to execute real-time stream processing, event enrichment
 
 ## Architecture
 
-```text
-Apache Kafka Topics
-(from Real-Time streaming)
-           |
-           v
-  IBM Confluent -- Apache Flink SQL
-  (serverless / stateful / SQL interface)
-           |
-           +--> filter / project / route events
-           +--> enrich with reference data
-           +--> aggregate with tumbling / sliding windows
-           +--> stream-to-stream joins (temporal)
-           |
-           v
-  Output Kafka Topics
-  (to Govern or Serve)
+```mermaid
+flowchart TD
+    KAFKA["Apache Kafka Topics\n(from Real-Time streaming)"]
+    KAFKA --> FLINK["IBM Confluent — Apache Flink SQL\nserverless · stateful · SQL interface"]
+
+    FLINK --> F1["filter / project / route events"]
+    FLINK --> F2["enrich with reference data"]
+    FLINK --> F3["aggregate with tumbling / sliding windows"]
+    FLINK --> F4["stream-to-stream joins (temporal)"]
+
+    F1 & F2 & F3 & F4 --> OUT["Output Kafka Topics\n(to Govern or Serve)"]
 ```
 
 ## Included assets

@@ -17,18 +17,15 @@ This is **not** the enterprise lineage graph. For governed lineage and impact an
 
 ## Architecture
 
-```text
-DataStage / Spark / pipelines
-          |
-          +------ run/task/dataset telemetry ------+
-          |                                         |
-          v                                         v
-IBM watsonx.data integration                 OpenLineage events
-     Data Observability                            |
-          |                                        |
-          v                                        v
- alerts / SLA / anomaly                   lineage consumers
- operational monitoring              (for example data intelligence)
+```mermaid
+flowchart TD
+    PIPES["DataStage / Spark / pipelines"]
+
+    PIPES -->|run/task/dataset telemetry| OBS["IBM watsonx.data integration\nData Observability"]
+    PIPES -->|OpenLineage events| OL["OpenLineage events"]
+
+    OBS --> ALERTS["alerts / SLA / anomaly\noperational monitoring"]
+    OL  --> CONSUMERS["lineage consumers\n(e.g. watsonx.data intelligence)"]
 ```
 
 ## Included assets

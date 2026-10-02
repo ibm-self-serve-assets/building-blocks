@@ -8,29 +8,15 @@ For new managed deployments, evaluate **IBM watsonx.data OpenRAG** first. The co
 
 ## Architecture
 
-```text
-IBM Cloud Object Storage
-          |
-          v
- document parsing / chunking
-          |
-          v
-     IBM watsonx.ai
-        embeddings
-          |
-          v
- OpenSearch or Milvus
-      vector index
-          |
-          v
- semantic / keyword retrieval
-          |
-          v
-     IBM watsonx.ai
-        generation
-          |
-          v
- REST / MCP / application
+```mermaid
+flowchart TD
+    COS["IBM Cloud Object Storage"]
+    COS --> CHUNK["document parsing / chunking"]
+    CHUNK --> EMBED["IBM watsonx.ai\nembeddings"]
+    EMBED --> VEC["OpenSearch or Milvus\nvector index"]
+    VEC --> RETR["semantic / keyword retrieval"]
+    RETR --> GEN["IBM watsonx.ai\ngeneration"]
+    GEN --> OUT["REST / MCP / application"]
 ```
 
 ## Included assets

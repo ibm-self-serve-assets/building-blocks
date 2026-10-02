@@ -8,27 +8,17 @@ Use this building block to enforce schema contracts, trace end-to-end stream lin
 
 ## Architecture
 
-```text
-Kafka Topics + Flink Output Topics
-           |
-           v
-  IBM Confluent -- Stream Governance
-           |
-           +--> Schema Registry
-           |    (Avro / JSON Schema / Protobuf)
-           |    (compatibility enforcement / versioning)
-           |
-           +--> Stream Lineage
-           |    (auto-generated end-to-end lineage graph)
-           |
-           +--> Stream Quality
-           |    (data contracts / completeness / freshness rules)
-           |
-           +--> Data Portal
-                (self-service discovery / tagging / access requests)
-           |
-           v
-  Governed topics -> Serve (RTCE / Tableflow)
+```mermaid
+flowchart TD
+    KAFKA["Kafka Topics + Flink Output Topics"]
+    KAFKA --> GOV["IBM Confluent — Stream Governance"]
+
+    GOV --> SR["Schema Registry\nAvro · JSON Schema · Protobuf\ncompatibility enforcement / versioning"]
+    GOV --> SL["Stream Lineage\nauto-generated end-to-end lineage graph"]
+    GOV --> SQ["Stream Quality\ndata contracts · completeness · freshness rules"]
+    GOV --> DP["Data Portal\nself-service discovery · tagging · access requests"]
+
+    SR & SL & SQ & DP --> SERVE["Governed topics → Serve (RTCE / Tableflow)"]
 ```
 
 ## Included assets

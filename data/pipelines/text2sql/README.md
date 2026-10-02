@@ -11,45 +11,26 @@ Reference assets for converting natural-language questions into SQL. Two complem
 
 ### watsonx-text2sql
 
-```text
-User question
-     |
-     v
-Governed metadata / examples
-IBM watsonx.data intelligence
-     |
-     v
-   Text-to-SQL API
-     |
-     v
-SQL validation / policy gate
-     |
-     +----> return SQL
-     |
-     +----> optional controlled execution
-                    |
-                    v
-               IBM data source
+```mermaid
+flowchart TD
+    Q["User question"]
+    Q --> META["Governed metadata / examples\nIBM watsonx.data intelligence"]
+    META --> API["Text-to-SQL API"]
+    API --> GATE["SQL validation / policy gate"]
+    GATE --> RET["return SQL"]
+    GATE --> EXEC["optional controlled execution"]
+    EXEC --> DB["IBM data source"]
 ```
 
 ### NL2SQL
 
-```text
-User question
-     |
-     v
-Schema Retriever (FastAPI)
-  OpenSearch k-NN / pgvector
-     |
-     v
-LLM SQL generation
-     |
-     v
-SQL Executor (FastAPI)
-  AST-based safety validation
-     |
-     v
-IBM data source (PostgreSQL / Db2)
+```mermaid
+flowchart TD
+    Q["User question"]
+    Q --> RETR["Schema Retriever (FastAPI)\nOpenSearch k-NN / pgvector"]
+    RETR --> LLM["LLM SQL generation"]
+    LLM --> EXSVC["SQL Executor (FastAPI)\nAST-based safety validation"]
+    EXSVC --> DB["IBM data source\nPostgreSQL / Db2"]
 ```
 
 ## Included assets

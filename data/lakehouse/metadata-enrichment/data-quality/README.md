@@ -16,18 +16,15 @@ Use this building block when developers need to:
 
 ## Flow
 
-```text
-Data asset / connection
-        |
-        v
- Quality rules / profiling
-        |
-        v
-IBM watsonx.data intelligence
-        |
-        +--> rule results
-        +--> quality score
-        +--> exception details
+```mermaid
+flowchart TD
+    DA["Data asset / connection"]
+    DA --> QR["Quality rules / profiling"]
+    QR --> WDI["IBM watsonx.data intelligence"]
+
+    WDI --> RR["rule results"]
+    WDI --> QS["quality score"]
+    WDI --> EX["exception details"]
 ```
 
 ## Included assets

@@ -15,22 +15,18 @@ Metadata enrichment in watsonx.data intelligence can combine profiling, business
 
 ## Typical flow
 
-```text
-Source connections
-      |
-      v
-Metadata import / profiling
-      |
-      v
-IBM watsonx.data intelligence
-      |
-      +--> names / descriptions / classifications
-      +--> business-term assignment
-      +--> quality checks / scores
-      +--> lineage / impact context
-      |
-      v
-Catalogs / governed data / AI-ready context
+```mermaid
+flowchart TD
+    SRC["Source connections"]
+    SRC --> PROF["Metadata import / profiling"]
+    PROF --> WDI["IBM watsonx.data intelligence"]
+
+    WDI --> NAMES["names / descriptions / classifications"]
+    WDI --> TERMS["business-term assignment"]
+    WDI --> QUAL["quality checks / scores"]
+    WDI --> LIN["lineage / impact context"]
+
+    NAMES & TERMS & QUAL & LIN --> OUT["Catalogs / governed data / AI-ready context"]
 ```
 
 ## Developer path

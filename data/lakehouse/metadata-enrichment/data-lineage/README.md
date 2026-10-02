@@ -14,21 +14,14 @@ IBM uses OpenLineage as a common lineage-exchange standard across the watsonx pl
 
 ## Architecture
 
-```text
-DataStage / Spark / Python / watsonx.data
-                |
-                | OpenLineage / lineage metadata
-                v
-      IBM watsonx.data intelligence
-       lineage + impact + governance
-                |
-                v
-        governed consumers
+```mermaid
+flowchart TD
+    PROD["DataStage / Spark / Python / watsonx.data"]
+    PROD -->|"OpenLineage / lineage metadata"| WDI["IBM watsonx.data intelligence\nlineage + impact + governance"]
+    WDI --> GOV["governed consumers"]
 
-Pipeline operational health
-                |
-                v
-watsonx.data integration — Data Observability
+    OPS["Pipeline operational health"]
+    OPS --> DOBS["watsonx.data integration\nData Observability"]
 ```
 
 ## Included assets

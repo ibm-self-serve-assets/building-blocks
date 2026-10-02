@@ -6,27 +6,18 @@ Use this building block to deliver low-latency live business state to operationa
 
 ## Architecture
 
-```text
-Governed Kafka Topics
-(from Govern layer)
-           |
-      +----+----+
-      |         |
-      v         v
-  RTCE                Tableflow
-  Real-Time Context   Iceberg Sink
-  Engine              |
-  (key-value          v
-   materialization)   Object Storage
-  |                   (Apache Iceberg tables)
-  |                   |
-  v                   v
-  MCP / REST      IBM watsonx.data
-  endpoints       Lakehouse (Presto / Spark)
-  |
-  v
-  AI Agents /
-  Applications
+```mermaid
+flowchart TD
+    KAFKA["Governed Kafka Topics\n(from Govern layer)"]
+
+    KAFKA --> RTCE["RTCE — Real-Time Context Engine\nkey-value materialization"]
+    KAFKA --> TF["Tableflow\nIceberg Sink"]
+
+    TF --> OBJ["Object Storage\nApache Iceberg tables"]
+    OBJ --> WXD["IBM watsonx.data\nLakehouse (Presto / Spark)"]
+
+    RTCE --> MCP["MCP / REST endpoints"]
+    MCP --> AI["AI Agents / Applications"]
 ```
 
 ## Included assets
@@ -80,20 +71,15 @@ See [`assets/streamhouse-continous-rag/README.md`](assets/streamhouse-continous-
 
 ## Continuous RAG pattern
 
-```text
-RTCE (live operational state)    RAG Pipeline (enterprise knowledge)
-  current orders / alerts /          historical documents /
-  inventory / risk scores            policies / contracts / specs
-           |                                   |
-           +---------------+-------------------+
-                           |
-                           v
-                     AI Agent
-                   (watsonx.ai)
-                           |
-                           v
-              Grounded response with
-            live + historical context
+```mermaid
+flowchart TD
+    RTCE["RTCE — live operational state\ncurrent orders · alerts · inventory · risk scores"]
+    RAG["RAG Pipeline — enterprise knowledge\nhistorical documents · policies · contracts · specs"]
+
+    RTCE --> AGENT["AI Agent\nwatsonx.ai"]
+    RAG  --> AGENT
+
+    AGENT --> OUT["Grounded response with\nlive + historical context"]
 ```
 
 ## When to use Serve

@@ -17,34 +17,26 @@ The core principle is to match the engine and governance tool to the workload: P
 
 ## Architecture
 
-```text
-External Data Sources
-Databases / Warehouses / Object Stores
-           |
-      +----+----+
-      |         |
-      v         v
-  Federated   Ingestion / ETL
-  query       (open Apache Iceberg)
-  (Presto)         |
-      |            v
-      +---------> IBM watsonx.data
-                  Iceberg Open Table Catalog
-                  |
-          +-------+-------+
-          |               |
-          v               v
-       Presto           Spark
-   (Interactive SQL)  (Batch / ML)
-          |               |
-          v               v
-   BI / Analytics    ML Pipelines
+```mermaid
+flowchart TD
+    EXT["🗄️ External Data Sources\nDatabases / Warehouses / Object Stores"]
 
-  watsonx.data intelligence      Astra DB Serverless
-  Metadata / Quality / Lineage   Vector Store
-          |                           |
-          v                           v
-  Text2SQL / Self-service AI    RAG / Semantic Retrieval
+    EXT -->|Federated query| PRESTO["⚡ Presto\nInteractive SQL"]
+    EXT -->|Ingestion / ETL| ICEBERG["🏔️ IBM watsonx.data\nIceberg Open Table Catalog"]
+
+    PRESTO --> ICEBERG
+
+    ICEBERG --> PRESTO2["⚡ Presto\nInteractive SQL"]
+    ICEBERG --> SPARK["🔥 Spark\nBatch / ML"]
+
+    PRESTO2 --> BI["📊 BI / Analytics"]
+    SPARK   --> ML["🤖 ML Pipelines"]
+
+    ICEBERG --> META["🔍 watsonx.data intelligence\nMetadata · Quality · Lineage"]
+    ICEBERG --> ASTRA["🔎 Astra DB Serverless\nVector Store"]
+
+    META  --> T2S["💬 Text2SQL / Self-service AI"]
+    ASTRA --> RAG["🧠 RAG / Semantic Retrieval"]
 ```
 
 ## How to use this section

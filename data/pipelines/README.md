@@ -14,12 +14,13 @@ Pipeline building blocks cover the developer path from **ingestion and transform
 
 ## Choose the right building block
 
-```text
-Structured batch transformation        -> ETL / ELT
-Unstructured document preparation      -> UDI
-Large file/directory synchronization   -> Data Sync
-Grounded retrieval + generation        -> RAG
-Natural language -> governed SQL       -> Text2SQL
+```mermaid
+flowchart LR
+    NL["Natural language → governed SQL"]   --> T2S["Text2SQL"]
+    UNREG["Unstructured document preparation"] --> UDI["UDI"]
+    BATCH["Structured batch transformation"]   --> ETL["ETL / ELT"]
+    FILES["Large file/directory synchronization"] --> SYNC["Data Sync"]
+    RETR["Grounded retrieval + generation"]    --> RAG["RAG"]
 ```
 
 Structured near-real-time database replication is an IBM watsonx.data integration **Data Replication** capability, but it is not a separate building-block folder in this package.

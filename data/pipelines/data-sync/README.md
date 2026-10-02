@@ -18,15 +18,11 @@ This is **not relational database CDC**. For structured near-real-time database 
 
 ## Typical flow
 
-```text
-On-prem / edge / data center
-          |
-          | IBM Aspera Sync / FASP
-          v
-Cloud / remote file repository
-          |
-          v
-analytics / AI / archive / downstream pipeline
+```mermaid
+flowchart TD
+    SRC["On-prem / edge / data center"]
+    SRC -->|"IBM Aspera Sync / FASP"| DEST["Cloud / remote file repository"]
+    DEST --> DOWNSTREAM["analytics / AI / archive / downstream pipeline"]
 ```
 
 Actual throughput depends on network capacity, endpoint/storage performance, workload characteristics, and configuration.

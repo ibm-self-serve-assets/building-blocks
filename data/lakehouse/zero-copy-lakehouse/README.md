@@ -8,21 +8,15 @@ Use this building block to query supported external data platforms and open lake
 
 ## Architecture
 
-```text
-IBM COS / S3 / supported external platforms
-                 |
-                 | register/connect
-                 v
-           IBM watsonx.data
-       catalogs + Apache Iceberg
-                 |
-          +------+------+
-          |             |
-          v             v
-       Presto         Spark
-          |
-          v
-   federated / lakehouse SQL
+```mermaid
+flowchart TD
+    SRC["IBM COS / S3 / supported external platforms"]
+    SRC -->|"register/connect"| WXD["IBM watsonx.data\ncatalogs + Apache Iceberg"]
+
+    WXD --> PRESTO["Presto"]
+    WXD --> SPARK["Spark"]
+
+    PRESTO --> SQL["federated / lakehouse SQL"]
 ```
 
 ## Included assets
