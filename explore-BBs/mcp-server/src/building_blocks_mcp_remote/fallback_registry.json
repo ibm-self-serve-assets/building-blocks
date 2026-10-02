@@ -21,7 +21,7 @@
   "agent-ops": {
    "bob_modes": [],
    "capability": "ai",
-   "description": "Evaluate, red-team, and observe AI agents from development through production \u2014 benchmarks with LLM-simulated users, failure analysis, adversarial testing, traces, and latency \u2014 plus metric-level evaluation of GenAI applications",
+   "description": "Evaluate, score, red-team, and observe watsonx Orchestrate agents before release and after every change \u2014 ground-truth test cases with LLM-simulated users, failure analysis, plain-language rubrics, adversarial testing with 15 attack types, and platform traces (ADK 2.18+, SaaS or Developer Edition) \u2014 plus metric-level evaluation of GenAI applications",
    "docs_path": "ai-core/control/agent-ops.md",
    "group": "control",
    "name": "Agent Ops",
@@ -174,7 +174,7 @@
   "cost-management": {
    "bob_modes": [],
    "capability": "ai",
-   "description": "Track the cost of AI agents \u2014 per-interaction cost and token usage, cost per evaluation scenario, context growth, and production cost projection with Langfuse; enterprise allocation and budgets coming soon",
+   "description": "Track the cost of watsonx Orchestrate agents in dollars with Langfuse \u2014 integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection \u2014 alongside the Agentic Control Plane token views; enterprise allocation and budgets coming soon",
    "docs_path": "ai-core/control/cost-management.md",
    "group": "control",
    "name": "Cost Management",
@@ -196,12 +196,12 @@
    "capability": "data",
    "description": "Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust",
    "docs_path": "data-core/lakehouse/metadata-enrichment/index.md",
-   "group": "context",
+   "group": "lakehouse",
    "name": "Data Lineage",
    "products": [
     "watsonx.data"
    ],
-   "repo_path": "data/context/metadata-enrichment/data-lineage",
+   "repo_path": "data/lakehouse/metadata-enrichment/data-lineage",
    "tags": [
     "data",
     "lineage",
@@ -215,12 +215,12 @@
    "capability": "data",
    "description": "Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time",
    "docs_path": "data-core/lakehouse/data-observability/index.md",
-   "group": "context",
+   "group": "lakehouse",
    "name": "Data Observability",
    "products": [
     "watsonx.data"
    ],
-   "repo_path": "data/context/data-observability",
+   "repo_path": "data/lakehouse/data-observability",
    "tags": [
     "data",
     "observability",
@@ -253,12 +253,12 @@
    "capability": "data",
    "description": "Data quality management with automated validation, profiling, and rule-based checks across data sources",
    "docs_path": "data-core/lakehouse/metadata-enrichment/index.md",
-   "group": "context",
+   "group": "lakehouse",
    "name": "Data Quality",
    "products": [
     "watsonx.data"
    ],
-   "repo_path": "data/context/metadata-enrichment/data-quality",
+   "repo_path": "data/lakehouse/metadata-enrichment/data-quality",
    "tags": [
     "data",
     "quality",
@@ -272,12 +272,12 @@
    "capability": "data",
    "description": "Streamhouse \u2014 real-time data streaming capabilities for continuous data processing and event-driven architectures",
    "docs_path": "data-core/streamhouse/index.md",
-   "group": "context",
+   "group": "streamhouse",
    "name": "Streamhouse",
    "products": [
     "watsonx.data"
    ],
-   "repo_path": "data/context/streamhouse",
+   "repo_path": "data/streamhouse",
    "tags": [
     "data",
     "streaming",
@@ -463,13 +463,13 @@
    "capability": "data",
    "description": "Serverless vector ingestion and similarity search plus NoSQL document access using the Astra DB service in IBM watsonx.data",
    "docs_path": "data-core/lakehouse/serverless-vector/index.md",
-   "group": "query-engines",
+   "group": "lakehouse",
    "name": "Serverless Vector",
    "products": [
     "watsonx.data",
     "watsonx.ai"
    ],
-   "repo_path": "data/query-engines/serverless-vector",
+   "repo_path": "data/lakehouse/serverless-vector",
    "tags": [
     "data",
     "vector",
@@ -508,12 +508,12 @@
    "capability": "data",
    "description": "Query across data sources without duplication using open table formats and federated query engines for lakehouse access",
    "docs_path": "data-core/lakehouse/zero-copy-lakehouse/index.md",
-   "group": "query-engines",
+   "group": "lakehouse",
    "name": "Zero Copy",
    "products": [
     "watsonx.data"
    ],
-   "repo_path": "data/query-engines/zero-copy-lakehouse",
+   "repo_path": "data/lakehouse/zero-copy-lakehouse",
    "tags": [
     "data",
     "zero-copy",
@@ -821,11 +821,6 @@
    "description": "Build, orchestrate, and deploy autonomous AI agents with the watsonx Orchestrate ADK and multi-agent patterns",
    "name": "Agents"
   },
-  "context": {
-   "capability": "data",
-   "description": "Data in motion, data at rest, metadata, governance, and observability so applications and agents operate on current, understandable information",
-   "name": "Context"
-  },
   "control": {
    "capability": "ai",
    "description": "Visibility and control across the AI lifecycle \u2014 Agent Ops (evaluate and observe), Guardrails (runtime enforcement), Cost Management, and Compliance, powered by watsonx.governance and watsonx Orchestrate",
@@ -835,6 +830,11 @@
    "capability": "ai",
    "description": "Bob-powered development layer across the software lifecycle \u2014 agentic SDLC, code modernization, headless Bob, and integration as code",
    "name": "Engineering"
+  },
+  "lakehouse": {
+   "capability": "data",
+   "description": "Data at rest on the open lakehouse \u2014 metadata enrichment and data quality, data observability, zero-copy interoperability across engines, and serverless vector retrieval",
+   "name": "Lakehouse"
   },
   "operate": {
    "capability": "automation",
@@ -851,15 +851,15 @@
    "description": "Prepare, transform, move, and index structured and unstructured data for analytics, RAG, search, and AI applications",
    "name": "Pipelines"
   },
-  "query-engines": {
-   "capability": "data",
-   "description": "Fit-for-purpose execution for SQL analytics, open lakehouse interoperability, and vector retrieval \u2014 matching the engine to the workload",
-   "name": "Query Engines"
-  },
   "secure": {
    "capability": "automation",
    "description": "Non-human identity and secrets management, application risk and continuous compliance, and quantum-safe cryptographic readiness",
    "name": "Secure"
+  },
+  "streamhouse": {
+   "capability": "data",
+   "description": "Data in motion on the Streamhouse \u2014 real-time streaming ingestion, stream transformation, governance, and serving live operational state so applications and agents act on current information",
+   "name": "Streamhouse"
   }
  },
  "SKILLS": {
@@ -887,7 +887,7 @@
    "blocks": [
     "agent-ops"
    ],
-   "description": "Plan and run evaluations, red-teaming, and runtime observability for watsonx Orchestrate (WXO) agents across Developer Edition and SaaS. Use when validating WXO agents pre-deploy, authoring benchmark JSON DAGs, interpreting Journey Success / Tool Call Recall / Agent Routing F1 / RAG Faithfulness, diagnosing agent failures, running adversarial red-teaming (Instruction Override, Jailbreaking, Crescendo Attack), searching runtime traces, exporting traces via the Python SDK, wiring Langfuse for cost & latency analysis, or registering model pricing in Langfuse. Interview-first; emits bash commands for the user to run in their IDE terminal.",
+   "description": "Evaluate, red-team, and observe watsonx Orchestrate (WXO) agents with the ADK evaluation framework (ADK 2.18+, evaluation framework 1.5+) on SaaS or Developer Edition. Use when validating a WXO agent before release or after a change, authoring ground-truth test cases (goal DAGs, handoff goals, arg_matching), running quick-eval / evaluate / analyze, scoring conversations against plain-language rubrics (RubricEvaluation), running red-teaming attacks, interpreting Journey Success / routing accuracy / tool-call precision and recall, deciding whether a failure is the agent, the test case, or the model, or searching and exporting platform traces. Interview-first; emits the commands for the user to run. Runtime policy enforcement belongs to the agent-controls and real-time-guardrails skills; tokens-to-dollars, Langfuse, and cost optimization belong to the cost-management skill.",
    "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/control/agent-ops/bob-skills/agent-ops.zip",
    "name": "agent-ops",
    "sources": [
@@ -932,13 +932,13 @@
     "serverless-vector"
    ],
    "description": "IBM-focused guidance for document/NoSQL applications using the Astra DB service available through IBM watsonx.data.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/query-engines/serverless-vector/bob-skills/astradb-nosql-design.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip",
    "name": "astradb-nosql-design",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/query-engines/serverless-vector/bob-skills/astradb-nosql-design.zip"
+     "path": "data/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip"
     },
     {
      "layout": "dir",
@@ -955,13 +955,13 @@
     "serverless-vector"
    ],
    "description": "IBM-focused guidance for the Astra DB serverless vector service available through IBM watsonx.data, using IBM watsonx.ai embeddings and IBM Cloud Object Storage.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/query-engines/serverless-vector/bob-skills/astradb-vector-setup.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/serverless-vector/bob-skills/astradb-vector-setup.zip",
    "name": "astradb-vector-setup",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/query-engines/serverless-vector/bob-skills/astradb-vector-setup.zip"
+     "path": "data/lakehouse/serverless-vector/bob-skills/astradb-vector-setup.zip"
     }
    ],
    "status": "active",
@@ -1058,13 +1058,13 @@
     "data-streaming"
    ],
    "description": "Expert guidance for building real-time streaming systems on Confluent Cloud using Infrastructure-as-Code (Terraform), Apache Flink SQL, and Python producers. Adapts to any streaming use case (IoT, finance, retail, healthcare, logistics) while maintaining production-ready quality.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/streamhouse/bob-skills/confluent-iac-terraform.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/streamhouse/real-time-streaming/bob-skills/confluent-iac-terraform.zip",
    "name": "confluent-iac-terraform",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/context/streamhouse/bob-skills/confluent-iac-terraform.zip"
+     "path": "data/streamhouse/real-time-streaming/bob-skills/confluent-iac-terraform.zip"
     },
     {
      "layout": "dir",
@@ -1075,6 +1075,29 @@
      "layout": "dir",
      "location": "central",
      "path": "ibm-bob/skills/data-streaming-confluent-terraform"
+    }
+   ],
+   "status": "active",
+   "subskills": []
+  },
+  "cost-management": {
+   "archive_from": null,
+   "blocks": [
+    "cost-management"
+   ],
+   "description": "Measure, explain, and reduce the cost of watsonx Orchestrate (WXO) agents. Use when asked what an agent, a conversation, an evaluation run, or a use case costs; where the tokens go; how to turn platform traces or Langfuse data into dollars; how to set up the Langfuse integration and model pricing; how to compare cost against evaluation quality (cost per successful journey); or which levers cut spend (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - Agentic Control Plane (tokens), platform traces (tokens per generation, priced with a list-price table), Langfuse (dollars per trace, session, model, tag). Interview-first; emits commands; never changes an instance's Langfuse integration unless the user owns the instance.",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ai/control/cost-management/bob-skills/cost-management.zip",
+   "name": "cost-management",
+   "sources": [
+    {
+     "layout": "bob",
+     "location": "block",
+     "path": "ai/control/cost-management/bob-skills/cost-management.zip"
+    },
+    {
+     "layout": "dir",
+     "location": "central",
+     "path": "ibm-bob/skills/cost-management"
     }
    ],
    "status": "active",
@@ -1132,13 +1155,13 @@
     "data-quality"
    ],
    "description": "Expert guidance for implementing IBM watsonx.data Intelligence data quality rules on IBM Cloud \u2014 covers IAM authentication, DQ rule creation (completeness, uniqueness, validity, consistency, accuracy), rule execution via the DAI REST API, quality score interpretation, data profiling job submission, and IBM COS report archiving. Generates production-ready Python 3.12 code following IBM building-blocks conventions.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/metadata-enrichment/data-quality/bob-skills/data-quality-rules.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/metadata-enrichment/data-quality/bob-skills/data-quality-rules.zip",
    "name": "data-quality-rules",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/context/metadata-enrichment/data-quality/bob-skills/data-quality-rules.zip"
+     "path": "data/lakehouse/metadata-enrichment/data-quality/bob-skills/data-quality-rules.zip"
     },
     {
      "layout": "dir",
@@ -1155,13 +1178,13 @@
     "data-streaming"
    ],
    "description": "Expert Confluent Cloud architect specializing in creating complete, production-ready streaming solutions with Infrastructure-as-Code (Terraform), Apache Flink SQL (including ML_FORECAST time-series forecasting), and Python producers. Generates structured artifacts organized by domain (code, scripts, documentation) for repeatable, business-focused streaming architectures.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/streamhouse/bob-skills/data-streaming-confluent.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/streamhouse/real-time-streaming/bob-skills/data-streaming-confluent.zip",
    "name": "data-streaming-confluent",
    "sources": [
     {
      "layout": "bare",
      "location": "block",
-     "path": "data/context/streamhouse/bob-skills/data-streaming-confluent.zip"
+     "path": "data/streamhouse/real-time-streaming/bob-skills/data-streaming-confluent.zip"
     },
     {
      "layout": "dir",
@@ -1178,13 +1201,13 @@
     "data-observability"
    ],
    "description": "IBM-focused guidance for IBM watsonx.data integration Data Observability / Databand-compatible pipeline monitoring, run health, metrics, anomalies, and alerts.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/data-observability/bob-skills/databand-pipeline-setup.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/data-observability/bob-skills/databand-pipeline-setup.zip",
    "name": "databand-pipeline-setup",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/context/data-observability/bob-skills/databand-pipeline-setup.zip"
+     "path": "data/lakehouse/data-observability/bob-skills/databand-pipeline-setup.zip"
     }
    ],
    "status": "active",
@@ -1212,13 +1235,13 @@
     "zero-copy"
    ],
    "description": "Expert guidance for Apache Iceberg table lifecycle management on IBM watsonx.data \u2014 covers table DDL/DML via Presto SQL, partition strategy design, time-travel queries, snapshot management, schema evolution, compaction, and metadata optimization. Generates production-ready Python 3.12 scripts and SQL patterns following IBM building-blocks conventions.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/query-engines/zero-copy-lakehouse/bob-skills/iceberg-table-management.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/zero-copy-lakehouse/bob-skills/iceberg-table-management.zip",
    "name": "iceberg-table-management",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/query-engines/zero-copy-lakehouse/bob-skills/iceberg-table-management.zip"
+     "path": "data/lakehouse/zero-copy-lakehouse/bob-skills/iceberg-table-management.zip"
     }
    ],
    "status": "active",
@@ -1336,13 +1359,13 @@
     "data-lineage"
    ],
    "description": "IBM-focused guidance for OpenLineage instrumentation and ingestion into IBM watsonx.data intelligence for enterprise lineage and impact analysis.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/metadata-enrichment/data-lineage/bob-skills/openlineage-instrumentation.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/metadata-enrichment/data-lineage/bob-skills/openlineage-instrumentation.zip",
    "name": "openlineage-instrumentation",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/context/metadata-enrichment/data-lineage/bob-skills/openlineage-instrumentation.zip"
+     "path": "data/lakehouse/metadata-enrichment/data-lineage/bob-skills/openlineage-instrumentation.zip"
     }
    ],
    "status": "active",
@@ -1514,13 +1537,13 @@
     "data-streaming"
    ],
    "description": "Build, review, explain, and extend the FactoryPulse Continuous RAG Streamhouse demo on Confluent Cloud. Use this skill for Kafka/Flink continuous knowledge ingestion, manufacturing exception-to-action flows, RAG freshness, Confluent configuration, API/UI changes, Bob-assisted development, and IBM Code Engine deployment in this repository.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/context/streamhouse/bob-skills/streamhouse-continuous-rag.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/streamhouse/serve/bob-skills/streamhouse-continuous-rag.zip",
    "name": "streamhouse-continuous-rag",
    "sources": [
     {
      "layout": "bare",
      "location": "block",
-     "path": "data/context/streamhouse/bob-skills/streamhouse-continuous-rag.zip"
+     "path": "data/streamhouse/serve/bob-skills/streamhouse-continuous-rag.zip"
     },
     {
      "layout": "dir",
@@ -1624,13 +1647,13 @@
     "zero-copy"
    ],
    "description": "Expert guidance for IBM watsonx.data zero-copy lakehouse configuration \u2014 covers Iceberg catalog setup, IBM COS and AWS S3 bucket registration via the watsonx.data REST API v2, Presto engine catalog association, Spark configuration, schema creation, and federated SQL queries. Generates production-ready Python 3.12 scripts using IBM IAM authentication following existing watsonxdata_setup.py patterns.",
-   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/query-engines/zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip",
+   "download": "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/data/lakehouse/zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip",
    "name": "watsonxdata-lakehouse",
    "sources": [
     {
      "layout": "bob",
      "location": "block",
-     "path": "data/query-engines/zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip"
+     "path": "data/lakehouse/zero-copy-lakehouse/bob-skills/watsonxdata-lakehouse.zip"
     },
     {
      "layout": "dir",

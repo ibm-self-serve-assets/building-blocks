@@ -12,18 +12,18 @@ groups:
     name: Engineering
     capability: ai
     description: Bob-powered development layer across the software lifecycle — agentic SDLC, code modernization, headless Bob, and integration as code
-  - id: context
-    name: Context
+  - id: streamhouse
+    name: Streamhouse
     capability: data
-    description: Data in motion, data at rest, metadata, governance, and observability so applications and agents operate on current, understandable information
+    description: Data in motion on the Streamhouse — real-time streaming ingestion, stream transformation, governance, and serving live operational state so applications and agents act on current information
   - id: pipelines
     name: Pipelines
     capability: data
     description: Prepare, transform, move, and index structured and unstructured data for analytics, RAG, search, and AI applications
-  - id: query-engines
-    name: Query Engines
+  - id: lakehouse
+    name: Lakehouse
     capability: data
-    description: Fit-for-purpose execution for SQL analytics, open lakehouse interoperability, and vector retrieval — matching the engine to the workload
+    description: Data at rest on the open lakehouse — metadata enrichment and data quality, data observability, zero-copy interoperability across engines, and serverless vector retrieval
   - id: operate
     name: Operate
     capability: automation

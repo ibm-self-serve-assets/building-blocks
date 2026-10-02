@@ -47,7 +47,7 @@ mcp = FastMCP(
         "Building Blocks are pre-built, embeddable capabilities organized as "
         "3 core capabilities → 9 groups → individual blocks:\n"
         "  AI (the AI Control Plane): agents, control, engineering\n"
-        "  Data: context, pipelines, query-engines\n"
+        "  Data: streamhouse, pipelines, lakehouse\n"
         "  Automation: operate, secure, optimize\n\n"
         "The set of blocks changes over time — always call list_building_blocks "
         "for the current catalog; never assume block names from memory.\n\n"

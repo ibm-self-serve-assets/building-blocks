@@ -47,7 +47,7 @@
 
 ## Divergent copies (same skill, different content — needs owner decision)
 
-- `astradb-nosql-design`: 2 copies with 2 distinct contents — serving data/query-engines/serverless-vector/bob-skills/astradb-nosql-design.zip. Copies: data/query-engines/serverless-vector/bob-skills/astradb-nosql-design.zip [24063aa92234bd5d], ibm-bob/skills/astradb-nosql-design [a265ee3cdffa3b81]
+- `astradb-nosql-design`: 2 copies with 2 distinct contents — serving data/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip. Copies: data/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip [24063aa92234bd5d], ibm-bob/skills/astradb-nosql-design [a265ee3cdffa3b81]
 - `automated-resource-mgmt-turbonomic`: 2 copies with 2 distinct contents — serving automation/optimize/application-performance/bob-skills/automated-resource-mgmt-turbonomic.zip. Copies: automation/optimize/application-performance/bob-skills/automated-resource-mgmt-turbonomic.zip [b54c4254f4c25956], ibm-bob/skills/automated-resource-mgmt-turbonomic [6acad63c62715f5a]
 - `build-time-gen-ai-evals`: 2 copies with 2 distinct contents — serving ai/control/agent-ops/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip. Copies: ai/control/agent-ops/model-evaluation/gen-ai-evaluations/bob-skills/build-time-gen-ai-evals.zip [e6733eddbd461a7f], ibm-bob/skills/build-time-gen-ai-evals [a134169a363dba20]
 - `data-ingestion-structured`: 2 copies with 2 distinct contents — serving data/pipelines/udi/bob-skills/data-ingestion-structured.zip. Copies: data/pipelines/udi/bob-skills/data-ingestion-structured.zip [3e5983c00b7f5afc], ibm-bob/skills/data-ingestion-structured [0afe99d4c1bf2a56]

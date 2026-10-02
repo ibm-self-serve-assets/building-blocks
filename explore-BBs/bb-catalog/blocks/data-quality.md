@@ -1,10 +1,10 @@
 ---
 id: data-quality
 name: Data Quality
-group: context
+group: lakehouse
 capability: data
 description: Data quality management with automated validation, profiling, and rule-based checks across data sources
-repo_path: data/context/metadata-enrichment/data-quality
+repo_path: data/lakehouse/metadata-enrichment/data-quality
 docs_path: data-core/lakehouse/metadata-enrichment/index.md
 products:
   - watsonx.data
@@ -21,7 +21,7 @@ tags:
 
 Data quality management with automated validation, profiling, and rule-based checks across data sources
 
-- **Repo**: [data/context/metadata-enrichment/data-quality](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/context/metadata-enrichment/data-quality)
+- **Repo**: [data/lakehouse/metadata-enrichment/data-quality](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/lakehouse/metadata-enrichment/data-quality)
 - **Docs**: [data-core/lakehouse/metadata-enrichment/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/lakehouse/metadata-enrichment/)
 
 <!--
