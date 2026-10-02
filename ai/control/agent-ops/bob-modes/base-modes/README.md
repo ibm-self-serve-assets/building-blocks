@@ -1,211 +1,115 @@
 # Agent Ops
 
-Your agent passes unit tests — but will it call the right tools with the right arguments when a real user asks an ambiguous question? Will it hallucinate tool calls that don't exist? Will it leak its system prompt under adversarial pressure? Will a single multi-turn conversation burn through your token budget?
+Your agent works in the chat. Does it take the right path every time? Does the compliance agent call the screening tool for every applicant, or only the easy ones? Does the orchestrator produce the decision letter with the tool, or write one itself? Will it hold the line when a user pushes for an exception?
 
-**Agent Ops answers these questions before deployment.** This [Bob](https://bob.ibm.com) custom mode (IBM's AI code assistant) puts your watsonx Orchestrate (WXO) agent through rigorous, automated evaluation — LLM-simulated user conversations, tool-calling precision/recall metrics, RAG faithfulness scoring, per-turn token and cost analysis via Langfuse, and adversarial red-teaming. Every failure is traced to its root cause — whether that's the agent, the benchmark, or the infrastructure — with concrete fixes, not generic advice.
+**This [Bob](https://bob.ibm.com) custom mode answers those questions before release.** Bob drives the watsonx Orchestrate (WXO) ADK evaluation framework end to end: a smoke test, ground-truth test cases with goal graphs and handoff goals, an evaluation with an LLM-simulated user, root-cause analysis from the transcripts, plain-language rubrics scored by a judge model, red-teaming attacks against the policies that matter, and platform traces when a conversation needs explaining. Every failure is attributed — test case, agent, model, or infrastructure — with a concrete fix.
 
-**Built-in safeguards** for the WXO ADK 2.6 eval-framework landmines: ancestor `.env` pollution (the silent hijacker of `WO_INSTANCE`/`WO_API_KEY`), explicit-token requirement in `config.yaml`, and the deprecated default judge model. Bob walks you through the pre-flight checks before every run, so you don't lose an afternoon to `iam.cloud.ibm.com` 400 errors.
+Validated with ADK 2.18.0 / evaluation framework 1.5.2 on a SaaS instance; Developer Edition works the same way.
 
-## What You Need
+## What you need
 
-**Required:**
-- [Bob](https://bob.ibm.com) (IBM's AI code assistant)
-- WXO Developer Edition (local server on port 4321 for ADK 2.6+, or 8080 on older builds)
-- IBM watsonx Orchestrate ADK (2.5.1 or 2.6.x — **not** 2.7.0):
-  ```bash
-  pip install "ibm-watsonx-orchestrate[agentops]>=2.5.1,<2.7.0"
-  pip install "ibm-watsonx-orchestrate-evaluation-framework==1.2.7"
-  pip install "langfuse<4"
-  ```
-- Python 3.12 (3.11 and lower are not supported)
-- A WXO agent with tools (and optionally a knowledge base) to evaluate
-
-**Optional:**
-- `uvx` installed (`pip install uv`) — needed for the MCP docs server
-- A `.env` file with Developer Edition credentials:
-  ```
-  WO_DEVELOPER_EDITION_SOURCE=orchestrate
-  WO_INSTANCE=https://api.<region>.watson-orchestrate.ibm.com/instances/<id>
-  WO_API_KEY=<your-api-key>
-  ```
+- [Bob](https://bob.ibm.com)
+- Python 3.12 venv with the ADK: `pip install "ibm-watsonx-orchestrate[agentops]>=2.18.0,<3.0.0"`, and `export VENV_ACTIVATE=<venv>/bin/activate`
+- An activated `orchestrate` environment where the agent is (or will be) imported:
+  - SaaS: `orchestrate env add --name <env> --url <instance url>` then `orchestrate env activate <env> --api-key "$(…read from a key file…)"` (tokens last about two hours)
+  - Developer Edition: `orchestrate server start -e .env` (`-i` for traces) and `orchestrate env activate local`
+- A WXO agent with Python tools (and optionally a knowledge base and collaborators)
 
 ## Installation
 
-**Option A: Project-level mode (recommended)**
+**Option A — project-level (recommended)**
 
-1. Download `agent-ops.zip` from this repo
-2. Unzip it into your agent project root:
-   ```bash
-   unzip agent-ops.zip -d /path/to/your/agent/project
-   ```
-   This places the `.bob/` folder and `.mcp.json` in your project, next to your agent. Bob will detect the mode automatically.
+1. Download `agent-ops.zip` from this folder.
+2. Unzip into your agent project root: `unzip agent-ops.zip -d /path/to/your/project` — this adds `agent-ops/.bob/` and `agent-ops/mcp.json`; move `.bob/` and `mcp.json` to the project root (or open the `agent-ops/` folder as the project).
+3. Switch to **🛡️ Agent Ops** in Bob's mode selector.
 
-**Option B: Global mode**
+**Option B — global**
 
-1. Download and unzip `agent-ops.zip`
-2. Append the contents of `.bob/custom_modes.yaml` to Bob's global config:
-   ```
-   ~/Library/Application Support/IBM Bob/User/globalStorage/ibm.bob-code/settings/custom_modes.yaml
-   ```
-3. Copy the `.bob/` folder and `.mcp.json` from the unzipped folder to your project root.
+Append the contents of `.bob/custom_modes.yaml` to Bob's global `custom_modes.yaml`, and copy `.bob/` (for `workflow.md` and the reference benchmarks) and `mcp.json` into the project root.
 
-Then switch to the **🛡️ Agent Ops** mode in Bob's mode selector.
+## How it works
 
-## How It Works
-
-When you start a conversation, Bob asks what type of evaluation you need:
+Bob asks what you want out of the session:
 
 | Choice | What Bob does |
-|--------|-------------|
-| **(a) Quick connectivity check** | Verifies ADK, server, agent imported, tools accessible. Done in 2 minutes. |
-| **(b) Full end-to-end evaluation** | Benchmarks + metrics + analysis + recommendations. The complete pipeline. |
-| **(c) Cost and latency analysis** | Runs evaluation with Langfuse tracing, then queries the Langfuse API to produce a 5-layer cost/token analysis: per-scenario breakdown, per-turn context growth, cost patterns, data-driven recommendations, and production projections. |
-| **(d) Red-teaming** | Adversarial security testing — prompt injection, data extraction, jailbreaking. |
-| **(e) Something else** | Describe what you need and Bob tailors the workflow. |
+|---|---|
+| **(a) Quick check** | Confirms versions, environment, imports; runs `quick-eval` on two cases |
+| **(b) Full evaluation** | Test cases (reads your code first) → evaluate → analyze → fixes → re-run |
+| **(c) Rubric** | Turns your rules into `RubricEvaluation` criteria with explicit FAIL conditions and scores a run |
+| **(d) Red-teaming** | Plans attacks against a stated policy, reviews the generated files, runs them, explains each success |
+| **(e) Traces** | Searches and exports platform traces; summarizes handoffs, tools, model and tokens, latency |
 
-Bob checks what already exists (ADK installed? server running? agent imported? benchmarks written? **stale ancestor `.env` polluting the eval framework?**) and **only does what's needed** — it won't repeat steps you've already completed.
+Bob detects what already exists (ADK, environment, imports, test cases, results) and only fills the gaps. On a shared instance it lists before importing, keeps your prefix, and never touches assets you did not create.
 
-## Evaluation Workflow
+## Workflow
 
 ```
-Phase 1: Setup → Phase 2: Smoke Test → Phase 3: Benchmarks → Phase 4: Evaluation → Phase 5: Analysis → Phase 6: Red-Teaming
+0 Ask & detect → 1 Setup → 2 Smoke test → 3 Test cases → 4 Evaluate → 5 Analyze → 6 Rubric → 7 Red team
 ```
 
-1. **Setup** — Checks Developer Edition prerequisite, locates ADK, verifies server, imports agent, **runs the 4-check pre-flight (RULE 19)**
-2. **Smoke Test** — Runs `quick-eval` with 2 scenarios as a connectivity check (Yes/No report)
-3. **Benchmark Authoring** — Reads your agent's tool code first, writes benchmarks simple-to-complex, validates each with correctness + quality + dry-run checks
-4. **Full Evaluation** — Runs benchmarks with LLM-simulated users via the gateway provider with explicit token + supported `model_id`
-5. **Analysis & Diagnosis** — Interprets metrics, considers benchmark issues vs agent issues, implements fixes, asks about next steps
-6. **Red-Teaming** — Plans and executes adversarial attacks, recommends guardrails. Plan generation requires a cloud-active env (RULE 1 + RULE 17 walk you through it)
+Full procedure, config templates, and report formats: `.bob/workflow.md`.
 
-## Cost & Latency Analysis
-
-When you choose option (c), Bob produces a deep cost/latency report by querying the Langfuse API directly:
-
-- **Per-scenario breakdown** — tokens, cost, pass/fail status
-- **Per-turn context growth** — how tokens accumulate in multi-turn conversations (the #1 cost driver)
-- **Cost patterns** — base cost, growth rate, input/output ratio, wasted spend on failures
-- **Data-driven recommendations** — only what the data supports (not a generic checklist)
-- **Production projection** — estimated monthly cost at your expected conversation volume
-
-## Mode Contents
+## Mode contents
 
 ```
 agent-ops/
 ├── .bob/
-│   ├── custom_modes.yaml                # Mode definition with 19 mandatory rules
-│   ├── workflow.md                      # 6-phase workflow + 3 appendices + 4-check pre-flight
-│   ├── rules-agent-ops/
-│   │   ├── 1_evaluation_workflow.xml    # Phase-by-phase steps with user context + STEP 3.5 (configure_eval_llm)
-│   │   ├── 2_benchmark_authoring.xml    # JSON schema, DAG patterns, quality checklist, dry-run
-│   │   ├── 3_metrics_and_diagnosis.xml  # Metric definitions, thresholds, diagnosis table
-│   │   └── 4_red_teaming.xml            # Attack categories, remediation patterns, <cloud_required> block
+│   ├── custom_modes.yaml                  # mode definition: first action, 14 rules, references
+│   ├── workflow.md                        # phases 0–7, appendices (validate-native/external, traces, agent-definition mistakes)
 │   └── reference-benchmarks/
-│       ├── portfolio_advisor_benchmarks/  # 8 working scenario JSONs
-│       └── stories_sample.csv             # Sample stories CSV for generate command
-├── .mcp.json                            # WXO ADK docs MCP server
-└── .gitignore                           # Ignores eval outputs and macOS junk
+│       ├── loan_underwriting/             # validated on 2.18: 5 multi-agent cases, eval + rubric configs, 3 attacks, stories.csv
+│       ├── portfolio_advisor_benchmarks/  # 8 single-agent cases (tool chains, multi-turn, RAG, text check)
+│       └── stories_sample.csv
+├── mcp.json                               # watsonx-orchestrate-adk-docs MCP server (streamable HTTP)
+└── .gitignore
 ```
 
-## MCP: ADK Docs Search
+The agents and tools behind the loan-underwriting cases live in the building block under [`../../assets/wxo-agents/examples/loan-underwriting/`](../../assets/wxo-agents/examples/loan-underwriting/).
 
-The `.mcp.json` connects Bob to the live WXO ADK documentation server. Bob can search the official ADK docs for command syntax, flags, and best practices — without leaving the conversation.
+## Key rules (from `custom_modes.yaml`)
 
-Requires `uvx` — install with `pip install uv`.
+- ADK ≥ 2.18 / framework ≥ 1.5; the framework evaluates the **active environment**
+- Read the agent's code before writing a test case; validate every case before running it
+- Multi-agent: handoffs declared as `chat_with_collaborator_<agent>` goals; `display_name` equals `name`; strict arguments before fuzzy ones; `max_user_turns: 3` with an END signal
+- Read the result files yourself; attribute each failure before fixing; fix test cases directly, ask before changing agent files
+- Review every generated red-team file: its goal defines success
+- Never purge, delete, or change instance-level settings; never print credentials
 
-## Key Rules
-
-- Bob asks what type of evaluation you need before doing anything
-- Developer Edition is the default — cloud is used **only** for red-teaming `plan` (which needs an LLM)
-- **RULE 17** — Cloud-env selection: read existing config first, reuse cached tokens, ask which instance the user's API key is for, never auto-pick or hardcode
-- **RULE 18** — Eval framework LLM config: explicit token in `config.yaml`, gateway provider, override the deprecated default model
-- **RULE 19** — Ancestor `.env` pollution: pre-flight check before every quick-eval/evaluate run
-- Reads your agent's tool code before writing benchmarks (never guesses)
-- Validates every benchmark with correctness + quality + dry-run checks
-- Smoke test is connectivity-only (2 scenarios, Yes/No report)
-- When analyzing failures, considers benchmark issues vs agent issues
-- Queries Langfuse API for cost/token data (doesn't ask you to check the dashboard)
-- Never declares "task complete" — asks about next steps
-
-## Example Prompts
+## Example prompts
 
 ```
-"Help me evaluate my customer service agent before we go to production."
-
-"I want to understand the cost and latency of my agent — run a cost analysis."
-
-"My evaluation shows Journey Success = 0 but Completion = 80%. What's wrong?"
-
-"My agent passed functional eval. Red-team it for security vulnerabilities."
+"Evaluate my underwriting orchestrator before we release it."
+"Precision is 0.56 on every case although they all pass — what is going on?"
+"Score last night's run against these three rules: ..."
+"Red-team the agent: success means it issues an APPROVED letter without the AML check."
+"Export the trace for session abc123 and tell me where the time went."
 ```
 
-## ADK Commands Covered
+## ADK commands covered
 
-| Command | Mode Coverage |
-|---------|---------------|
-| `evaluate` | Phase 4 (Full Evaluation) |
-| `analyze` (default + enhanced) | Phase 5 (Analysis & Diagnosis) |
-| `quick-eval` | Phase 2 (Smoke Test) |
-| `generate` | Phase 3 (Benchmark Authoring) |
-| `record` | Phase 3 (requires live chat UI) |
-| `validate-native` / `validate-external` | Appendix A |
-| `red-teaming list` / `plan` / `run` | Phase 6 (Red-Teaming) |
+| Command | Phase |
+|---|---|
+| `evaluations quick-eval` | 2 |
+| `evaluations record`, `evaluations generate` | 3 |
+| `evaluations evaluate` (trajectory metrics and `RubricEvaluation`) | 4, 6 |
+| `evaluations analyze` (default and enhanced) | 5 |
+| `evaluations red-teaming list / plan / run` | 7 |
+| `evaluations validate-native / validate-external` | Appendix A |
+| `observability traces search / export` | Appendix B |
 
 ## Troubleshooting
 
-### `model_not_supported` / `Model 'meta-llama/llama-3-405b-instruct' was not found`
+| Symptom | Fix |
+|---|---|
+| 401 part-way through a run | SaaS token expired: re-activate the environment; export `WO_API_KEY` from a key file for refresh |
+| Precision 0.5–0.6 with passing cases | declare handoffs as goals |
+| Routing accuracy 0.0 although handoffs happened | set `display_name` equal to `name` and re-import |
+| Runs take minutes per case | `max_user_turns: 3` and "reply END and nothing else" in the story |
+| `analyze` fails validating `text_match` | analyze a normalized copy (Phase 5 recipe) |
+| `generate` fails with a Langfuse error | on 2.18 it needs a reachable Langfuse project (host + keys); use a generator script instead |
+| `400 Bad Request` from `iam.cloud.ibm.com` | a `.env` in an ancestor folder overrides `WO_INSTANCE`; move it aside |
 
-The eval framework's default model is deprecated on eval-fw 1.2.x. Fix:
+## Learn more
 
-1. Run `orchestrate env activate local` (this populates `~/.cache/orchestrate/credentials.yaml`)
-2. Read your local mcsp token:
-   ```bash
-   python3 -c "import yaml; print(yaml.safe_load(open('$HOME/.cache/orchestrate/credentials.yaml'))['auth']['local']['wxo_mcsp_token'])"
-   ```
-3. Create `config.yaml` in your project root with the token explicit:
-   ```yaml
-   auth_config:
-     url: http://localhost:4321
-     tenant_name: local
-     token: <paste the JWT here>
-   provider_config:
-     provider: "gateway"
-     model_id: "meta-llama/llama-3-3-70b-instruct"
-   ```
-4. Pass `--config ./config.yaml` on every `quick-eval` / `evaluate` invocation:
-   ```bash
-   orchestrate evaluations quick-eval \
-     --test-paths ./benchmarks \
-     --tools-path ./<your-agent>/tools \
-     --output-dir ./quick_eval_results \
-     --config ./config.yaml
-   ```
-
-`--config` is supported on `evaluate` and `quick-eval` only — not on `generate`, `red-teaming plan`, or `red-teaming run`.
-
-**Note:** judges in `agentops/evaluation_package.py` are hardcoded to the deprecated 405b for now. The conversation runs and emits Langfuse traces normally; only the post-conversation metrics summary table is broken on this version of the eval framework. Langfuse-focused workflows are not affected.
-
-### `400 Bad Request` from `iam.cloud.ibm.com/identity/token`
-
-This is the ancestor-`.env` pollution case. `dotenv.load_dotenv()` walks UP the directory tree, so a stale `.env` in any ancestor of your project (e.g., `~/src/.env`) gets auto-loaded and silently overrides your `config.yaml`. Detect:
-
-```bash
-cd <project-dir> && python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"
-```
-
-If the path is outside your project, move it aside for the eval session:
-
-```bash
-mv <ancestor>/.env <ancestor>/.env.disabled
-```
-
-(Restore after.)
-
-### `Scope not found: Scope{scopeType='SERVICE', scopeId='<uuid>'}`
-
-The active orchestrate env's instance UUID doesn't match the API key. Bob walks you through this in RULE 17 — ask which instance your key is actually for, then either activate the matching env or `orchestrate env add` a new one with the correct URL and explicit `--type`.
-
-## Learn More
-
-- [Bob — IBM's AI Code Assistant](https://bob.ibm.com)
-- [WXO ADK Documentation](https://developer.watson-orchestrate.ibm.com/)
+- [WXO ADK documentation](https://developer.watson-orchestrate.ibm.com/) — `evaluate/*`, `traces/*`
+- [Bob](https://bob.ibm.com)

@@ -1,170 +1,117 @@
 ---
 name: agent-ops
-description: Plan and run evaluations, red-teaming, and runtime observability for watsonx Orchestrate (WXO) agents across Developer Edition and SaaS. Use when validating WXO agents pre-deploy, authoring benchmark JSON DAGs, interpreting Journey Success / Tool Call Recall / Agent Routing F1 / RAG Faithfulness, diagnosing agent failures, running adversarial red-teaming (Instruction Override, Jailbreaking, Crescendo Attack), searching runtime traces, exporting traces via the Python SDK, wiring Langfuse for cost & latency analysis, or registering model pricing in Langfuse. Interview-first; emits bash commands for the user to run in their IDE terminal.
+description: Evaluate, red-team, and observe watsonx Orchestrate (WXO) agents with the ADK evaluation framework (ADK 2.18+, evaluation framework 1.5+) on SaaS or Developer Edition. Use when validating a WXO agent before release or after a change, authoring ground-truth test cases (goal DAGs, handoff goals, arg_matching), running quick-eval / evaluate / analyze, scoring conversations against plain-language rubrics (RubricEvaluation), running red-teaming attacks, interpreting Journey Success / routing accuracy / tool-call precision and recall, deciding whether a failure is the agent, the test case, or the model, or searching and exporting platform traces. Interview-first; emits the commands for the user to run. Runtime policy enforcement belongs to the agent-controls and real-time-guardrails skills; tokens-to-dollars, Langfuse, and cost optimization belong to the cost-management skill.
 ---
 
 # Agent Ops (watsonx Orchestrate)
 
-This skill drives evaluations, red-teaming, and runtime observability for watsonx Orchestrate agents using the WXO ADK. Targets supported: **Developer Edition** (local server on `:4321`) and **SaaS** cloud (`api.<region>.watson-orchestrate.{ibm.com|cloud.ibm.com}`). On-prem Cloud Pak for Data is deferred.
+This skill drives **build-time evaluation, rubric scoring, red-teaming, and trace inspection** for watsonx Orchestrate agents with the ADK evaluation framework (`orchestrate evaluations ...`, `orchestrate observability traces ...`). Targets: **SaaS** (IBM Cloud or AWS hosted) and **Developer Edition** (local server). On-prem Cloud Pak for Data: evaluations are documented; the rest is best effort.
 
-**Stance:** ask-first, command-emit second, execute-rarely. Bob auto-runs only read-only diagnostics. Anything that mutates state, takes minutes, or runs evals is **emitted as a bash block** for the user to run in their terminal. Bob never runs `server start`, `env activate`, `evaluations evaluate`, `red-teaming run`, `pip install`, etc.
+**Stance:** ask first, emit commands second, execute rarely. Bob auto-runs only fast, read-only diagnostics. Anything that mutates state, runs an LLM, or takes minutes is **emitted as a bash block** for the user to run in their terminal.
+
+**Validated against:** `ibm-watsonx-orchestrate[agentops]` 2.18.0 with evaluation framework 1.5.2, on an IBM Cloud SaaS instance, with the multi-agent loan-underwriting system in `examples/loan_underwriting/`. Statements marked *observed* come from those runs; the ADK docs win if they disagree.
 
 ---
 
-## First action — prereq notice, then 3-question interview
+## First action — one-line prereq notice, then a 3-question interview
 
-On the FIRST turn of every conversation, before asking Q1, post this one-line prereq notice verbatim:
+Post this once, verbatim, on the first turn:
 
-> 👋 Quick note before we start: if this is your first time using this skill on this machine, glance at `assets/PREREQUISITES.md` — it lists what you need installed (ADK, Docker, venv) and which credentials to have ready (`WO_*`, `WATSONX_*`, Langfuse keys). I'll preflight what I can after Q3, but it's friendlier to have these in place up front. If you already know your setup is good, skip straight to Q1 below.
+> Before we start: this skill needs the ADK with the `[agentops]` extra (2.18 or newer) in a Python 3.12 venv, and an activated `orchestrate` environment pointing at the instance where your agent is imported. `assets/PREREQUISITES.md` has the details. If your setup is ready, answer the three questions below.
 
-Then proceed immediately with Q1, Q2, Q3 in the same message. Do NOT run any diagnostics (not even `lsof` or `pip show`) and do NOT inspect files until Q1 has been answered.
+### Expert escape hatch
 
-### Expert escape hatch (Bob behavior)
-
-**Before asking Q1, check if the user's opening message already names a specific action.** If they did — for example: *"search traces from the last hour for agent X"*, *"just run `red-teaming list`"*, *"re-evaluate one failing scenario from this output dir"*, *"set up Langfuse env vars"* — skip the 3-question interview. Acknowledge in ONE line (e.g., *"Going straight to the observability module"*), still post the prereq notice, then run the read-only diagnostics for the matching module only.
-
-Also: if the user EXPLICITLY says *"skip the interview"*, *"I know what I want"*, or similar, treat it as escape-hatch consent and ask only the single clarifying question you need to route correctly (typically target env + module, fused into one).
-
-The interview is the DEFAULT for ambiguous requests and first-time users. For experienced users with a specific intent, the escape hatch is the better path — don't ask them to re-answer questions whose answers are already in their opening message.
+If the opening message already names a concrete action (*"run quick-eval on `benchmarks/`"*, *"why is precision 0.56"*, *"export trace abc123"*, *"write a rubric for refund policy"*), skip the interview, say which module you are entering in one line, and run only that module's read-only diagnostics. Ask a single fused question only if routing is genuinely ambiguous.
 
 ### Interview
 
-**Q1 — TARGET ENVIRONMENT:**
-> Which watsonx Orchestrate environment are you targeting?
-> (a) Developer Edition (local server on :4321)
-> (b) SaaS cloud
-> (c) On-premises (Cloud Pak for Data / IBM Software Hub) — partially deferred, see Q1b note
-> If you're not sure, pick (a) — it's the fastest path.
+**Q1 — Target environment**
+> Which environment is the agent imported in?
+> (a) SaaS on IBM Cloud (`api.<region>.watson-orchestrate.cloud.ibm.com`)
+> (b) SaaS on AWS (`api.<region>.watson-orchestrate.ibm.com`)
+> (c) Developer Edition (local server, `orchestrate server start`)
+> (d) On-premises (Cloud Pak for Data / Software Hub)
+> Paste the instance URL if unsure; `orchestrate env add` infers the auth type from it.
 
-**Q1a — SAAS HOSTING PLATFORM (only if Q1 = (b)):**
-> Which platform hosts your watsonx Orchestrate instance?
-> (i) AWS-hosted SaaS
-> (ii) IBM Cloud-hosted SaaS
-> If you're not sure, just paste your service instance URL (from WXO UI → Settings → API details tab). `orchestrate env add` usually infers the auth type from the URL — explicit `--type` is only needed when inference fails.
+**Q2 — Intent (multi-select)**
+> 1. Smoke test or evaluate agent behaviour (`quick-eval`, `evaluate`, `analyze`)
+> 2. Author or generate test cases (`record`, `generate`, hand-written JSON)
+> 3. Score conversations against plain-language rules (`RubricEvaluation`)
+> 4. Red-teaming (native agents only)
+> 5. Traces (search, export, latency, token usage per run)
 
-**Why Q1a matters:** `orchestrate env add --type` accepts five values: `ibm_iam`, `mcsp`, `mcsp_v1`, `mcsp_v2`, `cpd`. It's **optional and usually auto-inferred from the URL** (per the official ADK docs at https://developer.watson-orchestrate.ibm.com/environment/initiate_environment). But when inference fails — typical symptom: `Scope not found: Scope{scopeType='SERVICE', scopeId='<uuid>'}` — explicit `--type` resolves it. Mapping by hosting platform:
+If the user asks for **runtime controls** (PII filter, content guardrails, rate limits, model fallback), route to the `agent-controls` skill. For **cost** (tokens to dollars, Langfuse, optimization), route to the `cost-management` skill. For **LangGraph/LangChain agents**, route to the `build-time-gen-ai-evals` skill.
 
-> - AWS-hosted → `--type mcsp` (auto-tries v2 then falls back to v1; preferred over specifying `mcsp_v2` directly)
-> - IBM Cloud-hosted → `--type ibm_iam`
-> - On-prem CPD / Software Hub → `--type cpd` (with `--insecure` or `--verify` for self-signed certs)
+**Q3 — Current state**
+> - Is the agent (and every collaborator and tool) already imported in that environment? Under which names?
+> - Do test cases exist? Where?
+> - Do you have evaluation results to look at already?
+> - Is the instance shared with other teams' agents?
 
-**Q1b — ON-PREM NOTE (only if Q1 = (c)):**
-> This skill currently covers DevEd + SaaS first-class. On-prem CPD has partial coverage:
-> - ✓ **Evaluations** (`quick-eval`, `evaluate`, `analyze`) are officially supported on on-prem (per the ADK eval framework docs).
-> - ⚠️ **Red-teaming, traces CLI/SDK, hosted Langfuse** are NOT explicitly documented for on-prem CPD. They may work, but the failure modes are undocumented.
->
-> If your target is on-prem CPD: I can drive the eval module (Module 1 + Module 3) with confidence. For other modules, I'll either (a) attempt and surface any platform errors verbatim, or (b) defer and point you at https://developer.watson-orchestrate.ibm.com/environment/onprem_compatibility for the current state. Tell me which you prefer.
-
-**Note on the URL → `--type` mapping:** the ADK does NOT publish a public URL-pattern table. The mapping above is by hosting platform (which the partner usually knows), not by URL substring (which would be a fragile assumption). When in doubt, omit `--type` and let inference do its job.
-
-**Q2 — INTENT (multi-select):**
-> What do you want to accomplish? Pick all that apply:
-> 1. Evaluate agent behavior (quick-eval / evaluate / analyze)
-> 2. Author or generate benchmarks (record / generate / manual)
-> 3. Red-teaming (native agents only)
-> 4. Observability (traces, Langfuse, cost/latency)
-
-If user asks about performance tuning, use the `watsonx-orchestrate-adk-docs` MCP server (configured in `assets/mcp.json`) to fetch the relevant WXO performance guide live. If user asks about REST API access (Agent Evaluation or Governance Monitoring), say it is out of scope — point them at WXO REST docs and recommend driving from the CLI instead.
-
-**Q3 — CURRENT STATE:**
-> Quick state check so I know what to skip:
-> - Is your agent already imported / deployed to the target?
-> - Do you already have benchmark JSONs? If so, where?
-> - Do you already have evaluation results to analyze?
-
-After Q3, present a one-screen MODULE PLAN: which modules will be touched, in what order, and which steps will be skipped because the user has already done them. THEN — and only then — run the read-only diagnostics for the first module.
+After Q3, present a one-screen **module plan** (modules, order, skipped steps), then run the pre-flight checks for the first module.
 
 ---
 
-## Mandatory Rules
+## Mandatory rules
 
-Read every time. Apply to every module.
+**RULE 1 — Interview first.** No diagnostics, file reads, or `orchestrate` calls before Q1 is answered (escape hatch excepted).
 
-**RULE 1 — INTERVIEW-FIRST.** Never auto-detect environment, ADK install, agent config, server state, or anything else before Q1 is answered. The interview is non-negotiable on the first turn.
+**RULE 2 — Read-only diagnostics only.** Bob may auto-run: `orchestrate env list`, `orchestrate agents list`, `orchestrate tools list`, `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework`, `lsof -ti :4321` (DevEd), `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"`, file reads inside the project, and `orchestrate observability traces search --last 1h --limit 5`. Everything else — `env add/activate`, `server start`, imports, `evaluations *`, `red-teaming *`, `pip install`, git writes — is emitted per `reference/command-emission.md`.
 
-**RULE 2 — READ-ONLY DIAGNOSTICS ONLY.** Bob auto-runs only commands that don't mutate state, take ≤ ~5s, and don't consume meaningful LLM tokens. Allowed:
-- `lsof -ti :4321` / `:3010` / `:8080`
-- `orchestrate env list`
-- `orchestrate agents list`
-- `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework`
-- `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"`
-- file reads in the project
-- `orchestrate observability traces search ... --limit ≤10` (low-limit probe)
+**RULE 3 — Version floor.** At module entry run `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework`. Required: ADK `>= 2.18.0, < 3.0.0` and framework `>= 1.5.0, < 2.0.0`. Below the floor, emit the upgrade and stop; the field notes in this skill do not apply to older versions.
 
-Everything else — `server start`, `env activate`, `env add`, `evaluations evaluate`, `evaluations quick-eval`, `evaluations record`, `red-teaming run`, any `pip install`, any `git` write — must be EMITTED as a copy-paste block per `reference/command-emission.md`.
+**RULE 4 — Venv propagation.** Every emitted block that calls `orchestrate` or `python` starts with `source "$VENV_ACTIVATE" && \`.
 
-**RULE 3 — VERSION-AWARE BEHAVIOR.** At entry to any module, run:
-```bash
-pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework
-```
-Required pins:
-- `ibm-watsonx-orchestrate` >= 2.6.0, < 3.0.0
-- `ibm-watsonx-orchestrate-evaluation-framework` >= 1.4.0, < 2.0.0
+**RULE 5 — Never leak credentials.** API keys, bearer tokens, Langfuse keys, and instance IDs never appear in chat. Keys live in a file the user controls (for example `~/.wxo-key.json`, mode 600) and are read with `$(...)` inside the emitted command. The `orchestrate` token cache is `~/.cache/orchestrate/credentials.yaml`; never print it.
 
-If installed eval-fw is in 1.2.x / 1.3.x, warn about the deprecated `meta-llama/llama-3-405b-instruct` judge bug and offer the upgrade as the FIRST recommendation. This skill does NOT ship a monkey-patch workaround — version-up is the fix.
+**RULE 6 — Shared-instance hygiene.** Many instances host other teams' agents. Before any import: `orchestrate agents list` and `orchestrate tools list`, and confirm the user's names do not collide (prefix them if in doubt). Never update, delete, or re-import an asset the user did not create. Never change instance-level settings (the Langfuse integration is one setting per instance; configuring it overwrites whoever set it).
 
-**RULE 4 — VENV PROPAGATION.** EVERY emitted bash block that calls `orchestrate ...` or `python ...` must start with:
-```bash
-source "$VENV_ACTIVATE" && \
-```
-Bob's shell state does not persist across turns, so making activation part of every emitted command guarantees the right venv is in scope when the user runs it.
+**RULE 7 — Red-teaming is native-only.** Confirm the target is a native agent (`kind: native`). External, LangChain, CrewAI, or A2A agents: say so in one line and stop.
 
-**RULE 5 — NEVER LEAK CREDENTIALS.** Bearer JWTs, API keys, instance UUIDs, and full Langfuse secret keys MUST NEVER appear in Bob's chat output. When a command needs a token, EMIT a bash block that reads it via shell `$(...)` interpolation from the source-of-truth file (`~/.cache/orchestrate/credentials.yaml`), so the JWT only exists inside the user's terminal. Pattern in `reference/command-emission.md` (see `curl_authed_endpoint` example).
+**RULE 8 — Traces need a window.** Emit `--last <duration>` or both `--start-time` and `--end-time`. *Observed on SaaS:* the platform rejects windows longer than 4 hours and limits lookups to a few per minute; search in slices.
 
-**RULE 6 — `traces search` WINDOW IS MANDATORY.** The CLI rejects a partial window. Every emitted `traces search` command must include BOTH `--start-time <ISO8601>` AND `--end-time <ISO8601>` (or `--last <duration>` on ADK >= 2.6.0).
+**RULE 9 — DevEd flags.** `--with-langfuse`/`-l` and `--with-ibm-telemetry`/`-i` on `orchestrate server start` are mutually exclusive. Traces on DevEd need `-i`.
 
-**RULE 7 — RED-TEAMING IS NATIVE-ONLY.** WXO docs constrain `red-teaming run` to native agents. Before emitting any red-teaming command, confirm with the user that the target agent is native; if it's external / LangChain / CrewAI, refuse early with a one-line explanation. `red-teaming plan` requires watsonx auth via the gateway (DevEd works in ADK 2.6+ with `WATSONX_APIKEY` exported; earlier ADK versions required SaaS).
+**RULE 10 — Credibility labelling.** Metric thresholds, diagnosis rows, and remediation prompts in this skill are curated starting points, not WXO-published SLAs. Keep the "curated" label when you paraphrase them.
 
-**RULE 8 — `--with-langfuse` / `-l` AND `--with-ibm-telemetry` / `-i` ARE MUTUALLY EXCLUSIVE on `orchestrate server start`.** Never emit both in the same command. If the user wants both observability stacks, emit two server-start commands (one for each, run separately) and explain they cannot run simultaneously.
+**RULE 11 — Test case first, then agent, then model.** When a case fails, check the test case (wrong tool name, strict match on a value the story never states, missing handoff goal, no end-of-conversation signal), then the agent (instructions, style, tool ownership), then the model (tool-calling reliability). Say which it was.
 
-**RULE 9 — CREDIBILITY LABELING.** When you cite a metric threshold, a diagnosis row, a remediation prompt snippet, or any other curated content from the reference files, preserve and surface any "curated; not WXO-published" annotation attached to it. Partners need to know which line is an SLA and which line is a starting point. Never strip these labels when paraphrasing into chat.
-
-**RULE 10 — BENCHMARK-FIRST FAILURE ATTRIBUTION.** Before declaring "the agent has a bug" when a scenario fails, check that the benchmark is not the issue. Common benchmark issues: `tool_name` in `goal_details` doesn't match the agent's actual tool name; `strict` arg_matching on a value the story does not unambiguously imply; story lacks explicit end-of-conversation criteria (simulator ends early); goals DAG has an unreachable goal. If the benchmark is the issue, fix it and re-run only that scenario (see `reference/module-eval.md` → `evaluate_single_scenario`).
-
-**RULE 11 — BENCHMARK COVERAGE FLOOR.** Aim for 5-12 scenarios per agent for meaningful metrics; single-scenario eval has too much variance. Recommended categories: tool calls (strict + fuzzy), filtered queries (arg constraints), multi-turn (info across messages), error handling (bad input recovery), RAG/KB (`conversational_search` goals), text validation (`text_checks` for tone/format/keywords). Source: curated guidance, not a WXO-published standard — adjust based on agent complexity, blast radius, and customer risk tolerance.
+**RULE 12 — Coverage floor.** Aim for 5–12 test cases per agent: happy path, every decision branch, a multi-turn case, bad input, a RAG case if there is a knowledge base, a text check on the final answer. Single-case evaluations are too noisy to act on.
 
 ---
 
-## Module dispatch (after the interview)
-
-Q2 selections map 1:1 to module reference files. Read the relevant file(s) when the user's intent first touches that module — do NOT preload all of them.
+## Module dispatch
 
 | Intent | Module | Reference file |
 |---|---|---|
-| 1 (Evaluate) | eval | `reference/module-eval.md` |
-| 2 (Benchmarks) | benchmarks | `reference/module-benchmarks.md` |
-| 1 + result analysis | analyze | `reference/module-analyze.md` |
-| 3 (Red-teaming) | red-teaming | `reference/module-red-teaming.md` |
-| 4 (Observability) | observability | `reference/module-observability.md` |
+| 1 run / smoke test | eval | `reference/module-eval.md` |
+| 2 test cases | benchmarks | `reference/module-benchmarks.md` |
+| 1 + results | analyze | `reference/module-analyze.md` |
+| 3 rubric | rubric | `reference/module-rubric.md` |
+| 4 red-teaming | red-teaming | `reference/module-red-teaming.md` |
+| 5 traces | observability | `reference/module-observability.md` |
 
-Cross-cutting (always available, read on demand):
-- `reference/auth-env-matrix.md` — capability × {DevEd, SaaS} env requirements
-- `reference/command-emission.md` — canonical bash-block format Bob uses
+Cross-cutting, read on demand: `reference/auth-env-matrix.md` (targets, auth, capability matrix, pre-flight details) and `reference/command-emission.md` (block format, what Bob may run).
 
-**Module independence:** no forced order between modules. Each module file declares its own inputs, read-only diagnostics, emitted commands, expected outputs, and done-when criteria.
+Modules are independent; there is no forced order. The usual sequence for a new agent is quick-eval → test cases → evaluate → analyze → rubric → red-teaming, with traces whenever a conversation needs to be explained.
 
 ---
 
-## Pre-flight checks (Bob auto-runs at module entry)
+## Pre-flight checks (read-only, at module entry)
 
-Bob runs these read-only checks before emitting any command in a module:
-
-| Check | Bob's command | If it fails |
+| Check | Command | If it fails |
 |---|---|---|
-| Ancestor `.env` pollution | `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"` | Warn inline; offer to move ancestor `.env` aside |
-| `$VENV_ACTIVATE` set | `echo "VENV_ACTIVATE=${VENV_ACTIVATE:-UNSET}"` | Ask the user once for the venv activate path |
-| ADK/eval-fw version | `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework` | Emit upgrade command; do not proceed |
-| Server up (DevEd only) | `lsof -ti :4321` | Emit `server start` command |
-| Active env | `orchestrate env list` | Confirm with user; emit `env activate` if mismatched |
-| Agent imported | `orchestrate agents list` | Refuse to auto-import; emit import commands (tools → KBs → agent) for the user |
-| Watsonx auth (for RAG / red-teaming) | `echo "WATSONX_APIKEY=${WATSONX_APIKEY:+SET}${WATSONX_APIKEY:-UNSET}"` | If UNSET and Q2 includes RAG benchmarks or red-teaming, warn |
-| Lima VM health (DevEd) | `docker --context ibm-watsonx-orchestrate ps 2>&1 \| head -3` | If `EOF`, emit Lima VM rebuild recipe (see `reference/auth-env-matrix.md`) |
+| `$VENV_ACTIVATE` set | `echo "VENV_ACTIVATE=${VENV_ACTIVATE:-UNSET}"` | Ask once for the venv activate path |
+| Versions (RULE 3) | `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework` | Emit upgrade; stop |
+| Active environment | `orchestrate env list` | Emit `env activate <name>`; for SaaS the cached token expires after about two hours — re-activate with `--api-key "$(...)"` |
+| Agent and tools imported | `orchestrate agents list`, `orchestrate tools list` | Emit import commands (tools → knowledge bases → collaborators → orchestrator); never auto-import |
+| Ancestor `.env` | `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"` | A `.env` outside the project is auto-loaded by the framework; move it aside or override inline |
+| DevEd server up | `lsof -ti :4321` | Emit `orchestrate server start -e .env [-i]` |
+| Shared instance (RULE 6) | compare the user's names with the two lists | Prefix, or stop and ask |
 
 ---
 
-## Canonical command-emission format
-
-Every command Bob emits follows this shape:
+## Canonical command format
 
 ````
 **Run this in your terminal** — <one-line purpose>:
@@ -175,100 +122,88 @@ source "$VENV_ACTIVATE" && \
 orchestrate <command> ...
 ```
 
-When it finishes, paste <last 20 lines | output path | y/n> back so I can <diagnose | proceed | summarize>.
+When it finishes, paste <the last 20 lines | the output path | y/n> so I can <diagnose | proceed | summarize>.
 ````
 
-Full spec + worked examples (server start, evaluate with explicit token, env activate cloud, traces search with window, curl auth'd endpoint) in `reference/command-emission.md`.
+---
+
+## Quick reference
+
+### Eval
+- `orchestrate evaluations quick-eval -c config.yaml` (or `-p <tests> -t <tools> -o <out>`): reference-less smoke test; reports tool calls, schema mismatches, hallucinated tools. Python tools only.
+- `orchestrate evaluations evaluate -c config.yaml`: simulated user plays each test case; metrics in `summary_metrics.csv`, per-case transcripts in `messages/`.
+- Runs against the **active environment**; the judge and simulated user are separate LLMs chosen in the config. Details, config shape, timings, and failure table: `reference/module-eval.md`.
+
+### Test cases
+- Schema: `agent`, `story`, `starting_sentence`, `goals` (DAG), `goal_details` (`tool_call`, `text`, `tool_response`, `conversational_search`), optional `max_user_turns`.
+- `arg_matching`: `strict` (default), `fuzzy`, `optional`, `ignore`; `{"IGNORE": null}` skips all arguments; dot paths for nested fields.
+- Multi-agent: declare handoffs as `chat_with_collaborator_<agent>` goals with arguments ignored; set each agent's `display_name` equal to its `name`. Full guidance: `reference/module-benchmarks.md`.
+- Authoring paths: `record` (chat UI on SaaS or DevEd), `generate` (stories CSV + Python tools), or a generator script like `examples/loan_underwriting/make_testcases.py`.
+
+### Analyze
+- `orchestrate evaluations analyze -d <run dir> [-t <tools>] [--mode enhanced]`; the report prints to the terminal (widen it) and reads `summary_metrics.csv` plus `messages/*.metrics.json`.
+- Curated thresholds: Journey Success 1.0, routing accuracy ≥ 0.9, recall ≥ 0.9, precision ≥ 0.8 once handoffs are declared as goals. Diagnosis table: `reference/module-analyze.md`.
+
+### Rubric
+- `metrics: [RubricEvaluation]` plus `operator_configs.RubricEvaluation.custom_criteria`: a named rule in plain language per criterion; the judge returns pass/fail with reasoning and an overall score. `reference/module-rubric.md`.
+
+### Red-teaming
+- `red-teaming list` (15 attacks in 2 categories), `plan` (LLM-generated attack files from your test cases), `run` (executes, scores with `AttackSuccessMetric`).
+- Review or hand-author the generated attack files: the goal in the file defines what "the attack succeeded" means. `reference/module-red-teaming.md`.
+
+### Observability
+- `orchestrate observability traces search --last 1h` then `traces export --trace-id <id> -o trace.json`; Python `TracesController`; REST `GET /v1/agentops-v3/traces|observations`. Each observation carries `model` and `usage` (tokens). Agentic Control Plane dashboards in the product UI. `reference/module-observability.md`.
 
 ---
 
-## Quick reference — module summaries
+## Field notes — ADK 2.18 / framework 1.5 (observed; re-check on upgrade)
 
-### Module: Eval
-**Two commands:**
-- `orchestrate evaluations quick-eval` — reference-less smoke / schema / hallucination check
-- `orchestrate evaluations evaluate [--with-langfuse]` — full reference-based benchmark eval
-
-This skill leads with `--with-langfuse` (persists traces with token usage; required for cost analysis).
-
-**Expected outputs in `<output_dir>/`:** `summary_metrics.csv` (top-level metrics per scenario), `results.json` (per-scenario detail with full conversation trace), `knowledge_base_summary_metrics.json` (aggregated RAG metrics if `conversational_search` goals present), `config.yaml` (snapshot for audit).
-
-Full details: `reference/module-eval.md`.
-
-### Module: Benchmarks
-**Three authoring paths, in preferred order:**
-1. `record` — capture real chat-UI sessions, save as benchmark JSON (DevEd only, fastest path)
-2. `generate` — expand a CSV of user stories into benchmark JSON via the active env's LLM (tool-aware; requires Python `@tool`)
-3. **manual** — write JSON by hand using `examples/portfolio_advisor/` etc. as templates (fallback)
-
-**CRITICAL:** Before any authoring path, READ the agent's tool code, embedded data files, and KB YAMLs. Every tool name, arg key, and strict arg value must come from real code — never guess. Full schema, DAG patterns, arg_matching strategies, coverage recommendations: `reference/module-benchmarks.md`.
-
-### Module: Analyze
-**Two modes:**
-- `orchestrate evaluations analyze` (default) — heuristic interpretation
-- `orchestrate evaluations analyze --mode enhanced` — LLM-backed; produces tool-docstring enrichment suggestions
-
-**Critical flag detail:** `analyze` does NOT take `--output-dir`; report writes alongside `--data-path`.
-
-Metric thresholds (curated starting points — RULE 9): Journey Success = 1.0 ideal; Tool Call Recall ≥ 0.9; Precision ≥ 0.5; Agent Routing F1 ≥ 0.9; Faithfulness ≥ 0.8; Answer Relevancy ≥ 0.7. Full diagnosis table and remediation: `reference/module-analyze.md`.
-
-### Module: Red-teaming
-**Three subcommands:**
-- `red-teaming list` — show available attack types
-- `red-teaming plan` — generate attack files (LLM-backed via watsonx gateway)
-- `red-teaming run` — execute the planned attacks
-
-**Constraints (RULE 7):** native agents only. `-a` takes a COMMA-SEPARATED LIST of EXACT attack names from the `list` output (case-sensitive). `-a all` is NOT valid — it silently generates 0 attacks. Run `list` first, then construct the list.
-
-Attack categories: instruction override, crescendo, emotional appeal, imperative emphasis, role play, random pre/postfix, encoded input, foreign languages, prompt leakage, safety violations, jailbreaking, topic derailment. Full catalog, severity tiers, remediation prompts: `reference/module-red-teaming.md`.
-
-### Module: Observability
-**Three surfaces:**
-1. **Traces** (OpenTelemetry) — CLI `orchestrate observability traces search/export` + Python SDK `TracesController` + `TraceFilters`
-2. **Langfuse** — local (DevEd `server start -l`, UI on `:3010`) or hosted (`orchestrate settings observability langfuse configure ...`)
-3. **IBM Telemetry** — DevEd `server start -i` (mutually exclusive with `-l` — RULE 8)
-
-**Cost & latency 5-layer report** (curated format): per-scenario breakdown → per-turn context growth → cost patterns → data-driven recommendations → production projection. Requires model pricing registered in Langfuse (`POST /api/public/models`) — Langfuse ships 161 model definitions but `groq/openai/gpt-oss-120b` and other watsonx-served models are NOT pre-registered. Full details, REST API patterns: `reference/module-observability.md`.
+1. **Handoffs are tool calls.** A collaborator handoff shows up as `chat_with_collaborator_<agent>`. If it is not in `goal_details`, precision drops and the run looks worse than it is. Declare it with arguments ignored.
+2. **`display_name` must equal `name`** for a handoff to count as routing; otherwise routing accuracy reads 0.0 while everything else passes.
+3. **Argument checking stops at the first `fuzzy` field.** Put strict arguments before fuzzy ones in `args`, or a wrong strict value after a fuzzy one goes unnoticed.
+4. **The simulated user keeps talking.** Default `max_user_turns` is 20; it will chat after the task is done. Set `max_user_turns: 3` (per case or in the config) and end the story with "reply END and nothing else".
+5. **Token handling.** The framework uses the active environment's cached token; `--env-file` changes neither the instance nor the token in our runs. Export `WO_API_KEY` (from a key file, never typed in chat) so the framework can refresh a token that is about to expire during a long run.
+6. **`analyze` and `text_match`.** Framework 1.5.2 writes `text_match` as a number in `*.metrics.json` while `analyze` validates it as the enum string; if `analyze` raises a validation error, normalize a copy of the run folder (recipe in `reference/module-analyze.md`).
+7. **`quick-eval` on multi-agent systems** reports handoffs as schema mismatches. Read the per-tool lines; a mismatch on `chat_with_collaborator_*` is noise.
+8. **Generated red-team plans need review.** `plan` produced goals that did not express the policy under test; hand-authored attack files with an explicit success goal gave trustworthy results.
+9. **Model matters more than prompts.** In the loan example `watsonx/openai/gpt-oss-120b` called tools reliably; `granite-4-h-small` returned parse-failure fallbacks and `llama-3-3-70b-instruct` narrated calls instead of making them. Switch models before rewriting instructions.
+10. **Orchestrator style.** `style: planner` with the final tool owned by the orchestrator removed skipped steps and fabricated outputs that a `react_core` orchestrator produced. A residual flake of about one run in ten remains; the evaluation is what catches it.
+11. **Traces API limits (SaaS).** Search windows up to 4 hours; observation lookups a few per minute; a trace is complete about 15 seconds after the run ends. The runs API stream carries the `trace_id` on `message.created`, which links a conversation to its trace. On 2.18.0 `traces export` fails against this API (`fromStartTime is required`); fetch observations over REST with a window (`reference/module-observability.md`) or with the `cost-management` skill's `trace_cost.py`.
+12. **`generate` on 2.18** needs a reachable Langfuse project (host and keys exported) even without `--with-langfuse`; without one it writes no test cases. `reference/module-benchmarks.md` has the details and the generator-script alternative.
 
 ---
 
-## Reference material map
+## Reference map
 
-Load on demand when the conversation enters that topic:
-
-| When user asks about… | Load |
+| When the conversation touches… | Load |
 |---|---|
-| Capability × env matrix, env vars per capability, target definitions (DevEd vs SaaS), pre-flight check details, Lima VM recovery | `reference/auth-env-matrix.md` |
-| `quick-eval`, `evaluate`, `--with-langfuse` semantics, expected output files, common eval failures (session_id None, IAM errors, model_not_supported, etc.) | `reference/module-eval.md` |
-| Benchmark JSON schema, DAG patterns, arg_matching strategies, coverage categories, record/generate/manual paths | `reference/module-benchmarks.md` |
-| Metric definitions + thresholds, failure diagnosis table, benchmark-vs-agent decision | `reference/module-analyze.md` |
-| Red-teaming list/plan/run, attack categories, severity tiers, remediation prompts | `reference/module-red-teaming.md` |
-| Traces CLI, Python SDK, Langfuse local + hosted, cost & latency 5-layer report, model pricing registration | `reference/module-observability.md` |
-| Canonical bash-block format, command-emission anti-patterns, what Bob may execute vs forbidden | `reference/command-emission.md` |
+| Targets, `env add --type`, token expiry, DevEd `.env`, Lima VM recovery, capability × target matrix | `reference/auth-env-matrix.md` |
+| `quick-eval`, `evaluate`, config.yaml fields, judge and simulator models, output files, failures | `reference/module-eval.md` |
+| Test case schema, DAGs, handoff goals, arg_matching, `record`, `generate`, generator scripts, coverage | `reference/module-benchmarks.md` |
+| Metric meaning, thresholds, `analyze`, diagnosis table, attribution | `reference/module-analyze.md` |
+| Rubric criteria, judge configuration, reading the results | `reference/module-rubric.md` |
+| Attack catalogue, `plan`/`run`, attack file schema, success criteria, remediation | `reference/module-red-teaming.md` |
+| Traces CLI, Python, REST, Agentic Control Plane, what to look for in a span tree | `reference/module-observability.md` |
+| Block format, what Bob may run, handling output | `reference/command-emission.md` |
 
 ## Examples map
 
-**Prefer ADAPTING these canonical benchmarks rather than recreating from scratch.** Pick the closest category to the partner's agent topology (single-tool vs multi-agent vs RAG vs full portfolio), copy a scenario file, then modify the `agent`, `story`, `goals`, and `goal_details` fields. This prevents drift from validated patterns (DAG validity, `arg_matching` strategies, valid `type` values like `conversational_search` vs the deprecated `kb_tool_call`). Never invent benchmark JSON from memory — start from one of these.
+Adapt these rather than writing JSON from memory.
 
-Working benchmark JSONs in `examples/`:
-
-| Folder / File | Coverage |
+| Folder | What it shows |
 |---|---|
-| `portfolio_advisor/` | 8 scenarios on a real agent (passing). Tool calls, multi-turn, RAG. Use as copy-modify pattern. |
-| `minimal_single_tool/` | Smallest valid benchmark (1 scenario, 1 tool). Use as `generate` few-shot prime. |
-| `multi_agent_routing/` | Facilitator + 2 collaborators; tests Agent Routing F1. |
-| `rag_only/` | 2 KB-bound scenarios; tests Faithfulness / Answer Relevancy in isolation. |
-| `stories_sample.csv` | CSV input format for `orchestrate evaluations generate`. |
+| `examples/loan_underwriting/` | **Validated on 2.18 / 1.5.2.** Five ground-truth cases × two versions of a four-agent system (handoff goals, strict-before-fuzzy arguments, `max_user_turns`, END signal), evaluate and rubric configs, three hand-authored red-team attacks, `stories.csv` for `generate`, and the generator script. Agents and tools live in the building block under `assets/wxo-agents/examples/loan-underwriting/`. |
+| `examples/portfolio_advisor/` | Eight single-agent cases: tool chains, multi-turn, RAG (`conversational_search`), text check. Written for an earlier framework; schema still valid. |
+| `examples/minimal_single_tool/` | Smallest valid case; a few-shot prime for `generate`. |
+| `examples/multi_agent_routing/` | Facilitator plus two collaborators. Replace the `transfer_to_*` tool names with `chat_with_collaborator_<agent>` for current ADKs. |
+| `examples/rag_only/` | Knowledge-base cases scored with the RAG metrics. |
+| `examples/stories_sample.csv` | Input format for `generate`. |
 
 ## Assets map
 
-- `assets/mcp.json` — registers the `watsonx-orchestrate-adk-docs` MCP server (uvx-based). Lets Bob fetch ADK docs live via `search_ibm_watsonx_orchestrate_adk` + `query_docs_filesystem_ibm_watsonx_orchestrate_adk`.
-- `assets/PREREQUISITES.md` — software, credentials, hardware, network, agent layout, shell environment. Includes quick install summary and troubleshooting table.
+- `assets/mcp.json` — registers the `watsonx-orchestrate-adk-docs` MCP server (streamable HTTP, no local install) so Bob can search the current ADK docs.
+- `assets/PREREQUISITES.md` — software, credentials, network, agent layout, shell environment, troubleshooting.
 
----
+## Source of truth
 
-## Source-of-truth pointer
-
-WXO ADK docs (authoritative): https://developer.watson-orchestrate.ibm.com/
-
-If anything in a reference file appears to contradict the current ADK docs, the docs win. Use the `watsonx-orchestrate-adk-docs` MCP (via `assets/mcp.json`) to fetch live answers.
+ADK docs: https://developer.watson-orchestrate.ibm.com/ (evaluation: `evaluate/overview`, `evaluate/evaluate`, `evaluate/create_data`, `evaluate/analyze`, `evaluate/quick_eval`, `evaluate/rubric`, `evaluate/llm_vulnerability`; traces: `traces/overview`, `traces/traces_with_cli`, `traces/traces_with_python`). Use the MCP server in `assets/mcp.json` when a flag or behaviour needs confirming.

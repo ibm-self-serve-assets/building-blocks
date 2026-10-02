@@ -1,127 +1,113 @@
-# Module: Benchmarks
+# Module: Test cases (ground truth)
 
-**TRIGGER:** Load when user wants to author benchmark JSONs, run `record` or `generate`, asks about the benchmark JSON schema, DAG patterns, `arg_matching` strategies, the `kb_tool_call` vs `conversational_search` confusion, or the minimum coverage floor.
+**TRIGGER:** the user wants to write, generate, or record test cases, asks about the JSON schema, goal DAGs, `arg_matching`, handoff goals for multi-agent systems, `record`, `generate`, or how many cases are enough.
 
----
-
-## Three authoring paths (preferred order)
-
-1. **`record`** — capture real chat-UI sessions, save as benchmark JSON. **Fastest path.** Dev Edition only.
-2. **`generate`** — expand a CSV of user stories into benchmark JSON via the active env's LLM. Tool-aware (Python `@tool` only).
-3. **manual** — write JSON by hand, using `examples/` as templates. Fallback.
-
-**CRITICAL:** Before any authoring path, **READ the agent's tool code, embedded data files, and KB YAMLs.** Every tool name, arg key, and strict arg value in a benchmark must come from real code — never guess.
-
-**Authoritative docs:**
-- `record` + `generate`: https://developer.watson-orchestrate.ibm.com/evaluate/create_data.md
-- Overview / arg matching: https://developer.watson-orchestrate.ibm.com/evaluate/overview.md
+Authoritative docs: https://developer.watson-orchestrate.ibm.com/evaluate/overview.md (schema, arg matching), `evaluate/create_data.md` (`record`, `generate`).
 
 ---
 
-## Inputs
+## Before anything: read the agent
 
-- **Required:** target env from Q1.
-- **Required:** agent's tool code path (typically `agent/tools/`).
-- **Optional:** for `record`: server running on `:4321` (DevEd only).
-- **Optional:** for `generate`: a `stories.csv` (see `examples/stories_sample.csv`).
+Every tool name, argument key, strict value, and collaborator name in a test case must come from the real definitions. Bob reads, in this order:
 
-## Read-only diagnostics
-
-- **Tools are Python `@tool`-decorated:** read 1-3 files in user's `tools/` directory; confirm they import `@tool` from `ibm_watsonx_orchestrate.agent_builder.tools` and have type hints.
-- **Agent name in `agent_config.yaml`:** read `agent_config.yaml` (or multi-agent variant). This name becomes the `agent` field in every benchmark JSON.
-- **KB YAMLs (if RAG benchmarks needed):** read `knowledge_bases/*.yaml` for collection names and source docs.
+1. the agent YAMLs (`name`, `display_name`, `style`, `collaborators`, `tools`, the instructions — they say which steps are mandatory and in what order);
+2. the tool modules (function names, parameter names and types, docstrings, embedded data such as fixtures or IDs);
+3. knowledge-base YAMLs, if any (what the KB covers → `conversational_search` cases);
+4. `orchestrate agents list` / `tools list` to confirm the imported names match the files.
 
 ---
 
-## Authoring path 1 — `record` (DevEd only)
+## Four authoring paths
 
-**WHEN:** user has an existing agent and wants to capture real conversations as benchmarks. Especially useful when user isn't sure what to test or wants to convert reported bugs into regression scenarios.
-
-```bash
-# Then open http://localhost:4321 in your browser and chat with the agent.
-# Each conversation saved as <thread_id>_annotated_data.json in the output dir.
-source "$VENV_ACTIVATE" && \
-orchestrate evaluations record \
-  --output-dir recordings/$(date +%Y%m%d-%H%M%S)
-```
-
-**Follow-up:** after user pastes output path, read the recorded JSON(s) with Read tool, then write benchmark JSON to `benchmarks/` using the schema below. Refine `story` and `starting_sentence` to match the recorded conversation.
-
----
-
-## Authoring path 2 — `generate`
-
-**WHEN:** user wants benchmarks for many scenarios at once and has rough story descriptions in a CSV. Active env's LLM expands each row into a full benchmark JSON.
-
-**Prereq:** a CSV with two columns: `story` and `agent`. See `examples/stories_sample.csv` for the exact format.
-
-```bash
-# The active env's LLM expands each CSV row into a full benchmark JSON.
-# Tools must be Python @tool-decorated; framework introspects signatures to fill in expected tool_call entries.
-source "$VENV_ACTIVATE" && \
-orchestrate evaluations generate \
-  --stories-path stories.csv \
-  --tools-path agent/tools \
-  --output-dir generated_benchmarks/$(date +%Y%m%d-%H%M%S)
-```
-
-After it finishes, review generated JSONs and flag any that need manual cleanup (the LLM sometimes guesses wrong arg values).
-
----
-
-## Authoring path 3 — manual
-
-**WHEN:** `record` and `generate` aren't available, OR user needs precise control over a complex scenario (multi-turn, strict DAG, specific adversarial framing).
-
-**Process:** Bob writes the JSON file directly (Bob owns the `edit` group; this is NOT a "command emission" case). Use one of the `examples/` templates as starting point, then customize. After writing, run dry-run via `quick-eval` to validate (see `reference/module-eval.md`).
-
----
-
-## Benchmark JSON schema
-
-### Required top-level fields
-
-| Field | Type | Notes |
+| Path | When | Notes |
 |---|---|---|
-| `agent` | string | Must match `name:` in `agent_config.yaml` |
-| `story` | string | Second-person instructions for the LLM-simulated user. **MUST include explicit end-of-conversation criteria** — simulator will end early without them. |
-| `starting_sentence` | string | First message the simulated user sends. Natural, specific, aligned with story. |
-| `goals` | object | DAG: keys are goal names (matching `goal_details.name`), values are arrays of dependent goal names that can be evaluated once key completes. `[]` = leaf. |
-| `goal_details` | array | Per-goal expected actions. Every key in `goals` must have matching entry. |
-| `text_checks` | object (optional) | Expected keywords in agent text responses. |
+| **Generator script** (recommended for systems with a decision table) | several cases share one journey and differ in inputs and expected outcome | One function builds every case from a table; the DAG and matching rules live in one place. `../examples/loan_underwriting/make_testcases.py` builds 5 cases × 2 agent versions. |
+| **`record`** | you can produce the behaviour by chatting | Activate the environment, run `orchestrate evaluations record -o recordings/`, chat in the UI (SaaS chat URL, or `orchestrate chat start` on DevEd), one chat session per case, `Ctrl+C`. Output `<thread_id>_annotated_data.json`; `story` and `goals` are inferred — review them. `--context-variables '{"k":"v"}'` adds context. |
+| **`generate`** | you have one-line stories and Python tools | `stories.csv` with columns `story,agent`; `-t` is the Python **file** that defines the tools (a directory makes it fall back to a "minimal spec" and guess). Output `<agent>_snapshot_llm.json` and `<agent>_test_cases/`. *Observed on 2.18 / 1.5.2:* the command needs a reachable Langfuse project even when `--with-langfuse` is not used — see "generate on 2.18" below. |
+| **Hand-written JSON** | one-off or adversarial cases | Start from an example file; never from memory. |
+
+---
+
+## Schema (framework `TestCase`)
+
+```json
+{
+  "agent": "agentops_d1_loan_orchestrator_v2",
+  "starting_sentence": "I'd like to apply for a home loan. My name is Marcus Reyes, I am self-employed, my annual income is $120,000, I'm requesting $300,000 and my existing monthly debt payments are $1,500.",
+  "story": "You are Marcus Reyes, applying for a home loan of $300,000. ... Provide these details when asked and wait for the underwriting decision. Once you have received the decision and the letter, the conversation is over: reply END and nothing else.",
+  "max_user_turns": 3,
+  "goals": {
+    "route_intake": ["validate"],
+    "validate": ["route_credit"],
+    "route_credit": ["bureau"],
+    "bureau": ["route_compliance"],
+    "route_compliance": ["sanctions", "aml"],
+    "sanctions": ["letter"],
+    "aml": ["letter"],
+    "letter": ["summarize"]
+  },
+  "goal_details": [
+    { "type": "tool_call", "name": "route_intake", "tool_name": "chat_with_collaborator_agentops_d1_intake_agent",
+      "args": { "message": "IGNORE" }, "arg_matching": { "message": "ignore" } },
+    { "type": "tool_call", "name": "validate", "tool_name": "agentops_d1_validate_application",
+      "args": { "annual_income": 120000, "loan_amount": 300000, "employment_type": "self_employed",
+                "monthly_debt_payments": 1500, "applicant_name": "Marcus Reyes" },
+      "arg_matching": { "applicant_name": "fuzzy" } },
+    { "type": "tool_call", "name": "aml", "tool_name": "agentops_d1_aml_screening",
+      "args": { "employment_type": "self_employed", "loan_amount": 300000, "applicant_name": "Marcus Reyes" },
+      "arg_matching": { "applicant_name": "fuzzy" } },
+    { "type": "tool_call", "name": "letter", "tool_name": "agentops_d1_generate_decision_letter",
+      "args": { "decision": "CONDITIONAL_APPROVAL", "primary_reasons": [], "applicant_name": "Marcus Reyes" },
+      "arg_matching": { "applicant_name": "fuzzy", "primary_reasons": "ignore" } },
+    { "type": "text", "name": "summarize", "response": "Decision for Marcus Reyes: CONDITIONAL_APPROVAL.",
+      "keywords": ["CONDITIONAL_APPROVAL"] }
+  ]
+}
+```
+(abridged; the full file is `../examples/loan_underwriting/testcases_v2/tc02_self_employed_caution.json`)
+
+| Field | Required | Meaning |
+|---|---|---|
+| `agent` | yes | `name` of the agent the simulated user talks to (the orchestrator in a multi-agent system) |
+| `story` | yes | second-person brief for the simulated user: who they are, the facts they know, what they want, **and when to stop** |
+| `starting_sentence` | yes | the first user message |
+| `goals` | yes | DAG: each key is a goal name; its list holds the goals that become evaluable once it completes; `[]` marks a leaf |
+| `goal_details` | yes | one entry per goal key |
+| `max_user_turns` | no | per-case cap on simulated user turns (overrides the config) |
+| `runtime_context`, `file_upload`, `dataset_name` | no | context variables, file input, display name |
 
 ### `goal_details` types
 
-**`tool_call`** — expects the agent to call a specific tool with specific arguments.
-- Fields: `name` (matches goals key), `type: "tool_call"`, `tool_name`, `args` (dict), `arg_matching` (per-arg strategy).
+| `type` | Fields | Checks |
+|---|---|---|
+| `tool_call` | `tool_name`, `args`, `arg_matching` | the tool was called, in DAG order, with matching arguments |
+| `tool_response` | same shape | the tool returned the expected value |
+| `text` | `response`, `keywords` | the final answer matches (`keyword_match`, `semantic_match`, `text_match` columns) |
+| `conversational_search` | `keywords` | a knowledge base was consulted and the answer contains the keywords; scored by the RAG metrics |
 
-**`tool_response`** — expects a specific tool response value. Same shape as `tool_call`; validates the tool's RETURN, not just the call.
+### `arg_matching`
 
-**`conversational_search`** — expects agent to perform a knowledge-base lookup (RAG).
-- Fields: `name`, `type: "conversational_search"`, `keywords` (list of must-include terms in final answer).
-- NO `args` / `arg_matching` — framework does NOT validate the search query; it validates that a KB was consulted AND that the answer contains the keywords.
+| Strategy | Semantics | Use for |
+|---|---|---|
+| `strict` (default) | exact match after normalization (case, key order, numeric types, list order are normalized by the framework) | ids, enums, amounts, decisions |
+| `fuzzy` | semantic similarity (embeddings, `similarity_threshold` 0.8, token-ratio fallback) | names and free text the user may phrase differently |
+| `optional` | skipped if absent, must match if present | arguments the agent may or may not pass |
+| `ignore` | never checked | runtime-generated values, handoff messages |
+| `{"IGNORE": null}` as the whole `args` | only the tool name is checked | tools whose arguments are all runtime-generated |
+| `"<IGNORE>"` as a value | legacy per-field skip | prefer `ignore` |
+| `"input.field": "strict"` | dot paths into nested objects | Pydantic-model arguments |
 
-**`text`** — expects a specific text response. Used with `text_checks`.
-- Fields: `name`, `type: "text"`, `response` (template), `keywords` (must-include list).
+---
 
-### Valid `type` values (CRITICAL)
+## Field notes for multi-agent systems (observed on 2.18 / 1.5.2)
 
-The eval-framework's `ReferencelessTestCase` schema (used by `quick-eval` + `evaluate`) accepts EXACTLY these `type` values: `text`, `tool_call`, `tool_response`, `conversational_search`.
-
-**Earlier drafts referenced `kb_tool_call` — that is NOT a valid type in ADK 2.9.0 / eval-fw 1.4.x.** KB / RAG scenarios use `conversational_search`.
-
-### `arg_matching` strategies
-
-| Strategy | Semantics |
-|---|---|
-| `strict` | Exact equality required. Use for IDs, enums, fixed strings (account IDs, tier names, communication types). |
-| `fuzzy` | LLM judges semantic equivalence. Use for free-text descriptive args (`custom_content`, `notes`). |
-| `optional` | Field may or may not be present; if absent, no penalty. |
-| `<IGNORE>` | String literal as the arg value; tells framework to skip validation for this arg entirely. |
-
-### Naming convention
-
-Goal names follow `<tool_name>-<N>`, e.g., `get_account_holder_by_id-1`, `calculate_portfolio_metrics-2`. The `-N` suffix disambiguates when the same tool is expected to be called multiple times.
+1. **Declare handoffs as goals.** A handoff appears as a tool call named `chat_with_collaborator_<collaborator name>`. Add one `tool_call` goal per expected handoff with `"args": {"message": "IGNORE"}, "arg_matching": {"message": "ignore"}`; otherwise every handoff counts as an unexpected call and precision drops (0.56 in the loan example before, 1.0 after).
+2. **`display_name` must equal `name`** on every agent, or routing accuracy stays at 0.0.
+3. **Strict before fuzzy.** The matcher stops at the first `fuzzy` field; list strict arguments first in `args` (the example puts `applicant_name` last).
+4. **End the conversation.** `max_user_turns: 3` and a story that ends with "Once you have received …, reply END and nothing else". One real turn per case keeps a five-case run near a minute.
+5. **Goal names are free text** as long as `goals` keys and `goal_details[].name` match; `tool_name-N` is the documented convention when a tool is called more than once.
+6. **One journey, many outcomes.** Keep the DAG identical across cases and vary the inputs and the expected `decision` argument; a generator script makes this trivial and keeps the suite reviewable.
+7. **The v1 / v2 pattern.** Keep the test cases per agent version in separate folders that differ only in the `agent` field (and collaborator names in handoff goals); the same suite then shows a regression or an improvement side by side.
 
 ---
 
@@ -129,47 +115,57 @@ Goal names follow `<tool_name>-<N>`, e.g., `get_account_holder_by_id-1`, `calcul
 
 | Pattern | Shape |
 |---|---|
-| `linear_chain` | A → B → C. Three goals, each depends on prior. |
-| `parallel` | A and B independent; both must complete before C. |
-| `fan_out` | A → B, A → C, A → D. After A, three parallel goals. |
-| `single_tool` | One goal, `[]` deps. Simplest valid benchmark. |
-| `conversational_search_only` | A single `conversational_search` goal for KB/RAG-only scenarios. |
-| `kb_then_tool` | KB lookup (`conversational_search`) → tool call using KB result. |
+| linear chain | A → B → C |
+| parallel | A → {B, C} → D (B and C both required before D) |
+| fan-out | A → B, A → C, A → D |
+| single tool | one goal with `[]` |
+| RAG only | one `conversational_search` goal |
+| RAG then tool | `conversational_search` → `tool_call` |
+| orchestrated journey | handoff → tool(s) → handoff → tool(s) → … → final tool → `text` summary (the loan example) |
 
 ---
 
-## Coverage recommendations (RULE 11)
+## `generate` on 2.18
 
-**SOURCE NOTE (RULE 9):** curated guidance, NOT a WXO-published coverage standard. The 5-12 scenario floor and category list are starting points from real engagement experience — adjust based on agent complexity, blast radius, and customer risk tolerance.
+```bash
+# -s stories CSV with columns story,agent; -t the Python file with the @tool functions (not a directory)
+source "$VENV_ACTIVATE" && \
+orchestrate evaluations generate \
+  -s evaluations/stories.csv \
+  -t tools/<module>.py \
+  -o evaluations/generated/
+```
 
-| Category | Description |
+*Observed on 2.18.0 / 1.5.2:* the command converts the tools, generates starting sentences and tool sequences, and then calls the Langfuse API to finish — without `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` it fails with `'Langfuse' object has no attribute 'api'`, and with keys for an unreachable host it fails with `Connection refused`, in both cases writing no test cases. You need a **reachable Langfuse project** (Developer Edition started with `-l`, or a hosted project) with `LANGFUSE_HOST`, `LANGFUSE_PUBLIC_KEY`, and `LANGFUSE_SECRET_KEY` exported; otherwise author with a generator script or by hand (both are what the validated example uses). Review every generated case: the LLM guesses strict values, omits handoff goals, and does not add an end-of-conversation signal.
+
+---
+
+## Coverage and validation
+
+**Coverage (RULE 12, curated):** 5–12 cases per agent — happy path, one case per decision branch or policy rule, a multi-turn case where information arrives late, a bad-input case, RAG cases if there is a knowledge base, and a `text` goal on the final answer where wording matters.
+
+**Validate before running** (Bob does this and shows the table):
+
+| Check | Pass when |
 |---|---|
-| Tool calls | At least one `strict` and one `fuzzy` arg_matching. |
-| Filtered queries | Scenarios with arg constraints (e.g., "only Gold tier"). |
-| Multi-turn | Scenarios where user provides info across multiple messages. |
-| Error handling | Scenarios where user gives bad input and agent must recover. |
-| RAG / KB | Scenarios with `conversational_search` goals if agent has a KB. |
-| Text validation | Scenarios with `text_checks` for tone / format / required keywords. |
+| names | `agent` and every `tool_name` exist in `agents list` / `tools list`; collaborator names in handoff goals match |
+| arguments | keys match the tool signature; strict values exist in the tool's data; fuzzy only on free text; strict fields listed before fuzzy |
+| DAG | every goal key has a `goal_details` entry; no cycles; the leaf is reachable |
+| story | states every fact the agent will ask for; names the stop condition; `max_user_turns` set |
+| dry run | tracing the conversation in your head from `starting_sentence` reaches every goal in order |
 
-**Minimum:** 5-12 scenarios per agent for meaningful metrics. Single-scenario eval has too much variance.
+```
+## Test case validation
+| Case | Names | Arguments | DAG | Story | Dry run | Notes |
+|---|---|---|---|---|---|---|
+```
 
----
-
-## Reference templates
-
-| Path | Description |
-|---|---|
-| `examples/portfolio_advisor/` | 8 working scenarios on a real agent. Copy-modify pattern. |
-| `examples/minimal_single_tool/` | Smallest valid benchmark. Use for `generate` few-shot priming. |
-| `examples/multi_agent_routing/` | Facilitator + 2 collaborators; tests Agent Routing F1. |
-| `examples/rag_only/` | KB-bound scenarios; tests RAG metrics in isolation. |
-| `examples/stories_sample.csv` | CSV input format for `generate`. |
+Then run one case through `quick-eval` or `evaluate -p <file>` before the whole suite (`reference/module-eval.md`).
 
 ---
 
-## Done-when criteria
+## Done when
 
-- One or more benchmark JSON files exist under user's `benchmarks/` directory.
-- Each JSON validates against the schema (Bob has read back and confirmed).
-- Dry-run via `quick-eval` (see `reference/module-eval.md`) has succeeded against at least one.
-- User has explicitly chosen next action: write more scenarios, run full `evaluate`, or stop.
+- Test case files exist in a folder, validated with the table above.
+- One case has run end to end.
+- The user has chosen: write more cases, run the suite, or stop.

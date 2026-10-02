@@ -1,0 +1,19 @@
+# Indicative list prices for models served through watsonx.ai, USD per 1,000,000 tokens.
+# Source: https://www.ibm.com/products/watsonx-ai/pricing (as read in October 2026). Verify against the
+# current price list and the customer's contract before quoting; edit freely. Keys are model ids as the
+# platform reports them in traces (provider prefix optional): trace_cost.py matches the exact id first,
+# then the id without its provider prefix, then the final path segment.
+as_of: "2026-10"
+source: https://www.ibm.com/products/watsonx-ai/pricing
+currency: USD
+per_tokens: 1000000
+models:
+  openai/gpt-oss-120b:                              {input: 0.159,  output: 0.636}
+  ibm/granite-4-h-small:                            {input: 0.0636, output: 0.265}
+  meta-llama/llama-3-3-70b-instruct:                {input: 0.7526, output: 0.7526}
+  meta-llama/llama-4-maverick-17b-128e-instruct-fp8: {input: 0.371,  output: 1.484}
+  mistralai/mistral-large-2512:                     {input: 0.636,  output: 1.908}
+  mistralai/mistral-medium-2505:                    {input: 3.18,   output: 9.5}
+  mistralai/mistral-small-3-1-24b-instruct-2503:    {input: 0.106,  output: 0.318}
+# Add rows for third-party providers you route through the model gateway, using that provider's price list, e.g.
+#  groq/openai/gpt-oss-120b: {input: 0.15, output: 0.75}

@@ -1,45 +1,38 @@
 # Bob Modes for Agent Evaluation
 
-## What Are Bob Modes?
+## What are Bob modes?
 
-[Bob](https://bob.ibm.com) is IBM's AI code assistant. **Custom modes** extend Bob with domain-specific expertise — giving it specialized knowledge, workflows, and rules for a particular task. When you activate a mode, Bob becomes a guided expert in that domain rather than a general-purpose assistant.
+[Bob](https://bob.ibm.com) is IBM's AI code assistant. **Custom modes** give Bob a persona, a workflow, and rules for a specific job. A mode is a `.bob/` folder:
 
-A Bob mode is a `.bob/` folder containing:
-- **Mode config** (`custom_modes.yaml`) — who Bob is in this mode, mandatory rules, and references
-- **Workflow and rule files** — detailed phase-by-phase instructions Bob follows
-- **Reference examples** — working artifacts Bob uses as templates
+- `custom_modes.yaml` — who Bob is in this mode, the mandatory rules, the references
+- `workflow.md` — the phase-by-phase procedure with commands and report formats
+- reference files Bob uses as templates
 
-Drop the `.bob/` folder into your project, switch to the mode in Bob's mode selector, and Bob is ready to go.
+Drop the folder into your project, switch to the mode in Bob's mode selector, and Bob is ready.
 
-## Modes in This Directory
+**Mode or skill?** The [Agent Ops skill](../bob-skills/) is advisory: Bob emits commands for you to run. The mode is hands-on: Bob runs the commands, reads the results, and proposes fixes, asking before anything that changes the instance. Same knowledge, different stance; pick the one that fits how you work.
 
-### Base Modes
+## Modes in this directory
 
-Production-ready modes maintained by the team.
-
-| Mode | Description |
-|------|-------------|
-| [Agent Ops](base-modes/) | Evaluate WXO agents before deployment — automated benchmarks, metrics analysis, cost/latency tracking via Langfuse, and adversarial red-teaming. Includes built-in safeguards for the WXO ADK 2.6 eval-framework auth landmines (ancestor `.env` pollution, explicit-token requirement, deprecated default judge model). |
-
-### Custom Modes
-
-Community and experimental modes.
+### Base modes
 
 | Mode | Description |
-|------|-------------|
+|---|---|
+| [Agent Ops](base-modes/) | Evaluate watsonx Orchestrate agents before release with the ADK evaluation framework (ADK 2.18+): quick-eval, ground-truth test cases with handoff goals, evaluate, analyze, rubric scoring, red-teaming, and traces — on SaaS or Developer Edition. Ships the validated loan-underwriting reference cases. |
+
+### Custom modes
+
+| Mode | Description |
+|---|---|
 | Coming soon | — |
 
 ## Prerequisites
 
-All modes in this directory require:
-- [Bob](https://bob.ibm.com) (IBM's AI code assistant)
-- WXO Developer Edition (local server on port 4321 for ADK 2.6+, or 8080 on older builds)
-- IBM watsonx Orchestrate ADK (2.5.1 or 2.6.x — **not** 2.7.0):
+- [Bob](https://bob.ibm.com)
+- Python 3.12 and the ADK with the agentops extra:
   ```bash
-  pip install "ibm-watsonx-orchestrate[agentops]>=2.5.1,<2.7.0"
-  pip install "ibm-watsonx-orchestrate-evaluation-framework==1.2.7"
-  pip install "langfuse<4"
+  pip install "ibm-watsonx-orchestrate[agentops]>=2.18.0,<3.0.0"
   ```
-- Python 3.12 (3.11 and lower are not supported)
+- An activated `orchestrate` environment where the agent is imported: a SaaS instance (IBM Cloud or AWS hosted) or Developer Edition (`orchestrate server start -e .env`, then `orchestrate env activate local`)
 
-See each mode's README for additional prerequisites and installation instructions.
+See the mode's README for installation and the workflow.

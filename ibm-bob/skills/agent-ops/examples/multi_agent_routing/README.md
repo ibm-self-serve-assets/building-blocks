@@ -26,3 +26,5 @@ scenario sends the user to a different collaborator based on intent
 
 If routing F1 fails, see the `Routing F1 below threshold` row in
 [`../../reference/module-analyze.md`](../../reference/module-analyze.md).
+
+> **ADK 2.18 note:** collaborator handoffs appear as tool calls named `chat_with_collaborator_<agent name>`; use those names instead of `transfer_to_*`, with `"args": {"message": "IGNORE"}, "arg_matching": {"message": "ignore"}`. See `../loan_underwriting/` for a validated multi-agent suite.

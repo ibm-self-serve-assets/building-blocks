@@ -1,30 +1,33 @@
 # Agent Ops Bob Skills
 
-Bob skill for **build-time evaluation, adversarial red-teaming, and runtime observability** of **watsonx Orchestrate (WXO)** agents, using the WXO Agent Development Kit (ADK).
+Bob skill for **build-time evaluation, rubric scoring, red-teaming, and trace inspection** of **watsonx Orchestrate (WXO)** agents, using the evaluation framework in the WXO Agent Development Kit (ADK 2.18+).
 
 ## Overview
 
-The `agent-ops` skill turns IBM Bob into an Agent Ops assistant for watsonx Orchestrate agents. When you ask Bob to evaluate, red-team, or observe a WXO agent, it runs a short interview to understand your environment (Developer Edition or SaaS), intent, and current state — then emits the exact `orchestrate` CLI commands for you to run in your terminal. Bob never runs mutating evaluations itself.
+The `agent-ops` skill turns IBM Bob into an evaluation specialist for watsonx Orchestrate agents. Ask Bob to test, score, attack, or trace a WXO agent and it runs a short interview (environment, intent, current state), proposes a plan, runs read-only checks, and emits the exact `orchestrate` commands for you to run in your terminal. Bob then reads the result files and explains them. Bob never runs evaluations, imports, or installs itself, and never touches assets it did not create on a shared instance.
 
-## Available Skills
+The same skill is published unpacked at [`ibm-bob/skills/agent-ops/`](../../../../ibm-bob/skills/agent-ops/) and inside the repo-wide `skills.zip`.
 
-| Skill | Zip | Use When |
+## Available skills
+
+| Skill | Zip | Use when |
 |---|---|---|
-| `agent-ops` | [`agent-ops.zip`](agent-ops.zip) | Validating, red-teaming, or observing a watsonx Orchestrate agent before (and after) deploying to SaaS |
-
----
+| `agent-ops` | [`agent-ops.zip`](agent-ops.zip) | Validating a WXO agent before release or after a change; writing ground-truth test cases; diagnosing failures; turning policies into rubrics; red-teaming; reading traces |
 
 ### `agent-ops`
 
-Five self-contained modules you can invoke in any order:
+Six modules you can invoke in any order:
 
-- **Eval** — `orchestrate evaluations quick-eval` (smoke test) and `evaluate --with-langfuse` (full evaluation with LLM-simulated users)
-- **Benchmarks** — author test scenarios via `record`, `generate`, or hand-written JSON, with full schema validation
-- **Analyze** — `analyze` and `analyze --mode enhanced`; metric thresholds and failure diagnosis (benchmark issue vs agent issue vs infra crash)
-- **Red-teaming** — `list` / `plan` / `run` against an OWASP-Top-10-for-LLM attack catalog with severity ratings and remediation prompts
-- **Observability** — traces CLI + Python SDK + Langfuse (local & hosted) + IBM Telemetry; 5-layer cost & latency reporting
+- **Eval** — `quick-eval` (smoke test without ground truth) and `evaluate` (LLM-simulated user, per-case metrics)
+- **Test cases** — `record`, `generate`, generator scripts, or hand-written JSON; goal DAGs, handoff goals, `arg_matching`
+- **Analyze** — `analyze` (default and enhanced); metric meaning; attribution: test case, agent, model, or infrastructure
+- **Rubric** — `RubricEvaluation`: plain-language rules scored pass/fail by a judge model, with reasoning
+- **Red-teaming** — `list` / `plan` / `run` over 15 attacks; attack-file review; remediation
+- **Observability** — platform traces by CLI, Python, and REST: handoffs, tool calls, model and tokens, latency
 
-Supports both **Developer Edition** (local server on `:4321`) and **SaaS** as first-class targets, and keeps in sync with current ADK semantics via a bundled `watsonx-orchestrate-adk-docs` MCP server.
+Supports **SaaS** (IBM Cloud or AWS hosted) and **Developer Edition**; ships the validated `examples/loan_underwriting/` assets and an MCP server entry for live ADK docs search.
+
+Runtime controls are covered by the Agent Controls skill (Guardrails), cost in dollars by the Cost Management building block, LangGraph/LangChain evaluation by the Model Evaluation skill.
 
 ---
 
@@ -32,92 +35,62 @@ Supports both **Developer Edition** (local server on `:4321`) and **SaaS** as fi
 
 ### Step 1 — Install the skill
 
-The zip is pre-structured with `.bob/skills/<skill-folder>/` internally. Extract from your **project root**:
+The zip is pre-structured with `.bob/skills/agent-ops/` inside. Extract it from your **project root**:
 
 ```bash
-# From the root of your Bob workspace project
 unzip agent-ops.zip
 ```
 
-This creates:
-
-```
-.bob/skills/agent-ops/SKILL.md
-```
-
-(along with the skill's `reference/`, `examples/`, and `assets/` folders and `setup.sh`).
+This creates `.bob/skills/agent-ops/SKILL.md` along with `reference/`, `examples/`, `assets/`, `README.md`, `USAGE-GUIDE.md`, and `setup.sh`.
 
 ### Step 2 — Enable in IBM Bob
 
-Open IBM Bob → Skills panel → enable `agent-ops`. Bob will use it as active context for every prompt in this workspace.
+Open IBM Bob → Skills panel → enable `agent-ops`.
 
-### Step 3 — Verify
+### Step 3 — Prerequisites
+
+- Python 3.12 venv with `pip install "ibm-watsonx-orchestrate[agentops]>=2.18.0,<3.0.0"` (or run `.bob/skills/agent-ops/setup.sh`), and `export VENV_ACTIVATE=<venv>/bin/activate`
+- An activated `orchestrate` environment pointing at the instance where the agent is imported (SaaS tokens expire after about two hours)
+- Developer Edition only: a Docker runtime
+
+Details: `.bob/skills/agent-ops/assets/PREREQUISITES.md` inside the zip.
+
+### Step 4 — Verify
 
 Ask Bob: *"What Agent Ops capabilities do you have active?"*
 
 ---
 
-## Usage Examples
+## Usage examples
 
-Once activated, you can ask Bob:
+- *"Evaluate this agent before I ship it"*
+- *"Write five test cases for the refund flow and run them"*
+- *"Precision is 0.56 but every case passed — what is going on?"*
+- *"Turn these compliance rules into a rubric and score last night's run"*
+- *"Red-team the orchestrator for instruction override and crescendo"*
+- *"Show me the trace for the conversation that approved the wrong applicant"*
 
-- *"Help me evaluate this WXO agent before I deploy to SaaS"*
-- *"Run red-teaming on my portfolio-advisor agent"*
-- *"My eval results came back with Faithfulness 0.65 — what's wrong?"*
-- *"Generate benchmark scenarios from these user stories"*
-- *"How do I set up Langfuse so I can see cost per scenario?"*
-
-Bob runs a 3-question interview, then drives the relevant module(s).
-
----
-
-## What Bob Can Help You Build
-
-1. **Pre-deployment validation**: quick-eval smoke tests and full LLM-simulated-user evaluations
-2. **Benchmark authoring**: scenarios from recorded chat sessions (`record`) or rough stories (`generate`)
-3. **Failure diagnosis**: interpreting `summary_metrics.csv` / `results.json` and isolating root cause
-4. **Security testing**: adversarial red-teaming with severity ratings and remediation prompts
-5. **Runtime observability**: trace search/export and Langfuse cost & latency analysis
-
----
-
-## Prerequisites
-
-Before using this skill, ensure you have:
-
-- **watsonx Orchestrate ADK** with the `[agentops]` extra (`>= 2.6.0, < 3.0.0`)
-- **Python 3.12** (3.11 may work; 3.13+ not yet supported)
-- **Docker runtime** for Developer Edition (WXO server + Langfuse + Milvus + OpenSearch + ClickHouse, ~16 GB RAM)
-- **`uv` / `uvx`** to launch the WXO docs MCP server
-- **IBM Cloud + watsonx.ai** API key + project/space (RAG judges and red-teaming planner)
-- **Langfuse keys** (optional) for cost & latency analysis
-
-See [`.bob/skills/agent-ops/assets/PREREQUISITES.md`](agent-ops.zip) inside the zip for the full credential matrix, hardware requirements, network egress, and troubleshooting table.
-
-## Skill Capabilities Summary
+## Skill capabilities summary
 
 | Capability | Description |
 |---|---|
-| **Eval** | `quick-eval` smoke tests + full `evaluate --with-langfuse` runs |
-| **Benchmarks** | `record` / `generate` / manual JSON with schema validation |
-| **Analyze** | Metric thresholds + failure-diagnosis (benchmark vs agent vs infra) |
-| **Red-teaming** | OWASP Top 10 for LLM attack catalog, severity + remediation |
-| **Observability** | Traces CLI + SDK + Langfuse + IBM Telemetry, 5-layer cost/latency |
-| **DevEd + SaaS parity** | Both environments first-class throughout |
-| **Terminal-emitting** | Bob writes commands; you run them — no surprise mutations |
+| **Eval** | `quick-eval` smoke tests and full `evaluate` runs from a config file |
+| **Test cases** | schema, DAG patterns, handoff goals, `arg_matching`, `record` / `generate` / generator scripts, validation table |
+| **Analyze** | framework-1.5 metric columns, curated thresholds, diagnosis table, attribution |
+| **Rubric** | `RubricEvaluation` criteria and results |
+| **Red-teaming** | attack catalogue, `plan` review, attack-file schema, remediation |
+| **Observability** | traces search/export, Python `TracesController`, REST, Agentic Control Plane |
+| **SaaS + Developer Edition** | both first-class; the framework evaluates the active environment |
+| **Terminal-emitting** | Bob writes commands; you run them — no surprise mutations on shared instances |
 
 ## Troubleshooting
 
-**Skill doesn't appear after installation:**
-1. Verify `.bob/skills/agent-ops/SKILL.md` exists
-2. Restart Bob to refresh the skills list
-3. Ensure the Skills button is enabled in your current mode
+**Skill doesn't appear:** check `.bob/skills/agent-ops/SKILL.md` exists, restart Bob, confirm the Skills button is enabled in the current mode.
 
-**Bob runs the eval itself instead of emitting a command:**
-- This skill is terminal-emitting by design — Bob should write the `orchestrate …` command for you to run. If it tries to run mutating evals, remind it to emit the command block.
+**Bob runs an evaluation itself:** the skill is terminal-emitting by design; remind it to emit the command block.
 
 ## Related
 
-- [`../bob-modes/`](../bob-modes/) — Agent Ops Bob Modes
-- [`../assets/`](../assets/) — Agent Ops evaluation SDK and sample agents
+- [`../bob-modes/`](../bob-modes/) — the Agent Ops Bob mode (hands-on variant: Bob runs the commands)
+- [`../assets/`](../assets/) — scripts, the single-agent sample, and the loan-underwriting example
 - [`../README.md`](../README.md) — Agent Ops building block overview

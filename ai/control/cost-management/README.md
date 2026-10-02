@@ -16,20 +16,27 @@ AI agents turn every interaction into model calls, tool calls, and tokens. Witho
 
 ## Available Today — Agent Cost and Token Tracking
 
-For **watsonx Orchestrate agents**, cost and token usage can be captured per interaction through Langfuse, alongside the traces and latency data that [Agent Ops](../agent-ops/) uses.
+For **watsonx Orchestrate agents** there are three places to look, from tokens to dollars:
 
-| Capability | What It Does |
+| Source | What you get | Where |
+|---|---|---|
+| **Agentic Control Plane** (product UI) | token consumption, model usage, call volume per agent; FinOps view in preview | watsonx Orchestrate → Agentic Control Plane |
+| **Platform traces** | tokens and model per generation inside every conversation's span tree; token totals per run on the runs API | [Agent Ops](../agent-ops/) → observability |
+| **Langfuse** | **cost in dollars** per trace, session, model, and tag — once the integration is configured and the models are priced | this folder |
+
+| Capability (Langfuse) | What It Does |
 |---|---|
-| **Cost per scenario** | See tokens, cost, and pass or fail for every evaluation scenario, so expensive paths show up before production |
-| **Context growth per turn** | See how cost climbs as multi-turn conversations grow, a key driver of multi-turn cost |
-| **Cost patterns** | Base cost, growth rate, input-to-output token ratio, and spend wasted on failed runs |
-| **Production projection** | Project cost at your expected conversation volume, with data-driven recommendations |
+| **Cost per scenario** | tokens, cost, and pass or fail for every evaluation scenario, so expensive paths show up before production |
+| **Context growth per turn** | how cost climbs as multi-turn conversations grow, the main driver of multi-turn cost |
+| **Cost patterns** | base cost, growth rate, input-to-output token ratio, spend wasted on failed runs |
+| **Production projection** | cost at your expected conversation volume, with data-driven recommendations |
 
-Tracking runs on Langfuse, either locally with watsonx Orchestrate Developer Edition or on a hosted Langfuse instance. Cost appears when Langfuse has pricing for the agent's model. Models it does not already know, including many watsonx-served models, need their pricing registered first. Latency is always recorded.
+Langfuse receives traces from watsonx Orchestrate through the instance's Langfuse integration (SaaS: `orchestrate settings observability langfuse configure …`; Developer Edition: `orchestrate server start -l`). The integration is **one setting per instance** — on a shared instance it belongs to the instance owner. Cost appears when Langfuse has pricing for the agent's model; watsonx-served models need their pricing registered first. Latency and tokens are always recorded.
 
 ### Where the code lives
 
-- [`agent-ops/assets/wxo-agents/06_langfuse_observability.py`](../agent-ops/assets/wxo-agents/06_langfuse_observability.py) — tracks cost, latency, and token usage per interaction via Langfuse. It runs as the last step of the Agent Ops evaluation workflow, so it stays with the other Agent Ops scripts.
+- [`assets/traces/`](assets/traces/) — `trace_cost.py`: tokens and dollars from platform traces (fetches by trace id with the required time window, joins an Agent Ops run by thread id, per-model and per-agent breakdown, CSV), with `prices.yaml`, an indicative list-price table.
+- [`assets/langfuse/`](assets/langfuse/) — setup for the Langfuse integration (SaaS and Developer Edition), model pricing registration, the cost report script, and the five-layer cost analysis guide (`COST-ANALYSIS.md`).
 
 ---
 
@@ -41,8 +48,10 @@ Tracking runs on Langfuse, either locally with watsonx Orchestrate Developer Edi
 
 ---
 
-## Bob Skills
+### [Bob Skills](bob-skills/)
 
-The [Agent Ops Bob skill](../../../ibm-bob/skills/agent-ops/) includes Langfuse cost analysis. Ask Bob, for example, *"How do I set up Langfuse so I can see cost per scenario?"*
+The `cost-management` skill ([`bob-skills/cost-management.zip`](bob-skills/), also at [`ibm-bob/skills/cost-management/`](../../../ibm-bob/skills/cost-management/)) gives Bob the expertise to answer *what does this agent cost, why, and what would change it*: tokens and dollars from platform traces (`trace_cost.py`, with an indicative price table), the Langfuse integration and model pricing, the five-layer cost report with cost per successful journey, and the optimization levers with their re-test. Interview-first; Bob emits the commands and never configures an instance it does not own.
+
+For evaluation, rubrics, red-teaming, and reading traces for correctness use the [Agent Ops skill](../agent-ops/bob-skills/).
 
 📖 Docs: [Cost Management](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/cost-management/)

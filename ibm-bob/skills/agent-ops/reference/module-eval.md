@@ -1,158 +1,173 @@
 # Module: Eval
 
-**TRIGGER:** Load when user wants to run `orchestrate evaluations quick-eval` or `evaluate`, asks about `--with-langfuse`, asks about config.yaml shape, asks about common eval failures (`session_id=None`, `400 Bad Request from iam.cloud.ibm.com`, `Scope not found`, `model_not_supported`, RAG judges 403/401), or asks for the canonical eval expected outputs.
+**TRIGGER:** the user wants to run `quick-eval` or `evaluate`, asks what goes in `config.yaml`, which model judges the run, how long a run takes, what the output files are, or hits an error while running.
+
+Authoritative docs: https://developer.watson-orchestrate.ibm.com/evaluate/evaluate.md, `evaluate/quick_eval.md`, `evaluate/overview.md`.
 
 ---
 
-## Two CLI commands
+## Two commands
 
-```
-orchestrate evaluations quick-eval   # reference-less smoke / schema / hallucination check
-orchestrate evaluations evaluate     # full reference-based benchmark eval
-```
+| Command | Needs ground truth? | What it tells you |
+|---|---|---|
+| `orchestrate evaluations quick-eval` | No (uses `story` and `starting_sentence` only) | Per case: tool calls attempted, successful, failed on schema mismatch, failed on hallucinated tools. Python tools only (`--tools-path`). |
+| `orchestrate evaluations evaluate` | Yes (`goals` / `goal_details`) | Per case: journey success, routing accuracy, tool-call recall and precision, missed and mis-parameterized calls, text match, steps, response time; full transcripts. |
 
-**This skill leads with the Langfuse-based judge path:** `evaluate --with-langfuse` + server started with `-l`. Persists traces (including judge observations with token usage) to Langfuse. Required for cost analysis (see `reference/module-observability.md`). The eval-fw >= 1.4.0 version floor sidesteps the eval-fw 1.2.x deprecated 405b judge crash entirely.
+Both simulate a user with an LLM and talk to the agent in the **active environment**. Two further LLM roles are independent of the agent under test:
 
-**Authoritative docs:**
-- `evaluate`: https://developer.watson-orchestrate.ibm.com/evaluate/evaluate.md
-- `quick-eval`: https://developer.watson-orchestrate.ibm.com/evaluate/quick_eval.md
-- Overview / arg matching: https://developer.watson-orchestrate.ibm.com/evaluate/overview.md
+- **Simulated user** — `llm_user_config.model_id` (default `meta-llama/llama-3-3-70b-instruct`); `user_response_style` steers it.
+- **Judge / matcher** — `evaluation_config.provider_config.model_id` (default `bedrock/openai.gpt-oss-120b-1:0` through the `gateway` provider). On SaaS the default is served by the instance's gateway; on Developer Edition pick a model the local gateway serves (`orchestrate models list`).
 
 ---
 
 ## Inputs
 
-- **Required:** target env from Q1.
-- **Required:** agent imported into active env.
-- **Required:** benchmark JSONs exist (OR run `quick-eval` first for a connectivity check).
-- **Optional:** existing `config.yaml` in project root.
-- **Optional:** `.env` (Bob pre-flights for ancestor pollution).
+- Active environment = the one where the agent, collaborators, and tools are imported (`orchestrate env list`).
+- Test cases (`reference/module-benchmarks.md`) in a folder, or `quick-eval` with stories only.
+- A `config.yaml` (recommended; everything else is flags).
 
-## Read-only diagnostics (strict order)
+## Read-only diagnostics (in order)
 
-1. **ADK + eval-fw version floor (RULE 3):** `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework` → fail action: emit upgrade command, do not proceed.
-2. **Ancestor `.env` pollution:** `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"` → if outside project, warn and offer remediation from `reference/auth-env-matrix.md`.
-3. **DevEd: server up:** `lsof -ti :4321` → fail action: emit `orchestrate server start -e .env [-l|-i]`.
-4. **Active env matches Q1:** `orchestrate env list` → fail action: emit `orchestrate env activate <target>`.
-5. **Agent imported:** `orchestrate agents list` → fail action: refuse — point to WXO import flow. Do NOT auto-import.
-6. **`config.yaml` exists with explicit token:** read `./config.yaml`, confirm `auth_config.token` is non-empty → fail action: emit `evaluate_with_explicit_token` block from `reference/command-emission.md`.
+1. Versions (RULE 3).
+2. `orchestrate env list` → the intended environment is active. On SaaS, check the token is fresh (activate again if the last activation was more than ~2 h ago).
+3. `orchestrate agents list` → agent and collaborators present under the names used in the test cases.
+4. Ancestor `.env`: `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"`.
+5. Test case JSON parses and `agent` matches a listed name (Bob reads the files).
+
+---
+
+## Config file (validated shape, ADK 2.18 / framework 1.5.2)
+
+```yaml
+# evaluations/eval_config.yaml
+test_paths:
+  - evaluations/testcases/              # files or directories
+output_dir: results/evaluate/           # a timestamped folder is created inside
+n_runs: 1                               # >1 to measure flakiness; files get .run<N>. in their names
+num_workers: 2                          # parallel conversations
+max_user_turns: 3                       # cap the simulated user (default 20); cases may override
+enable_verbose_logging: true
+
+evaluation_config:                      # judge / matcher model
+  provider_config:
+    provider: gateway
+    model_id: watsonx/openai/gpt-oss-120b   # any model the active environment's gateway serves
+
+llm_user_config:                        # simulated user
+  user_response_style:
+    - "Be concise"
+    - "If the agent asks for missing information, provide it directly from your story"
+    - "Once the task is complete, reply END and nothing else"
+
+metrics:                                # name them; the framework default also includes the knowledge-base metrics and ToolParameterF1
+  - JourneySuccessMetric
+  - ToolCalling
+  - OrchestrateAgentRoutingAccuracy
+  - StepMetrics
+  - AgentResponseTime
+```
+
+Notes:
+- `auth_config` can be omitted: the framework uses the active environment and its cached token (*observed*; `--env-file` did not change the instance in our runs). The ADK doc's SaaS example sets `auth_config.url` plus `tenant_name: <environment name>`; use it only when you must pin the target.
+- Top-level `provider_config` and `evaluation_model` still work but print deprecation warnings; `evaluation_config.provider_config` is the current field.
+- `max_user_turns` at config level applies to every case; a case's own `max_user_turns` overrides it.
+- Export `WO_API_KEY` (read from a key file) before long SaaS runs so the framework can refresh the token.
+- For a knowledge-base agent add `KnowledgeBaseFaithfulness`, `KnowledgeBaseAnswerRelevancy`, `RetrievalConfidence`, `DocumentRetrievalQuality` to `metrics` and use `conversational_search` goals.
 
 ---
 
 ## Emitted commands
 
 ### `quick_eval` (smoke test)
-**Purpose:** reference-less smoke / connectivity / schema check. Runs 2 scenarios (or whatever user has) without ground-truth comparison. Detects schema mismatches and tool-call hallucinations.
 
 ```bash
-# --tools-path is required for quick-eval (Python @tool functions).
-# Output lands in quick_eval_results/<timestamp>/
+# -t must point at the folder with the Python @tool modules; output lands in a timestamped folder under -o
 source "$VENV_ACTIVATE" && \
 orchestrate evaluations quick-eval \
-  --test-paths benchmarks/ \
-  --tools-path agent/tools \
-  --output-dir quick_eval_results/$(date +%Y%m%d-%H%M%S) \
-  --config ./config.yaml
+  -p evaluations/testcases/ \
+  -t tools/ \
+  -o results/quick_eval/
 ```
 
-### `evaluate_full` (RECOMMENDED default)
-**Purpose:** reference-based benchmark eval. LLM simulates a user playing each scenario; framework compares actual goal completion against benchmark's expected goals. `--with-langfuse` persists traces (including judge observations with token usage) — required for cost computation per `reference/module-observability.md`.
+*Observed:* about 2 minutes for five cases on SaaS; on multi-agent systems every `chat_with_collaborator_*` handoff is reported as a schema mismatch — ignore those rows and read the real tools.
 
-**Prerequisites (confirm with user before emitting):**
-1. Server started with `-l` (Langfuse on `:3010`).
-2. `LANGFUSE_BASE_URL` / `LANGFUSE_PUBLIC_KEY` / `LANGFUSE_SECRET_KEY` exported in current shell.
-3. `WATSONX_APIKEY` + (`WATSONX_PROJECT_ID` or `WATSONX_SPACE_ID`) exported, IF benchmarks contain `conversational_search` (RAG) goals. Without these, RAG judges (Faithfulness, Relevancy) will 403/401. Non-RAG scenarios run fine without watsonx auth.
-4. `config.yaml` uses `provider: gateway` and `model_id` is a watsonx-supported model (e.g., `meta-llama/llama-3-3-70b-instruct`).
-
-```bash
-# --with-langfuse persists traces with token usage. Server must be started with `-l`,
-# LANGFUSE_* exported. For RAG benchmarks, WATSONX_APIKEY + WATSONX_PROJECT_ID/SPACE_ID also needed.
-source "$VENV_ACTIVATE" && \
-orchestrate evaluations evaluate \
-  --test-paths benchmarks/ \
-  --output-dir eval_results/$(date +%Y%m%d-%H%M%S) \
-  --config ./config.yaml \
-  --with-langfuse
-```
-
-### `evaluate_without_langfuse`
-**Purpose:** when you don't need cost/latency analysis OR Langfuse isn't running. Faster setup, no token/cost data.
+### `evaluate_full`
 
 ```bash
 source "$VENV_ACTIVATE" && \
-orchestrate evaluations evaluate \
-  --test-paths benchmarks/ \
-  --output-dir eval_results/$(date +%Y%m%d-%H%M%S) \
-  --config ./config.yaml
+orchestrate evaluations evaluate -c evaluations/eval_config.yaml
 ```
 
-### `evaluate_single_scenario`
-**Purpose:** run a single benchmark JSON — useful for iterating on one scenario after a fix.
+### `evaluate_single_case`
 
 ```bash
+# iterate on one case after a fix; -p overrides test_paths from the config
 source "$VENV_ACTIVATE" && \
-orchestrate evaluations evaluate \
-  --test-paths benchmarks/<scenario.json> \
-  --output-dir eval_results/$(date +%Y%m%d-%H%M%S)-single \
-  --config ./config.yaml \
-  --with-langfuse
+orchestrate evaluations evaluate -c evaluations/eval_config.yaml \
+  -p evaluations/testcases/tc02_self_employed_caution.json \
+  -o results/evaluate_single/
 ```
+
+### `evaluate_repeat` (flakiness)
+
+Set `n_runs: 3` in the config (or a copy of it) and run `evaluate_full`; compare `is_success` across `*.run<N>.metrics.json`.
+
+### Timing (observed, SaaS, app and instance in the same region)
+
+Five cases, single run, `max_user_turns: 3`: 65–95 s. Each case is one real user turn plus 7–9 agent steps; cross-region round trips add up (a run makes about twenty API calls per case). Without the turn cap the simulated user chats to the 20-turn limit and a run takes minutes per case.
 
 ---
 
-## Flags reference (authoritative from `--help`, ADK 2.9.0)
+## Output (validated file list)
 
-**`orchestrate evaluations evaluate`:**
-- `--config` / `-c` — path to YAML config
-- `--test-paths` / `-p` — paths to test files or dirs (comma-separated)
-- `--output-dir` / `-o` — dir to save results
-- `--env-file` / `-e` — path to `.env` (overrides default.env)
-- `--with-langfuse` / `-l` — enable Langfuse-based judge path + trace persistence
+```
+results/evaluate/2026-10-01_22-18-56/
+├── summary_metrics.csv                     # one row per case (and per run); START HERE
+├── average_metrics.json                    # numeric averages across cases
+├── config.yml                              # the exact configuration used (reuse it)
+├── <case>.metadata.json                    # thread / run identifiers for the conversation
+├── messages/
+│   ├── <case>.messages.json                # the conversation as the framework saw it
+│   ├── <case>.messages.analyze.json        # each message paired with the judge's reason ("incorrect parameter", "expected": {...})
+│   └── <case>.metrics.json                 # the per-case metric record
+├── debug/evaluation_order.txt
+└── knowledge_base_summary_metrics.json     # only when conversational_search goals exist
+```
 
-**NOT valid flags for `evaluate`** (these belong to `quick-eval` / `analyze`):
-- `--tools-path` (only for `quick-eval` and `analyze`)
+`summary_metrics.csv` columns (framework 1.5.2): `run_idx`, `orchestrate_agent_routing_accuracy`, `total_steps`, `llm_steps`, `average_agent_response_time`, `total_tool_calls`, `expected_tool_calls`, `correct_tool_calls`, `missed_tool_calls`, `relevant_tool_calls`, `tool_calls_with_incorrect_parameter`, `tool_call_recall`, `tool_call_precision`, `tool_match_success`, `keyword_match`, `semantic_match`, `text_match`, `is_success`, `dataset_name`, `text_match_comment`. Meanings and thresholds: `reference/module-analyze.md`.
 
-**Deprecated env var:** earlier drafts referenced `USE_LEGACY_EVAL=FALSE`. Superseded by `--with-langfuse` in ADK 2.1.0+; do not emit the env var.
-
----
-
-## Expected outputs (in `<output_dir>/`)
-
-| File | Purpose |
-|---|---|
-| `summary_metrics.csv` | Top-level metrics per scenario. **Start here.** Columns: Journey Success, Journey Completion, Tool Call Recall, Tool Call Precision, Agent Routing F1, Text Match, Avg Response Time. |
-| `results.json` | Per-scenario detail with full conversation trace, tool calls, and goal evaluation. |
-| `knowledge_base_summary_metrics.json` | Aggregated RAG metrics across scenarios with `conversational_search` goals: Faithfulness, Answer Relevancy, Response Confidence, Retrieval Confidence. Requires `WATSONX_APIKEY` + `WATSONX_PROJECT_ID`/`SPACE_ID` for judges to actually score. |
-| `config.yaml` | Snapshot of config used for this run (read-only audit). |
+The terminal table truncates in narrow windows; read the CSV instead (`python3 -c "import csv,sys;[print(r['dataset_name'], r['is_success'], r['tool_call_recall'], r['tool_call_precision'], r['orchestrate_agent_routing_accuracy']) for r in csv.DictReader(open(sys.argv[1]))]" results/evaluate/<run>/summary_metrics.csv`).
 
 ---
 
 ## Interpretation handoff
 
-Once user pastes the output path, Bob reads the result files with the Read tool (no need to ask user to `cat` them) and switches to `reference/module-analyze.md` for metric interpretation and failure diagnosis.
+Once the user pastes the run path, Bob reads `summary_metrics.csv` and the `messages/*.messages.analyze.json` of each failed case (no need to ask the user to `cat` anything) and continues in `reference/module-analyze.md`.
 
 ---
 
-## Done-when criteria
-
-- `summary_metrics.csv` exists at the output path.
-- Bob has summarized headline metrics (Journey Success rate, Tool Call Recall, Avg Response Time) in 3-5 bullets.
-- User has explicitly chosen next action: (a) iterate on failing scenario, (b) run `analyze` for deeper diagnosis, (c) move to red-teaming, (d) stop.
-
----
-
-## Common failures
-
-**SOURCE NOTE (RULE 9):** symptom→cause→fix mappings below are curated starting points drawn from real engagement experience; not WXO-published. The underlying error messages are real ADK output, but the diagnoses are interpretations — confirm against the trace and current eval-fw release notes before acting.
+## Common failures (curated; verify against the transcript)
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `session_id=None` in `results.json` | LLM-simulator infrastructure crash (non-deterministic). NOT an agent bug. | Re-run failing scenario(s). If persistent across 3 runs, check provider config + active env. |
-| `400 Bad Request from iam.cloud.ibm.com/identity/token` | Ancestor `.env` pollution overriding `WO_INSTANCE` | Run `find_dotenv` check; move ancestor `.env` aside or pass overrides inline. |
-| `RuntimeError: WO_API_KEY must be specified for SaaS or IBM IAM auth` | `auth_config.url` in `config.yaml` is a cloud URL, OR `WO_INSTANCE` env var leaking from ancestor `.env` | Confirm `config.yaml.auth_config.url` matches active env URL. Re-run `find_dotenv` pre-flight. |
-| `Scope not found: Scope{scopeType='SERVICE', scopeId='<uuid>'}` | Active env's instance UUID doesn't match API key. Common with multiple SaaS instances. | Ask user which instance their key belongs to. Activate matching env, or `env add` new one with correct URL. |
-| `model_not_supported` / 404 on judge model from watsonx | `model_id` in `config.yaml` isn't supported by your watsonx project/space | Set `model_id: meta-llama/llama-3-3-70b-instruct` (commonly available). If still 404, list supported models in watsonx.ai console. |
-| RAG judges 403/401: 'invalid bedrock API key' or 'groq error: Invalid API Key' | Local DevEd gateway has no Bedrock/Groq creds. Default judge `bedrock/openai.gpt-oss-120b-1:0` (eval-fw 1.4.x) and override `groq/openai/gpt-oss-120b` both fail without those providers' keys. | Use `provider: gateway` in `config.yaml` with `model_id: meta-llama/llama-3-3-70b-instruct` AND export `WATSONX_APIKEY` + `WATSONX_PROJECT_ID` (or `WATSONX_SPACE_ID` if WML-bound). Gateway routes the model through watsonx.ai using these creds. See `reference/auth-env-matrix.md`. |
-| `space_id ... is not associated with a WML instance` | Watsonx space exists but isn't bound to a Machine Learning service | Either bind in IBM Cloud → Resource list → WML service → Manage → Add to space, OR switch to `WATSONX_PROJECT_ID`, OR use a WML-bound space ID. |
-| `apikey must be specified` on `provider: watsonx` (not gateway) | Switched to `provider: watsonx` directly without exporting `WATSONX_APIKEY` | Export `WATSONX_APIKEY`. Note: `provider: gateway` is preferred over `provider: watsonx` direct (better caching, same env vars). |
-| `KeyError: '<uuid>'` raised by eval-fw before any benchmark runs (during simulator setup or agent-context loading) | Tenant has **orphaned tool references**: agents that reference tool IDs no longer in the tenant. A diagnostic signal is many `[WARNING] - Tool with ID '<uuid>' not found. Returning Tool ID` lines during `orchestrate agents list`. The eval framework loads tenant context at startup and can crash on the dead reference. Long-lived SaaS tenants accumulate these over time. | Clean up the orphaned references via `orchestrate tools remove <id-or-name>` and `orchestrate agents update` (remove dead tool refs from the agent specs). For partner demos, use a fresh/clean SaaS tenant or DevEd. If cleanup isn't feasible, `quick-eval` may still work since it doesn't load the full agent context — use it for at least connectivity/schema validation. |
+| `401` / `Unauthorized` part-way through a run | SaaS token expired (about 2 h) | Re-activate the environment with `--api-key "$(...)"`; export `WO_API_KEY` for refresh |
+| The run hit a different instance than expected | the active environment is not the one you think; `--env-file` does not switch it | `orchestrate env list`, activate the right one |
+| `Scope not found: Scope{scopeType='SERVICE', scopeId='<uuid>'}` | key does not belong to the activated instance | Confirm which instance the key is for; activate that environment |
+| `400 Bad Request` from `iam.cloud.ibm.com/identity/token` | ancestor `.env` overriding `WO_INSTANCE` / `WO_API_KEY` | Move it aside or prefix the command with `WO_INSTANCE= WO_API_KEY=` |
+| Agent not found | `agent` in the case ≠ `orchestrate agents list` name, or wrong environment | Fix the field or the environment |
+| Every case takes minutes; transcript shows small talk after the task | `max_user_turns` default 20 | `max_user_turns: 3` plus "reply END and nothing else" in the story |
+| `model_not_supported` / 404 on the judge or simulator model | the active gateway does not serve that `model_id` (typical on DevEd) | `orchestrate models list`; set `evaluation_config.provider_config.model_id` and `llm_user_config.model_id` to served models |
+| Run aborts with a missing `<case>.metadata.json` or `session_id=None` | one conversation failed transiently (gateway hiccup); the framework crashed on the missing file | Re-run; if persistent, check the agent responds in the chat UI |
+| `KeyError: '<uuid>'` before any case runs; `agents list` prints many `Tool with ID … not found` | orphaned tool references on the tenant | Clean up (`agents update` without the dead refs) or evaluate on a clean instance |
+| Agent narrates tool calls as text, or returns a parse-failure fallback | model does not tool-call reliably in this setup | Switch the agent's `llm` (in the loan example `watsonx/openai/gpt-oss-120b` was dependable) before touching instructions |
+| Precision ≈ 0.5–0.6 with every case passing | handoffs not declared as goals | `reference/module-benchmarks.md` → handoff goals |
+| Routing accuracy 0.0 although handoffs happened | `display_name` ≠ `name` on an agent | Set them equal and re-import |
+| `analyze` fails later with a `text_match` validation error | framework 1.5.2 writes a number | Normalize a copy (`reference/module-analyze.md`) |
+
+---
+
+## Done when
+
+- `summary_metrics.csv` exists for the run and Bob has stated journey success (x/n), routing accuracy, recall, precision, and the slowest case.
+- Every failed case has a one-line cause with the step where it went wrong.
+- The user has chosen: fix and re-run one case, run `analyze`, add a rubric, red-team, or stop.

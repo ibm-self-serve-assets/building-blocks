@@ -1,0 +1,25 @@
+# Evaluate the sample customer-support agent (run from assets/wxo-agents/)
+test_paths:
+  - sample_data/benchmarks.json
+output_dir: results/evaluate/
+enable_verbose_logging: true
+n_runs: 1
+num_workers: 2
+max_user_turns: 3
+metrics:
+  - JourneySuccessMetric
+  - ToolCalling
+  - OrchestrateAgentRoutingAccuracy
+  - StepMetrics
+  - AgentResponseTime
+llm_user_config:
+  user_response_style:
+    - "Be concise"
+    - "If the agent asks for missing information, provide it directly from your story"
+    - "Once you have what you asked for, reply END and nothing else"
+# Judge model: the default (bedrock/openai.gpt-oss-120b-1:0 through the gateway) works on SaaS.
+# On Developer Edition pick a model from `orchestrate models list`:
+# evaluation_config:
+#   provider_config:
+#     provider: gateway
+#     model_id: <model id>

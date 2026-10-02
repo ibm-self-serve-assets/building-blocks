@@ -1,13 +1,15 @@
 ---
 id: agent-ops
 name: agent-ops
-description: Plan and run evaluations, red-teaming, and runtime observability for watsonx Orchestrate
-  (WXO) agents across Developer Edition and SaaS. Use when validating WXO agents pre-deploy, authoring
-  benchmark JSON DAGs, interpreting Journey Success / Tool Call Recall / Agent Routing F1 / RAG Faithfulness,
-  diagnosing agent failures, running adversarial red-teaming (Instruction Override, Jailbreaking, Crescendo
-  Attack), searching runtime traces, exporting traces via the Python SDK, wiring Langfuse for cost & latency
-  analysis, or registering model pricing in Langfuse. Interview-first; emits bash commands for the user
-  to run in their IDE terminal.
+description: Evaluate, red-team, and observe watsonx Orchestrate (WXO) agents with the ADK evaluation
+  framework (ADK 2.18+, evaluation framework 1.5+) on SaaS or Developer Edition. Use when validating a
+  WXO agent before release or after a change, authoring ground-truth test cases (goal DAGs, handoff goals,
+  arg_matching), running quick-eval / evaluate / analyze, scoring conversations against plain-language
+  rubrics (RubricEvaluation), running red-teaming attacks, interpreting Journey Success / routing accuracy
+  / tool-call precision and recall, deciding whether a failure is the agent, the test case, or the model,
+  or searching and exporting platform traces. Interview-first; emits the commands for the user to run.
+  Runtime policy enforcement belongs to the agent-controls and real-time-guardrails skills; tokens-to-dollars,
+  Langfuse, and cost optimization belong to the cost-management skill.
 blocks:
 - agent-ops
 status: active
@@ -25,7 +27,7 @@ download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-block
 
 # agent-ops
 
-Plan and run evaluations, red-teaming, and runtime observability for watsonx Orchestrate (WXO) agents across Developer Edition and SaaS. Use when validating WXO agents pre-deploy, authoring benchmark JSON DAGs, interpreting Journey Success / Tool Call Recall / Agent Routing F1 / RAG Faithfulness, diagnosing agent failures, running adversarial red-teaming (Instruction Override, Jailbreaking, Crescendo Attack), searching runtime traces, exporting traces via the Python SDK, wiring Langfuse for cost & latency analysis, or registering model pricing in Langfuse. Interview-first; emits bash commands for the user to run in their IDE terminal.
+Evaluate, red-team, and observe watsonx Orchestrate (WXO) agents with the ADK evaluation framework (ADK 2.18+, evaluation framework 1.5+) on SaaS or Developer Edition. Use when validating a WXO agent before release or after a change, authoring ground-truth test cases (goal DAGs, handoff goals, arg_matching), running quick-eval / evaluate / analyze, scoring conversations against plain-language rubrics (RubricEvaluation), running red-teaming attacks, interpreting Journey Success / routing accuracy / tool-call precision and recall, deciding whether a failure is the agent, the test case, or the model, or searching and exporting platform traces. Interview-first; emits the commands for the user to run. Runtime policy enforcement belongs to the agent-controls and real-time-guardrails skills; tokens-to-dollars, Langfuse, and cost optimization belong to the cost-management skill.
 
 Sources in this repo:
 - `ai/control/agent-ops/bob-skills/agent-ops.zip` (block, layout: bob)

@@ -1,117 +1,106 @@
-# Agent Ops — Technical Assets
+# Agent Ops — assets for watsonx Orchestrate agents
 
-Production-ready Python scripts for testing, monitoring, and improving AI agents using the watsonx Orchestrate Agent Development Kit (ADK) evaluation framework.
+Scripts and examples for the **evaluation framework in the watsonx Orchestrate ADK** (`orchestrate evaluations …`, `orchestrate observability traces …`). Works against **SaaS** instances and **Developer Edition**; validated with ADK 2.18.0 / evaluation framework 1.5.2.
 
-These scripts wrap the ADK CLI commands with programmatic output parsing — suitable for CI/CD pipeline integration.
+## What is inside
 
-## What's Inside
+| Path | What it is |
+|---|---|
+| `01_agent_evaluation.py` | Runs `evaluate` from a config file and prints a per-case table from `summary_metrics.csv` |
+| `02_agent_analysis.py` | Runs `analyze` (default and enhanced) on the latest run, with the framework-1.5 `text_match` workaround |
+| `03_quick_eval.py` | Runs `quick-eval`: reference-less smoke test for tool calls, schema mismatches, hallucinated tools |
+| `04_benchmark_generation.py` | Runs `generate` from a stories CSV and a Python tools file; reviews the generated cases |
+| `05_red_teaming.py` | Lists attacks, plans them from your test cases, runs them, summarizes success per attack |
+| `examples/loan-underwriting/` | **Validated multi-agent example** — four agents in two versions, five deterministic tools, 5 ground-truth cases × v1/v2, rubric, 3 hand-authored attacks, import script |
+| `sample_agent/`, `sample_data/` | A single customer-support agent with a knowledge base, three benchmark cases, stories CSV, and an evaluate config — the quickest smoke test |
 
-| Script | What It Does |
-|--------|-------------|
-| `01_agent_evaluation.py` | Run benchmarks with LLM-simulated users, parse results for journey success, tool call precision/recall |
-| `02_agent_analysis.py` | Diagnose agent failures with default and enhanced analysis modes |
-| `03_quick_eval.py` | Fast referenceless validation — catch tool schema issues without ground truth |
-| `04_benchmark_generation.py` | Generate test cases from plain-English user stories |
-| `05_red_teaming.py` | Adversarial security testing against 15 attack types |
-| `06_langfuse_observability.py` | Track cost, latency, and token usage per interaction via Langfuse |
-
-Also includes:
-- `sample_agent/` — A complete sample agent (config, tools, knowledge base) ready for import
-- `sample_data/` — Benchmark scenarios and user stories for testing
+Cost in dollars (Langfuse) moved to the [Cost Management](../../../cost-management/assets/langfuse/) building block.
 
 ## Prerequisites
 
-- **Python 3.12** (NOT 3.13+ — ADK does not support it)
-- WXO Developer Edition running locally
-- ADK CLI installed:
+- Python 3.12 and the ADK with the agentops extra:
   ```bash
-  pip install 'ibm-watsonx-orchestrate[agentops]>=2.5.1,<2.9.0'
-  pip install 'ibm-watsonx-orchestrate-evaluation-framework>=1.2.7,<2.0.0'
-  pip install 'langfuse<4'
+  python3.12 -m venv .venv && source .venv/bin/activate
+  pip install -r requirements.txt        # ibm-watsonx-orchestrate[agentops]>=2.18.0,<3.0.0
   ```
+- An activated environment pointing at the instance where the agent is imported:
+  ```bash
+  orchestrate env add --name <env> --url https://api.<region>.watson-orchestrate.cloud.ibm.com/instances/<id>
+  orchestrate env activate <env> --api-key "$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.wxo-key.json")))["apikey"])')"
+  ```
+  SaaS tokens expire after about two hours; the framework evaluates whatever environment is active. For Developer Edition: `orchestrate server start -e .env` (see `.env.template`; add `-i` for traces) and `orchestrate env activate local`.
+- On a **shared instance**, list before importing (`orchestrate agents list`) and keep a prefix on your asset names; never update assets you did not create.
 
-## Quick Start
+## Quick start (single agent)
 
 ```bash
-# 1. Create a Python 3.12 virtual environment
-python3.12 -m venv agent-ops-env
-source agent-ops-env/bin/activate
+# import the sample agent
+orchestrate tools import -k python -f sample_agent/tools/support_tools.py
+orchestrate knowledge-bases import -f sample_agent/knowledge_bases/product_kb.yaml
+orchestrate agents import -f sample_agent/agent_config.yaml
 
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Start WXO Developer Edition (with Langfuse for script 06)
-orchestrate server start -e .env -l
-
-# 4. Import the sample agent
-cd sample_agent
-orchestrate tools import -k python -f tools/support_tools.py
-orchestrate agents import -f agent_config.yaml
-cd ..
-
-# 5. Run evaluation
-python 01_agent_evaluation.py
+python 03_quick_eval.py                 # smoke test
+python 01_agent_evaluation.py           # evaluate with sample_data/eval_config.yaml
+python 02_agent_analysis.py             # analyze the latest run
+python 05_red_teaming.py --plan-only    # generate attack files, review them, then run without --plan-only
 ```
 
-## Recommended Evaluation Workflow
+Every script takes `ORC=<path to orchestrate>` if the CLI is not on `PATH`, and prints the exact command it runs.
+
+## The loan-underwriting example (multi-agent)
+
+```bash
+cd examples/loan-underwriting
+./import.sh                                                    # collision check, tools, collaborators, orchestrators
+orchestrate evaluations evaluate -c evaluations/eval_config_v1.yaml      # v1: ships with a compliance defect
+orchestrate evaluations evaluate -c evaluations/eval_config_v2.yaml      # v2: after evaluating and fixing
+orchestrate evaluations evaluate -c evaluations/rubric_config_v2.yaml    # plain-language compliance rules
+orchestrate evaluations red-teaming run -a evaluations/red_team_v2 -o results/red_team_v2
+python scripts/summarize.py results/evaluate_v1
+```
+
+See [`examples/loan-underwriting/README.md`](examples/loan-underwriting/README.md) for the story, the expected results, and the design notes (handoff goals, `display_name`, strict-before-fuzzy arguments, `max_user_turns`, planner-style orchestrator).
+
+## Workflow
 
 ```
-quick-eval → generate → evaluate → analyze → red-team → observe
-   (03)        (04)       (01)       (02)       (05)      (06)
+quick-eval → test cases → evaluate → analyze → rubric → red-team      (traces whenever a conversation needs explaining)
+   (03)      (04 / script)   (01)      (02)                 (05)
 ```
 
-1. **Quick-eval** (script 03) — Fast sanity check for tool schema issues
-2. **Generate** (script 04) — Create benchmarks from user stories
-3. **Evaluate** (script 01) — Full evaluation with simulated users
-4. **Analyze** (script 02) — Diagnose any failures
-5. **Red-team** (script 05) — Security testing
-6. **Observe** (script 06) — Cost and performance visibility
+## Metrics (summary_metrics.csv, framework 1.5)
 
-## Metrics Reference
+| Column | Meaning | Curated target |
+|---|---|---|
+| `is_success` | all goals met in order with matching arguments; text goal matched | True |
+| `orchestrate_agent_routing_accuracy` | handoffs to the expected collaborators | ≥ 0.9 |
+| `tool_call_recall` / `missed_tool_calls` | expected tool calls made | ≥ 0.9 / 0 |
+| `tool_call_precision` | made calls that were expected (declare handoffs as goals or this drops) | ≥ 0.8 |
+| `tool_calls_with_incorrect_parameter` | argument mismatches | 0 |
+| `keyword_match`, `semantic_match`, `text_match` | the final-answer goal | match |
+| `average_agent_response_time` | seconds per agent response | track |
 
-### Agent Metrics
-| Metric | Target | What It Measures |
-|--------|--------|-----------------|
-| Journey Success | 1.0 | Did the agent complete all goals? (binary) |
-| Journey Completion % | 100% | Percentage of goals met |
-| Tool Call Precision | >= 0.5 | Correct calls / total calls made |
-| Tool Call Recall | >= 0.9 | Expected calls made / total expected |
-| Agent Routing F1 | >= 0.9 | Harmonic mean of precision and recall |
+Knowledge-base cases add faithfulness, answer relevancy, retrieval and response confidence. `RubricEvaluation` adds `overall_score`, one column per criterion, and the judge's comments. Targets are starting points, not product SLAs.
 
-### RAG Metrics
-| Metric | Target | What It Measures |
-|--------|--------|-----------------|
-| Faithfulness | >= 0.8 | Answer grounded in retrieved docs |
-| Answer Relevancy | >= 0.7 | Answer addresses the question |
-| Response Confidence | > 0.5 | LLM confidence in generated response |
+## Red-teaming attacks (framework 1.5)
 
-### Red-Teaming Attack Types
-| Category | Attacks |
-|----------|---------|
-| On-policy | instruction_override, emotional_appeal, role_playing, hypothetical_scenario, authority_impersonation, crescendo_attack |
-| Off-policy | jailbreaking, prompt_leakage, topic_derailment, social_engineering, data_extraction |
+On-policy: Instruction Override, Crescendo Attack, Emotional Appeal, Imperative Emphasis, Role Playing, Random Prefix, Random Postfix, Encoded Input, Foreign Languages. Off-policy: Crescendo Prompt Leakage, Functionality Based Attacks, Undermine Model, Unsafe Topics, Jailbreaking, Topic Derailment. Native agents only. Review every generated attack file: its goal defines what "the attack succeeded" means.
 
-## Benchmark JSON Format
+## Test case format
 
 ```json
 {
   "agent": "agent_name",
-  "story": "Instructions for the LLM-simulated user",
-  "starting_sentence": "First message the simulated user sends",
-  "goals": {
-    "tool_a-1": ["tool_b-1"],
-    "tool_b-1": []
-  },
+  "story": "Who the user is, the facts they know, what they want. Once <done>, reply END and nothing else.",
+  "starting_sentence": "First user message",
+  "max_user_turns": 3,
+  "goals": { "route_x": ["tool_a"], "tool_a": ["summarize"], "summarize": [] },
   "goal_details": [
-    {
-      "type": "tool_call",
-      "name": "tool_a-1",
-      "tool_name": "tool_a",
-      "args": {"param": "value"},
-      "arg_matching": {"param": "strict"}
-    }
+    { "type": "tool_call", "name": "route_x", "tool_name": "chat_with_collaborator_<agent>", "args": {"message": "IGNORE"}, "arg_matching": {"message": "ignore"} },
+    { "type": "tool_call", "name": "tool_a", "tool_name": "tool_a", "args": {"id": "X1", "note": "free text"}, "arg_matching": {"note": "fuzzy"} },
+    { "type": "text", "name": "summarize", "response": "expected gist", "keywords": ["must appear"] }
   ]
 }
 ```
 
-Argument matching modes: `"strict"` (exact match), `"fuzzy"` (semantic match), `"optional"` (can be omitted).
+`arg_matching`: `strict` (default), `fuzzy`, `optional`, `ignore`; `{"IGNORE": null}` skips all arguments. Strict fields before fuzzy ones. Docs: https://developer.watson-orchestrate.ibm.com/evaluate/overview

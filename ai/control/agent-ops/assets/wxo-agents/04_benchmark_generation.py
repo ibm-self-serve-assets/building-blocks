@@ -1,142 +1,65 @@
-"""
-Benchmark Generation from User Stories
+"""Generate test cases from user stories with `orchestrate evaluations generate`.
 
-Automatically generates evaluation benchmarks (ground truth test cases)
-from plain-English user stories. Converts natural language descriptions
-of expected agent behavior into structured JSON benchmark files.
+Input: a CSV with columns `story,agent` and the Python FILE that defines the agent's @tool functions
+(a directory makes the command fall back to a minimal spec and guess).
 
-This eliminates the need to hand-write benchmark JSON — just describe
-what the user should do and the framework generates the test case.
-
-Prerequisites:
-  - WXO Developer Edition running
-  - Agent tools imported
-  - pip install -r requirements.txt
+Observed on ADK 2.18 / framework 1.5.2: `generate` calls the Langfuse API at the end of generation even when
+--with-langfuse is not used; without LANGFUSE_HOST / LANGFUSE_PUBLIC_KEY / LANGFUSE_SECRET_KEY for a reachable
+Langfuse project (Developer Edition `-l`, or a hosted one) it fails and writes no test cases. Without one,
+author cases with a generator script instead — see examples/loan-underwriting/evaluations/make_testcases.py.
 
 Usage:
-  python 04_benchmark_generation.py
+  python 04_benchmark_generation.py [stories.csv] [tools file] [output dir]
+  defaults: sample_data/user_stories.csv  sample_agent/tools/support_tools.py  results/generated
 """
 
-import csv
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-# ── Configuration (override via command-line args) ────────────────────
-STORIES_PATH = sys.argv[1] if len(sys.argv) > 1 else "sample_data/user_stories.csv"
-TOOLS_PATH = sys.argv[2] if len(sys.argv) > 2 else "sample_agent/tools"
-OUTPUT_DIR = sys.argv[3] if len(sys.argv) > 3 else "generated_benchmarks"
+ORC = os.environ.get("ORC", "orchestrate")
+STORIES = sys.argv[1] if len(sys.argv) > 1 else "sample_data/user_stories.csv"
+TOOLS_FILE = sys.argv[2] if len(sys.argv) > 2 else "sample_agent/tools/support_tools.py"
+OUTPUT_DIR = Path(sys.argv[3] if len(sys.argv) > 3 else "results/generated")
 
 
-def run_generate(stories_path: str, tools_path: str, output_dir: str) -> Path:
-    """Run the orchestrate evaluations generate CLI command.
+def check_langfuse_env() -> None:
+    missing = [k for k in ("LANGFUSE_PUBLIC_KEY", "LANGFUSE_SECRET_KEY") if not os.environ.get(k)]
+    if missing:
+        print(f"WARNING: {', '.join(missing)} not set. On ADK 2.18 / framework 1.5.2 `generate` needs a reachable "
+              "Langfuse project (LANGFUSE_HOST + keys) and writes nothing without it; export them or write cases with a generator script.")
 
-    Converts user stories into structured benchmark JSON files.
-    """
-    cmd = [
-        "orchestrate", "evaluations", "generate",
-        "--stories-path", stories_path,
-        "--tools-path", tools_path,
-        "--output-dir", output_dir,
-    ]
 
-    print(f"Running: {' '.join(cmd)}")
-    print("Generating benchmarks from user stories...\n")
-
-    result = subprocess.run(cmd, capture_output=True, text=True)
-
+def run_generate() -> None:
+    if not Path(TOOLS_FILE).is_file():
+        sys.exit(f"tools path must be a Python file: {TOOLS_FILE}")
+    cmd = [ORC, "evaluations", "generate", "-s", STORIES, "-t", TOOLS_FILE, "-o", str(OUTPUT_DIR)]
+    print("Running:", " ".join(cmd))
+    result = subprocess.run(cmd)
     if result.returncode != 0:
-        print(f"ERROR: Generation failed with exit code {result.returncode}")
-        print(f"stderr: {result.stderr}")
-        sys.exit(1)
-
-    print(result.stdout)
-    return Path(output_dir)
+        sys.exit(f"generate exited with {result.returncode}")
 
 
-def review_generated_benchmarks(output_dir: Path) -> None:
-    """Review the generated benchmark files and highlight key elements."""
-    print("\n" + "=" * 60)
-    print("GENERATED BENCHMARKS REVIEW")
-    print("=" * 60)
-
-    json_files = sorted(output_dir.rglob("*.json"))
-    if not json_files:
-        print("  No benchmark files generated.")
+def review() -> None:
+    files = [f for f in sorted(OUTPUT_DIR.rglob("*.json")) if "snapshot" not in f.name]
+    if not files:
+        print("No test cases were written. See the warning above.")
         return
-
-    for json_file in json_files:
-        if json_file.name.startswith("snapshot"):
-            continue  # Skip LLM reasoning snapshots
-
+    print(f"\nGenerated {len(files)} case(s) under {OUTPUT_DIR}:")
+    for f in files:
         try:
-            with open(json_file) as f:
-                benchmark = json.load(f)
+            case = json.loads(f.read_text())
         except json.JSONDecodeError:
             continue
-
-        print(f"\n  File: {json_file.name}")
-
-        if isinstance(benchmark, dict):
-            agent = benchmark.get("agent", "unknown")
-            story = benchmark.get("story", "")
-            starting = benchmark.get("starting_sentence", "")
-            goals = benchmark.get("goals", {})
-            details = benchmark.get("goal_details", [])
-
-            print(f"    Agent: {agent}")
-            print(f"    Story: \"{story[:80]}...\"")
-            print(f"    First message: \"{starting[:60]}...\"")
-            print(f"    Goals: {len(goals)} tool call(s)")
-
-            for detail in details:
-                tool_name = detail.get("tool_name", "unknown")
-                args = detail.get("args", {})
-                print(f"      → {tool_name}({', '.join(f'{k}={v}' for k, v in args.items())})")
-
-    # Check for LLM reasoning snapshots
-    snapshots = sorted(output_dir.rglob("snapshot*.json"))
-    if snapshots:
-        print(f"\n  LLM reasoning snapshots: {len(snapshots)} files")
-        print("  (These show the LLM's reasoning for generating each test case)")
+        tools = [g.get("tool_name") for g in case.get("goal_details", []) if g.get("type") == "tool_call"]
+        print(f"  {f.relative_to(OUTPUT_DIR)}: agent={case.get('agent')} goals={len(case.get('goals', {}))} tools={tools}")
+    print("\nReview before using: strict values the story never states, missing handoff goals "
+          "(chat_with_collaborator_<agent>) on multi-agent systems, no end-of-conversation signal, no max_user_turns.")
 
 
-def show_stories_used(stories_path: str) -> None:
-    """Display the user stories that were used for generation."""
-    print("\n" + "─" * 60)
-    print("INPUT USER STORIES")
-    print("─" * 60)
-
-    with open(stories_path) as f:
-        reader = csv.DictReader(f)
-        for i, row in enumerate(reader):
-            story = row.get("story", "")
-            print(f"  {i + 1}. \"{story[:100]}...\"" if len(story) > 100 else f"  {i + 1}. \"{story}\"")
-
-
-# ── Main ──────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    print("Agent Ops — Benchmark Generation from User Stories")
-    print(f"Stories:  {STORIES_PATH}")
-    print(f"Tools:    {TOOLS_PATH}")
-    print(f"Output:   {OUTPUT_DIR}\n")
-
-    # Show input stories
-    show_stories_used(STORIES_PATH)
-
-    # Generate benchmarks
-    output_dir = run_generate(STORIES_PATH, TOOLS_PATH, OUTPUT_DIR)
-
-    # Review generated files
-    review_generated_benchmarks(output_dir)
-
-    print(f"\nNext steps:")
-    print(f"  1. Review and hand-edit the generated benchmarks if needed")
-    print(f"  2. Run full evaluation: python 01_agent_evaluation.py")
-    print(f"     (update BENCHMARK_DIR to point to {OUTPUT_DIR})")
+    check_langfuse_env()
+    run_generate()
+    review()

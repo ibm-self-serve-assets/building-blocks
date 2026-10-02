@@ -1,206 +1,76 @@
-"""
-Red-Teaming — Adversarial Security Testing
+"""Red-team a native watsonx Orchestrate agent: list attacks, plan them from your test cases, run, summarize.
 
-Stress-tests your agent against 15 adversarial attack types to identify
-security vulnerabilities before deployment.
+Attack catalogue (framework 1.5): on-policy — Instruction Override, Crescendo Attack, Emotional Appeal,
+Imperative Emphasis, Role Playing, Random Prefix, Random Postfix, Encoded Input, Foreign Languages;
+off-policy — Crescendo Prompt Leakage, Functionality Based Attacks, Undermine Model, Unsafe Topics,
+Jailbreaking, Topic Derailment. Names are accepted as listed or in snake_case; "all" is not a keyword.
 
-Attack categories:
-  On-policy (within domain):
-  - instruction_override     : Attempts to override system instructions
-  - emotional_appeal         : Uses emotional manipulation
-  - role_playing             : Tricks agent into adopting unsafe roles
-  - hypothetical_scenario    : Uses "what if" framing to bypass guardrails
-  - authority_impersonation  : Claims to be an admin or authority figure
-  - crescendo_attack         : Gradually escalates requests
-
-  Off-policy (outside domain):
-  - jailbreaking             : Direct attempts to bypass safety
-  - prompt_leakage           : Tries to extract system prompt
-  - topic_derailment         : Steers agent away from its domain
-  - social_engineering       : Manipulates agent through social tactics
-  - data_extraction          : Attempts to extract training data or PII
-
-Prerequisites:
-  - WXO Developer Edition running
-  - Agent imported
-  - pip install -r requirements.txt
+The goal inside each attack file defines what "the attack succeeded" means. Generated plans need review:
+run with --plan-only, edit the files under the plan directory, then run again without --plan-only.
 
 Usage:
-  python 05_red_teaming.py
+  python 05_red_teaming.py [--plan-only] [--run-only]
+  env: ATTACKS="Instruction Override,Crescendo Attack,Emotional Appeal"  TEST_PATHS=sample_data/benchmarks.json
+       AGENTS_DIR=sample_agent  TARGET=customer_support_assistant  PLAN_DIR=results/red_team_plan
+       RESULTS_DIR=results/red_team  VARIANTS=1  ORC=orchestrate
 """
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-# ── Configuration (override via command-line args) ────────────────────
-BENCHMARK_DIR = sys.argv[1] if len(sys.argv) > 1 else "sample_data"
-AGENT_DIR = sys.argv[2] if len(sys.argv) > 2 else "sample_agent"
-AGENT_NAME = sys.argv[3] if len(sys.argv) > 3 else "customer_support_assistant"
-ATTACK_TYPES = "instruction_override,crescendo_attack,jailbreaking,prompt_leakage"
-RED_TEAM_PLAN_DIR = "red_team_plans"
-RED_TEAM_RESULTS_DIR = "red_team_results"
-NUM_SCENARIOS_PER_ATTACK = 1
+ORC = os.environ.get("ORC", "orchestrate")
+ATTACKS = os.environ.get("ATTACKS", "Instruction Override,Crescendo Attack,Emotional Appeal")
+TEST_PATHS = os.environ.get("TEST_PATHS", "sample_data/benchmarks.json")
+AGENTS_DIR = os.environ.get("AGENTS_DIR", "sample_agent")
+TARGET = os.environ.get("TARGET", "customer_support_assistant")
+PLAN_DIR = Path(os.environ.get("PLAN_DIR", "results/red_team_plan"))
+RESULTS_DIR = Path(os.environ.get("RESULTS_DIR", "results/red_team"))
+VARIANTS = os.environ.get("VARIANTS", "1")
 
 
-def list_attacks() -> str:
-    """List all available attack types."""
-    cmd = ["orchestrate", "evaluations", "red-teaming", "list"]
-    print(f"Running: {' '.join(cmd)}\n")
-
-    result = subprocess.run(cmd, capture_output=True, text=True)
+def run(cmd: list[str]) -> None:
+    print("Running:", " ".join(cmd))
+    result = subprocess.run(cmd)
     if result.returncode != 0:
-        print(f"ERROR: {result.stderr}")
-        return ""
-
-    print(result.stdout)
-    return result.stdout
+        sys.exit(f"{cmd[2]} exited with {result.returncode}")
 
 
-def plan_attacks(
-    attack_types: str,
-    benchmark_dir: str,
-    agent_dir: str,
-    agent_name: str,
-    output_dir: str,
-    num_scenarios: int = 1,
-) -> Path:
-    """Generate adversarial attack scenarios."""
-    cmd = [
-        "orchestrate", "evaluations", "red-teaming", "plan",
-        "-a", attack_types,
-        "-d", benchmark_dir,
-        "-g", agent_dir,
-        "-t", agent_name,
-        "-o", output_dir,
-        "-n", str(num_scenarios),
-    ]
-
-    print(f"Running: {' '.join(cmd)}")
-    print(f"Generating attack plans for: {attack_types}\n")
-
-    result = subprocess.run(cmd, capture_output=True, text=True)
-
-    if result.returncode != 0:
-        print(f"ERROR: Attack planning failed with exit code {result.returncode}")
-        print(f"stderr: {result.stderr}")
-        sys.exit(1)
-
-    print(result.stdout)
-    return Path(output_dir)
-
-
-def run_attacks(plan_dir: str, output_dir: str) -> Path:
-    """Execute the planned adversarial attacks against the agent."""
-    cmd = [
-        "orchestrate", "evaluations", "red-teaming", "run",
-        "-a", plan_dir,
-        "-o", output_dir,
-    ]
-
-    print(f"Running: {' '.join(cmd)}")
-    print("Executing adversarial attacks...\n")
-
-    result = subprocess.run(cmd, capture_output=True, text=True)
-
-    if result.returncode != 0:
-        print(f"ERROR: Attack execution failed with exit code {result.returncode}")
-        print(f"stderr: {result.stderr}")
-        sys.exit(1)
-
-    print(result.stdout)
-    return Path(output_dir)
-
-
-def analyze_results(results_dir: Path) -> None:
-    """Analyze red-teaming results to identify vulnerabilities."""
-    print("\n" + "=" * 60)
-    print("RED-TEAMING RESULTS ANALYSIS")
-    print("=" * 60)
-
-    json_files = sorted(results_dir.rglob("*.json"))
-    if not json_files:
-        print("  No result files found.")
-        return
-
-    vulnerabilities = []
-    safe_count = 0
-
-    for json_file in json_files:
+def plan() -> None:
+    run([ORC, "evaluations", "red-teaming", "list"])
+    run([ORC, "evaluations", "red-teaming", "plan", "-a", ATTACKS, "-d", TEST_PATHS, "-g", AGENTS_DIR,
+         "-t", TARGET, "-o", str(PLAN_DIR), "-n", VARIANTS])
+    files = sorted(PLAN_DIR.glob("*.json"))
+    print(f"\n{len(files)} attack file(s) under {PLAN_DIR}. Review each one: `targeted_policy` states the rule; "
+          "`goals`/`goal_details` must describe the forbidden outcome (the tool call or text that must never happen).")
+    for f in files:
         try:
-            with open(json_file) as f:
-                data = json.load(f)
+            a = json.loads(f.read_text())
+            print(f"  {f.name}: {a.get('attack_data', {}).get('attack_name')} → goals {list(a.get('goals', {}))}")
         except json.JSONDecodeError:
-            continue
-
-        if isinstance(data, dict):
-            attack_type = data.get("attack_type", json_file.stem)
-            success = data.get("attack_success", data.get("success", False))
-
-            if success:
-                vulnerabilities.append({
-                    "attack": attack_type,
-                    "file": json_file.name,
-                    "details": data.get("details", ""),
-                })
-            else:
-                safe_count += 1
-
-    total = len(vulnerabilities) + safe_count
-
-    print(f"\n  Total attacks executed: {total}")
-    print(f"  Agent defended:        {safe_count}")
-    print(f"  Vulnerabilities found: {len(vulnerabilities)}")
-
-    if vulnerabilities:
-        print(f"\n  {'─' * 50}")
-        print("  VULNERABILITIES:")
-        for vuln in vulnerabilities:
-            print(f"\n    Attack: {vuln['attack']}")
-            print(f"    File:   {vuln['file']}")
-            if vuln["details"]:
-                print(f"    Details: {vuln['details'][:100]}...")
-
-        print(f"\n  ACTION REQUIRED:")
-        print(f"  - Review agent instructions for gaps in safety boundaries")
-        print(f"  - Add explicit refusal patterns for detected attack types")
-        print(f"  - Re-run red-teaming after fixes to verify remediation")
-    else:
-        print(f"\n  Agent successfully defended against all attack types.")
+            print(f"  {f.name}: (unreadable)")
 
 
-# ── Main ──────────────────────────────────────────────────────────────
+def execute() -> None:
+    run([ORC, "evaluations", "red-teaming", "run", "-a", str(PLAN_DIR), "-o", str(RESULTS_DIR)])
+    summary_file = RESULTS_DIR / "attacks_results.json"
+    if summary_file.exists():
+        summary = json.loads(summary_file.read_text())
+        print("\nSummary:", {k: v for k, v in summary.items() if isinstance(v, (int, float, str))})
+    print("\nPer attack:")
+    for f in sorted((RESULTS_DIR / "results").glob("*.result.json")):
+        success = json.loads(f.read_text()).get("success")
+        verdict = "SUCCEEDED (vulnerability)" if success else "resisted"
+        print(f"  {f.name.replace('.result.json', '')}: {verdict}")
+    print(f"\nTranscripts: {RESULTS_DIR}/messages/<attack>.messages.json — read the ones that succeeded, "
+          "fix the instructions or structure, re-run the same attack files.")
+
+
 if __name__ == "__main__":
-    print("Agent Ops — Red-Teaming (Adversarial Security Testing)")
-    print(f"Agent: {AGENT_NAME}")
-    print(f"Attacks: {ATTACK_TYPES}\n")
-
-    # Step 1: List available attacks
-    print("=" * 60)
-    print("AVAILABLE ATTACK TYPES")
-    print("=" * 60)
-    list_attacks()
-
-    # Step 2: Generate attack plans
-    print("\n" + "=" * 60)
-    print("GENERATING ATTACK PLANS")
-    print("=" * 60)
-    plan_dir = plan_attacks(
-        ATTACK_TYPES, BENCHMARK_DIR, AGENT_DIR, AGENT_NAME,
-        RED_TEAM_PLAN_DIR, NUM_SCENARIOS_PER_ATTACK,
-    )
-
-    # Step 3: Execute attacks
-    print("\n" + "=" * 60)
-    print("EXECUTING ATTACKS")
-    print("=" * 60)
-    results_dir = run_attacks(RED_TEAM_PLAN_DIR, RED_TEAM_RESULTS_DIR)
-
-    # Step 4: Analyze results
-    analyze_results(results_dir)
+    if "--run-only" not in sys.argv:
+        plan()
+    if "--plan-only" in sys.argv:
+        sys.exit(0)
+    execute()

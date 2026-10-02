@@ -3,7 +3,7 @@ id: agent-ops
 name: Agent Ops
 group: control
 capability: ai
-description: Evaluate, red-team, and observe AI agents from development through production — benchmarks with LLM-simulated users, failure analysis, adversarial testing, traces, and latency — plus metric-level evaluation of GenAI applications
+description: Evaluate, score, red-team, and observe watsonx Orchestrate agents before release and after every change — ground-truth test cases with LLM-simulated users, failure analysis, plain-language rubrics, adversarial testing with 15 attack types, and platform traces (ADK 2.18+, SaaS or Developer Edition) — plus metric-level evaluation of GenAI applications
 repo_path: ai/control/agent-ops
 docs_path: ai-core/control/agent-ops.md
 products:
@@ -22,7 +22,7 @@ tags:
 
 # Agent Ops
 
-Evaluate, red-team, and observe AI agents from development through production — benchmarks with LLM-simulated users, failure analysis, adversarial testing, traces, and latency — plus metric-level evaluation of GenAI applications
+Evaluate, score, red-team, and observe watsonx Orchestrate agents before release and after every change — ground-truth test cases with LLM-simulated users, failure analysis, plain-language rubrics, adversarial testing with 15 attack types, and platform traces (ADK 2.18+, SaaS or Developer Edition) — plus metric-level evaluation of GenAI applications
 
 - **Repo**: [ai/control/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/agent-ops)
 - **Docs**: [ai-core/control/agent-ops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/agent-ops/)

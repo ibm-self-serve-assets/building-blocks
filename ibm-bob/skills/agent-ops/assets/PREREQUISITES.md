@@ -1,209 +1,110 @@
-# 🛡️ Agent Ops — Prerequisites
+# Agent Ops — prerequisites
 
-Everything a developer needs in place before invoking this Bob skill. Confirmed during validation against a real WXO agent on ADK 2.9.0 / eval-framework 1.4.9.
-
-If any prerequisite is missing, Bob will tell you — but having these ready up front avoids a stop-and-fetch loop mid-conversation.
-
----
+What needs to be in place before invoking the skill. Validated with ADK 2.18.0 / evaluation framework 1.5.2 against an IBM Cloud SaaS instance; Developer Edition notes come from the ADK documentation.
 
 ## 1. Software
 
 | Component | Version | Purpose | Install |
 |---|---|---|---|
-| **[Bob](https://bob.ibm.com)** | latest | The skill runs inside Bob | See bob.ibm.com for install |
-| **Python** | **3.12** (3.11 may work; **3.13+ not supported** — eval-fw has C-extension wheels for 3.12 only at present) | venv for the WXO ADK | `pyenv install 3.12` or system Python |
-| **Docker runtime** | recent | Required for WXO Developer Edition Lima VM (the WXO server, Langfuse, Milvus, OpenSearch, ClickHouse, ~20 containers total) | Docker Desktop, Rancher Desktop, or Colima |
-| **`uv` / `uvx`** | latest | Launches the WXO docs MCP server (see `mcp.json`) | `pip install uv` |
-| **WXO ADK with `[agentops]` extra** | `>= 2.6.0, < 3.0.0` (pulls eval-fw `>= 1.4.0, < 2.0.0`) | The CLI Bob emits commands for | `pip install "ibm-watsonx-orchestrate[agentops]>=2.6.0,<3.0.0"` |
+| [Bob](https://bob.ibm.com) | current | runs the skill | bob.ibm.com |
+| Python | **3.12** | venv for the ADK | `pyenv install 3.12` or system Python |
+| WXO ADK with the `[agentops]` extra | `>= 2.18.0, < 3.0.0` (pulls evaluation framework `1.5.x`) | the CLI Bob emits commands for | `pip install "ibm-watsonx-orchestrate[agentops]>=2.18.0,<3.0.0"` |
+| Docker runtime | recent | **Developer Edition only** | Docker Desktop, Rancher Desktop, or Colima |
 
-### Why this ADK/eval-fw floor
-
-- ADK 2.1.0 added `--with-langfuse` Langfuse-judge path.
-- ADK 2.5.0 added the traces CLI + Python SDK.
-- ADK 2.6.0 added `traces search --last` flag + a red-teaming `plan`/`run` stability fix.
-- Eval-framework 1.4.x clears 1.2.x (deprecated 405b judge crash) and 1.3.x (breaking changes).
-
-Bob runs a `pip show ibm-watsonx-orchestrate ibm-watsonx-orchestrate-evaluation-framework` check at the entry to any module. If your installed versions are below the floor, Bob will tell you and emit the upgrade command.
-
----
+Why the floor: 2.18 / 1.5 is the combination the field notes in `SKILL.md` were observed on (handoff goals, `max_user_turns`, `RubricEvaluation` via `operator_configs`, `traces search --last`, the `analyze`/`text_match` quirk). Earlier releases behave differently in ways this skill no longer documents.
 
 ## 2. Credentials
 
-### 2a. For DevEd `.env` (Docker image pull authentication)
+### 2a. SaaS
 
-Drop into `<your-agent>/.env`:
+- The **instance URL** (WXO UI → Settings → API details), for example `https://api.<region>.watson-orchestrate.cloud.ibm.com/instances/<id>` (IBM Cloud) or `https://api.<region>.watson-orchestrate.ibm.com/instances/<id>` (AWS).
+- An **API key** with access to that instance: an IBM Cloud IAM key (user or service ID with the WO User role on the instance) or an MCSP key for AWS-hosted instances.
+- Keep the key in a file with mode 600 (for example `~/.wxo-key.json` containing `{"apikey": "..."}`) and read it with `$(...)` when activating. Tokens expire after about two hours.
+
+```bash
+orchestrate env add --name <env> --url <instance url>            # --type ibm_iam | mcsp | cpd only if inference fails
+orchestrate env activate <env> --api-key "$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.wxo-key.json")))["apikey"])')"
+export WO_API_KEY="$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.wxo-key.json")))["apikey"])')"   # lets long runs refresh their token
+```
+
+On SaaS the evaluation framework's judge and simulated user run through the instance's model gateway; no watsonx.ai key is needed for the default models.
+
+### 2b. Developer Edition
+
+`<project>/.env`, passed with `-e` on every `server start`:
 
 ```
 WO_DEVELOPER_EDITION_SOURCE=orchestrate
-WO_INSTANCE=https://api.<region>.watson-orchestrate.ibm.com/instances/<your-instance-id>
-WO_API_KEY=<your-WXO-SaaS-API-key>
+WO_INSTANCE=https://api.<region>.watson-orchestrate.ibm.com/instances/<id>   # any instance you can authenticate to; used for image pulls and model access
+WO_API_KEY=<key for that instance>
 ```
 
-These are only used by the DevEd server to pull its private container images from `registry.dl.watson-orchestrate.ibm.com`. Any valid SaaS WXO key works; the local server doesn't actually call out to the SaaS instance during eval.
+Optional, when you want the local gateway to use watsonx.ai models directly: `WATSONX_APIKEY` and `WATSONX_SPACE_ID` (a space bound to a watsonx.ai Runtime instance) or `WATSONX_PROJECT_ID`. Then `orchestrate env activate local`.
 
-### 2b. For watsonx.ai (required for RAG judges)
+### 2c. Not needed for this skill
 
-The eval framework's judges (Faithfulness, Relevancy, etc.) call watsonx.ai. You need:
+Langfuse keys (cost analysis lives in the Cost Management building block), AWS Bedrock or Groq keys (the default judge model is served through the WXO gateway).
 
-```
-WATSONX_APIKEY=<your IBM Cloud IAM API key>
-WATSONX_PROJECT_ID=<your watsonx project ID>          # OR
-WATSONX_SPACE_ID=<your WML-bound deployment space ID>
-```
-
-Where to get them:
-- `WATSONX_APIKEY` → IBM Cloud → Manage → Access (IAM) → API keys → Create
-- `WATSONX_PROJECT_ID` → watsonx.ai console → your project → Manage tab → Project ID
-- `WATSONX_SPACE_ID` → watsonx.ai console → deployments → your space → space ID. **The space must be associated with a watsonx Machine Learning instance** — confirm in the space's "Manage" tab. Projects are usually pre-bound; spaces sometimes are not.
-
-If you skip this, the agent conversation will run but RAG metrics (`kb_metrics.csv`) will be empty and the judges will error with `403` from `*.ml.cloud.ibm.com`.
-
-### 2c. For Langfuse (required for cost/latency analysis)
-
-After `orchestrate server start -e .env -l` brings up the bundled Langfuse on `http://localhost:3010`:
-
-1. Log into the Langfuse UI:
-   - URL: `http://localhost:3010`
-   - User: `orchestrate@ibm.com`
-   - Password: printed in the terminal on the **first** `server start` (set by you on subsequent logins). If you've forgotten it and want a reset, `orchestrate server purge` wipes everything.
-2. Settings → API Keys → Create new API keys.
-3. Export:
-   ```
-   export LANGFUSE_BASE_URL="http://localhost:3010"
-   export LANGFUSE_PUBLIC_KEY="pk-lf-..."
-   export LANGFUSE_SECRET_KEY="sk-lf-..."
-   ```
-4. These are **session-scoped** env vars; re-export them in any new terminal.
-
-For cost computation to work, you also need to register your agent's model in Langfuse — see [`../reference/module-observability.md`](../reference/module-observability.md) → `register_model_pricing` for the `POST /api/public/models` recipe. Bob will offer to do this if cost data shows as `0`.
-
----
-
-## 3. Hardware
-
-| Resource | Minimum | Notes |
-|---|---|---|
-| **RAM** | 16 GB free for Docker | The Lima VM is allocated 16 GiB by default. WXO server + Langfuse + Milvus + OpenSearch + ClickHouse + ~15 other containers compete for it. |
-| **Disk** | ~50 GB free | Docker image pull is one-time but heavy (multi-GB images for WXO, Langfuse, ClickHouse, OpenSearch, Milvus). |
-| **First-time setup** | ~10 minutes | Image pull + bootstrap. Subsequent server starts ~30 seconds. |
-
----
-
-## 4. Network access
-
-The mode needs outbound access to:
+## 3. Network egress
 
 | Host | Purpose |
 |---|---|
-| `registry.dl.watson-orchestrate.ibm.com` | Pulling WXO Dev Edition images |
-| `docker.io` / `quay.io` | Pulling Langfuse, Milvus, OpenSearch, ClickHouse, Redis, MinIO images |
-| `developer.watson-orchestrate.ibm.com` | WXO docs MCP server (used by Bob for live doc search) |
-| `*.ml.cloud.ibm.com` | watsonx.ai endpoint for RAG judges |
-| `iam.cloud.ibm.com` | IBM Cloud IAM token exchange (for the watsonx API key) |
+| `api.<region>.watson-orchestrate.cloud.ibm.com` / `api.<region>.watson-orchestrate.ibm.com` | your instance |
+| `iam.cloud.ibm.com` | IBM Cloud token exchange (IBM Cloud instances) |
+| `developer.watson-orchestrate.ibm.com` | ADK docs MCP server |
+| `registry.dl.watson-orchestrate.ibm.com`, `docker.io`, `quay.io` | Developer Edition image pulls |
+| `*.ml.cloud.ibm.com` | watsonx.ai, only if you point the local gateway at it |
 
-If you're behind a corporate proxy, configure Docker / `pip` / `curl` to use it before running the server-start.
+## 4. Hardware (Developer Edition only)
 
----
+About 16 GB of RAM free for Docker and 50 GB of disk; the first `server start` pulls images for about 10 minutes, later starts take under a minute.
 
 ## 5. The agent you want to evaluate
 
-For the full skill capability set:
-
-- **Native WXO agent** — red-teaming (`evaluations red-teaming plan/run`) only supports native agents. External / LangChain / CrewAI agents can still do `quick-eval`, `evaluate`, `analyze`, and observability but not red-teaming.
-- **Python `@tool`-decorated functions** — required for `generate` (benchmark synthesis from stories.csv) and `analyze --mode enhanced` (tool docstring enrichment).
-- **Standard WXO directory layout**:
+- **Native WXO agents** for the full capability set; red-teaming is native-only. External agents can still be run through `evaluate` (only Text Match and Journey Success apply).
+- **Python `@tool` functions** with type hints and docstrings for `quick-eval`, `generate`, and `analyze --mode enhanced` (`--tools-path` points at the folder).
+- **Names.** Every agent's `display_name` should equal its `name`; test cases reference agents and tools by `name`.
+- **Layout** (any layout works; this is the one the examples use):
   ```
-  <your-agent>/
-  ├── agent_config.yaml        # required; the `name:` field is referenced in benchmarks
-  ├── tools/                   # one or more Python modules with @tool functions
-  ├── knowledge_bases/         # optional; YAML config per KB
-  └── data/                    # optional; source docs for KBs (CSVs, .txt, .pdf)
+  <project>/
+  ├── agents/            # one YAML per agent, collaborators listed by name
+  ├── tools/             # Python modules with @tool functions
+  ├── knowledge_bases/   # optional
+  └── evaluations/       # test cases, configs, attacks, results
   ```
-- **Importable into the target env** (DevEd via `orchestrate tools import -k python -f tools/<module>.py`, then `knowledge-bases import`, then `agents import`).
-
----
+- **Import order:** tools → knowledge bases → collaborators → orchestrator. Agents are usable right after import; no deploy step is needed for evaluation on SaaS or DevEd.
 
 ## 6. Shell environment
 
-Bob's emitted commands reference one mandatory env var:
-
 ```bash
-export VENV_ACTIVATE=/path/to/your/.venv/bin/activate
+export VENV_ACTIVATE=/path/to/venv/bin/activate     # mandatory; every emitted command sources it
+export WO_API_KEY="$(...)"                           # optional; token refresh during long SaaS runs
 ```
-
-Set it in your shell rc (`~/.zshrc`, `~/.bashrc`) so it persists. Every emitted command starts with `source "$VENV_ACTIVATE" && ...` to ensure the venv is active per-invocation.
-
-Also recommended (for the SaaS REST APIs and Langfuse REST queries):
-
-```bash
-# Optional — used by emitted curl templates
-export LANGFUSE_BASE_URL=...
-export LANGFUSE_PUBLIC_KEY=...
-export LANGFUSE_SECRET_KEY=...
-export WATSONX_APIKEY=...
-export WATSONX_PROJECT_ID=...      # OR WATSONX_SPACE_ID=...
-```
-
----
 
 ## 7. Quick install summary
 
-If everything above lines up, this is the one-time setup:
-
 ```bash
-# 1. Create + activate venv
-python3.12 -m venv ~/agent-ops-venv
-source ~/agent-ops-venv/bin/activate
-echo "export VENV_ACTIVATE=$HOME/agent-ops-venv/bin/activate" >> ~/.zshrc
-
-# 2. Install ADK with agentops extra
-pip install "ibm-watsonx-orchestrate[agentops]>=2.6.0,<3.0.0"
-
-# 3. Install uv (for the MCP)
-pip install uv
-
-# 4. Drop .env into your agent folder (see §2a)
-#    Make sure your Docker runtime is running (Rancher Desktop / Docker Desktop / Colima)
-
-# 5. Start the DevEd server with Langfuse
-cd <your-agent>
-orchestrate server start -e .env -l
-
-# 6. Activate the local env
-orchestrate env activate local
-
-# 7. Import your agent
-orchestrate tools import -k python -f tools/<your_tools>.py
-orchestrate knowledge-bases import -f knowledge_bases/<your_kb>.yaml
-orchestrate agents import -f agent_config.yaml
-
-# 8. Open Bob in the agent's project root → invoke the "🛡️ Agent Ops" skill → start
+python3.12 -m venv ~/agent-ops-venv && source ~/agent-ops-venv/bin/activate
+echo 'export VENV_ACTIVATE=$HOME/agent-ops-venv/bin/activate' >> ~/.zshrc
+pip install "ibm-watsonx-orchestrate[agentops]>=2.18.0,<3.0.0"
+orchestrate env add --name <env> --url <instance url>
+orchestrate env activate <env> --api-key "$(python3 -c 'import json,os;print(json.load(open(os.path.expanduser("~/.wxo-key.json")))["apikey"])')"
+orchestrate agents list            # confirm your agent is there; check for name collisions on shared instances
+# open the project in Bob → "Evaluate this agent"
 ```
 
----
-
-## 8. Troubleshooting prerequisites
+## 8. Troubleshooting
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `docker.sock` returns EOF on the `ibm-watsonx-orchestrate` context | Pre-existing Lima VM from an older ADK version in a degraded state | Stop server, move `~/.lima/ibm-watsonx-orchestrate/` aside to a `.bak/` suffix, re-run `orchestrate server start -e .env -l`. ADK will create a fresh VM. |
-| `Server started` but `:4321` doesn't accept connections | Containers still bootstrapping (first run can take 7+ min) | Watch the server-start log; the bottleneck is usually Milvus, OpenSearch, or ClickHouse. |
-| `403` from `iam.cloud.ibm.com/identity/token` | Ancestor `.env` polluting `WO_INSTANCE` | Run `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"` from your project root. If the path is outside your project, move it aside (`mv <ancestor>/.env <ancestor>/.env.disabled`) for the session. |
-| `RuntimeError: WO_API_KEY must be specified for SaaS or IBM IAM auth` | `auth_config.url` in config.yaml is pointing at a cloud URL by mistake | Confirm `config.yaml`'s `auth_config.url` matches your active env. |
-| `model_not_supported` for a watsonx model | The model isn't available in your project/space | List supported models in the watsonx.ai console; pick one and update `model_id` in config.yaml. `meta-llama/llama-3-3-70b-instruct` is a common choice. |
-| `apikey must be specified` from the eval framework | `WATSONX_APIKEY` env var not exported | `export WATSONX_APIKEY=...` (re-export per shell session). |
-| Langfuse `port 3010` connection refused | Server wasn't started with `-l` | Restart with `orchestrate server start -e .env -l`. Remember `-l` and `-i` are mutually exclusive. |
-| `space_id ... is not associated with a WML instance` | The watsonx space exists but isn't bound to a Machine Learning instance | Use `WATSONX_PROJECT_ID` instead (projects are usually pre-bound) OR bind your space to a WML instance in IBM Cloud → Resource list. |
-| `knowledge-bases import` fails after retries with `MilvusException ... UNAVAILABLE: ipv4:<host>:<port>: recvmsg:Connection reset by peer` (or similar Milvus RPC errors) | **Server-side infrastructure issue on the SaaS tenant's vector DB** — not your environment, not your config. The ADK retries ~75 times before giving up; the failure isn't recoverable from the client side. | Try the KB import again in a few minutes (transient outages usually recover). If persistent, check the IBM watsonx Orchestrate status page or open a support ticket — this is a platform-side issue. **Workaround:** the agent itself may still import successfully even if its KB fails. For tool-only benchmarks (no `conversational_search` goals), you can proceed with `evaluate` despite a failed KB. |
-| `KeyError: '<uuid>'` from `evaluate` before any benchmark runs | Tenant has orphaned tool references (agents pointing at deleted tools). The eval framework loads tenant context at startup and crashes on the dead reference. Diagnostic signal: many `[WARNING] - Tool with ID '<uuid>' not found` lines during `orchestrate agents list`. | Clean up via `orchestrate tools remove` / re-import the affected agents without the dead refs. For partner demos, use a fresh tenant. See `reference/module-eval.md` Common failures for the full diagnosis. |
-
----
-
-## 9. What you do NOT need
-
-For clarity, the following are NOT prerequisites:
-
-- AWS Bedrock credentials — this skill routes judges through watsonx, not Bedrock, when configured per the recipe.
-- Groq API key — same reason; `groq/openai/gpt-oss-120b` is available via watsonx.ai.
-- A SaaS WXO subscription for the agent's actual deployment — DevEd is sufficient for all 6 capabilities. SaaS is only needed if you want to evaluate an agent already deployed in the cloud.
-- An on-prem Cloud Pak for Data instance — this skill supports DevEd + SaaS only. On-prem CPD is out of scope.
+| `401` / `Unauthorized` from the framework mid-run | SaaS token expired | Re-activate the environment; export `WO_API_KEY` for refresh |
+| `Scope not found: Scope{scopeType='SERVICE', scopeId='<uuid>'}` | the API key is not for the activated instance | Confirm which instance the key belongs to; activate that environment or `env add` it |
+| `400 Bad Request` from `iam.cloud.ibm.com/identity/token` | a `.env` in an ancestor folder overrides `WO_INSTANCE`/`WO_API_KEY` | `python3 -c "from dotenv import find_dotenv; print(repr(find_dotenv()))"`; move the file aside |
+| Agent not found by the framework | wrong active environment, or the name in the test case differs from `orchestrate agents list` | Fix the environment or the `agent` field |
+| Many `Tool with ID '<uuid>' not found` warnings in `agents list`, then `KeyError` before any case runs | orphaned tool references on a long-lived tenant | Remove dead references (`agents update`) or evaluate on a clean instance |
+| Simulated user chats for 20 turns | default `max_user_turns` | Set `max_user_turns: 3` and end the story with "reply END and nothing else" |
+| `quick-eval` lists schema mismatches for `chat_with_collaborator_*` | handoffs are reported as tool calls | Noise on multi-agent systems; read the other rows |
+| `analyze` raises a validation error on `text_match` | framework 1.5.2 writes a number; `analyze` expects the enum string | Normalize a copy of the run folder (recipe in `reference/module-analyze.md`) |
+| `red-teaming plan` produced goals unrelated to the policy | planner output quality | Review every file; hand-author the success goal |
+| DevEd: `docker --context ibm-watsonx-orchestrate ps` returns `EOF` | degraded Lima VM | `orchestrate server stop`, move `~/.lima/ibm-watsonx-orchestrate` aside, start again |
+| DevEd: traces search returns nothing | server started without `-i` | Restart with `orchestrate server start -e .env -i` |
