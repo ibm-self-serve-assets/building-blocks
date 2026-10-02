@@ -43,6 +43,6 @@ Start at the building block that matches your use case. Each block is independen
 
 ## IBM references
 
-- IBM Confluent: https://www.ibm.com/products/confluent
-- Confluent Tableflow / Iceberg Sink with watsonx.data: https://www.ibm.com/docs/en/watsonxdata/saas?topic=integrations-integrating-confluent-apache-iceberg-sink-connector
-- IBM watsonx Orchestrate: https://www.ibm.com/products/watsonx-orchestrate
+- [IBM Confluent](https://www.ibm.com/products/confluent)
+- [Confluent Tableflow / Iceberg Sink with watsonx.data](https://www.ibm.com/docs/en/watsonxdata/saas?topic=integrations-integrating-confluent-apache-iceberg-sink-connector)
+- [IBM watsonx Orchestrate](https://www.ibm.com/products/watsonx-orchestrate)

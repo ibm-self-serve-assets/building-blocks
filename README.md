@@ -76,21 +76,23 @@ The **[Automation Building Blocks](automation/README.md)** deliver automated eng
 
 ## Data — Intelligent Data Platform
 
-The **[Data Building Blocks](data/README.md)** provide a composable foundation for making enterprise data connected, contextual, trusted, and ready for analytics and AI. They are organized into three use-case groups:
+The **[Data Building Blocks](data/README.md)** provide a composable foundation for making enterprise data connected, contextual, trusted, and ready for analytics and AI. They are organized into three pillars:
 
-| Group | Building Block | Primary Products |
+| Pillar | Building Block | Primary Products |
 |---|---|---|
-| **Context** | [Context Hub](data/context/context-hub/) | IBM Confluent + IBM watsonx.data + IBM watsonx.data intelligence |
-| **Context** | [Streamhouse](data/context/streamhouse/) | IBM Confluent (Kafka + Flink + connectors + governance) |
-| **Context** | [Metadata Enrichment & Data Quality](data/context/metadata-enrichment/) | IBM watsonx.data intelligence |
-| **Context** | [Data Observability](data/context/data-observability/) | IBM watsonx.data integration + IBM Data Observability by Databand |
-| **Pipelines** | [RAG](data/pipelines/rag/) | IBM watsonx.data OpenRAG + OpenSearch |
-| **Pipelines** | [UDI — Unstructured Data Integration](data/pipelines/udi/) | IBM watsonx.data integration + Docling for IBM watsonx |
+| **Streamhouse** | [Real-Time Streaming](data/streamhouse/real-time-streaming/) | IBM Confluent — Connectors and Kafka |
+| **Streamhouse** | [Transform](data/streamhouse/transform/) | IBM Confluent (Apache Flink) |
+| **Streamhouse** | [Govern](data/streamhouse/govern/) | IBM Confluent — Stream Governance |
+| **Streamhouse** | [Serve](data/streamhouse/serve/) | IBM Confluent — RTCE and Tableflow |
+| **Pipelines** | [RAG](data/pipelines/rag/) | IBM watsonx.data OpenRAG + IBM watsonx.ai |
+| **Pipelines** | [Unstructured Data Integration](data/pipelines/udi/) | IBM watsonx.data integration — UDI |
 | **Pipelines** | [Text2SQL](data/pipelines/text2sql/) | IBM watsonx.data intelligence |
-| **Pipelines** | [ETL / ELT](data/pipelines/etl/) | IBM DataStage (watsonx.data integration) + IBM watsonx.data |
+| **Pipelines** | [ETL / ELT](data/pipelines/etl/) | IBM watsonx.data integration — DataStage |
 | **Pipelines** | [Data Sync](data/pipelines/data-sync/) | IBM Aspera Sync |
-| **Query Engines** | [Zero-Copy Lakehouse](data/query-engines/zero-copy-lakehouse/) | IBM watsonx.data (Presto + Spark + Apache Iceberg) |
-| **Query Engines** | [Serverless Vector](data/query-engines/serverless-vector/) | IBM watsonx.data + Astra DB Serverless |
+| **Lakehouse** | [Metadata Enrichment & Quality](data/lakehouse/metadata-enrichment/) | IBM watsonx.data intelligence |
+| **Lakehouse** | [Data Observability](data/lakehouse/data-observability/) | IBM watsonx.data integration — Databand |
+| **Lakehouse** | [Zero-Copy Lakehouse](data/lakehouse/zero-copy-lakehouse/) | IBM watsonx.data (Presto + Spark + Apache Iceberg) |
+| **Lakehouse** | [Serverless Vector](data/lakehouse/serverless-vector/) | IBM watsonx.data — Astra DB Serverless |
 
 [Explore all Data building blocks →](data/README.md)
 

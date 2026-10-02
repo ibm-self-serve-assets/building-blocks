@@ -50,10 +50,10 @@ Start at the building block that matches your use case.
 
 ## IBM references
 
-- IBM watsonx.data: https://www.ibm.com/products/watsonx-data
-- IBM watsonx.data intelligence: https://www.ibm.com/products/watsonx-data-intelligence
-- IBM Data Observability by Databand: https://www.ibm.com/products/watsonx-data-integration/data-observability
-- Presto on watsonx.data: https://www.ibm.com/docs/en/watsonxdata/saas?topic=overview
-- Apache Spark on watsonx.data: https://www.ibm.com/docs/en/watsonxdata/saas?topic=spark-introduction-watsonxdata
-- Astra DB Serverless on watsonx.data: https://www.ibm.com/docs/en/watsonxdata/saas?topic=watsonxdata-adding-astra-db-service
-- watsonx.data availability matrix: https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-feature_parity_wxd
+- [IBM watsonx.data](https://www.ibm.com/products/watsonx-data)
+- [IBM watsonx.data intelligence](https://www.ibm.com/products/watsonx-data-intelligence)
+- [IBM Data Observability by Databand](https://www.ibm.com/products/watsonx-data-integration/data-observability)
+- [Presto on watsonx.data](https://www.ibm.com/docs/en/watsonxdata/saas?topic=overview)
+- [Apache Spark on watsonx.data](https://www.ibm.com/docs/en/watsonxdata/saas?topic=spark-introduction-watsonxdata)
+- [Astra DB Serverless on watsonx.data](https://www.ibm.com/docs/en/watsonxdata/saas?topic=watsonxdata-adding-astra-db-service)
+- [watsonx.data availability matrix](https://cloud.ibm.com/docs/watsonxdata?topic=watsonxdata-feature_parity_wxd)

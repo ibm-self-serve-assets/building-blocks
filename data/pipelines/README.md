@@ -27,7 +27,7 @@ Structured near-real-time database replication is an IBM watsonx.data integratio
 
 ## IBM references
 
-- IBM watsonx.data integration: https://www.ibm.com/products/watsonx-data-integration
-- IBM watsonx.data intelligence: https://www.ibm.com/products/watsonx-data-intelligence
-- IBM watsonx.ai: https://www.ibm.com/products/watsonx-ai
-- IBM Aspera: https://www.ibm.com/products/aspera
+- [IBM watsonx.data integration](https://www.ibm.com/products/watsonx-data-integration)
+- [IBM watsonx.data intelligence](https://www.ibm.com/products/watsonx-data-intelligence)
+- [IBM watsonx.ai](https://www.ibm.com/products/watsonx-ai)
+- [IBM Aspera](https://www.ibm.com/products/aspera)
