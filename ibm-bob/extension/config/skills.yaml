@@ -43,6 +43,14 @@ skills:
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
     mcps: []
 
+  # Control: Cost Management (tokens and dollars for watsonx Orchestrate agents)
+  # Uses the watsonx Orchestrate ADK docs MCP server for traces and observability doc search.
+  - folderName: cost-management
+    domain: AI
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps:
+      - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
+
   # ─── Data / Context ───────────────────────────────────────────────────────
   # Data-streaming: Confluent
   - folderName: data-streaming-confluent
