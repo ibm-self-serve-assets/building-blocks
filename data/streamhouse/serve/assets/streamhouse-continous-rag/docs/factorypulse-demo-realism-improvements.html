@@ -1,0 +1,213 @@
+
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>FactoryPulse — Realism Improvements</title>
+<style>
+  :root {
+    --bg:#ffffff; --surface:#f7f8fa; --border:#e5e7eb;
+    --text:#1f2328; --muted:#57606a; --accent:#3b82d4;
+    --green:#1a7f37; --amber:#9a6700; --red:#cf222e;
+    --green-bg:#dafbe1; --amber-bg:#fff8c5; --red-bg:#ffebe9;
+    --purple:#7c5cd8; --purple-bg:#f3effe;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.6;color:var(--text);background:var(--bg);padding:40px 24px 60px;}
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:4px;}
+  .subtitle{color:var(--muted);font-size:13px;margin-bottom:32px;}
+  h2{font-size:15px;font-weight:700;margin:32px 0 12px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+  h3{font-size:13px;font-weight:700;margin:0 0 4px;}
+  p{margin-bottom:8px;color:var(--text);}
+  .card{border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px;background:var(--surface);}
+  .card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+  .pill{font-size:10px;font-weight:700;letter-spacing:.08em;border-radius:99px;padding:3px 8px;white-space:nowrap;flex-shrink:0;}
+  .p1{background:var(--red-bg);color:var(--red);}
+  .p2{background:var(--amber-bg);color:var(--amber);}
+  .p3{background:var(--green-bg);color:var(--green);}
+  .px{background:var(--purple-bg);color:var(--purple);}
+  code{font-family:"SFMono-Regular",Consolas,monospace;font-size:11.5px;background:#f0f2f4;border-radius:4px;padding:1px 5px;}
+  ul{padding-left:18px;margin:6px 0;}
+  li{margin-bottom:3px;color:var(--muted);}
+  li strong{color:var(--text);}
+  .tag-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .tag{font-size:10px;background:#f0f2f4;border-radius:4px;padding:2px 7px;color:var(--muted);}
+  .impact-bar{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--muted);}
+  .bar-track{flex:1;height:4px;background:#e5e7eb;border-radius:99px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:99px;}
+  .fill-high{width:90%;background:var(--red);}
+  .fill-med{width:60%;background:var(--amber);}
+  .fill-low{width:30%;background:var(--green);}
+  .summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:28px;}
+  .stat{border:1px solid var(--border);border-radius:8px;padding:12px;text-align:center;}
+  .stat-num{font-size:24px;font-weight:700;letter-spacing:-.04em;}
+  .stat-lbl{font-size:11px;color:var(--muted);margin-top:2px;}
+  .section-desc{color:var(--muted);font-size:12px;margin-bottom:14px;}
+  hr{border:none;border-top:1px solid var(--border);margin:28px 0;}
+  footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>FactoryPulse Streamhouse — Demo Realism Improvements</h1>
+<p class="subtitle">Prioritised findings across knowledge content, demo scenarios, RAG quality, UI realism, and streaming depth.</p>
+
+<div class="summary-grid">
+  <div class="stat"><div class="stat-num" style="color:var(--red)">5</div><div class="stat-lbl">High impact</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--amber)">4</div><div class="stat-lbl">Medium impact</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--green)">3</div><div class="stat-lbl">Low / polish</div></div>
+  <div class="stat"><div class="stat-num" style="color:var(--purple)">1</div><div class="stat-lbl">Arch upgrade</div></div>
+</div>
+
+
+<h2>🔴 High Impact — Demo breaks without these</h2>
+<p class="section-desc">These directly affect whether an audience understands the Continuous RAG freshness story.</p>
+
+<div class="card">
+  <div class="card-head"><h3>1. Demo knowledge is too thin and too generic</h3><span class="pill p1">HIGH</span></div>
+  <p>All four <code>demo_knowledge/</code> files are 4–7 short sentences. Real work orders, SOPs, and OEM guides are 400–1 500 words with specific part numbers, torque specs, inspection intervals, and failure signatures. With thin content, the hash-embedding retrieval has almost nothing to differentiate — all scores cluster near 0.4.</p>
+  <ul>
+    <li><strong>Fix:</strong> Expand each file to 400–600 words with realistic manufacturing detail: part numbers, tolerance windows, step-by-step procedures, named technicians, timestamps, shift numbers.</li>
+    <li><strong>Add 3–4 more documents:</strong> a quality alert, a shift handover log, a tooling calibration record, and a preventive maintenance schedule.</li>
+    <li><strong>Why it matters:</strong> Richer content produces wider score spread, makes evidence cards meaningful, and gives the audience something to read that feels real.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">demo_knowledge/</span><span class="tag">app/main.py seed-knowledge</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>2. WO-11023 resolution text is too vague for RAG freshness proof</h3><span class="pill p1">HIGH</span></div>
+  <p>The "Resolve + Learn" step streams a work order with only 3 sentences. After indexing it ranks at score <code>0.2402</code> — below some baseline docs on certain questions. The audience sees it at top-1 on the specific "WO-11023" query but not on broader operational questions.</p>
+  <ul>
+    <li><strong>Fix:</strong> Expand the resolution note in <code>_build_demo_step("resolved")</code> to include: torque spec (45 Nm), bearing part number, inspection photos noted, technician ID, shift number, recommended inspection interval (200 hrs), and a before/after vibration table.</li>
+    <li><strong>Why it matters:</strong> Richer resolution text makes it the clear top hit on <em>any</em> CNC-03 question asked after the resolve step — which is the core freshness proof.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/main.py:332</span><span class="tag">resolved step</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>3. Hash embedding cannot distinguish semantically similar documents</h3><span class="pill p1">HIGH</span></div>
+  <p>The <code>HashEmbeddingModel</code> uses token-frequency hashing — not semantic similarity. Two documents about "spindle bearing replacement" and "tool-holder imbalance" will have very similar hashes because they share many tokens. This is the real reason all evidence scores are bunched between 0.12–0.41.</p>
+  <ul>
+    <li><strong>Short fix:</strong> Add a <em>per-question keyword boost</em> — after cosine retrieval, re-rank evidence that contains exact tokens from the question higher. This is cheap and makes retrieval visibly smarter without changing the embedding model.</li>
+    <li><strong>Real fix:</strong> Upgrade to <code>STANDARD</code> cluster + Confluent Flink <code>AI_EMBEDDING</code>. Everything is already written — <code>infra/flink/continuous_rag.sql</code> is ready. This is the strongest demo of the Streamhouse value.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/services/embedding.py</span><span class="tag">app/services/vector_index.py</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>4. LLM_PROVIDER=none produces extractive answers that break immersion</h3><span class="pill p1">HIGH</span></div>
+  <p>Every RAG answer ends with <em>"This response is intentionally extractive because LLM_PROVIDER=none. Configure watsonx.ai…"</em> — this is a meta-comment that pulls the audience out of the manufacturing story. Even without watsonx, the answer can be more professional.</p>
+  <ul>
+    <li><strong>Fix:</strong> Replace the <code>DeterministicGroundedGenerator</code> answer template with a structured format: a one-sentence direct answer derived from the top evidence title/text, a numbered "Evidence used" list citing each chunk, and a footer line showing freshness timestamp. Remove the "configure watsonx.ai" sentence — it belongs in the Settings tab, not every answer.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/services/llm.py:23</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>5. Demo scenario steps are invisible on the Streamhouse / Live Events tab</h3><span class="pill p1">HIGH</span></div>
+  <p>When you click Baseline → Degrade → Critical, the Overview updates but the Live Events feed stays empty (populated only from <code>store.events</code> which is never written by the demo step handler). The audience cannot see the Kafka events flowing — which is the whole point of the Streamhouse story.</p>
+  <ul>
+    <li><strong>Fix:</strong> In <code>_on_factory_state</code>, <code>_on_exception</code>, and <code>_on_document</code> callbacks, push a typed event object into <code>store.events</code>. Show <code>type</code>, a 1-line summary, and timestamp in the Live Events feed.</li>
+    <li><strong>Also:</strong> The SSE stream should include recent events in its snapshot payload so the feed populates on first load.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/services/state_store.py</span><span class="tag">app/main.py consumers</span></div>
+</div>
+
+
+<h2>🟡 Medium Impact — Noticeably improve story quality</h2>
+
+<div class="card">
+  <div class="card-head"><h3>6. Machine LED colour never changes with health state</h3><span class="pill p2">MEDIUM</span></div>
+  <p>The CNC-03 machine LED in the factory visual is always green (hardcoded CSS <code>background: var(--green)</code>). It should pulse amber on "warning" and flash red on "critical" — making the visual immediately meaningful without needing to read the numbers.</p>
+  <div class="tag-row"><span class="tag">app/static/app.js renderSnapshot</span><span class="tag">app/static/styles.css .machine-led</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>7. No progressive scenario — audience must click 4 buttons manually</h3><span class="pill p2">MEDIUM</span></div>
+  <p>A polished demo auto-advances through baseline → degrade → critical on a timer when the presenter clicks "Start demo". The current 4-button approach is fine for a technical walk-through but weak for a live presentation where the presenter is talking and cannot multitask.</p>
+  <ul>
+    <li><strong>Fix:</strong> Add a "Start demo (auto)" button that runs baseline → (15 s) → degrade → (20 s) → critical, with a countdown visible in the toolbar. Each transition shows a toast. The presenter just talks.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/static/app.js</span><span class="tag">app/static/index.html</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>8. Evidence cards truncate at 330 chars — key facts are cut off</h3><span class="pill p2">MEDIUM</span></div>
+  <p>The evidence card renderer cuts text at 330 characters with "…". For the hash embedding model this is fine, but once real content or watsonx is added, the most important sentence (often the conclusion/recommendation) is frequently in the second half of the chunk.</p>
+  <ul>
+    <li><strong>Fix:</strong> Increase truncation to 500 chars, or add a "Show more" inline expand toggle per card. Also display the <code>updated_at</code> as a relative time ("2 minutes ago") to make freshness visceral.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/static/app.js:85</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>9. Kafka probe latency of 2031 ms makes the chip feel slow</h3><span class="pill p2">MEDIUM</span></div>
+  <p>The <code>AdminClient.list_topics()</code> probe takes ~2 s because it creates a new <code>AdminClient</code> on every call. The result is cached 10 s but the first call on page load makes the chip show "Checking…" for 2 seconds before showing "Connected".</p>
+  <ul>
+    <li><strong>Fix:</strong> Run the probe once at app startup (in <code>lifespan</code>) to warm the cache, so the first page load shows the connected state immediately. The 10 s cache keeps subsequent calls fast.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">app/services/kafka.py probe()</span><span class="tag">app/main.py lifespan</span></div>
+</div>
+
+
+<h2>🟢 Low / Polish — Confidence builders</h2>
+
+<div class="card">
+  <div class="card-head"><h3>10. Streamhouse tab has no live data</h3><span class="pill p3">LOW</span></div>
+  <p>The architecture diagram is static HTML. Adding live counts (topics, indexed chunks, events processed) in the architecture nodes makes the diagram feel connected to the running system rather than a poster.</p>
+  <div class="tag-row"><span class="tag">app/static/index.html Streamhouse section</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>11. No visual diff between "before resolve" and "after resolve" in RAG</h3><span class="pill p3">LOW</span></div>
+  <p>After "Resolve + Learn", the indexed_chunks count goes from 5 → 6 but there is no highlight showing <em>which</em> new chunk arrived. A "New" badge on evidence cards whose <code>updated_at</code> is within the last 60 seconds would make the freshness story unmissable.</p>
+  <div class="tag-row"><span class="tag">app/static/app.js renderAnswer</span></div>
+</div>
+
+<div class="card">
+  <div class="card-head"><h3>12. Settings tab shows raw mode names, not human context</h3><span class="pill p3">LOW</span></div>
+  <p><code>settingRag</code> shows "Local" and <code>settingLlm</code> shows "None" — which are technically correct but meaningless to a business audience. Replace with "Python continuous indexer (demo)" and "Extractive grounded response" respectively, with a one-line explanation of what that means for answer quality.</p>
+  <div class="tag-row"><span class="tag">app/static/app.js renderConfig</span></div>
+</div>
+
+
+<h2>🟣 Architecture Upgrade — Strongest Confluent story</h2>
+
+<div class="card">
+  <div class="card-head"><h3>13. Upgrade to STANDARD cluster for real Flink AI embeddings</h3><span class="pill px">ARCH</span></div>
+  <p>The single biggest realism improvement is switching from the hash embedding demo to real semantic embeddings via Confluent Cloud Flink <code>AI_EMBEDDING</code>. This eliminates the score-clustering problem, produces genuinely semantic retrieval, and lets you say "the same Kafka + Flink platform doing your operational joins is also doing your AI embeddings — one system".</p>
+  <ul>
+    <li><strong>Already prepared:</strong> <code>infra/flink/continuous_rag.sql</code> is complete. <code>infra/confluent/terraform/main.tf</code> has STANDARD cluster support. <code>infra/confluent/flink/tables.sql</code> has the Flink-owned DDL.</li>
+    <li><strong>Steps:</strong> Set <code>cluster_type = "STANDARD"</code> in <code>terraform.tfvars</code> → <code>terraform apply</code> → run the Flink SQL → set <code>RAG_PIPELINE_MODE=flink</code> + <code>SERIALIZATION_MODE=schema-registry-json</code>.</li>
+    <li><strong>Cost:</strong> STANDARD cluster + Flink CFUs. Turn off the Flink compute pool after the demo to avoid ongoing cost.</li>
+  </ul>
+  <div class="tag-row"><span class="tag">infra/confluent/terraform/terraform.tfvars</span><span class="tag">infra/flink/continuous_rag.sql</span><span class="tag">RAG_PIPELINE_MODE=flink</span></div>
+</div>
+
+<hr />
+<h2>Recommended implementation order</h2>
+<p style="color:var(--muted);font-size:12px;margin-bottom:12px">If you have one session, do items 1, 2, 4, 5 first — they have the highest story impact with the least risk.</p>
+<table style="width:100%;border-collapse:collapse;font-size:12px">
+  <thead><tr style="background:var(--surface)">
+    <th style="padding:8px 10px;text-align:left;border:1px solid var(--border)">Order</th>
+    <th style="padding:8px 10px;text-align:left;border:1px solid var(--border)">Item</th>
+    <th style="padding:8px 10px;text-align:left;border:1px solid var(--border)">Files changed</th>
+    <th style="padding:8px 10px;text-align:left;border:1px solid var(--border)">Effort</th>
+  </tr></thead>
+  <tbody>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">1</td><td style="padding:7px 10px;border:1px solid var(--border)">Expand demo knowledge + WO-11023 resolution</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">demo_knowledge/, main.py</td><td style="padding:7px 10px;border:1px solid var(--border)">30 min</td></tr>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">2</td><td style="padding:7px 10px;border:1px solid var(--border)">Better deterministic answer template</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">app/services/llm.py</td><td style="padding:7px 10px;border:1px solid var(--border)">15 min</td></tr>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">3</td><td style="padding:7px 10px;border:1px solid var(--border)">Populate Live Events feed from Kafka callbacks</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">state_store.py, main.py</td><td style="padding:7px 10px;border:1px solid var(--border)">20 min</td></tr>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">4</td><td style="padding:7px 10px;border:1px solid var(--border)">Machine LED colour + "New" badge on evidence</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">app.js, styles.css</td><td style="padding:7px 10px;border:1px solid var(--border)">20 min</td></tr>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">5</td><td style="padding:7px 10px;border:1px solid var(--border)">Keyword re-rank boost for hash embeddings</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">vector_index.py</td><td style="padding:7px 10px;border:1px solid var(--border)">25 min</td></tr>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">6</td><td style="padding:7px 10px;border:1px solid var(--border)">Auto-advance demo mode + probe warmup</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">app.js, kafka.py</td><td style="padding:7px 10px;border:1px solid var(--border)">30 min</td></tr>
+    <tr><td style="padding:7px 10px;border:1px solid var(--border)">7</td><td style="padding:7px 10px;border:1px solid var(--border)">STANDARD cluster + Flink AI_EMBEDDING</td><td style="padding:7px 10px;border:1px solid var(--border);font-family:monospace;font-size:11px">terraform.tfvars, .env</td><td style="padding:7px 10px;border:1px solid var(--border)">1 hr</td></tr>
+  </tbody>
+</table>
+
+<footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

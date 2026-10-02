@@ -19,20 +19,12 @@ Current IBM releases also add capabilities such as semantic chunking and AI-assi
 
 ## Architecture for the included reference asset
 
-```text
-IBM Cloud Object Storage
-        |
-        v
-watsonx UDI document flow
- extract -> transform -> chunk -> enrich
-        |
-        v
-   IBM watsonx.ai
-      embeddings
-        |
-        v
-     OpenSearch
- searchable chunks + vectors
+```mermaid
+flowchart TD
+    COS["IBM Cloud Object Storage"]
+    COS --> UDI["watsonx UDI document flow\nextract → transform → chunk → enrich"]
+    UDI --> WAI["IBM watsonx.ai\nembeddings"]
+    WAI --> OS["OpenSearch\nsearchable chunks + vectors"]
 ```
 
 OpenSearch is an implementation target in the included asset; the UDI product anchor is IBM watsonx.data integration.

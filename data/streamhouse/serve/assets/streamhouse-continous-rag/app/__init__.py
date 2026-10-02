@@ -1,0 +1,1 @@
+"""FactoryPulse Streamhouse demo application."""
