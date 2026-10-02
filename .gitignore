@@ -1,3 +1,6 @@
+# Checked-out documentation site (local reference only, not part of this repo)
+_docs_Site/
+
 .DS_Store
 .env
 **/__pycache__/

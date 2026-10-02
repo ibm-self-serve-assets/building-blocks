@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FactoryPulseKnowledgeEmbedding",
+  "type": "object",
+  "properties": {
+    "chunk_id": {"type": "string"},
+    "document_id": {"type": "string"},
+    "title": {"type": "string"},
+    "text": {"type": "string"},
+    "source": {"type": "string"},
+    "asset_id": {"type": ["string", "null"]},
+    "updated_at": {"type": "string"},
+    "metadata": {"type": "object", "additionalProperties": true},
+    "embedding": {"type": "array", "items": {"type": "number"}},
+    "embedding_model": {"type": "string"}
+  },
+  "required": ["chunk_id", "document_id", "title", "text", "source", "updated_at", "embedding", "embedding_model"],
+  "additionalProperties": false
+}

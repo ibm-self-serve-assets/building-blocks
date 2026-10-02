@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FactoryPulse Streamhouse</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <!-- ── Login modal ──────────────────────────────────────────────── -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand-mark">FP</div>
+        <div>
+          <div class="brand-title">FactoryPulse</div>
+          <div class="brand-subtitle">Streamhouse · Manufacturing Demo</div>
+        </div>
+      </div>
+      <h2 class="login-title">Sign in to continue</h2>
+      <p class="login-sub">Select your role or enter custom credentials.</p>
+      <div class="login-presets">
+        <button class="preset-btn" data-name="Sunil" data-role="Administrator" data-initials="SN">Sunil Gajula· Administrator</button>
+        <button class="preset-btn" data-name="Himangshu Mech" data-role="Plant Engineer" data-initials="HM">Himangshu Mech · Plant Engineer</button>
+        <button class="preset-btn" data-name="Sara Okonkwo" data-role="Maintenance Tech" data-initials="SO">Sara Okonkwo · Maintenance Tech</button>
+        <button class="preset-btn" data-name="Dev Mode" data-role="Administrator" data-initials="DV">Dev Mode · Administrator</button>
+      </div>
+      <div class="login-divider">or enter manually</div>
+      <div class="login-form">
+        <input id="loginName" placeholder="Full name" autocomplete="name" />
+        <input id="loginRole" placeholder="Role (e.g. Shift Supervisor)" />
+        <button class="button primary login-submit" id="loginSubmit">Sign in</button>
+      </div>
+      <p class="login-note">Demo only — no credentials are verified or stored server-side.</p>
+    </div>
+  </div>
+
+  <div class="shell">
+    <!-- sidebar-wrap is position:sticky+relative so the toggle tab can escape the clipped sidebar -->
+    <div class="sidebar-wrap" id="sidebarWrap">
+      <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar" title="Collapse sidebar"></button>
+      <aside class="sidebar" id="sidebar">
+
+      <div class="brand">
+        <div class="brand-mark">FP</div>
+        <div class="brand-text">
+          <div class="brand-title">FactoryPulse</div>
+          <div class="brand-subtitle">Streamhouse</div>
+        </div>
+      </div>
+
+      <div class="org-card sidebar-hide">
+        <span class="eyebrow">Workspace</span>
+        <strong>Manufacturing Demo</strong>
+        <span class="muted small">Confluent Cloud</span>
+      </div>
+
+      <nav class="nav" aria-label="Primary">
+        <button class="nav-item active" data-view="overview">
+          <span class="nav-icon">▦</span><span class="nav-label">Overview</span>
+        </button>
+        <button class="nav-item" data-view="rag">
+          <span class="nav-icon">✦</span><span class="nav-label">Continuous RAG</span>
+        </button>
+        <button class="nav-item" data-view="knowledge">
+          <span class="nav-icon">⌘</span><span class="nav-label">Knowledge</span>
+        </button>
+        <button class="nav-item" data-view="streamhouse">
+          <span class="nav-icon">⇄</span><span class="nav-label">Streamhouse</span>
+        </button>
+        <button class="nav-item" data-view="events">
+          <span class="nav-icon">≋</span><span class="nav-label">Live Events</span>
+        </button>
+        <button class="nav-item" data-view="settings">
+          <span class="nav-icon">⚙</span><span class="nav-label">Settings</span>
+        </button>
+      </nav>
+
+      <!-- user block at bottom -->
+      <div class="sidebar-footer" id="sidebarFooter">
+        <div class="avatar" id="userAvatar">?</div>
+        <div class="sidebar-user sidebar-hide" id="sidebarUserInfo">
+          <strong id="userName">Not signed in</strong>
+          <div class="muted small" id="userRole">—</div>
+        </div>
+        <button class="logout-btn sidebar-hide" id="logoutBtn" title="Sign out">&#10005;</button>
+      </div>
+    </aside>
+    </div><!-- /sidebar-wrap -->
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="title-row">
+            <h1>FactoryPulse: <span id="pageTitle">Operations Overview</span></h1>
+            <span class="status-chip" id="kafkaChip"><span class="dot"></span>Checking Kafka</span>
+          </div>
+          <p id="pageSubtitle">A live manufacturing control tower powered by a continuous Confluent data backbone.</p>
+        </div>
+        <div class="top-actions">
+          <span class="top-meta" id="lastUpdated">UPDATED —</span>
+          <button class="button secondary" id="seedButton">Seed knowledge</button>
+          <button class="button primary" data-jump-rag>Ask FactoryPulse</button>
+        </div>
+      </header>
+
+      <section class="view active" id="view-overview">
+        <div class="toolbar">
+          <div class="scope-pill"><span class="pulse-dot"></span> Live · LINE-01 / CNC-03</div>
+          <div class="demo-controls">
+            <span class="muted small">Demo scenario</span>
+            <button class="tiny-button" data-step="baseline">Baseline</button>
+            <button class="tiny-button" data-step="degrade">Degrade</button>
+            <button class="tiny-button danger" data-step="critical">Critical</button>
+            <button class="tiny-button success" data-step="resolved">Resolve + Learn</button>
+          </div>
+        </div>
+
+        <div class="hero-grid">
+          <article class="hero-card wide">
+            <div class="card-header">
+              <div>
+                <span class="eyebrow">Factory state</span>
+                <h2 id="heroRisk">Live production intelligence</h2>
+              </div>
+              <span class="risk-pill low" id="riskPill">LOW</span>
+            </div>
+            <div class="hero-body">
+              <div>
+                <div class="hero-number" id="projectedUnits">—</div>
+                <div class="hero-label">Projected output / 1,000 target</div>
+              </div>
+              <div class="factory-visual">
+                <div class="machine-block">
+                  <div class="machine-led" id="machineLed"></div>
+                  <span>CNC-03</span>
+                  <small id="machineHealth">Waiting for data</small>
+                </div>
+                <div class="stream-line"><span></span><span></span><span></span></div>
+                <div class="machine-block subtle">
+                  <span>LINE-01</span>
+                  <small>Gear Assembly</small>
+                </div>
+              </div>
+            </div>
+            <div class="hero-footer" id="rootSignal">Waiting for factory events…</div>
+          </article>
+
+          <article class="metric-card">
+            <span class="eyebrow">Continuous RAG</span>
+            <div class="metric-value" id="indexedChunks">0</div>
+            <div class="metric-label">Indexed chunks</div>
+            <div class="metric-delta positive" id="ragModeLabel">Continuous index</div>
+          </article>
+
+          <article class="metric-card">
+            <span class="eyebrow">Machine condition</span>
+            <div class="metric-value"><span id="vibration">—</span><span class="unit"> mm/s</span></div>
+            <div class="metric-label">CNC-03 vibration</div>
+            <div class="mini-scale"><span id="vibrationBar"></span></div>
+          </article>
+
+          <article class="metric-card">
+            <span class="eyebrow">Production</span>
+            <div class="metric-value"><span id="cycleTime">—</span><span class="unit"> s</span></div>
+            <div class="metric-label">Current cycle time</div>
+            <div class="metric-delta" id="cycleDelta">Baseline 42 s</div>
+          </article>
+
+          <article class="metric-card">
+            <span class="eyebrow">Quality</span>
+            <div class="metric-value"><span id="defectRate">—</span><span class="unit">%</span></div>
+            <div class="metric-label">Defect rate</div>
+            <div class="metric-delta" id="qualityRisk">Quality risk: —</div>
+          </article>
+        </div>
+
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-header">
+              <div><span class="eyebrow">Exception-to-action</span><h3>What the Streamhouse sees now</h3></div>
+              <span class="live-badge">LIVE</span>
+            </div>
+            <div class="signal-grid">
+              <div class="signal"><span>Machine</span><strong id="signalMachine">Healthy</strong></div>
+              <div class="signal"><span>Production</span><strong id="signalProduction">On target</strong></div>
+              <div class="signal"><span>Quality</span><strong id="signalQuality">Normal</strong></div>
+            </div>
+            <div class="recommendation">
+              <span class="eyebrow">Recommended action</span>
+              <p id="recommendationText">Continue monitoring.</p>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-header">
+              <div><span class="eyebrow">Recent exceptions</span><h3>Operational timeline</h3></div>
+            </div>
+            <div id="exceptionList" class="timeline"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-rag">
+        <div class="section-intro">
+          <div>
+            <span class="eyebrow">Continuous RAG</span>
+            <h2>Ask using knowledge that updates as the factory changes.</h2>
+            <p>Maintenance notes, SOPs, and work-order resolutions are streamed into Kafka, chunked and embedded continuously, then retrieved against the latest question.</p>
+          </div>
+          <div class="freshness-card">
+            <span class="eyebrow">Knowledge freshness</span>
+            <strong id="ragFreshness">Live</strong>
+            <span id="ragFreshnessSub">0 chunks currently indexed</span>
+          </div>
+        </div>
+
+        <div class="rag-layout">
+          <article class="panel ask-panel">
+            <div class="panel-header"><div><span class="eyebrow">Ask FactoryPulse</span><h3>Grounded maintenance assistant</h3></div></div>
+            <label for="questionInput">Question</label>
+            <textarea id="questionInput" rows="5" placeholder="Why is CNC-03 showing high vibration and what should the technician inspect first?">Why is CNC-03 showing high vibration and what should the technician inspect first?</textarea>
+            <div class="prompt-chips">
+              <button data-prompt="What does our current knowledge say about CNC-03 vibration?">CNC-03 vibration</button>
+              <button data-prompt="What should we inspect when vibration and dimensional drift rise together?">Vibration + defects</button>
+              <button data-prompt="What changed after WO-11023 was resolved?">Latest work order</button>
+            </div>
+            <div class="ask-actions">
+              <span class="muted small" id="askStatus">Evidence-first response</span>
+              <button class="button primary" id="askButton">Retrieve + Answer</button>
+            </div>
+          </article>
+
+          <article class="panel answer-panel">
+            <div class="panel-header">
+              <div><span class="eyebrow">Grounded response</span><h3>Answer</h3></div>
+              <span class="latency-badge" id="latencyBadge">— ms</span>
+            </div>
+            <div id="answerText" class="answer-copy empty-state">Ask a question to see the latest indexed factory knowledge used as evidence.</div>
+            <div class="answer-meta">
+              <span id="retrievalMode">Retrieval: —</span>
+              <span id="generationMode">Generation: —</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- ── Collapsible data trace ──────────────────────────────── -->
+        <details class="trace-panel" id="traceDetails">
+          <summary class="trace-summary">
+            <span class="trace-summary-icon">&#9654;</span>
+            <span class="trace-summary-title">Data trace &mdash; how this answer was built from Confluent</span>
+            <span class="trace-summary-meta" id="traceTimestamp"></span>
+          </summary>
+          <div class="trace-steps" id="dataTrace">
+            <div class="empty-state">Ask a question to see the data trace.</div>
+          </div>
+        </details>
+
+        <article class="panel evidence-panel">
+          <div class="panel-header"><div><span class="eyebrow">Retrieved evidence</span><h3>What grounded the answer</h3></div></div>
+          <div id="evidenceGrid" class="evidence-grid"><div class="empty-state">No evidence retrieved yet.</div></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-knowledge">
+        <div class="section-intro compact">
+          <div>
+            <span class="eyebrow">Knowledge stream</span>
+            <h2>Add knowledge and watch RAG refresh continuously.</h2>
+            <p>Each document becomes an event on <code>rag.knowledge.raw</code>. The indexing path updates without a nightly rebuild.</p>
+          </div>
+        </div>
+        <div class="two-column">
+          <article class="panel">
+            <div class="panel-header"><div><span class="eyebrow">Publish document</span><h3>New maintenance knowledge</h3></div></div>
+            <form id="knowledgeForm" class="form-grid">
+              <label>Title<input id="knowledgeTitle" required value="CNC-03 spindle inspection note" /></label>
+              <label>Asset ID<input id="knowledgeAsset" value="CNC-03" /></label>
+              <label class="full">Text<textarea id="knowledgeText" rows="9" required>When CNC-03 vibration rises together with dimensional drift, inspect tool-holder balance and spindle condition. Compare recent work-order history before replacing components.</textarea></label>
+              <div class="form-actions"><span class="muted small" id="knowledgeStatus">Publishes to Kafka immediately</span><button class="button primary" type="submit">Publish knowledge event</button></div>
+            </form>
+          </article>
+          <article class="panel">
+            <div class="panel-header"><div><span class="eyebrow">Indexed sources</span><h3>Current knowledge documents</h3></div><span class="count-badge" id="documentCount">0</span></div>
+            <div id="documentList" class="document-list"></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" id="view-streamhouse">
+        <div class="section-intro compact">
+          <div>
+            <span class="eyebrow">Architecture</span>
+            <h2>Continuous RAG as a Streamhouse workload.</h2>
+            <p>The architecture keeps operational state and enterprise knowledge moving on the same governed event backbone while serving both live actions and historical analytics.</p>
+          </div>
+        </div>
+
+        <article class="architecture-canvas">
+          <div class="arch-column">
+            <span class="eyebrow">Factory sources</span>
+            <div class="arch-node">PLC / Machine Sensors<small>telemetry</small></div>
+            <div class="arch-node">MES / ERP<small>production & orders</small></div>
+            <div class="arch-node">Quality System<small>inspection results</small></div>
+            <div class="arch-node">Maintenance / SOPs<small>work orders & knowledge</small></div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-column highlighted">
+            <span class="eyebrow">Confluent Cloud Streamhouse</span>
+            <div class="arch-node primary-node">Kafka<small>durable event backbone</small></div>
+            <div class="arch-node">Flink<small>join · detect · chunk · embed</small></div>
+            <div class="arch-node">Schema Registry<small>contracts & governance</small></div>
+            <div class="arch-node">Tableflow<small>Iceberg / Delta materialization · factory.state &amp; factory.exceptions → historical tables</small></div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-column">
+            <span class="eyebrow">Consumers</span>
+            <div class="arch-node">Continuous RAG<small>latest knowledge</small></div>
+            <div class="arch-node">Operations UI<small>live factory state</small></div>
+            <div class="arch-node">Alerts / Actions<small>exception-to-action</small></div>
+            <div class="arch-node">Analytics / AI<small>historical tables</small></div>
+          </div>
+        </article>
+
+        <div class="flow-strip">
+          <div><span>1</span><strong>Change happens</strong><small>machine, work order, SOP</small></div>
+          <div><span>2</span><strong>Kafka captures it</strong><small>durable event</small></div>
+          <div><span>3</span><strong>Knowledge refreshes</strong><small>chunk + embedding</small></div>
+          <div><span>4</span><strong>RAG retrieves it</strong><small>fresh evidence</small></div>
+          <div><span>5</span><strong>Factory acts</strong><small>operator + maintenance</small></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-events">
+        <div class="section-intro compact"><div><span class="eyebrow">Live events</span><h2>See the business change as events.</h2><p>This feed is populated from the same state used by the UI and knowledge pipeline.</p></div></div>
+        <article class="panel">
+          <div class="panel-header"><div><span class="eyebrow">Event stream</span><h3>Most recent events</h3></div><span class="live-badge">LIVE</span></div>
+          <div id="eventFeed" class="event-feed"></div>
+        </article>
+      </section>
+
+      <section class="view" id="view-settings">
+        <div class="section-intro compact"><div><span class="eyebrow">Runtime</span><h2>Configuration status</h2><p>Secrets are never returned by the API. This page only shows whether required configuration is present.</p></div></div>
+        <div class="settings-grid">
+          <article class="setting-card"><span class="eyebrow">Kafka</span><strong id="settingKafka">—</strong><p>Bootstrap server + Kafka API key/secret</p></article>
+          <article class="setting-card"><span class="eyebrow">Schema Registry</span><strong id="settingSchema">—</strong><p>Auto-activated when SR credentials are present</p></article>
+          <article class="setting-card"><span class="eyebrow">RAG pipeline</span><strong id="settingRag">—</strong><p>local demo worker or Confluent Flink</p></article>
+          <article class="setting-card"><span class="eyebrow">Generation</span><strong id="settingLlm">—</strong><p>Grounded template or watsonx.ai</p></article>
+          <article class="setting-card"><span class="eyebrow">Tableflow</span><strong id="settingTableflow">—</strong><p>Iceberg / Delta materialization for factory.state and factory.exceptions</p></article>
+        </div>
+        <article class="panel code-panel">
+          <div class="panel-header"><div><span class="eyebrow">Useful endpoints</span><h3>API surface</h3></div></div>
+          <pre>GET  /api/health
+GET  /api/dashboard
+GET  /api/tableflow/status
+POST /api/knowledge
+POST /api/rag/ask
+POST /api/demo/seed-knowledge
+POST /api/demo/step/{baseline|degrade|critical|resolved}
+GET  /docs</pre>
+        </article>
+      </section>
+
+      <div id="toast" class="toast" role="status"></div>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

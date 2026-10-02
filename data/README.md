@@ -1,6 +1,6 @@
-# Data Building Blocks
+﻿# Data Building Blocks
 
-Reusable implementation assets for the **IBM Data and AI portfolio**, organized by **Context**, **Pipelines**, and **Query Engines**.
+Reusable implementation assets for the **IBM Data and AI portfolio**, organized by **Streamhouse**, **Pipelines**, and **Lakehouse**.
 
 This repository is intentionally code-first. Each building block gives developers enough information to understand the pattern, identify the IBM products involved, find the runnable/reference assets, and get to the detailed setup instructions quickly.
 
@@ -8,19 +8,21 @@ This repository is intentionally code-first. Each building block gives developer
 
 ## Repository map
 
-| Group | Building block | IBM product anchor | What you can build |
+| Pillar | Building Block | IBM Product Anchor | What You Can Build |
 |---|---|---|---|
-| Context | [Context Hub](context/context-hub/) | IBM Confluent, IBM watsonx.data, IBM watsonx.data intelligence | Live + governed context for apps and AI |
-| Context | [Streamhouse](context/streamhouse/) | IBM Confluent | Event streaming, schema governance, stream processing |
-| Context | [Metadata Enrichment & Data Quality](context/metadata-enrichment/) | IBM watsonx.data intelligence | Metadata enrichment, quality, lineage |
-| Context | [Data Observability](context/data-observability/) | IBM watsonx.data integration — Data Observability | Pipeline health, anomaly detection, alerts |
-| Pipelines | [RAG](pipelines/rag/) | IBM watsonx.data OpenRAG, IBM watsonx.ai | Retrieval and grounded generation |
-| Pipelines | [Unstructured Data Integration](pipelines/udi/) | IBM watsonx.data integration — UDI | Parse, enrich, chunk, and prepare documents |
-| Pipelines | [Text2SQL](pipelines/text2sql/) | IBM watsonx.data intelligence | Natural-language-to-SQL with governed metadata |
-| Pipelines | [ETL / ELT](pipelines/etl/) | IBM watsonx.data integration — DataStage | Structured batch transformation |
-| Pipelines | [Data Sync](pipelines/data-sync/) | IBM Aspera Sync | High-speed file/directory synchronization |
-| Query Engines | [Zero-Copy Lakehouse](query-engines/zero-copy-lakehouse/) | IBM watsonx.data | Federated/lakehouse SQL across supported sources |
-| Query Engines | [Serverless Vector](query-engines/serverless-vector/) | IBM watsonx.data — Astra DB service | Vector search and NoSQL application patterns |
+| **Streamhouse** | [Real-Time streaming](streamhouse/real-time-streaming/) | IBM Confluent -- Connectors and Kafka | Capture and transport enterprise event streams and CDC from databases, SaaS, and IoT |
+| **Streamhouse** | [Transform](streamhouse/transform/) | IBM Confluent (Flink) | Real-time stream processing, event enrichment, filtering, and windowed aggregations on data in motion |
+| **Streamhouse** | [Govern](streamhouse/govern/) | IBM Confluent -- Stream Governance | Enforce schema contracts, trace end-to-end stream lineage, evaluate stream quality rules, and catalog data products |
+| **Streamhouse** | [Serve](streamhouse/serve/) | IBM Confluent -- RTCE | Deliver low-latency live state to AI agents via Real-Time Context Engine (MCP/REST) and open Iceberg tables |
+| **Pipelines** | [RAG](pipelines/rag/) | IBM watsonx.data OpenRAG, IBM watsonx.ai | Retrieval and grounded generation |
+| **Pipelines** | [Unstructured Data Integration (UDI)](pipelines/udi/) | IBM watsonx.data integration -- UDI | Parse, enrich, chunk, and prepare documents |
+| **Pipelines** | [Text2SQL](pipelines/text2sql/) | IBM watsonx.data intelligence | Natural-language-to-SQL with governed metadata |
+| **Pipelines** | [ETL / ELT](pipelines/etl/) | IBM watsonx.data integration -- DataStage | Structured batch transformation |
+| **Pipelines** | [Data Sync](pipelines/data-sync/) | IBM Aspera Sync | High-speed file/directory synchronization |
+| **Lakehouse** | [Meta Data Enrichment and Quality](lakehouse/metadata-enrichment/) | IBM watsonx.data intelligence | Metadata enrichment, business glossary, quality, lineage |
+| **Lakehouse** | [Data Observability](lakehouse/data-observability/) | IBM watsonx.data integration -- Databand | Pipeline health, anomaly detection, alerts |
+| **Lakehouse** | [Zero-Copy Lakehouse](lakehouse/zero-copy-lakehouse/) | IBM watsonx.data | Federated/lakehouse SQL across supported sources |
+| **Lakehouse** | [Serverless Vector](lakehouse/serverless-vector/) | IBM watsonx.data -- Astra DB service | Vector search and semantic retrieval patterns |
 
 ## How to use this repository
 

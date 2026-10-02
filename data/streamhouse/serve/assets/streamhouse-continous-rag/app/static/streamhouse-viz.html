@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>FactoryPulse · Streamhouse Architecture</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07090f;
+  --surface:#0d1017;
+  --card:#131824;
+  --border:#1e2a3a;
+  --border2:#253040;
+  --text:#e2e8f0;
+  --muted:#7a8fa8;
+  --accent:#3b82f6;
+  --accent2:#06b6d4;
+  --green:#10b981;
+  --orange:#f59e0b;
+  --purple:#8b5cf6;
+  --red:#ef4444;
+  --kafka:#e91e8c;
+  --flink:#ff6b00;
+  --sr:#7c3aed;
+  --tf:#0ea5e9;
+  --rag:#10b981;
+  --glow-kafka:rgba(233,30,140,.35);
+  --glow-flink:rgba(255,107,0,.35);
+  --glow-sr:rgba(124,58,237,.35);
+  --glow-tf:rgba(14,165,233,.35);
+  --glow-rag:rgba(16,185,129,.35);
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,"Segoe UI",system-ui,sans-serif;overflow:hidden;height:100vh;width:100vw;user-select:none}
+
+/* ── top bar ── */
+.topbar{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(7,9,15,.92);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:16px;z-index:100;backdrop-filter:blur(12px)}
+.brand{font-size:15px;font-weight:700;letter-spacing:.5px;color:var(--text)}
+.brand span{color:var(--accent)}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;border:1px solid;letter-spacing:.5px}
+.pill-live{border-color:var(--green);color:var(--green);animation:pulse-border 2s infinite}
+@keyframes pulse-border{0%,100%{opacity:1}50%{opacity:.5}}
+.hint{font-size:11px;color:var(--muted);padding:3px 10px;border:1px solid var(--border);border-radius:6px}
+
+/* ── scene container ── */
+.scene-wrap{position:fixed;inset:52px 0 0 0;overflow:hidden;cursor:grab}
+.scene-wrap:active{cursor:grabbing}
+.scene{position:absolute;top:50%;left:50%;transform-style:preserve-3d}
+svg.world{overflow:visible;position:absolute;top:0;left:0;transform:translate(-50%,-50%)}
+
+/* ── flat arch layout ── */
+.arch-scroll{position:fixed;inset:52px 0 0 0;overflow:auto;padding:28px 20px 28px}
+.arch-wrap{min-width:1100px;max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.arch-header{text-align:center;padding:8px 0 4px}
+.arch-header h2{font-size:22px;font-weight:800;letter-spacing:-.02em;color:var(--text);margin:0 0 4px}
+.arch-header p{font-size:13px;color:var(--muted);margin:0}
+.arch-row{display:flex;align-items:stretch;gap:0}
+.arch-col{display:flex;flex-direction:column;align-items:center;gap:0}
+/* left / right outer columns */
+.arch-col.sources,.arch-col.consumers{width:130px;flex-shrink:0}
+/* arrow between columns */
+.arch-arrow{display:flex;align-items:center;justify-content:center;width:28px;flex-shrink:0;position:relative}
+.arch-arrow::after{content:'';position:absolute;top:50%;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--border2),var(--border2));transform:translateY(-50%)}
+.arch-arrow svg{z-index:1;flex-shrink:0}
+/* stage cards */
+.stage{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 12px 16px;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:border-color .2s,box-shadow .2s;flex:1;min-width:0}
+.stage:hover{border-color:var(--border2);box-shadow:0 0 18px rgba(59,130,246,.12)}
+.stage-num{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
+.stage-title{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;text-align:center}
+.stage-icon{font-size:28px;margin-bottom:10px;line-height:1}
+.stage-badge{font-size:13px;font-weight:800;padding:5px 16px;border-radius:7px;border:1.5px solid;margin-bottom:8px;letter-spacing:.3px}
+.stage-desc{font-size:11px;color:var(--muted);text-align:center;line-height:1.5;margin-top:4px}
+/* govern has sub-chips */
+.sub-chips{display:flex;flex-direction:column;gap:5px;width:100%;margin-top:6px}
+.sub-chip{font-size:11px;font-weight:600;text-align:center;padding:5px 8px;border-radius:6px;border:1px solid rgba(139,92,246,.35);background:rgba(139,92,246,.08);color:#a78bfa;cursor:pointer;transition:background .15s}
+.sub-chip:hover{background:rgba(139,92,246,.18)}
+/* serve has sub-cards */
+.serve-cards{display:flex;flex-direction:column;gap:6px;width:100%;margin-top:6px}
+.serve-card{font-size:11px;font-weight:600;text-align:center;padding:6px 8px;border-radius:6px;border:1px solid rgba(14,165,233,.35);background:rgba(14,165,233,.07);color:#38bdf8;cursor:pointer;transition:background .15s}
+.serve-card:hover{background:rgba(14,165,233,.18)}
+/* source / consumer items */
+.col-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px;text-align:center}
+.src-item,.con-item{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:7px;padding:5px 0;white-space:nowrap}
+.src-item span,.con-item span{font-size:14px}
+/* examples strip */
+.examples-strip{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 20px}
+.examples-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.examples-row{display:flex;gap:10px;flex-wrap:wrap}
+.ex-chip{font-size:12px;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border2);border-radius:6px;padding:5px 14px;flex:1;min-width:130px;text-align:center}
+/* animated flow line across the 5 stages */
+.flow-svg{width:100%;height:3px;margin:6px 0 0}
+
+/* ── detail panel ── */
+.panel{position:fixed;right:-420px;top:52px;bottom:0;width:400px;background:var(--card);border-left:1px solid var(--border);transition:right .35s cubic-bezier(.4,0,.2,1);z-index:200;display:flex;flex-direction:column;overflow:hidden}
+.panel.open{right:0}
+.panel-head{padding:20px 20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px}
+.panel-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.panel-title{font-size:16px;font-weight:700;line-height:1.3}
+.panel-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.panel-close{margin-left:auto;width:28px;height:28px;border:none;background:var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.panel-close:hover{background:var(--border2);color:var(--text)}
+.panel-body{flex:1;overflow-y:auto;padding:16px 20px 24px}
+.panel-body::-webkit-scrollbar{width:4px}
+.panel-body::-webkit-scrollbar-track{background:transparent}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.section-label{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin:16px 0 8px}
+.section-label:first-child{margin-top:0}
+.info-row{display:flex;align-items:baseline;gap:8px;padding:7px 10px;background:rgba(255,255,255,.03);border-radius:6px;margin-bottom:4px;font-size:13px}
+.info-row .key{color:var(--muted);min-width:110px;flex-shrink:0;font-size:12px}
+.info-row .val{color:var(--text);font-family:'SF Mono',Consolas,monospace;font-size:12px;word-break:break-all}
+.tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;border:1px solid;margin:2px 2px 2px 0}
+.topic-chip{font-size:11px;font-family:'SF Mono',Consolas,monospace;padding:4px 9px;border-radius:5px;background:rgba(255,255,255,.05);border:1px solid var(--border2);color:var(--accent2);margin:3px 3px 3px 0;display:inline-block}
+.flow-step{display:flex;gap:10px;padding:8px 10px;border-radius:6px;background:rgba(255,255,255,.025);margin-bottom:4px;align-items:flex-start}
+.step-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:var(--text);line-height:1.5}
+.status-bar{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:6px;font-size:12px;margin-top:4px}
+.dot-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── tooltip ── */
+.tooltip{position:fixed;pointer-events:none;background:rgba(13,16,23,.96);border:1px solid var(--border2);border-radius:8px;padding:8px 12px;font-size:12px;color:var(--text);z-index:500;display:none;max-width:200px;backdrop-filter:blur(8px)}
+.tooltip strong{display:block;margin-bottom:2px;font-size:13px}
+
+/* ── legend ── */
+.legend{position:fixed;bottom:20px;left:20px;background:rgba(13,16,23,.9);border:1px solid var(--border);border-radius:10px;padding:12px 16px;backdrop-filter:blur(8px);z-index:100}
+.legend-title{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);margin-bottom:5px}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+/* ── controls ── */
+.controls{position:fixed;bottom:20px;right:20px;display:flex;gap:8px;z-index:100}
+.ctrl-btn{width:36px;height:36px;border:1px solid var(--border);background:rgba(13,16,23,.9);border-radius:8px;color:var(--muted);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.ctrl-btn:hover{background:var(--border);color:var(--text)}
+
+/* ── particle canvas ── */
+#particles{position:fixed;inset:52px 0 0 0;pointer-events:none;z-index:0}
+
+/* ── glow animations ── */
+@keyframes glow-pulse{0%,100%{filter:drop-shadow(0 0 6px currentColor)}50%{filter:drop-shadow(0 0 14px currentColor)}}
+@keyframes flow-dash{to{stroke-dashoffset:-40}}
+@keyframes float-up{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="topbar">
+  <div class="brand">Factory<span>Pulse</span> · Streamhouse</div>
+  <div class="pill pill-live">● LIVE</div>
+  <div class="hint">Click any component to explore</div>
+  <div class="topbar-right">
+    <div class="hint">Capture · Transport · Transform · Govern · Serve</div>
+  </div>
+</div>
+
+<!-- ── 5-stage flat architecture ── -->
+<div class="arch-scroll" id="archScroll">
+  <div class="arch-wrap">
+
+    <!-- header -->
+    <div class="arch-header">
+      <h2>Streamhouse Architecture</h2>
+      <p>Capture, transport, transform, govern, and serve continuously current enterprise data.</p>
+    </div>
+
+    <!-- main row: sources → 5 stages → consumers -->
+    <div class="arch-row" id="archRow">
+
+      <!-- ENTERPRISE SOURCES -->
+      <div class="arch-col sources">
+        <div class="col-label">Enterprise<br/>Sources</div>
+        <div class="src-item"><span>🗄</span> Databases</div>
+        <div class="src-item"><span>📋</span> Applications</div>
+        <div class="src-item"><span>☁</span> SaaS</div>
+        <div class="src-item"><span>⚙</span> APIs</div>
+        <div class="src-item"><span>📡</span> IoT devices</div>
+      </div>
+
+      <!-- arrow -->
+      <div class="arch-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#253040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- 01 CAPTURE -->
+      <div class="stage" data-key="connect" id="stage-connect">
+        <div class="stage-num">01</div>
+        <div class="stage-title">Capture</div>
+        <div class="stage-icon">⬇</div>
+        <div class="stage-badge" style="color:#60a5fa;border-color:#3b82f6;background:rgba(59,130,246,.08)">Connect</div>
+        <div class="stage-desc">Ingest from enterprise sources</div>
+      </div>
+
+      <!-- arrow -->
+      <div class="arch-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#253040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- 02 TRANSPORT -->
+      <div class="stage" data-key="kafka" id="stage-kafka">
+        <div class="stage-num">02</div>
+        <div class="stage-title">Transport</div>
+        <div class="stage-icon">≋</div>
+        <div class="stage-badge" style="color:#ff6bc1;border-color:#e91e8c;background:rgba(233,30,140,.08)">Kafka</div>
+        <div class="stage-desc">Durable event backbone</div>
+      </div>
+
+      <!-- arrow -->
+      <div class="arch-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#253040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- 03 TRANSFORM -->
+      <div class="stage" data-key="flink" id="stage-flink">
+        <div class="stage-num">03</div>
+        <div class="stage-title" style="font-size:9px">Transform / Process / Enrich</div>
+        <div class="stage-icon">⚙</div>
+        <div class="stage-badge" style="color:#ff9340;border-color:#ff6b00;background:rgba(255,107,0,.08)">Flink</div>
+        <div class="stage-desc">Continuous stream processing</div>
+      </div>
+
+      <!-- arrow -->
+      <div class="arch-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#253040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- 04 GOVERN -->
+      <div class="stage" data-key="sr" id="stage-govern">
+        <div class="stage-num">04</div>
+        <div class="stage-title">Govern</div>
+        <div class="stage-icon">🛡</div>
+        <div class="sub-chips">
+          <div class="sub-chip" data-key="sr">Schema Registry</div>
+          <div class="sub-chip" data-key="stream_lineage">Stream Lineage</div>
+          <div class="sub-chip" data-key="stream_quality">Stream Quality</div>
+          <div class="sub-chip" data-key="data_portal">Data Portal</div>
+        </div>
+        <div class="stage-desc" style="margin-top:10px">Trust, discoverability, and controls</div>
+      </div>
+
+      <!-- arrow -->
+      <div class="arch-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#253040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- 05 SERVE -->
+      <div class="stage" data-key="tf" id="stage-serve">
+        <div class="stage-num">05</div>
+        <div class="stage-title">Serve</div>
+        <div class="stage-icon">🗄</div>
+        <div class="serve-cards">
+          <div class="serve-card" data-key="tf">Tableflow / Apache Iceberg</div>
+          <div class="serve-card" data-key="rte">Real-Time Context Engine</div>
+        </div>
+        <div class="stage-desc" style="margin-top:10px">Open tables and low-latency context</div>
+      </div>
+
+      <!-- arrow -->
+      <div class="arch-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M8 3l4 4-4 4" stroke="#253040" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+
+      <!-- DOWNSTREAM CONSUMERS -->
+      <div class="arch-col consumers">
+        <div class="col-label">Downstream<br/>Consumers</div>
+        <div class="con-item"><span>📊</span> watsonx.data / Analytics</div>
+        <div class="con-item"><span>▦</span> Applications</div>
+        <div class="con-item"><span>🤖</span> AI Agents</div>
+      </div>
+
+    </div><!-- /arch-row -->
+
+    <!-- examples strip -->
+    <div class="examples-strip">
+      <div class="examples-label">Examples of this approach</div>
+      <div class="examples-row">
+        <div class="ex-chip">Change data capture</div>
+        <div class="ex-chip">Event streams</div>
+        <div class="ex-chip">Stream processing</div>
+        <div class="ex-chip">Stream governance</div>
+        <div class="ex-chip">Open table formats</div>
+        <div class="ex-chip">Low-latency serving</div>
+      </div>
+    </div>
+
+  </div><!-- /arch-wrap -->
+</div><!-- /arch-scroll -->
+
+<!-- ── Detail Panel ── -->
+<div class="panel" id="panel">
+  <div class="panel-head" id="panelHead">
+    <div class="panel-icon" id="panelIcon">K</div>
+    <div>
+      <div class="panel-title" id="panelTitle">Title</div>
+      <div class="panel-sub" id="panelSub">Subtitle</div>
+    </div>
+    <button class="panel-close" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</div>
+
+<!-- ── Tooltip ── -->
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+// ── Panel data ──────────────────────────────────────────────────────────────
+const NODES = {
+  plc: {
+    icon:'⚙', color:'#94a3b8', bg:'#1a2535',
+    title:'PLC / Machine Sensors',
+    sub:'Factory source · telemetry',
+    sections:[
+      { label:'Role', items:[
+        {k:'Source type', v:'Factory floor hardware'},
+        {k:'Data emitted', v:'Vibration mm/s, temperature °C, spindle RPM, load %, coolant pressure'},
+        {k:'Kafka topic', v:'factory.machine.telemetry'},
+        {k:'Key', v:'machine_id (e.g. CNC-03)'},
+        {k:'Cadence', v:'Every 3 seconds per asset'},
+      ]},
+      { label:'Current demo asset', items:[
+        {k:'Machine', v:'CNC-03 · LINE-01'},
+        {k:'Normal vibration', v:'~2.1 mm/s RMS'},
+        {k:'Critical threshold', v:'> 5.0 mm/s → exception fired'},
+        {k:'Normal temp', v:'61–63 °C'},
+      ]},
+      { label:'Flow', flow:[
+        {n:1,c:'#e91e8c',t:'Sensor reading sampled every tick'},
+        {n:2,c:'#e91e8c',t:'Published to factory.machine.telemetry on Kafka'},
+        {n:3,c:'#ff6b00',t:'Flink aggregates into 30-s windows → factory.machine.metrics'},
+        {n:4,c:'#ff6b00',t:'Threshold detection emits factory.exceptions'},
+      ]},
+    ]
+  },
+  mes: {
+    icon:'📋', color:'#94a3b8', bg:'#1a2535',
+    title:'MES / ERP',
+    sub:'Factory source · production & orders',
+    sections:[
+      { label:'Role', items:[
+        {k:'Source type', v:'Manufacturing Execution System'},
+        {k:'Data emitted', v:'Produced units, target units, projected units, cycle time, efficiency %'},
+        {k:'Kafka topic', v:'factory.production.events'},
+        {k:'Key', v:'machine_id'},
+        {k:'Cadence', v:'Every 10 seconds'},
+      ]},
+      { label:'Flow', flow:[
+        {n:1,c:'#e91e8c',t:'MES records production count and cycle time'},
+        {n:2,c:'#e91e8c',t:'Published to factory.production.events'},
+        {n:3,c:'#ff6b00',t:'Flink joins with telemetry → factory.state derivation'},
+        {n:4,c:'#3b82f6',t:'Operations UI shows live production targets'},
+      ]},
+    ]
+  },
+  quality: {
+    icon:'🔍', color:'#94a3b8', bg:'#1a2535',
+    title:'Quality System',
+    sub:'Factory source · inspection results',
+    sections:[
+      { label:'Role', items:[
+        {k:'Source type', v:'Quality Management System'},
+        {k:'Data emitted', v:'Defect rate %, bore diameter mm, surface finish Ra, inspection result'},
+        {k:'Kafka topic', v:'factory.quality.events'},
+        {k:'Key', v:'machine_id'},
+        {k:'Cadence', v:'Every 15 seconds per part inspection'},
+      ]},
+      { label:'Current demo', items:[
+        {k:'Normal defect rate', v:'~1.2%'},
+        {k:'Critical defect rate', v:'8.2% at peak degradation'},
+        {k:'Bore spec', v:'10.000 mm ± 0.010 mm'},
+        {k:'Part serial range', v:'GA-4471-2310 → GA-4471-2323 (held)'},
+      ]},
+      { label:'Flow', flow:[
+        {n:1,c:'#e91e8c',t:'Inspector records dimensional result'},
+        {n:2,c:'#e91e8c',t:'Published to factory.quality.events'},
+        {n:3,c:'#ff6b00',t:'Flink joins with metrics → quality_risk field in factory.state'},
+      ]},
+    ]
+  },
+  maint: {
+    icon:'🔧', color:'#94a3b8', bg:'#1a2535',
+    title:'Maintenance / SOPs',
+    sub:'Factory source · work orders & knowledge',
+    sections:[
+      { label:'Role', items:[
+        {k:'Source type', v:'CMMS / Maximo / manual entry'},
+        {k:'Data emitted', v:'Work order events + resolution notes as knowledge documents'},
+        {k:'Kafka topics', v:'factory.maintenance.events + rag.knowledge.raw'},
+        {k:'Key', v:'work_order (events) · document_id (knowledge)'},
+      ]},
+      { label:'The Continuous RAG moment', items:[
+        {k:'WO-11023', v:'Tool-holder imbalance on CNC-03'},
+        {k:'Resolution', v:'Replaced T-07-291 with SANDVIK G2.5, 45 Nm torque'},
+        {k:'Knowledge event', v:'Streamed to rag.knowledge.raw on resolution'},
+        {k:'Effect', v:'RAG answers update within seconds — no batch reindex'},
+      ]},
+      { label:'Flow', flow:[
+        {n:1,c:'#e91e8c',t:'Work order opened / resolved in CMMS'},
+        {n:2,c:'#e91e8c',t:'Resolution note streamed to rag.knowledge.raw'},
+        {n:3,c:'#ff6b00',t:'Flink chunks with ML_RECURSIVE_TEXT_SPLITTER'},
+        {n:4,c:'#ff6b00',t:'AI_EMBEDDING creates vector — published to rag.knowledge.embeddings'},
+        {n:5,c:'#10b981',t:'Continuous RAG retrieves new resolution immediately'},
+      ]},
+    ]
+  },
+  kafka: {
+    icon:'K', color:'#e91e8c', bg:'#1f0a1a',
+    title:'Apache Kafka',
+    sub:'Confluent Cloud · durable event backbone',
+    sections:[
+      { label:'Role in FactoryPulse', items:[
+        {k:'Function', v:'Shared durable event backbone — every data flow passes through Kafka'},
+        {k:'Cluster tier', v:'BASIC (local mode) or STANDARD (Flink mode)'},
+        {k:'Topics', v:'10 topics across factory and RAG namespaces'},
+        {k:'Retention', v:'7 days for event streams · compacted for state/embeddings'},
+        {k:'Serialization', v:'plain-json or schema-registry-json (auto-detected)'},
+      ]},
+      { label:'Topics', topics:[
+        'factory.machine.telemetry','factory.production.events','factory.quality.events',
+        'factory.maintenance.events','factory.machine.metrics','factory.state',
+        'factory.exceptions','rag.knowledge.raw','rag.knowledge.embeddings',
+        'rag.query.requests','rag.query.embeddings'
+      ]},
+      { label:'Why Kafka as the embedding log', items:[
+        {k:'Durability', v:'Embeddings survive app restarts'},
+        {k:'Replay', v:'New Code Engine instance replays from earliest to rebuild index'},
+        {k:'Freshness', v:'New knowledge is indexed without a batch job — it just flows'},
+        {k:'Decoupling', v:'Indexer and retriever are independent consumers'},
+      ]},
+      { label:'API endpoint', items:[
+        {k:'Connectivity check', v:'GET /api/kafka/probe'},
+        {k:'Status in UI', v:'Green chip = live Confluent connection'},
+      ]},
+    ]
+  },
+  flink: {
+    icon:'⚡', color:'#ff6b00', bg:'#1a0800',
+    title:'Apache Flink',
+    sub:'Confluent Cloud managed · join · detect · chunk · embed',
+    sections:[
+      { label:'Two SQL pipelines', items:[
+        {k:'factory_operations.sql', v:'Operational correlation — aggregates telemetry, detects exceptions, derives factory.state'},
+        {k:'continuous_rag.sql', v:'RAG pipeline — ML_RECURSIVE_TEXT_SPLITTER + AI_EMBEDDING for chunk and query vectors'},
+        {k:'Cluster requirement', v:'STANDARD cluster with Flink compute pool'},
+      ]},
+      { label:'Operational pipeline (factory_operations.sql)', items:[
+        {k:'Step 2', v:'30-s TUMBLE window on telemetry → factory.machine.metrics'},
+        {k:'Step 3', v:'Threshold detection → factory.exceptions (warning / critical)'},
+        {k:'Step 4', v:'Join metrics + quality + production → factory.state'},
+        {k:'Thresholds', v:'Vibration >3.5 warning, >5.0 critical · Temp >65 / >70 · Cycle >50 / >60 s'},
+      ]},
+      { label:'Continuous RAG pipeline (continuous_rag.sql)', items:[
+        {k:'Step 1', v:'Create embedding model connection (OpenAI / Bedrock / Azure)'},
+        {k:'Step 2', v:'ML_RECURSIVE_TEXT_SPLITTER(text, 850, 120) → rag.knowledge.chunks'},
+        {k:'Step 3', v:'AI_EMBEDDING → rag.knowledge.embeddings (compacted, upsert)'},
+        {k:'Step 4', v:'AI_EMBEDDING on query requests → rag.query.embeddings'},
+      ]},
+      { label:'Demo mode note', items:[
+        {k:'Without Flink pool', v:'Python demo step buttons produce factory.state and factory.exceptions directly (shortcut path)'},
+        {k:'Local RAG mode', v:'HashEmbeddingModel (deterministic) — not semantic, demo fallback only'},
+      ]},
+    ]
+  },
+  sr: {
+    icon:'📜', color:'#7c3aed', bg:'#0e0820',
+    title:'Schema Registry',
+    sub:'Confluent Cloud · contracts & governance',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Enforces data contracts at every topic boundary'},
+        {k:'Format', v:'JSON Schema (draft-07) for all 6 governed topics'},
+        {k:'Serialization', v:'Confluent wire format — 5-byte magic + schema ID prefix'},
+        {k:'Integration status', v:'Auto-activated when SR credentials are present (G3)'},
+      ]},
+      { label:'Schemas defined', topics:[
+        'knowledge_raw.json','knowledge_embedding.json','factory_state.json',
+        'factory_exception.json','query_request.json','query_embedding.json'
+      ]},
+      { label:'Auto-detection logic', items:[
+        {k:'Condition', v:'SR_URL + SR_API_KEY + SR_API_SECRET all non-empty'},
+        {k:'Result', v:'effective_serialization_mode = schema-registry-json'},
+        {k:'Override', v:'Set SERIALIZATION_MODE=plain-json to opt out'},
+        {k:'Visible in UI', v:'Settings → Schema Registry card shows "Active"'},
+      ]},
+      { label:'API endpoint', items:[
+        {k:'Config check', v:'GET /api/config → effective_serialization_mode field'},
+      ]},
+    ]
+  },
+  tf: {
+    icon:'🧊', color:'#0ea5e9', bg:'#02101a',
+    title:'Tableflow',
+    sub:'Confluent Cloud · Iceberg / Delta materialization',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Materializes Kafka topics as Apache Iceberg or Delta Lake tables'},
+        {k:'Path', v:'Analytical / historical — NOT in the synchronous RAG latency path (ADR-005)'},
+        {k:'Status', v:'Infrastructure defined · activation requires storage integration + enable_tableflow=true'},
+      ]},
+      { label:'Materialized topics', topics:['factory.state → factory-state-tableflow','factory.exceptions → factory-exceptions-tableflow']},
+      { label:'Activation steps', items:[
+        {k:'Step 1', v:'Configure cloud storage integration in Confluent Cloud console (S3 / GCS / ADLS)'},
+        {k:'Step 2', v:'Set enable_tableflow = true in terraform.tfvars → terraform apply'},
+        {k:'Step 3', v:'Set TABLEFLOW_ENABLED=true in app .env'},
+        {k:'Step 4', v:'GET /api/tableflow/status → enabled: true'},
+      ]},
+      { label:'Downstream consumers', items:[
+        {k:'Spark / Databricks', v:'spark.read.format("iceberg").load(table_uri)'},
+        {k:'Snowflake / BigQuery', v:'External Iceberg table'},
+        {k:'BI tools', v:'Tableau / Looker via Iceberg catalog connector'},
+        {k:'Flink batch', v:'Historical ML feature engineering'},
+      ]},
+      { label:'API endpoint', items:[
+        {k:'Status', v:'GET /api/tableflow/status → enabled, materialized_topics, note'},
+      ]},
+    ]
+  },
+  rag: {
+    icon:'✦', color:'#10b981', bg:'#02130e',
+    title:'Continuous RAG',
+    sub:'Consumer · latest knowledge · fresh answers',
+    sections:[
+      { label:'What makes it "continuous"', items:[
+        {k:'Traditional RAG', v:'Index rebuilt nightly — answers reflect yesterday\'s knowledge'},
+        {k:'Continuous RAG', v:'New knowledge events flow through Kafka → embeddings materialized immediately'},
+        {k:'Proof', v:'Ask "What changed after WO-11023?" — retrieves resolution streamed seconds ago'},
+      ]},
+      { label:'Two pipeline modes', items:[
+        {k:'local mode', v:'Python HashEmbeddingModel — zero dependencies, demo fallback'},
+        {k:'flink mode', v:'Confluent Flink AI_EMBEDDING — semantic, production-grade'},
+        {k:'Switch', v:'RAG_PIPELINE_MODE=flink (set in .env or Terraform output)'},
+      ]},
+      { label:'Retrieval flow', flow:[
+        {n:1,c:'#10b981',t:'User asks: "Why is CNC-03 showing high vibration?"'},
+        {n:2,c:'#10b981',t:'Question embedded (local hash or Flink AI_EMBEDDING)'},
+        {n:3,c:'#10b981',t:'Vector search against Kafka-replayed in-memory index'},
+        {n:4,c:'#10b981',t:'Top-K chunks retrieved with source metadata'},
+        {n:5,c:'#10b981',t:'watsonx.ai (optional) synthesizes grounded answer'},
+        {n:6,c:'#10b981',t:'Evidence cards shown — every answer is grounded'},
+      ]},
+      { label:'API endpoint', items:[
+        {k:'Ask question', v:'POST /api/rag/ask → answer + evidence + retrieval_mode + latency_ms'},
+        {k:'Evidence', v:'chunk_id, document_id, source, score, updated_at returned always'},
+      ]},
+    ]
+  },
+  ui: {
+    icon:'▦', color:'#3b82f6', bg:'#0e1828',
+    title:'Operations UI',
+    sub:'Consumer · live factory state',
+    sections:[
+      { label:'What it shows', items:[
+        {k:'Overview tab', v:'Machine health, vibration, temperature, production risk, quality risk'},
+        {k:'Live Events tab', v:'All Kafka topic events — state, exceptions, knowledge updates'},
+        {k:'Knowledge tab', v:'Documents in rag.knowledge.raw — seed, publish, inspect'},
+        {k:'Streamhouse tab', v:'Architecture diagram (this view)'},
+        {k:'Settings tab', v:'Config status — Kafka, Schema Registry, RAG mode, Tableflow'},
+      ]},
+      { label:'Live feed mechanism', items:[
+        {k:'Protocol', v:'Server-Sent Events (SSE) — GET /api/events/stream'},
+        {k:'Cadence', v:'Snapshot pushed every 2 seconds'},
+        {k:'State source', v:'FastAPI in-memory StateStore updated by Kafka consumers'},
+      ]},
+      { label:'Demo scenario buttons', items:[
+        {k:'Baseline', v:'Healthy production — vibration 2.1 mm/s, defect 1.2%'},
+        {k:'Degrade', v:'Warning — vibration 4.2 mm/s, cycle +21%'},
+        {k:'Critical', v:'Critical — vibration 5.8 mm/s, defect 8.2%, output 870/1000'},
+        {k:'Resolve+Learn', v:'Maintenance resolved + WO-11023 knowledge streamed'},
+      ]},
+    ]
+  },
+  alerts: {
+    icon:'⚡', color:'#f59e0b', bg:'#1a1004',
+    title:'Alerts / Actions',
+    sub:'Consumer · exception-to-action',
+    sections:[
+      { label:'Role', items:[
+        {k:'Source topic', v:'factory.exceptions'},
+        {k:'Function', v:'Surfaces correlated business exceptions in real time'},
+        {k:'Severity levels', v:'info · warning · high · critical'},
+        {k:'Current demo', v:'Display-only in UI — production would connect to PagerDuty / webhooks'},
+      ]},
+      { label:'Exception structure', items:[
+        {k:'event_id', v:'UUID per event'},
+        {k:'machine_id / line_id', v:'CNC-03 / LINE-01'},
+        {k:'title', v:'Human-readable summary'},
+        {k:'description', v:'Correlated metrics at time of exception'},
+        {k:'recommended_action', v:'Actionable instruction'},
+      ]},
+      { label:'Example exceptions', items:[
+        {k:'Warning', v:'"Vibration warning on CNC-03 — 4.2 mm/s — inspect tooling"'},
+        {k:'Critical', v:'"CRITICAL: vibration 5.8 mm/s correlated with +50% cycle time and 8.2% defect rate"'},
+      ]},
+    ]
+  },
+  analytics: {
+    icon:'📊', color:'#8b5cf6', bg:'#0e0c28',
+    title:'Analytics / AI',
+    sub:'Consumer · historical tables · ML',
+    sections:[
+      { label:'Role', items:[
+        {k:'Source', v:'Tableflow-materialized Iceberg/Delta tables'},
+        {k:'Topics', v:'factory.state + factory.exceptions → Iceberg format'},
+        {k:'Use cases', v:'Trend analysis, MTTR, shift comparison, ML forecasting, SLA reporting'},
+        {k:'Not used for', v:'Real-time RAG retrieval — that is Kafka + vector index path'},
+      ]},
+      { label:'Access patterns', items:[
+        {k:'Spark', v:'spark.read.format("iceberg").load(uri)'},
+        {k:'Snowflake', v:'External Iceberg table via storage integration'},
+        {k:'Flink batch', v:'Historical feature engineering for model training'},
+        {k:'BI tools', v:'Tableau / Looker via Iceberg catalog'},
+      ]},
+      { label:'Schema governance', items:[
+        {k:'Schema source', v:'Same Schema Registry that governs Kafka topics'},
+        {k:'Evolution', v:'Backward-compatible changes tracked in SR and Iceberg metadata'},
+      ]},
+    ]
+  },
+  // ── New Streamhouse-specific nodes ──────────────────────────────────────────
+  connect: {
+    icon:'⬇', color:'#60a5fa', bg:'#0d1828',
+    title:'Connect',
+    sub:'01 Capture · Ingest from enterprise sources',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Confluent Connect — ingests from databases, SaaS apps, IoT, APIs'},
+        {k:'Connectors', v:'JDBC, Debezium CDC, Salesforce, S3, MQ, SAP, and 200+ certified connectors'},
+        {k:'In FactoryPulse', v:'PLC/Sensor data, MES production events, quality inspection results, CMMS work orders'},
+        {k:'Mode', v:'Push-based (connector workers push events into Kafka topics)'},
+      ]},
+      { label:'Factory sources', items:[
+        {k:'PLC / Sensors', v:'factory.machine.telemetry — vibration, temp, RPM'},
+        {k:'MES / ERP', v:'factory.production.events — produced units, cycle time'},
+        {k:'Quality System', v:'factory.quality.events — defect rate, bore dimensions'},
+        {k:'Maintenance / CMMS', v:'factory.maintenance.events + rag.knowledge.raw — work orders & SOP docs'},
+      ]},
+      { label:'Flow', flow:[
+        {n:1,c:'#60a5fa',t:'Enterprise source generates a business event'},
+        {n:2,c:'#60a5fa',t:'Connect worker reads / listens for the event'},
+        {n:3,c:'#e91e8c',t:'Event written to Kafka topic with schema validation'},
+      ]},
+    ]
+  },
+  stream_lineage: {
+    icon:'🔗', color:'#a78bfa', bg:'#0e0820',
+    title:'Stream Lineage',
+    sub:'04 Govern · End-to-end data lineage',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Visualizes and tracks data flow paths across all Kafka topics and connectors'},
+        {k:'Scope', v:'Automatically discovers producers, consumers, and transformations'},
+        {k:'Value', v:'Trace exactly where each field in a topic came from and where it goes'},
+        {k:'Compliance', v:'Supports GDPR/CCPA right-to-be-forgotten impact analysis'},
+      ]},
+      { label:'In FactoryPulse', items:[
+        {k:'factory.machine.telemetry', v:'PLC sensors → Kafka → Flink → factory.state → RAG'},
+        {k:'rag.knowledge.raw', v:'CMMS resolution → Kafka → Flink (chunk+embed) → rag.knowledge.embeddings → RAG query'},
+        {k:'Traceability', v:'Every RAG answer evidence card shows the full lineage path'},
+      ]},
+    ]
+  },
+  stream_quality: {
+    icon:'✅', color:'#a78bfa', bg:'#0e0820',
+    title:'Stream Quality',
+    sub:'04 Govern · Data quality rules on live streams',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Enforces data quality rules on streaming topics in real time'},
+        {k:'Rules', v:'Nullability, range checks, regex patterns, referential integrity'},
+        {k:'Action', v:'Tag, route, or dead-letter queue events that fail quality rules'},
+      ]},
+      { label:'In FactoryPulse', items:[
+        {k:'Telemetry guard', v:'vibration_mm_s must be 0–50; temperature_c must be 0–200'},
+        {k:'Knowledge guard', v:'document_id required; content must be non-empty'},
+        {k:'Exception handling', v:'Malformed events sent to dead-letter topic for review'},
+      ]},
+    ]
+  },
+  data_portal: {
+    icon:'🌐', color:'#a78bfa', bg:'#0e0820',
+    title:'Data Portal',
+    sub:'04 Govern · Self-service data discovery',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Self-service catalog for discovering, understanding, and requesting access to streams'},
+        {k:'Audience', v:'Data engineers, analysts, AI teams who need to find and use live data products'},
+        {k:'Features', v:'Topic descriptions, schemas, owners, SLAs, sample data, lineage, quality scores'},
+      ]},
+      { label:'In FactoryPulse', items:[
+        {k:'Published streams', v:'factory.state, factory.exceptions, rag.knowledge.embeddings'},
+        {k:'Consumer teams', v:'RAG service, Operations UI, analytics workloads discover topics via portal'},
+        {k:'AI governance', v:'AI agents can query the portal to discover what live data is available'},
+      ]},
+    ]
+  },
+  rte: {
+    icon:'⚡', color:'#38bdf8', bg:'#02101a',
+    title:'Real-Time Context Engine',
+    sub:'05 Serve · Low-latency context for AI and applications',
+    sections:[
+      { label:'Role', items:[
+        {k:'Function', v:'Serves the latest materialized state as low-latency key-value lookups for AI and apps'},
+        {k:'Pattern', v:'Kafka-backed read cache — consumers replay compacted topics to build in-memory state'},
+        {k:'Latency', v:'Sub-10ms lookups for current machine state, latest embeddings, active exceptions'},
+      ]},
+      { label:'In FactoryPulse', items:[
+        {k:'RAG vector index', v:'rag.knowledge.embeddings compacted topic replayed → in-memory cosine index'},
+        {k:'Factory state', v:'factory.state compacted topic → latest machine health per machine_id'},
+        {k:'Exception log', v:'factory.exceptions latest events for the active shift'},
+        {k:'On startup', v:'New Code Engine instance replays from earliest offset to rebuild context — no external DB needed'},
+      ]},
+      { label:'Why not a database', items:[
+        {k:'Durability', v:'Kafka is the system of record — the engine is just a warm cache'},
+        {k:'Scale-out', v:'Any new instance self-heals by replaying the topic'},
+        {k:'Freshness', v:'New events immediately available — no ETL lag'},
+      ]},
+    ]
+  },
+};
+
+// ── Panel rendering ──────────────────────────────────────────────────────────
+function openPanel(key) {
+  const d = NODES[key]; if(!d) return;
+  const panel = document.getElementById('panel');
+  const icon = document.getElementById('panelIcon');
+  const title = document.getElementById('panelTitle');
+  const sub = document.getElementById('panelSub');
+  const body = document.getElementById('panelBody');
+
+  icon.textContent = d.icon;
+  icon.style.background = d.bg;
+  icon.style.border = `1px solid ${d.color}40`;
+  title.textContent = d.title;
+  sub.textContent = d.sub;
+  title.style.color = d.color;
+
+  let html = '';
+  for(const sec of d.sections) {
+    html += `<div class="section-label">${sec.label}</div>`;
+    if(sec.items) {
+      for(const it of sec.items) {
+        html += `<div class="info-row"><span class="key">${it.k}</span><span class="val">${it.v}</span></div>`;
+      }
+    }
+    if(sec.topics) {
+      for(const t of sec.topics) {
+        html += `<span class="topic-chip">${t}</span>`;
+      }
+    }
+    if(sec.flow) {
+      for(const f of sec.flow) {
+        html += `<div class="flow-step"><div class="step-num" style="background:${f.c}22;color:${f.c};border:1px solid ${f.c}40">${f.n}</div><div class="step-text">${f.t}</div></div>`;
+      }
+    }
+  }
+  body.innerHTML = html;
+  panel.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panel').classList.remove('open');
+}
+
+// ── Flat card interactions ────────────────────────────────────────────────────
+document.querySelectorAll('.stage[data-key], .sub-chip[data-key], .serve-card[data-key]').forEach(el => {
+  const key = el.dataset.key;
+  const d = NODES[key];
+  if(!d) return;
+
+  el.addEventListener('mouseenter', () => {
+    const tip = document.getElementById('tooltip');
+    tip.innerHTML = `<strong style="color:${d.color}">${d.icon} ${d.title}</strong>${d.sub}`;
+    tip.style.display = 'block';
+  });
+  el.addEventListener('mousemove', (e) => {
+    const tip = document.getElementById('tooltip');
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top  = (e.clientY + 10) + 'px';
+  });
+  el.addEventListener('mouseleave', () => {
+    document.getElementById('tooltip').style.display = 'none';
+  });
+  el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openPanel(key);
+  });
+});
+
+// close panel on background click
+document.getElementById('archScroll').addEventListener('click', (e) => {
+  if(!e.target.closest('.stage,.sub-chip,.serve-card,.panel')) closePanel();
+});
+
+// ── Particle background canvas ───────────────────────────────────────────────
+(function() {
+  const cvs = document.getElementById('particles');
+  const ctx = cvs.getContext('2d');
+  let W, H, pts = [];
+
+  function resize() {
+    W = cvs.width = cvs.offsetWidth;
+    H = cvs.height = cvs.offsetHeight;
+  }
+
+  function init() {
+    pts = [];
+    for(let i = 0; i < 60; i++) {
+      pts.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .2,
+        r: Math.random() * 1.2 + .4,
+        a: Math.random(),
+        color: ['#e91e8c','#ff6b00','#7c3aed','#0ea5e9','#10b981','#3b82f6'][Math.floor(Math.random()*6)]
+      });
+    }
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0) p.x = W; if(p.x > W) p.x = 0;
+      if(p.y < 0) p.y = H; if(p.y > H) p.y = 0;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.a * .4;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+
+  resize(); init(); draw();
+  window.addEventListener('resize', () => { resize(); init(); });
+})();
+</script>
+</body>
+</html>

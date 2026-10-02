@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FactoryPulseRagQueryEmbedding",
+  "type": "object",
+  "properties": {
+    "request_id": {"type": "string"}, "instance_id": {"type": "string"}, "question": {"type": "string"},
+    "embedding": {"type": "array", "items": {"type": "number"}}, "embedding_model": {"type": "string"}, "ts": {"type": "string"}
+  },
+  "required": ["request_id", "instance_id", "question", "embedding", "embedding_model", "ts"],
+  "additionalProperties": false
+}

@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FactoryPulseMachineMetrics",
+  "description": "Aggregated per-machine telemetry window produced by the Flink operational pipeline. Intermediate topic — consumed by exception detection and factory state derivation jobs.",
+  "type": "object",
+  "properties": {
+    "window_start":         {"type": "string", "description": "Tumbling window start (ISO-8601)"},
+    "window_end":           {"type": "string", "description": "Tumbling window end (ISO-8601)"},
+    "machine_id":           {"type": "string"},
+    "line_id":              {"type": "string"},
+    "avg_vibration_mm_s":   {"type": "number"},
+    "max_vibration_mm_s":   {"type": "number"},
+    "avg_temperature_c":    {"type": "number"},
+    "max_temperature_c":    {"type": "number"},
+    "avg_cycle_time_sec":   {"type": "number"},
+    "event_count":          {"type": "integer"}
+  },
+  "required": [
+    "window_start", "window_end", "machine_id", "line_id",
+    "avg_vibration_mm_s", "max_vibration_mm_s",
+    "avg_temperature_c", "max_temperature_c",
+    "avg_cycle_time_sec", "event_count"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FactoryPulseFactoryState",
+  "type": "object",
+  "properties": {
+    "event_id": {"type": "string"}, "ts": {"type": "string"}, "line_id": {"type": "string"}, "machine_id": {"type": "string"},
+    "product": {"type": "string"}, "vibration_mm_s": {"type": "number"}, "temperature_c": {"type": "number"},
+    "cycle_time_sec": {"type": "number"}, "defect_rate_pct": {"type": "number"}, "produced_units": {"type": "integer"},
+    "target_units": {"type": "integer"}, "projected_units": {"type": "integer"}, "machine_health": {"type": "string"},
+    "production_risk": {"type": "string"}, "quality_risk": {"type": "string"}, "overall_risk": {"type": "string"},
+    "root_signal": {"type": "string"}, "recommendation": {"type": "string"}
+  },
+  "required": ["event_id", "ts", "line_id", "machine_id", "product", "vibration_mm_s", "temperature_c", "cycle_time_sec", "defect_rate_pct", "produced_units", "target_units", "projected_units", "machine_health", "production_risk", "quality_risk", "overall_risk", "root_signal", "recommendation"],
+  "additionalProperties": false
+}
