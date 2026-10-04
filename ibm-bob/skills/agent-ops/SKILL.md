@@ -152,7 +152,7 @@ When it finishes, paste <the last 20 lines | the output path | y/n> so I can <di
 - Review or hand-author the generated attack files: the goal in the file defines what "the attack succeeded" means. `reference/module-red-teaming.md`.
 
 ### Observability
-- `orchestrate observability traces search --last 1h` then `traces export --trace-id <id> -o trace.json`; Python `TracesController`; REST `GET /v1/agentops-v3/traces|observations`. Each observation carries `model` and `usage` (tokens). Agentic Control Plane dashboards in the product UI. `reference/module-observability.md`.
+- `orchestrate observability traces search --last 1h` then `traces export --trace-id <id> -o trace.json`; Python `TracesController`; REST `GET /v1/agentops-v3/traces|observations`. Each observation carries `model` and `usage` (tokens). watsonx Orchestrate Agentic Control Plane dashboards in the product UI. `reference/module-observability.md`.
 
 ---
 
@@ -183,7 +183,7 @@ When it finishes, paste <the last 20 lines | the output path | y/n> so I can <di
 | Metric meaning, thresholds, `analyze`, diagnosis table, attribution | `reference/module-analyze.md` |
 | Rubric criteria, judge configuration, reading the results | `reference/module-rubric.md` |
 | Attack catalogue, `plan`/`run`, attack file schema, success criteria, remediation | `reference/module-red-teaming.md` |
-| Traces CLI, Python, REST, Agentic Control Plane, what to look for in a span tree | `reference/module-observability.md` |
+| Traces CLI, Python, REST, watsonx Orchestrate Agentic Control Plane, what to look for in a span tree | `reference/module-observability.md` |
 | Block format, what Bob may run, handling output | `reference/command-emission.md` |
 
 ## Examples map

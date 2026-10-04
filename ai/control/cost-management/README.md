@@ -2,7 +2,7 @@
 
 Part of **[Control](../)** in the **[AI Control Plane](../../)**.
 
-AI agents turn every interaction into model calls, tool calls, and tokens. Without visibility, spend grows quietly: a looping agent, a verbose prompt, or an oversized model can burn through a budget before anyone notices. **Cost Management** gives you that visibility, starting at the level of each agent interaction.
+AI agents turn every interaction into model calls, tool calls, and tokens. Without visibility, spend grows quietly: a looping agent, a verbose prompt, or an oversized model can burn through a budget before anyone notices. **Cost Management** gives you that visibility at the level of each agent interaction.
 
 ---
 
@@ -14,13 +14,13 @@ AI agents turn every interaction into model calls, tool calls, and tokens. Witho
 
 ---
 
-## Available Today — Agent Cost and Token Tracking
+## Agent Cost and Token Tracking
 
 For **watsonx Orchestrate agents** there are three places to look, from tokens to dollars:
 
 | Source | What you get | Where |
 |---|---|---|
-| **Agentic Control Plane** (product UI) | token consumption, model usage, call volume per agent; FinOps view in preview | watsonx Orchestrate → Agentic Control Plane |
+| **watsonx Orchestrate Agentic Control Plane** (product UI) | visibility into token usage and LLM calls per agent, and usage over time | watsonx Orchestrate → Agentic Control Plane |
 | **Platform traces** | tokens and model per generation inside every conversation's span tree; token totals per run on the runs API | [Agent Ops](../agent-ops/) → observability |
 | **Langfuse** | **cost in dollars** per trace, session, model, and tag — once the integration is configured and the models are priced | this folder |
 
@@ -37,14 +37,6 @@ Langfuse receives traces from watsonx Orchestrate through the instance's Langfus
 
 - [`assets/traces/`](assets/traces/) — `trace_cost.py`: tokens and dollars from platform traces (fetches by trace id with the required time window, joins an Agent Ops run by thread id, per-model and per-agent breakdown, CSV), with `prices.yaml`, an indicative list-price table.
 - [`assets/langfuse/`](assets/langfuse/) — setup for the Langfuse integration (SaaS and Developer Edition), model pricing registration, the cost report script, and the five-layer cost analysis guide (`COST-ANALYSIS.md`).
-
----
-
-## Coming Soon — Enterprise Cost Management
-
-- **Allocation** of AI spend by team, use case, or model.
-- **Budgets and alerts** before costs become unmanageable.
-- **Optimization** — identifying waste and cost per outcome across AI workloads.
 
 ---
 

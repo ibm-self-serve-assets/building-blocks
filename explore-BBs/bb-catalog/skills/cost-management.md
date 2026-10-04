@@ -5,10 +5,10 @@ description: Measure, explain, and reduce the cost of watsonx Orchestrate (WXO) 
   what an agent, a conversation, an evaluation run, or a use case costs; where the tokens go; how to turn
   platform traces or Langfuse data into dollars; how to set up the Langfuse integration and model pricing;
   how to compare cost against evaluation quality (cost per successful journey); or which levers cut spend
-  (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - Agentic
-  Control Plane (tokens), platform traces (tokens per generation, priced with a list-price table), Langfuse
-  (dollars per trace, session, model, tag). Interview-first; emits commands; never changes an instance's
-  Langfuse integration unless the user owns the instance.
+  (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - watsonx
+  Orchestrate Agentic Control Plane (tokens), platform traces (tokens per generation, priced with a list-price
+  table), Langfuse (dollars per trace, session, model, tag). Interview-first; emits commands; never changes
+  an instance's Langfuse integration unless the user owns the instance.
 blocks:
 - cost-management
 status: active
@@ -26,7 +26,7 @@ download: https://raw.githubusercontent.com/ibm-self-serve-assets/building-block
 
 # cost-management
 
-Measure, explain, and reduce the cost of watsonx Orchestrate (WXO) agents. Use when asked what an agent, a conversation, an evaluation run, or a use case costs; where the tokens go; how to turn platform traces or Langfuse data into dollars; how to set up the Langfuse integration and model pricing; how to compare cost against evaluation quality (cost per successful journey); or which levers cut spend (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - Agentic Control Plane (tokens), platform traces (tokens per generation, priced with a list-price table), Langfuse (dollars per trace, session, model, tag). Interview-first; emits commands; never changes an instance's Langfuse integration unless the user owns the instance.
+Measure, explain, and reduce the cost of watsonx Orchestrate (WXO) agents. Use when asked what an agent, a conversation, an evaluation run, or a use case costs; where the tokens go; how to turn platform traces or Langfuse data into dollars; how to set up the Langfuse integration and model pricing; how to compare cost against evaluation quality (cost per successful journey); or which levers cut spend (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - watsonx Orchestrate Agentic Control Plane (tokens), platform traces (tokens per generation, priced with a list-price table), Langfuse (dollars per trace, session, model, tag). Interview-first; emits commands; never changes an instance's Langfuse integration unless the user owns the instance.
 
 Sources in this repo:
 - `ai/control/cost-management/bob-skills/cost-management.zip` (block, layout: bob)

@@ -14,7 +14,7 @@ Authoritative docs: https://developer.watson-orchestrate.ibm.com/traces/overview
 |---|---|
 | SaaS | on by default; the traces API needs an identity with admin privileges on the instance |
 | Developer Edition | only when the server was started with `--with-ibm-telemetry` / `-i` (not together with `-l`) |
-| Product UI | **Agentic Control Plane** → observability (trace details per conversation), agent analytics, and the FinOps view (token consumption; preview) |
+| Product UI | **watsonx Orchestrate Agentic Control Plane** → observability (trace details per conversation), agent analytics, and visibility into token usage and LLM calls |
 
 A trace is the span tree of one request: the orchestrator run, each `chat_with_collaborator_*` handoff, each tool call with input and output, and each model generation with `model` and `usage` (tokens). *Observed on SaaS:* the tree is complete about 15 seconds after the run finishes; search windows are limited to 4 hours; observation lookups are rate limited to a few per minute.
 

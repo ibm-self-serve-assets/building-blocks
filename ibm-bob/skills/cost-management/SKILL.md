@@ -1,6 +1,6 @@
 ---
 name: cost-management
-description: Measure, explain, and reduce the cost of watsonx Orchestrate (WXO) agents. Use when asked what an agent, a conversation, an evaluation run, or a use case costs; where the tokens go; how to turn platform traces or Langfuse data into dollars; how to set up the Langfuse integration and model pricing; how to compare cost against evaluation quality (cost per successful journey); or which levers cut spend (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - Agentic Control Plane (tokens), platform traces (tokens per generation, priced with a list-price table), Langfuse (dollars per trace, session, model, tag). Interview-first; emits commands; never changes an instance's Langfuse integration unless the user owns the instance.
+description: Measure, explain, and reduce the cost of watsonx Orchestrate (WXO) agents. Use when asked what an agent, a conversation, an evaluation run, or a use case costs; where the tokens go; how to turn platform traces or Langfuse data into dollars; how to set up the Langfuse integration and model pricing; how to compare cost against evaluation quality (cost per successful journey); or which levers cut spend (model per agent, prompt and tool size, turns, handoffs, runtime controls). Three sources - watsonx Orchestrate Agentic Control Plane (tokens), platform traces (tokens per generation, priced with a list-price table), Langfuse (dollars per trace, session, model, tag). Interview-first; emits commands; never changes an instance's Langfuse integration unless the user owns the instance.
 ---
 
 # Cost Management (watsonx Orchestrate)
@@ -117,7 +117,7 @@ When it finishes, paste <the output path | the last 20 lines | y/n> so I can <re
 ## Quick reference
 
 ### Sources (tokens → dollars)
-- **Agentic Control Plane** (product UI): token consumption, model usage, call volume per agent; FinOps view in preview. Tokens, not dollars.
+- **watsonx Orchestrate Agentic Control Plane** (product UI): visibility into token usage and LLM calls per agent, and usage over time. Tokens, not dollars.
 - **Runs API**: `message.completed` carries `usage.token_usage.total_tokens` and `usage.model_usage[]` (`model_name`, `provider`, `token_usage.prompt_tokens/completion_tokens/total_tokens`) — per-run tokens with no extra call.
 - **Platform traces**: every conversation is a trace; `GENERATION` observations carry `model`, `usage.input/output/total`, `agentId`, and `metadata.attributes["langfuse.session.id"]` (= the conversation thread id). `scripts/trace_cost.py` fetches traces by id (with the required time window), prices them with `assets/prices.yaml`, and joins them to an Agent Ops run folder.
 - **Langfuse**: dollars per trace/session/model/tag once the instance exports there and the models are priced; `scripts/langfuse_cost_report.py`.

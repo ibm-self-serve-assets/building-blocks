@@ -10,7 +10,7 @@ Authoritative docs: https://developer.watson-orchestrate.ibm.com/traces/overview
 
 | Source | Granularity | Dollars? | Access |
 |---|---|---|---|
-| **Agentic Control Plane** (product UI) | tokens, model usage, call volume per agent and over time; FinOps view in preview | no | watsonx Orchestrate UI → Agentic Control Plane |
+| **watsonx Orchestrate Agentic Control Plane** (product UI) | visibility into token usage and LLM calls per agent, and usage over time | no | watsonx Orchestrate UI → Agentic Control Plane |
 | **Runs API** | one run: `usage.token_usage.total_tokens`, `usage.model_usage[]` with `model_name`, `provider`, `prompt_tokens`, `completion_tokens` on the `message.completed` event | no | any application that calls `POST /v1/orchestrate/runs?stream=true` can log it per conversation at no extra cost |
 | **Platform traces** | every conversation as a span tree; each `GENERATION` observation carries `model`, `usage.input/output/total`, `agentId`, latency | no (cost fields exist but are unpriced) | `orchestrate observability traces search`, REST `GET /v1/agentops-v3/observations`, `scripts/trace_cost.py` |
 

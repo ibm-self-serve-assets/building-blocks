@@ -20,7 +20,7 @@ This repository is intentionally code-first. Each building block gives developer
 | **Agents** | [Multi-Agent Orchestration](agents/multi-agent-orchestration/) | IBM watsonx Orchestrate, IBM watsonx.ai AI Gateway | Multi-agent collaboration, dynamic task delegation, shared context, and MCP/A2A integrations |
 | **Control** | [Agent Ops](control/agent-ops/) | IBM watsonx Orchestrate, IBM watsonx.governance | Agent evaluation, red-teaming, failure analysis, traces, and latency |
 | **Control** | [Guardrails](control/guardrails/) | IBM watsonx Orchestrate, IBM watsonx.governance | Runtime policy enforcement — Agent Controls and the Real-Time Guardrails SDK |
-| **Control** | [Cost Management](control/cost-management/) | IBM watsonx Orchestrate (with Langfuse) | Per-interaction cost and token tracking today; enterprise allocation and budgets coming soon |
+| **Control** | [Cost Management](control/cost-management/) | IBM watsonx Orchestrate (with Langfuse) | Token and dollar cost tracking for agents — per trace, session, model, and evaluation scenario — with context-growth analysis and production cost projection |
 | **Control** | [Compliance](control/compliance/) | IBM watsonx.governance, IBM OpenPages | Use case inventory, regulation mapping, and Enforcement Tracking |
 | **Engineering** | [Agentic SDLC](engineering/agentic-sdlc/) | IBM Bob | IDE-native agentic software development and full-lifecycle automation |
 | **Engineering** | [Code Modernization](engineering/code-modernization/) | IBM Bob, watsonx Code Assistant | Automated legacy codebase refactoring, debt analysis, and Java/Maximo modernization |

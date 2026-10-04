@@ -20,12 +20,6 @@ Drop the folder into your project, switch to the mode in Bob's mode selector, an
 |---|---|
 | [Agent Ops](base-modes/) | Evaluate watsonx Orchestrate agents before release with the ADK evaluation framework (ADK 2.18+): quick-eval, ground-truth test cases with handoff goals, evaluate, analyze, rubric scoring, red-teaming, and traces — on SaaS or Developer Edition. Ships the validated loan-underwriting reference cases. |
 
-### Custom modes
-
-| Mode | Description |
-|---|---|
-| Coming soon | — |
-
 ## Prerequisites
 
 - [Bob](https://bob.ibm.com)

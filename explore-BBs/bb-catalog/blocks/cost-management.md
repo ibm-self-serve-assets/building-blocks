@@ -3,7 +3,7 @@ id: cost-management
 name: Cost Management
 group: control
 capability: ai
-description: Track the cost of watsonx Orchestrate agents in dollars with Langfuse — integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection — alongside the Agentic Control Plane token views; enterprise allocation and budgets coming soon
+description: Track the cost of watsonx Orchestrate agents in dollars with Langfuse — integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection — alongside the watsonx Orchestrate Agentic Control Plane token views
 repo_path: ai/control/cost-management
 docs_path: ai-core/control/cost-management.md
 products:
@@ -19,7 +19,7 @@ tags:
 
 # Cost Management
 
-Track the cost of watsonx Orchestrate agents in dollars with Langfuse — integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection — alongside the Agentic Control Plane token views; enterprise allocation and budgets coming soon
+Track the cost of watsonx Orchestrate agents in dollars with Langfuse — integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection — alongside the watsonx Orchestrate Agentic Control Plane token views
 
 - **Repo**: [ai/control/cost-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/cost-management)
 - **Docs**: [ai-core/control/cost-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/cost-management/)

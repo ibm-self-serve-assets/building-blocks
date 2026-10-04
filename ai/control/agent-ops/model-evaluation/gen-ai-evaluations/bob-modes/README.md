@@ -21,14 +21,6 @@ Production-ready modes maintained by the team.
 |------|-------------|
 | [Build-time GenAI Evaluator](base-modes/) | Evaluate GenAI apps (RAG pipelines, LLM outputs, chatbot safety, AI agent tool-calling) before deployment using IBM watsonx governance metrics |
 
-### Custom Modes
-
-Community and experimental modes.
-
-| Mode | Description |
-|------|-------------|
-| Coming soon | — |
-
 ## Prerequisites
 
 All modes in this directory require:

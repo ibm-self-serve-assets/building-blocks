@@ -39,7 +39,7 @@ The capabilities below are built for **watsonx Orchestrate agents** with the eva
 | **Analyze** | `orchestrate evaluations analyze` | Expected vs actual calls, parameter mismatches, conversation history, tool docstring checks |
 | **Rubric** | `evaluate` with `RubricEvaluation` | Pass/fail per plain-language rule with the judge's reasoning |
 | **Red-team** | `red-teaming list / plan / run` | Attack success rate per attack and the transcript of every success |
-| **Observe** | `observability traces search / export`, Python, REST | The span tree per conversation; dashboards in the Agentic Control Plane |
+| **Observe** | `observability traces search / export`, Python, REST | The span tree per conversation; dashboards in the watsonx Orchestrate Agentic Control Plane |
 
 For runtime enforcement — Agent Controls (PII filter, content guardrails, secrets detection, rate limits, model fallback) and Pass/Flag/Block checks — see [Guardrails](../guardrails/). For cost and token spend in dollars, see [Cost Management](../cost-management/).
 
@@ -109,7 +109,7 @@ The Agent Controls and Real-Time Guardrails skills are listed under [Guardrails]
 The hands-on variant: Bob runs the commands, reads the results, and proposes fixes, phase by phase. Ships the validated loan-underwriting reference cases.
 
 ### [Model Evaluation](model-evaluation/)
-Build-time evaluation of GenAI applications (RAG, LLM outputs, chatbot safety) with watsonx.governance metrics, plus predictive ML scoring examples — includes its own assets, Bob mode, and Bob skill.
+Build-time evaluation of GenAI applications (RAG, LLM outputs, chatbot safety) with watsonx.governance metrics — includes its own assets, Bob mode, and Bob skill.
 
 ---
 

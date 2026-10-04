@@ -79,7 +79,7 @@ Ask Bob: *"What Agent Ops capabilities do you have active?"*
 | **Analyze** | framework-1.5 metric columns, curated thresholds, diagnosis table, attribution |
 | **Rubric** | `RubricEvaluation` criteria and results |
 | **Red-teaming** | attack catalogue, `plan` review, attack-file schema, remediation |
-| **Observability** | traces search/export, Python `TracesController`, REST, Agentic Control Plane |
+| **Observability** | traces search/export, Python `TracesController`, REST, watsonx Orchestrate Agentic Control Plane |
 | **SaaS + Developer Edition** | both first-class; the framework evaluates the active environment |
 | **Terminal-emitting** | Bob writes commands; you run them — no surprise mutations on shared instances |
 

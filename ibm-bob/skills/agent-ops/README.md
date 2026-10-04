@@ -63,7 +63,7 @@ agent-ops/
 │   ├── module-analyze.md          # metrics, thresholds, analyze, diagnosis table
 │   ├── module-rubric.md           # RubricEvaluation criteria and results
 │   ├── module-red-teaming.md      # attack catalogue, plan/run, attack file schema, remediation
-│   ├── module-observability.md    # traces CLI, Python, REST, Agentic Control Plane
+│   ├── module-observability.md    # traces CLI, Python, REST, watsonx Orchestrate Agentic Control Plane
 │   └── command-emission.md        # block format, what Bob may run
 ├── examples/
 │   ├── loan_underwriting/         # validated on 2.18: 5 cases × v1/v2, rubric, 3 attacks, stories.csv, generator

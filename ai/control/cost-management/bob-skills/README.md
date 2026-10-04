@@ -18,7 +18,7 @@ The same skill is published unpacked at [`ibm-bob/skills/cost-management/`](../.
 
 Four modules, any order:
 
-- **Sources** — Agentic Control Plane (tokens), runs API usage, platform traces priced with an indicative table (`scripts/trace_cost.py`: fetch by trace id or by Agent Ops run, per-model and per-agent breakdown, CSV)
+- **Sources** — watsonx Orchestrate Agentic Control Plane (tokens), runs API usage, platform traces priced with an indicative table (`scripts/trace_cost.py`: fetch by trace id or by Agent Ops run, per-model and per-agent breakdown, CSV)
 - **Langfuse** — ownership gate, integration (`settings observability langfuse configure`), model pricing, verification, attribution by session and tag (`scripts/langfuse_cost_report.py`)
 - **Report** — per scenario → context growth per turn and handoff → patterns → data-backed recommendations → projection; cost × quality with dollars per successful journey
 - **Optimize** — levers (turns, handoffs, model per agent, prompt and tool size, tool outputs, retrieval, evaluation cost, runtime cost guardrails), estimates from the data, and the re-test with the Agent Ops suite
