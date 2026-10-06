@@ -51,6 +51,9 @@ class Settings(BaseSettings):
     # Flink-owned intermediate topic (STANDARD clusters only)
     topic_machine_metrics: str = Field(default="factory.machine.metrics", alias="TOPIC_MACHINE_METRICS")
 
+    # Security
+    demo_api_key: str = Field(default="", alias="DEMO_API_KEY")
+
     # Tableflow
     tableflow_enabled: bool = Field(default=False, alias="TABLEFLOW_ENABLED")
     tableflow_topics: list[str] = Field(
@@ -120,6 +123,7 @@ class Settings(BaseSettings):
             "llm_provider": self.llm_provider,
             "watsonx_configured": self.watsonx_ready,
             "tableflow_enabled": self.tableflow_enabled,
+            "api_key_required": bool(self.demo_api_key),
             "instance_id": self.instance_id,
         }
 

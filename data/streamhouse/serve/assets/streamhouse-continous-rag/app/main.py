@@ -3,13 +3,19 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
+import secrets
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request, Security
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.security import APIKeyHeader
 from fastapi.staticfiles import StaticFiles
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from app.config import Settings, get_settings
 from app.models import (
@@ -40,6 +46,23 @@ rag = RagService(settings, kafka, index, build_generator(settings))
 ROOT = Path(__file__).resolve().parents[1]
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 DEMO_KNOWLEDGE_DIR = ROOT / "demo_knowledge"
+
+limiter = Limiter(key_func=get_remote_address)
+_API_KEY_HEADER = APIKeyHeader(name="X-API-Key", auto_error=False)
+
+
+def _verify_api_key(
+    request: Request,
+    key: str | None = Security(_API_KEY_HEADER),
+) -> None:
+    expected = settings.demo_api_key
+    if not expected:
+        return
+    if not key or not secrets.compare_digest(key, expected):
+        raise HTTPException(
+            status_code=403,
+            detail="Invalid or missing API key. Provide the configured DEMO_API_KEY via the 'X-API-Key' header.",
+        )
 
 
 def _on_factory_state(payload: dict[str, Any]) -> None:
@@ -110,6 +133,25 @@ app = FastAPI(
     ),
     lifespan=lifespan,
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Content-Security-Policy"] = (
+        "default-src 'self'; "
+        "script-src 'self' 'unsafe-inline'; "
+        "style-src 'self' 'unsafe-inline'; "
+        "connect-src 'self';"
+    )
+    return response
+
+
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
@@ -190,8 +232,14 @@ async def events_stream() -> StreamingResponse:
     )
 
 
-@app.post("/api/knowledge", response_model=KnowledgeDocument, status_code=202)
-def add_knowledge(document: KnowledgeDocument) -> KnowledgeDocument:
+@app.post(
+    "/api/knowledge",
+    response_model=KnowledgeDocument,
+    status_code=202,
+    dependencies=[Depends(_verify_api_key)],
+)
+@limiter.limit("30/minute")
+def add_knowledge(request: Request, document: KnowledgeDocument) -> KnowledgeDocument:
     _require_kafka()
     store.add_document(document)
     kafka.produce(
@@ -208,8 +256,13 @@ def list_knowledge() -> list[dict[str, Any]]:
     return store.snapshot()["documents"]
 
 
-@app.post("/api/rag/ask", response_model=RagAnswer)
-def ask_rag(question: RagQuestion) -> RagAnswer:
+@app.post(
+    "/api/rag/ask",
+    response_model=RagAnswer,
+    dependencies=[Depends(_verify_api_key)],
+)
+@limiter.limit("10/minute")
+def ask_rag(request: Request, question: RagQuestion) -> RagAnswer:
     _require_kafka()
     try:
         return rag.ask(question)
@@ -220,8 +273,12 @@ def ask_rag(question: RagQuestion) -> RagAnswer:
         raise HTTPException(status_code=500, detail=str(exc)) from exc
 
 
-@app.post("/api/demo/seed-knowledge")
-def seed_demo_knowledge() -> dict[str, Any]:
+@app.post(
+    "/api/demo/seed-knowledge",
+    dependencies=[Depends(_verify_api_key)],
+)
+@limiter.limit("5/minute")
+def seed_demo_knowledge(request: Request) -> dict[str, Any]:
     _require_kafka()
     seeded = []
     for path in sorted(DEMO_KNOWLEDGE_DIR.glob("*.md")):
@@ -246,8 +303,12 @@ def seed_demo_knowledge() -> dict[str, Any]:
     return {"seeded": seeded, "count": len(seeded)}
 
 
-@app.post("/api/demo/step/{step}")
-def demo_step(step: str) -> JSONResponse:
+@app.post(
+    "/api/demo/step/{step}",
+    dependencies=[Depends(_verify_api_key)],
+)
+@limiter.limit("30/minute")
+def demo_step(request: Request, step: str) -> JSONResponse:
     _require_kafka()
     state, exception, new_knowledge = _build_demo_step(step)
     store.set_factory_state(state)

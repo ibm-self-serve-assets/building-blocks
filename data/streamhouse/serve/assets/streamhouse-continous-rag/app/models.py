@@ -12,11 +12,23 @@ def utc_now_iso() -> str:
 
 
 class KnowledgeDocument(BaseModel):
-    document_id: str = Field(default_factory=lambda: str(uuid4()))
-    title: str
-    text: str = Field(min_length=1)
-    source: str = "operator-upload"
-    asset_id: str | None = None
+    document_id: str = Field(
+        default_factory=lambda: str(uuid4()),
+        max_length=128,
+        pattern=r"^[A-Za-z0-9\-_\.]+$",
+    )
+    title: str = Field(min_length=1, max_length=256)
+    text: str = Field(min_length=1, max_length=50_000)
+    source: Literal[
+        "operator-upload",
+        "demo-knowledge",
+        "maintenance-work-order",
+        "api-upload",
+        "shift-handover",
+        "quality-alert",
+        "test",
+    ] = "operator-upload"
+    asset_id: str | None = Field(default=None, max_length=64, pattern=r"^[A-Za-z0-9\-]+$")
     updated_at: str = Field(default_factory=utc_now_iso)
     metadata: dict[str, Any] = Field(default_factory=dict)
 
@@ -35,7 +47,7 @@ class KnowledgeChunk(BaseModel):
 
 
 class RagQuestion(BaseModel):
-    question: str = Field(min_length=2)
+    question: str = Field(min_length=2, max_length=1000)
     top_k: int = Field(default=4, ge=1, le=10)
 
 

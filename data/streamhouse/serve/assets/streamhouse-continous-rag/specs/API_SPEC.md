@@ -36,9 +36,17 @@ Returns the current read model used by the UI:
 
 Server-Sent Events endpoint. Emits a `snapshot` event approximately every two seconds.
 
+## Security & Headers
+
+All HTTP responses include security headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Content-Security-Policy`).
+
+When `DEMO_API_KEY` is configured in the environment, all mutating routes (`POST /api/knowledge`, `POST /api/rag/ask`, `POST /api/demo/seed-knowledge`, `POST /api/demo/step/{step}`) require the `X-API-Key` request header.
+
 ## `POST /api/knowledge`
 
 Publishes a new enterprise knowledge event to `rag.knowledge.raw`.
+*Rate limit:* 30 requests / minute.
+*Authentication:* `X-API-Key` (when `DEMO_API_KEY` is configured).
 
 Example:
 
@@ -59,6 +67,9 @@ The pipeline continuously converts the knowledge event into chunk records and em
 Returns documents observed on the knowledge stream by this running instance.
 
 ## `POST /api/rag/ask`
+
+*Rate limit:* 10 requests / minute.
+*Authentication:* `X-API-Key` (when `DEMO_API_KEY` is configured).
 
 Request:
 
@@ -95,8 +106,13 @@ Response shape:
 ## `POST /api/demo/seed-knowledge`
 
 Publishes all Markdown documents in `demo_knowledge/` to the knowledge stream.
+*Rate limit:* 5 requests / minute.
+*Authentication:* `X-API-Key` (when `DEMO_API_KEY` is configured).
 
 ## `POST /api/demo/step/{step}`
+
+*Rate limit:* 30 requests / minute.
+*Authentication:* `X-API-Key` (when `DEMO_API_KEY` is configured).
 
 Supported steps:
 - `baseline`
