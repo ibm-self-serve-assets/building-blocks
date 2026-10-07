@@ -1,10 +1,10 @@
----
+﻿---
 id: text2sql
 name: Text2SQL
 group: pipelines
 capability: data
 description: Natural language to SQL conversion using watsonx.data Intelligence with metadata enrichment for accurate query generation
-repo_path: data/pipelines/text2sql
+repo_path: streamhouse/pipelines/text2sql
 docs_path: data-core/pipelines/text2sql/index.md
 products:
   - watsonx.data
@@ -22,7 +22,7 @@ tags:
 
 Natural language to SQL conversion using watsonx.data Intelligence with metadata enrichment for accurate query generation
 
-- **Repo**: [data/pipelines/text2sql](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/pipelines/text2sql)
+- **Repo**: [streamhouse/pipelines/text2sql](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/streamhouse/pipelines/text2sql)
 - **Docs**: [data-core/pipelines/text2sql/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/pipelines/text2sql/)
 
 <!--

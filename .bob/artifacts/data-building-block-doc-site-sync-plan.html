@@ -1,0 +1,403 @@
+
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Data Building Block — Doc Site Sync Plan</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1f2328;
+    background: #ffffff;
+    padding: 32px 16px 48px;
+  }
+  .wrapper { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #57606a; font-size: 13px; margin-bottom: 28px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 28px 0 10px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; }
+  h3 { font-size: 13px; font-weight: 700; margin: 18px 0 6px; color: #1f2328; }
+  p { margin-bottom: 10px; }
+
+  /* Summary cards */
+  .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+  .card { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 6px; padding: 14px 16px; }
+  .card .num { font-size: 26px; font-weight: 700; color: #3b82d4; }
+  .card .label { font-size: 12px; color: #57606a; margin-top: 2px; }
+  .card.warn .num { color: #b45309; }
+  .card.ok .num { color: #2d7a3e; }
+
+  /* Legend */
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 18px; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-high { background: #dc2626; }
+  .dot-med  { background: #d97706; }
+  .dot-low  { background: #2563eb; }
+
+  /* Change table */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px; }
+  th { background: #f7f8fa; border: 1px solid #e5e7eb; padding: 8px 10px; text-align: left; font-weight: 600; font-size: 12px; color: #57606a; }
+  td { border: 1px solid #e5e7eb; padding: 7px 10px; vertical-align: top; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .badge-high   { background: #fee2e2; color: #991b1b; }
+  .badge-med    { background: #fef3c7; color: #92400e; }
+  .badge-low    { background: #dbeafe; color: #1e40af; }
+  .badge-done   { background: #d1fae5; color: #065f46; }
+
+  .file { font-family: "Consolas", "Cascadia Mono", monospace; font-size: 11.5px; color: #0550ae; word-break: break-all; }
+
+  ul { margin-left: 18px; margin-bottom: 10px; }
+  li { margin-bottom: 3px; }
+  .note { background: #f7f8fa; border-left: 3px solid #e5e7eb; padding: 8px 12px; font-size: 13px; margin: 14px 0; color: #57606a; }
+  .note strong { color: #1f2328; }
+  footer { margin-top: 40px; padding-top: 12px; border-top: 1px solid #e5e7eb; text-align: center; font-size: 12px; color: #57606a; }
+  .section-intro { color: #57606a; font-size: 13px; margin-bottom: 14px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <h1>Data Building Block — Doc Site Sync Plan</h1>
+  <p class="subtitle">
+    Source: <span class="file">building-blocks/data/</span>  → 
+    Target: <span class="file">_docs_Site/docs-src/streamhouse-core/</span>  | 
+    Analysis date: June 2025
+  </p>
+
+  
+  <div class="summary-grid">
+    <div class="card warn">
+      <div class="num">4</div>
+      <div class="label">High-priority gaps (missing content)</div>
+    </div>
+    <div class="card">
+      <div class="num">4</div>
+      <div class="label">Medium-priority gaps (incomplete sections)</div>
+    </div>
+    <div class="card ok">
+      <div class="num">7</div>
+      <div class="label">Doc pages verified as in-sync</div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><div class="dot dot-high"></div> <strong>High</strong> — Missing asset/content that users would expect to find</div>
+    <div class="legend-item"><div class="dot dot-med"></div> <strong>Medium</strong> — Existing section needs update to reflect source changes</div>
+    <div class="legend-item"><div class="dot dot-low"></div> <strong>Low / Info</strong> — Minor wording / title alignment</div>
+  </div>
+
+  
+  <h2>1. Real-Time → Serve</h2>
+  <p class="section-intro">
+    Doc page: <span class="file">streamhouse-core/real-time/serve/index.md</span><br />
+    Source: <span class="file">data/streamhouse/serve/README.md</span>
+  </p>
+
+  <table>
+    <tr>
+      <th style="width:120px">Priority</th>
+      <th>Gap</th>
+      <th>Detail</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>Missing asset: <em>Streamhouse Continuous RAG</em></td>
+      <td>
+        Source README lists <strong>two assets</strong>:<br />
+        1. <span class="file">live-context-for-supply-chain-resilience</span> ✅ present in doc<br />
+        2. <span class="file">streamhouse-continous-rag</span> ❌ <strong>absent from doc</strong><br /><br />
+        The FactoryPulse Continuous RAG demo (Kafka/Flink RAG profiles, FastAPI backend, IBM Carbon UI, Code Engine deployment) is a complete runnable asset in the source repo but has no mention on the doc page.
+      </td>
+      <td>
+        Add a second row to the "Included Assets" table on the Serve doc page:<br />
+        <em>streamhouse-continous-rag</em> — FactoryPulse Continuous RAG demo linking to the GitHub path.
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-med">MEDIUM</span></td>
+      <td>Quick-start instructions absent</td>
+      <td>
+        Source README has explicit <code>Quick start</code> bash instructions for both assets. The doc page has no equivalent getting-started snippet.
+      </td>
+      <td>
+        Add a "Quick Start" section (or expandable admonition) covering both assets, matching the source bash instructions.
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-med">MEDIUM</span></td>
+      <td>Continuous RAG pattern diagram missing</td>
+      <td>
+        Source README includes a Mermaid diagram showing the RTCE ↔ RAG pipeline combining live + historical context into the AI agent. The doc page omits this diagram despite covering the Continuous RAG pattern in prose.
+      </td>
+      <td>
+        Add the Continuous RAG pattern Mermaid diagram (already present in source README) to the "Continuous RAG Pattern" section of the doc page.
+      </td>
+    </tr>
+  </table>
+
+  
+  <h2>2. Pipelines → RAG</h2>
+  <p class="section-intro">
+    Doc page: <span class="file">streamhouse-core/pipelines/rag/index.md</span><br />
+    Source: <span class="file">data/pipelines/rag/README.md</span>
+  </p>
+
+  <table>
+    <tr>
+      <th style="width:120px">Priority</th>
+      <th>Gap</th>
+      <th>Detail</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>Entire "Included Assets" section missing</td>
+      <td>
+        The source repo contains <strong>5 runnable/reference assets</strong> that are not listed anywhere on the doc page:
+        <ul>
+          <li><span class="file">rag-accelerator/</span> — combined ingestion + vector search + Q&amp;A FastAPI service</li>
+          <li><span class="file">opensearch-data-ingestion/</span> — COS → chunk → embedding → OpenSearch ingestion</li>
+          <li><span class="file">rag-ingestion-sse-mcp-server/</span> — MCP tools for ingestion</li>
+          <li><span class="file">rag-retrieval-fastapi-server/</span> — REST retrieval service</li>
+          <li><span class="file">rag-retrieval-sse-mcp-server/</span> — MCP retrieval tools</li>
+        </ul>
+        There is also no "Bob Skills / Modes" section, despite 4 Bob modes and 3 Bob skills existing in source.
+      </td>
+      <td>
+        Add an "Included Assets" table and a "Bob Skills" table to the doc page matching the 5 assets and 3 skills in source. Add a "Pick an Asset" decision guide (matching the source README).
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-med">MEDIUM</span></td>
+      <td>Model defaults section absent</td>
+      <td>
+        Source README documents the default model IDs (<code>ibm/granite-embedding-278m-multilingual</code>, <code>ibm/granite-4-h-small</code>) and links to model lifecycle pages. The doc page has no equivalent.
+      </td>
+      <td>
+        Add a "Model Defaults" admonition to the doc page with the same model IDs and disclaimers about production verification.
+      </td>
+    </tr>
+  </table>
+
+  
+  <h2>3. Pipelines → UDI</h2>
+  <p class="section-intro">
+    Doc page: <span class="file">streamhouse-core/pipelines/udi/index.md</span><br />
+    Source: <span class="file">data/pipelines/udi/README.md</span>
+  </p>
+
+  <table>
+    <tr>
+      <th style="width:120px">Priority</th>
+      <th>Gap</th>
+      <th>Detail</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>"Included Assets" and "Bob Skills" sections absent</td>
+      <td>
+        Source has:<br />
+        • Asset: <span class="file">udi-ingestion-opensearch/</span> (COS → UDI → embeddings → OpenSearch)<br />
+        • 2 Bob modes, 3 Bob skills (<span class="file">data-ingestion-unstructured.zip</span>, <span class="file">udi-opensearch.zip</span>, <span class="file">data-ingestion-structured.zip</span>)<br />
+        • Quick-start bash instructions<br />
+        None of these appear on the doc page.
+      </td>
+      <td>
+        Add "Included Assets" table, "Bob Skills" table, and quick-start section to the UDI doc page mirroring the source README.
+      </td>
+    </tr>
+  </table>
+
+  
+  <h2>4. Pipelines → Text2SQL</h2>
+  <p class="section-intro">
+    Doc page: <span class="file">streamhouse-core/pipelines/text2sql/index.md</span><br />
+    Source: <span class="file">data/pipelines/text2sql/README.md</span>
+  </p>
+
+  <table>
+    <tr>
+      <th style="width:120px">Priority</th>
+      <th>Gap</th>
+      <th>Detail</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>"Included Assets" section absent</td>
+      <td>
+        Source has <strong>two distinct asset paths</strong>:<br />
+        • <span class="file">assets/watsonx-text2sql/</span> — FastAPI wrapper for the managed Text-to-SQL API + metadata enrichment flow<br />
+        • <span class="file">assets/NL2SQL/</span> — custom NL2SQL with semantic schema retrieval (OpenSearch k-NN / pgvector) and AST-based SQL execution (PostgreSQL + Db2)<br />
+        Neither appears on the doc page. Both have their own architecture diagrams and quick-start flows.
+      </td>
+      <td>
+        Add "Included Assets" section to the Text2SQL doc page covering both asset paths with descriptions and GitHub links. Add architecture diagrams for both approaches.
+      </td>
+    </tr>
+  </table>
+
+  
+  <h2>5. Real-Time → Stream</h2>
+  <p class="section-intro">
+    Doc page: <span class="file">streamhouse-core/real-time/stream/index.md</span><br />
+    Source: <span class="file">data/streamhouse/real-time-streaming/README.md</span>
+  </p>
+
+  <table>
+    <tr>
+      <th style="width:120px">Priority</th>
+      <th>Gap</th>
+      <th>Detail</th>
+      <th>Action</th>
+    </tr>
+    <tr>
+      <td><span class="badge badge-low">LOW</span></td>
+      <td>Quick start instructions absent</td>
+      <td>
+        Source README documents three quick-start modes (browser simulation, Python dry run, full Confluent deployment). The doc page covers the asset in a table but provides no quick-start.
+      </td>
+      <td>
+        Add a "Quick Start" section to the Stream doc page with the three startup modes from the source README.
+      </td>
+    </tr>
+    <tr>
+      <td><span class="badge badge-low">LOW</span></td>
+      <td>Terraform reference link missing</td>
+      <td>
+        Source README references the Confluent Terraform provider (<span class="file">registry.terraform.io/providers/confluentinc/confluent/latest/docs</span>). Doc page lists the skill but omits this direct product link.
+      </td>
+      <td>
+        Add the Confluent Terraform provider link to the "IBM Products Used" table.
+      </td>
+    </tr>
+  </table>
+
+  
+  <h2>6. Pages Verified as In-Sync ✅</h2>
+  <p class="section-intro">These doc pages accurately reflect their corresponding source content with no structural gaps.</p>
+
+  <table>
+    <tr>
+      <th>Doc Page</th>
+      <th>Source</th>
+      <th>Status</th>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/index.md</span></td>
+      <td><span class="file">data/README.md</span></td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/real-time/index.md</span></td>
+      <td><span class="file">data/streamhouse/README.md</span></td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/real-time/transform/index.md</span></td>
+      <td><span class="file">data/streamhouse/transform/README.md</span></td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/real-time/govern/index.md</span></td>
+      <td><span class="file">data/streamhouse/govern/README.md</span></td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/pipelines/index.md</span></td>
+      <td><span class="file">data/pipelines/README.md</span></td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/lakehouse/index.md</span></td>
+      <td><span class="file">data/lakehouse/README.md</span></td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+    <tr>
+      <td><span class="file">streamhouse-core/bob-skills-and-modes.md</span></td>
+      <td>ibm-bob skills directory</td>
+      <td><span class="badge badge-done">IN SYNC</span></td>
+    </tr>
+  </table>
+
+  
+  <h2>7. Recommended Execution Order</h2>
+
+  <table>
+    <tr>
+      <th style="width:40px">#</th>
+      <th>Task</th>
+      <th style="width:110px">Target File</th>
+      <th style="width:80px">Priority</th>
+      <th>Estimated Effort</th>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Add <strong>Included Assets</strong> table + Bob Skills table to RAG pipeline page</td>
+      <td><span class="file">pipelines/rag/index.md</span></td>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>~30 min</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Add <strong>Included Assets</strong> + Bob Skills + quick-start to UDI page</td>
+      <td><span class="file">pipelines/udi/index.md</span></td>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>~20 min</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Add <strong>Included Assets</strong> for both Text2SQL asset paths + architecture diagrams</td>
+      <td><span class="file">pipelines/text2sql/index.md</span></td>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>~25 min</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Add <em>streamhouse-continous-rag</em> row to Serve Included Assets + Continuous RAG Mermaid diagram + quick-start</td>
+      <td><span class="file">real-time/serve/index.md</span></td>
+      <td><span class="badge badge-high">HIGH</span></td>
+      <td>~20 min</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Add model defaults admonition to RAG page</td>
+      <td><span class="file">pipelines/rag/index.md</span></td>
+      <td><span class="badge badge-med">MEDIUM</span></td>
+      <td>~10 min</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Add quick-start snippet to Stream page + Terraform provider link</td>
+      <td><span class="file">real-time/stream/index.md</span></td>
+      <td><span class="badge badge-low">LOW</span></td>
+      <td>~10 min</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <strong>Scope note:</strong> The Lakehouse sub-pages (metadata-enrichment, data-observability, zero-copy-lakehouse, serverless-vector) each have an "Included Assets" section and were not identified as having gaps in this analysis sweep. A more detailed pass may be warranted if any of those source READMEs have recently added assets.
+  </div>
+
+  <div class="note">
+    <strong>mkdocs.yml:</strong> The navigation and redirect maps in <span class="file">_docs_Site/mkdocs.yml</span> are complete and accurate. No nav changes are needed for any of the gaps above — all affected pages are already wired into the nav.
+  </div>
+
+  <footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

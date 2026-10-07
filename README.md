@@ -74,27 +74,27 @@ The **[Automation Building Blocks](automation/README.md)** deliver automated eng
 
 ---
 
-## Data — Intelligent Data Platform
+## Streamhouse
 
-The **[Data Building Blocks](data/README.md)** provide a composable foundation for making enterprise data connected, contextual, trusted, and ready for analytics and AI. They are organized into three pillars:
+The **[Streamhouse Building Blocks](streamhouse/README.md)** provide a composable foundation for making enterprise data connected, contextual, trusted, and ready for analytics and AI. They are organized into three pillars:
 
 | Pillar | Building Block | Primary Products |
 |---|---|---|
-| **Streamhouse** | [Real-Time Streaming](data/streamhouse/real-time-streaming/) | IBM Confluent — Connectors and Kafka |
-| **Streamhouse** | [Transform](data/streamhouse/transform/) | IBM Confluent (Apache Flink) |
-| **Streamhouse** | [Govern](data/streamhouse/govern/) | IBM Confluent — Stream Governance |
-| **Streamhouse** | [Serve](data/streamhouse/serve/) | IBM Confluent — RTCE and Tableflow |
-| **Pipelines** | [RAG](data/pipelines/rag/) | IBM watsonx.data OpenRAG + IBM watsonx.ai |
-| **Pipelines** | [Unstructured Data Integration](data/pipelines/udi/) | IBM watsonx.data integration — UDI |
-| **Pipelines** | [Text2SQL](data/pipelines/text2sql/) | IBM watsonx.data intelligence |
-| **Pipelines** | [ETL / ELT](data/pipelines/etl/) | IBM watsonx.data integration — DataStage |
-| **Pipelines** | [Data Sync](data/pipelines/data-sync/) | IBM Aspera Sync |
-| **Lakehouse** | [Metadata Enrichment & Quality](data/lakehouse/metadata-enrichment/) | IBM watsonx.data intelligence |
-| **Lakehouse** | [Data Observability](data/lakehouse/data-observability/) | IBM watsonx.data integration — Databand |
-| **Lakehouse** | [Zero-Copy Lakehouse](data/lakehouse/zero-copy-lakehouse/) | IBM watsonx.data (Presto + Spark + Apache Iceberg) |
-| **Lakehouse** | [Serverless Vector](data/lakehouse/serverless-vector/) | IBM watsonx.data — Astra DB Serverless |
+| **Real-Time** | [Stream](streamhouse/real-time/stream/) | IBM Confluent — Connectors and Kafka |
+| **Real-Time** | [Transform](streamhouse/real-time/transform/) | IBM Confluent (Apache Flink) |
+| **Real-Time** | [Govern](streamhouse/real-time/govern/) | IBM Confluent — Stream Governance |
+| **Real-Time** | [Serve](streamhouse/real-time/serve/) | IBM Confluent — RTCE and Tableflow |
+| **Pipelines** | [RAG](streamhouse/pipelines/rag/) | IBM watsonx.data OpenRAG + IBM watsonx.ai |
+| **Pipelines** | [Unstructured Data Integration](streamhouse/pipelines/udi/) | IBM watsonx.data integration — UDI |
+| **Pipelines** | [Text2SQL](streamhouse/pipelines/text2sql/) | IBM watsonx.data intelligence |
+| **Pipelines** | [ETL / ELT](streamhouse/pipelines/etl/) | IBM watsonx.data integration — DataStage |
+| **Pipelines** | [Data Sync](streamhouse/pipelines/data-sync/) | IBM Aspera Sync |
+| **Lakehouse** | [Metadata Enrichment & Quality](streamhouse/lakehouse/metadata-enrichment/) | IBM watsonx.data intelligence |
+| **Lakehouse** | [Data Observability](streamhouse/lakehouse/data-observability/) | IBM watsonx.data integration — Databand |
+| **Lakehouse** | [Zero-Copy Lakehouse](streamhouse/lakehouse/zero-copy-lakehouse/) | IBM watsonx.data (Presto + Spark + Apache Iceberg) |
+| **Lakehouse** | [Serverless Vector](streamhouse/lakehouse/serverless-vector/) | IBM watsonx.data — Astra DB Serverless |
 
-[Explore all Data building blocks →](data/README.md)
+[Explore all Streamhouse building blocks →](streamhouse/README.md)
 
 ---
 

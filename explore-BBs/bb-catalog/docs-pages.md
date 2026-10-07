@@ -54,9 +54,9 @@ pages:
   - title: Streamhouse Overview
     section: "Data > Streamhouse"
     path: data-core/streamhouse/index.md
-  - title: Real-Time streaming
+  - title: Stream
     section: "Data > Streamhouse"
-    path: data-core/streamhouse/real-time-streaming/index.md
+    path: streamhouse-core/real-time/stream/index.md
   - title: Transform
     section: "Data > Streamhouse"
     path: data-core/streamhouse/transform/index.md

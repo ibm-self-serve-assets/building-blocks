@@ -1,10 +1,10 @@
----
+﻿---
 id: data-lineage
 name: Data Lineage
 group: lakehouse
 capability: data
 description: Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust
-repo_path: data/lakehouse/metadata-enrichment/data-lineage
+repo_path: streamhouse/lakehouse/metadata-enrichment/data-lineage
 docs_path: data-core/lakehouse/metadata-enrichment/index.md
 products:
   - watsonx.data
@@ -21,7 +21,7 @@ tags:
 
 Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust
 
-- **Repo**: [data/lakehouse/metadata-enrichment/data-lineage](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/lakehouse/metadata-enrichment/data-lineage)
+- **Repo**: [streamhouse/lakehouse/metadata-enrichment/data-lineage](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/streamhouse/lakehouse/metadata-enrichment/data-lineage)
 - **Docs**: [data-core/lakehouse/metadata-enrichment/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/lakehouse/metadata-enrichment/)
 
 <!--

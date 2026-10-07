@@ -1,10 +1,10 @@
----
+﻿---
 id: data-pipeline-ai-generated
 name: Data Pipeline (AI Generated)
 group: pipelines
 capability: data
 description: AI-assisted data pipeline generation for ingesting unstructured and structured data via batch, streaming, or hybrid patterns
-repo_path: data/pipelines/udi
+repo_path: streamhouse/pipelines/udi
 docs_path: data-core/pipelines/udi/index.md
 products:
   - watsonx.data
@@ -21,7 +21,7 @@ tags:
 
 AI-assisted data pipeline generation for ingesting unstructured and structured data via batch, streaming, or hybrid patterns
 
-- **Repo**: [data/pipelines/udi](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/pipelines/udi)
+- **Repo**: [streamhouse/pipelines/udi](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/streamhouse/pipelines/udi)
 - **Docs**: [data-core/pipelines/udi/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/pipelines/udi/)
 
 <!--

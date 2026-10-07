@@ -1,10 +1,10 @@
----
+﻿---
 id: rag
 name: RAG
 group: pipelines
 capability: data
 description: "Retrieval-Augmented Generation pipeline: document ingestion from IBM COS, watsonx.ai embeddings, vector storage in Milvus or OpenSearch, and hybrid semantic + BM25 search. Ships with a FastAPI service plus ingestion and retrieval MCP servers."
-repo_path: data/pipelines/rag
+repo_path: streamhouse/pipelines/rag
 docs_path: data-core/pipelines/rag/index.md
 products:
   - watsonx.ai
@@ -32,7 +32,7 @@ bob_modes:
 
 Retrieval-Augmented Generation pipeline: document ingestion from IBM COS, watsonx.ai embeddings, vector storage in Milvus or OpenSearch, and hybrid semantic + BM25 search. Ships with a FastAPI service plus ingestion and retrieval MCP servers.
 
-- **Repo**: [data/pipelines/rag](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/pipelines/rag)
+- **Repo**: [streamhouse/pipelines/rag](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/streamhouse/pipelines/rag)
 - **Docs**: [data-core/pipelines/rag/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/pipelines/rag/)
 
 <!--
