@@ -1,0 +1,10 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FactoryPulseRagQueryRequest",
+  "type": "object",
+  "properties": {
+    "request_id": {"type": "string"}, "instance_id": {"type": "string"}, "question": {"type": "string"}, "ts": {"type": "string"}
+  },
+  "required": ["request_id", "instance_id", "question", "ts"],
+  "additionalProperties": false
+}
