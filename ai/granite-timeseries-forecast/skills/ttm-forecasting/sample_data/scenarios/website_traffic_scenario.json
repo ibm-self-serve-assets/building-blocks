@@ -1,0 +1,2061 @@
+{
+  "scenario_name": "Website Traffic Prediction",
+  "description": "Forecast visitor counts for capacity planning and auto-scaling",
+  "use_case": "Auto-scaling and resource optimization",
+  "frequency": "1h",
+  "context_length": 512,
+  "prediction_length": 96,
+  "unit": "visitors",
+  "threshold": 10000,
+  "data": [
+    {
+      "timestamp": "2023-01-01T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-01T01:00:00Z",
+      "value": 337
+    },
+    {
+      "timestamp": "2023-01-01T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-01T03:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-01T04:00:00Z",
+      "value": 296
+    },
+    {
+      "timestamp": "2023-01-01T05:00:00Z",
+      "value": 539
+    },
+    {
+      "timestamp": "2023-01-01T06:00:00Z",
+      "value": 735
+    },
+    {
+      "timestamp": "2023-01-01T07:00:00Z",
+      "value": 1088
+    },
+    {
+      "timestamp": "2023-01-01T08:00:00Z",
+      "value": 1363
+    },
+    {
+      "timestamp": "2023-01-01T09:00:00Z",
+      "value": 1714
+    },
+    {
+      "timestamp": "2023-01-01T10:00:00Z",
+      "value": 2128
+    },
+    {
+      "timestamp": "2023-01-01T11:00:00Z",
+      "value": 2620
+    },
+    {
+      "timestamp": "2023-01-01T12:00:00Z",
+      "value": 2849
+    },
+    {
+      "timestamp": "2023-01-01T13:00:00Z",
+      "value": 3204
+    },
+    {
+      "timestamp": "2023-01-01T14:00:00Z",
+      "value": 3051
+    },
+    {
+      "timestamp": "2023-01-01T15:00:00Z",
+      "value": 2414
+    },
+    {
+      "timestamp": "2023-01-01T16:00:00Z",
+      "value": 2425
+    },
+    {
+      "timestamp": "2023-01-01T17:00:00Z",
+      "value": 1834
+    },
+    {
+      "timestamp": "2023-01-01T18:00:00Z",
+      "value": 1618
+    },
+    {
+      "timestamp": "2023-01-01T19:00:00Z",
+      "value": 1297
+    },
+    {
+      "timestamp": "2023-01-01T20:00:00Z",
+      "value": 782
+    },
+    {
+      "timestamp": "2023-01-01T21:00:00Z",
+      "value": 69
+    },
+    {
+      "timestamp": "2023-01-01T22:00:00Z",
+      "value": 391
+    },
+    {
+      "timestamp": "2023-01-01T23:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-02T00:00:00Z",
+      "value": 363
+    },
+    {
+      "timestamp": "2023-01-02T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-02T02:00:00Z",
+      "value": 98
+    },
+    {
+      "timestamp": "2023-01-02T03:00:00Z",
+      "value": 609
+    },
+    {
+      "timestamp": "2023-01-02T04:00:00Z",
+      "value": 64
+    },
+    {
+      "timestamp": "2023-01-02T05:00:00Z",
+      "value": 704
+    },
+    {
+      "timestamp": "2023-01-02T06:00:00Z",
+      "value": 886
+    },
+    {
+      "timestamp": "2023-01-02T07:00:00Z",
+      "value": 1540
+    },
+    {
+      "timestamp": "2023-01-02T08:00:00Z",
+      "value": 2150
+    },
+    {
+      "timestamp": "2023-01-02T09:00:00Z",
+      "value": 3192
+    },
+    {
+      "timestamp": "2023-01-02T10:00:00Z",
+      "value": 3735
+    },
+    {
+      "timestamp": "2023-01-02T11:00:00Z",
+      "value": 4505
+    },
+    {
+      "timestamp": "2023-01-02T12:00:00Z",
+      "value": 4998
+    },
+    {
+      "timestamp": "2023-01-02T13:00:00Z",
+      "value": 4676
+    },
+    {
+      "timestamp": "2023-01-02T14:00:00Z",
+      "value": 5151
+    },
+    {
+      "timestamp": "2023-01-02T15:00:00Z",
+      "value": 4385
+    },
+    {
+      "timestamp": "2023-01-02T16:00:00Z",
+      "value": 3461
+    },
+    {
+      "timestamp": "2023-01-02T17:00:00Z",
+      "value": 2922
+    },
+    {
+      "timestamp": "2023-01-02T18:00:00Z",
+      "value": 2488
+    },
+    {
+      "timestamp": "2023-01-02T19:00:00Z",
+      "value": 1849
+    },
+    {
+      "timestamp": "2023-01-02T20:00:00Z",
+      "value": 964
+    },
+    {
+      "timestamp": "2023-01-02T21:00:00Z",
+      "value": 720
+    },
+    {
+      "timestamp": "2023-01-02T22:00:00Z",
+      "value": 469
+    },
+    {
+      "timestamp": "2023-01-02T23:00:00Z",
+      "value": 452
+    },
+    {
+      "timestamp": "2023-01-03T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-03T01:00:00Z",
+      "value": 277
+    },
+    {
+      "timestamp": "2023-01-03T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-03T03:00:00Z",
+      "value": 96
+    },
+    {
+      "timestamp": "2023-01-03T04:00:00Z",
+      "value": 556
+    },
+    {
+      "timestamp": "2023-01-03T05:00:00Z",
+      "value": 847
+    },
+    {
+      "timestamp": "2023-01-03T06:00:00Z",
+      "value": 1095
+    },
+    {
+      "timestamp": "2023-01-03T07:00:00Z",
+      "value": 1769
+    },
+    {
+      "timestamp": "2023-01-03T08:00:00Z",
+      "value": 2354
+    },
+    {
+      "timestamp": "2023-01-03T09:00:00Z",
+      "value": 3212
+    },
+    {
+      "timestamp": "2023-01-03T10:00:00Z",
+      "value": 4034
+    },
+    {
+      "timestamp": "2023-01-03T11:00:00Z",
+      "value": 4541
+    },
+    {
+      "timestamp": "2023-01-03T12:00:00Z",
+      "value": 5037
+    },
+    {
+      "timestamp": "2023-01-03T13:00:00Z",
+      "value": 4943
+    },
+    {
+      "timestamp": "2023-01-03T14:00:00Z",
+      "value": 4756
+    },
+    {
+      "timestamp": "2023-01-03T15:00:00Z",
+      "value": 3956
+    },
+    {
+      "timestamp": "2023-01-03T16:00:00Z",
+      "value": 3881
+    },
+    {
+      "timestamp": "2023-01-03T17:00:00Z",
+      "value": 3062
+    },
+    {
+      "timestamp": "2023-01-03T18:00:00Z",
+      "value": 2421
+    },
+    {
+      "timestamp": "2023-01-03T19:00:00Z",
+      "value": 1265
+    },
+    {
+      "timestamp": "2023-01-03T20:00:00Z",
+      "value": 1006
+    },
+    {
+      "timestamp": "2023-01-03T21:00:00Z",
+      "value": 586
+    },
+    {
+      "timestamp": "2023-01-03T22:00:00Z",
+      "value": 53
+    },
+    {
+      "timestamp": "2023-01-03T23:00:00Z",
+      "value": 428
+    },
+    {
+      "timestamp": "2023-01-04T00:00:00Z",
+      "value": 298
+    },
+    {
+      "timestamp": "2023-01-04T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-04T02:00:00Z",
+      "value": 228
+    },
+    {
+      "timestamp": "2023-01-04T03:00:00Z",
+      "value": 595
+    },
+    {
+      "timestamp": "2023-01-04T04:00:00Z",
+      "value": 174
+    },
+    {
+      "timestamp": "2023-01-04T05:00:00Z",
+      "value": 902
+    },
+    {
+      "timestamp": "2023-01-04T06:00:00Z",
+      "value": 1429
+    },
+    {
+      "timestamp": "2023-01-04T07:00:00Z",
+      "value": 2027
+    },
+    {
+      "timestamp": "2023-01-04T08:00:00Z",
+      "value": 2034
+    },
+    {
+      "timestamp": "2023-01-04T09:00:00Z",
+      "value": 2839
+    },
+    {
+      "timestamp": "2023-01-04T10:00:00Z",
+      "value": 3840
+    },
+    {
+      "timestamp": "2023-01-04T11:00:00Z",
+      "value": 4682
+    },
+    {
+      "timestamp": "2023-01-04T12:00:00Z",
+      "value": 4612
+    },
+    {
+      "timestamp": "2023-01-04T13:00:00Z",
+      "value": 4870
+    },
+    {
+      "timestamp": "2023-01-04T14:00:00Z",
+      "value": 4642
+    },
+    {
+      "timestamp": "2023-01-04T15:00:00Z",
+      "value": 4662
+    },
+    {
+      "timestamp": "2023-01-04T16:00:00Z",
+      "value": 3683
+    },
+    {
+      "timestamp": "2023-01-04T17:00:00Z",
+      "value": 3173
+    },
+    {
+      "timestamp": "2023-01-04T18:00:00Z",
+      "value": 2445
+    },
+    {
+      "timestamp": "2023-01-04T19:00:00Z",
+      "value": 1884
+    },
+    {
+      "timestamp": "2023-01-04T20:00:00Z",
+      "value": 1190
+    },
+    {
+      "timestamp": "2023-01-04T21:00:00Z",
+      "value": 769
+    },
+    {
+      "timestamp": "2023-01-04T22:00:00Z",
+      "value": 658
+    },
+    {
+      "timestamp": "2023-01-04T23:00:00Z",
+      "value": 341
+    },
+    {
+      "timestamp": "2023-01-05T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-05T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-05T02:00:00Z",
+      "value": 323
+    },
+    {
+      "timestamp": "2023-01-05T03:00:00Z",
+      "value": 272
+    },
+    {
+      "timestamp": "2023-01-05T04:00:00Z",
+      "value": 349
+    },
+    {
+      "timestamp": "2023-01-05T05:00:00Z",
+      "value": 750
+    },
+    {
+      "timestamp": "2023-01-05T06:00:00Z",
+      "value": 1784
+    },
+    {
+      "timestamp": "2023-01-05T07:00:00Z",
+      "value": 1636
+    },
+    {
+      "timestamp": "2023-01-05T08:00:00Z",
+      "value": 2412
+    },
+    {
+      "timestamp": "2023-01-05T09:00:00Z",
+      "value": 3150
+    },
+    {
+      "timestamp": "2023-01-05T10:00:00Z",
+      "value": 3742
+    },
+    {
+      "timestamp": "2023-01-05T11:00:00Z",
+      "value": 4680
+    },
+    {
+      "timestamp": "2023-01-05T12:00:00Z",
+      "value": 5045
+    },
+    {
+      "timestamp": "2023-01-05T13:00:00Z",
+      "value": 5105
+    },
+    {
+      "timestamp": "2023-01-05T14:00:00Z",
+      "value": 4592
+    },
+    {
+      "timestamp": "2023-01-05T15:00:00Z",
+      "value": 4694
+    },
+    {
+      "timestamp": "2023-01-05T16:00:00Z",
+      "value": 3955
+    },
+    {
+      "timestamp": "2023-01-05T17:00:00Z",
+      "value": 3039
+    },
+    {
+      "timestamp": "2023-01-05T18:00:00Z",
+      "value": 1760
+    },
+    {
+      "timestamp": "2023-01-05T19:00:00Z",
+      "value": 1635
+    },
+    {
+      "timestamp": "2023-01-05T20:00:00Z",
+      "value": 856
+    },
+    {
+      "timestamp": "2023-01-05T21:00:00Z",
+      "value": 653
+    },
+    {
+      "timestamp": "2023-01-05T22:00:00Z",
+      "value": 317
+    },
+    {
+      "timestamp": "2023-01-05T23:00:00Z",
+      "value": 73
+    },
+    {
+      "timestamp": "2023-01-06T00:00:00Z",
+      "value": 257
+    },
+    {
+      "timestamp": "2023-01-06T01:00:00Z",
+      "value": 102
+    },
+    {
+      "timestamp": "2023-01-06T02:00:00Z",
+      "value": 391
+    },
+    {
+      "timestamp": "2023-01-06T03:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-06T04:00:00Z",
+      "value": 382
+    },
+    {
+      "timestamp": "2023-01-06T05:00:00Z",
+      "value": 980
+    },
+    {
+      "timestamp": "2023-01-06T06:00:00Z",
+      "value": 1172
+    },
+    {
+      "timestamp": "2023-01-06T07:00:00Z",
+      "value": 1498
+    },
+    {
+      "timestamp": "2023-01-06T08:00:00Z",
+      "value": 2130
+    },
+    {
+      "timestamp": "2023-01-06T09:00:00Z",
+      "value": 2934
+    },
+    {
+      "timestamp": "2023-01-06T10:00:00Z",
+      "value": 3780
+    },
+    {
+      "timestamp": "2023-01-06T11:00:00Z",
+      "value": 4577
+    },
+    {
+      "timestamp": "2023-01-06T12:00:00Z",
+      "value": 4899
+    },
+    {
+      "timestamp": "2023-01-06T13:00:00Z",
+      "value": 5178
+    },
+    {
+      "timestamp": "2023-01-06T14:00:00Z",
+      "value": 5042
+    },
+    {
+      "timestamp": "2023-01-06T15:00:00Z",
+      "value": 4460
+    },
+    {
+      "timestamp": "2023-01-06T16:00:00Z",
+      "value": 4062
+    },
+    {
+      "timestamp": "2023-01-06T17:00:00Z",
+      "value": 3207
+    },
+    {
+      "timestamp": "2023-01-06T18:00:00Z",
+      "value": 2274
+    },
+    {
+      "timestamp": "2023-01-06T19:00:00Z",
+      "value": 1613
+    },
+    {
+      "timestamp": "2023-01-06T20:00:00Z",
+      "value": 1101
+    },
+    {
+      "timestamp": "2023-01-06T21:00:00Z",
+      "value": 548
+    },
+    {
+      "timestamp": "2023-01-06T22:00:00Z",
+      "value": 145
+    },
+    {
+      "timestamp": "2023-01-06T23:00:00Z",
+      "value": 250
+    },
+    {
+      "timestamp": "2023-01-07T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-07T01:00:00Z",
+      "value": 177
+    },
+    {
+      "timestamp": "2023-01-07T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-07T03:00:00Z",
+      "value": 175
+    },
+    {
+      "timestamp": "2023-01-07T04:00:00Z",
+      "value": 302
+    },
+    {
+      "timestamp": "2023-01-07T05:00:00Z",
+      "value": 332
+    },
+    {
+      "timestamp": "2023-01-07T06:00:00Z",
+      "value": 711
+    },
+    {
+      "timestamp": "2023-01-07T07:00:00Z",
+      "value": 848
+    },
+    {
+      "timestamp": "2023-01-07T08:00:00Z",
+      "value": 1308
+    },
+    {
+      "timestamp": "2023-01-07T09:00:00Z",
+      "value": 2007
+    },
+    {
+      "timestamp": "2023-01-07T10:00:00Z",
+      "value": 2367
+    },
+    {
+      "timestamp": "2023-01-07T11:00:00Z",
+      "value": 2669
+    },
+    {
+      "timestamp": "2023-01-07T12:00:00Z",
+      "value": 2769
+    },
+    {
+      "timestamp": "2023-01-07T13:00:00Z",
+      "value": 3166
+    },
+    {
+      "timestamp": "2023-01-07T14:00:00Z",
+      "value": 3340
+    },
+    {
+      "timestamp": "2023-01-07T15:00:00Z",
+      "value": 2223
+    },
+    {
+      "timestamp": "2023-01-07T16:00:00Z",
+      "value": 2503
+    },
+    {
+      "timestamp": "2023-01-07T17:00:00Z",
+      "value": 1887
+    },
+    {
+      "timestamp": "2023-01-07T18:00:00Z",
+      "value": 1622
+    },
+    {
+      "timestamp": "2023-01-07T19:00:00Z",
+      "value": 1236
+    },
+    {
+      "timestamp": "2023-01-07T20:00:00Z",
+      "value": 462
+    },
+    {
+      "timestamp": "2023-01-07T21:00:00Z",
+      "value": 785
+    },
+    {
+      "timestamp": "2023-01-07T22:00:00Z",
+      "value": 139
+    },
+    {
+      "timestamp": "2023-01-07T23:00:00Z",
+      "value": 103
+    },
+    {
+      "timestamp": "2023-01-08T00:00:00Z",
+      "value": 166
+    },
+    {
+      "timestamp": "2023-01-08T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-08T02:00:00Z",
+      "value": 145
+    },
+    {
+      "timestamp": "2023-01-08T03:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-08T04:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-08T05:00:00Z",
+      "value": 431
+    },
+    {
+      "timestamp": "2023-01-08T06:00:00Z",
+      "value": 447
+    },
+    {
+      "timestamp": "2023-01-08T07:00:00Z",
+      "value": 1272
+    },
+    {
+      "timestamp": "2023-01-08T08:00:00Z",
+      "value": 1445
+    },
+    {
+      "timestamp": "2023-01-08T09:00:00Z",
+      "value": 2130
+    },
+    {
+      "timestamp": "2023-01-08T10:00:00Z",
+      "value": 2030
+    },
+    {
+      "timestamp": "2023-01-08T11:00:00Z",
+      "value": 2242
+    },
+    {
+      "timestamp": "2023-01-08T12:00:00Z",
+      "value": 2461
+    },
+    {
+      "timestamp": "2023-01-08T13:00:00Z",
+      "value": 2944
+    },
+    {
+      "timestamp": "2023-01-08T14:00:00Z",
+      "value": 2665
+    },
+    {
+      "timestamp": "2023-01-08T15:00:00Z",
+      "value": 2743
+    },
+    {
+      "timestamp": "2023-01-08T16:00:00Z",
+      "value": 1987
+    },
+    {
+      "timestamp": "2023-01-08T17:00:00Z",
+      "value": 1557
+    },
+    {
+      "timestamp": "2023-01-08T18:00:00Z",
+      "value": 1453
+    },
+    {
+      "timestamp": "2023-01-08T19:00:00Z",
+      "value": 915
+    },
+    {
+      "timestamp": "2023-01-08T20:00:00Z",
+      "value": 810
+    },
+    {
+      "timestamp": "2023-01-08T21:00:00Z",
+      "value": 594
+    },
+    {
+      "timestamp": "2023-01-08T22:00:00Z",
+      "value": 333
+    },
+    {
+      "timestamp": "2023-01-08T23:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-09T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-09T01:00:00Z",
+      "value": 542
+    },
+    {
+      "timestamp": "2023-01-09T02:00:00Z",
+      "value": 89
+    },
+    {
+      "timestamp": "2023-01-09T03:00:00Z",
+      "value": 301
+    },
+    {
+      "timestamp": "2023-01-09T04:00:00Z",
+      "value": 445
+    },
+    {
+      "timestamp": "2023-01-09T05:00:00Z",
+      "value": 693
+    },
+    {
+      "timestamp": "2023-01-09T06:00:00Z",
+      "value": 1068
+    },
+    {
+      "timestamp": "2023-01-09T07:00:00Z",
+      "value": 1529
+    },
+    {
+      "timestamp": "2023-01-09T08:00:00Z",
+      "value": 2204
+    },
+    {
+      "timestamp": "2023-01-09T09:00:00Z",
+      "value": 2640
+    },
+    {
+      "timestamp": "2023-01-09T10:00:00Z",
+      "value": 4138
+    },
+    {
+      "timestamp": "2023-01-09T11:00:00Z",
+      "value": 4412
+    },
+    {
+      "timestamp": "2023-01-09T12:00:00Z",
+      "value": 4598
+    },
+    {
+      "timestamp": "2023-01-09T13:00:00Z",
+      "value": 5128
+    },
+    {
+      "timestamp": "2023-01-09T14:00:00Z",
+      "value": 5005
+    },
+    {
+      "timestamp": "2023-01-09T15:00:00Z",
+      "value": 4137
+    },
+    {
+      "timestamp": "2023-01-09T16:00:00Z",
+      "value": 3689
+    },
+    {
+      "timestamp": "2023-01-09T17:00:00Z",
+      "value": 3361
+    },
+    {
+      "timestamp": "2023-01-09T18:00:00Z",
+      "value": 2422
+    },
+    {
+      "timestamp": "2023-01-09T19:00:00Z",
+      "value": 1732
+    },
+    {
+      "timestamp": "2023-01-09T20:00:00Z",
+      "value": 1307
+    },
+    {
+      "timestamp": "2023-01-09T21:00:00Z",
+      "value": 671
+    },
+    {
+      "timestamp": "2023-01-09T22:00:00Z",
+      "value": 359
+    },
+    {
+      "timestamp": "2023-01-09T23:00:00Z",
+      "value": 568
+    },
+    {
+      "timestamp": "2023-01-10T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-10T01:00:00Z",
+      "value": 61
+    },
+    {
+      "timestamp": "2023-01-10T02:00:00Z",
+      "value": 266
+    },
+    {
+      "timestamp": "2023-01-10T03:00:00Z",
+      "value": 248
+    },
+    {
+      "timestamp": "2023-01-10T04:00:00Z",
+      "value": 166
+    },
+    {
+      "timestamp": "2023-01-10T05:00:00Z",
+      "value": 1086
+    },
+    {
+      "timestamp": "2023-01-10T06:00:00Z",
+      "value": 1088
+    },
+    {
+      "timestamp": "2023-01-10T07:00:00Z",
+      "value": 2013
+    },
+    {
+      "timestamp": "2023-01-10T08:00:00Z",
+      "value": 2415
+    },
+    {
+      "timestamp": "2023-01-10T09:00:00Z",
+      "value": 2868
+    },
+    {
+      "timestamp": "2023-01-10T10:00:00Z",
+      "value": 4113
+    },
+    {
+      "timestamp": "2023-01-10T11:00:00Z",
+      "value": 4398
+    },
+    {
+      "timestamp": "2023-01-10T12:00:00Z",
+      "value": 4691
+    },
+    {
+      "timestamp": "2023-01-10T13:00:00Z",
+      "value": 5016
+    },
+    {
+      "timestamp": "2023-01-10T14:00:00Z",
+      "value": 4428
+    },
+    {
+      "timestamp": "2023-01-10T15:00:00Z",
+      "value": 4517
+    },
+    {
+      "timestamp": "2023-01-10T16:00:00Z",
+      "value": 3646
+    },
+    {
+      "timestamp": "2023-01-10T17:00:00Z",
+      "value": 3003
+    },
+    {
+      "timestamp": "2023-01-10T18:00:00Z",
+      "value": 2128
+    },
+    {
+      "timestamp": "2023-01-10T19:00:00Z",
+      "value": 1783
+    },
+    {
+      "timestamp": "2023-01-10T20:00:00Z",
+      "value": 1176
+    },
+    {
+      "timestamp": "2023-01-10T21:00:00Z",
+      "value": 920
+    },
+    {
+      "timestamp": "2023-01-10T22:00:00Z",
+      "value": 760
+    },
+    {
+      "timestamp": "2023-01-10T23:00:00Z",
+      "value": 299
+    },
+    {
+      "timestamp": "2023-01-11T00:00:00Z",
+      "value": 66
+    },
+    {
+      "timestamp": "2023-01-11T01:00:00Z",
+      "value": 140
+    },
+    {
+      "timestamp": "2023-01-11T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-11T03:00:00Z",
+      "value": 129
+    },
+    {
+      "timestamp": "2023-01-11T04:00:00Z",
+      "value": 574
+    },
+    {
+      "timestamp": "2023-01-11T05:00:00Z",
+      "value": 522
+    },
+    {
+      "timestamp": "2023-01-11T06:00:00Z",
+      "value": 705
+    },
+    {
+      "timestamp": "2023-01-11T07:00:00Z",
+      "value": 1572
+    },
+    {
+      "timestamp": "2023-01-11T08:00:00Z",
+      "value": 2363
+    },
+    {
+      "timestamp": "2023-01-11T09:00:00Z",
+      "value": 3355
+    },
+    {
+      "timestamp": "2023-01-11T10:00:00Z",
+      "value": 3649
+    },
+    {
+      "timestamp": "2023-01-11T11:00:00Z",
+      "value": 4242
+    },
+    {
+      "timestamp": "2023-01-11T12:00:00Z",
+      "value": 4887
+    },
+    {
+      "timestamp": "2023-01-11T13:00:00Z",
+      "value": 4989
+    },
+    {
+      "timestamp": "2023-01-11T14:00:00Z",
+      "value": 4918
+    },
+    {
+      "timestamp": "2023-01-11T15:00:00Z",
+      "value": 4328
+    },
+    {
+      "timestamp": "2023-01-11T16:00:00Z",
+      "value": 3836
+    },
+    {
+      "timestamp": "2023-01-11T17:00:00Z",
+      "value": 2935
+    },
+    {
+      "timestamp": "2023-01-11T18:00:00Z",
+      "value": 2512
+    },
+    {
+      "timestamp": "2023-01-11T19:00:00Z",
+      "value": 1701
+    },
+    {
+      "timestamp": "2023-01-11T20:00:00Z",
+      "value": 1219
+    },
+    {
+      "timestamp": "2023-01-11T21:00:00Z",
+      "value": 607
+    },
+    {
+      "timestamp": "2023-01-11T22:00:00Z",
+      "value": 125
+    },
+    {
+      "timestamp": "2023-01-11T23:00:00Z",
+      "value": 243
+    },
+    {
+      "timestamp": "2023-01-12T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-12T01:00:00Z",
+      "value": 301
+    },
+    {
+      "timestamp": "2023-01-12T02:00:00Z",
+      "value": 332
+    },
+    {
+      "timestamp": "2023-01-12T03:00:00Z",
+      "value": 233
+    },
+    {
+      "timestamp": "2023-01-12T04:00:00Z",
+      "value": 409
+    },
+    {
+      "timestamp": "2023-01-12T05:00:00Z",
+      "value": 495
+    },
+    {
+      "timestamp": "2023-01-12T06:00:00Z",
+      "value": 1093
+    },
+    {
+      "timestamp": "2023-01-12T07:00:00Z",
+      "value": 1687
+    },
+    {
+      "timestamp": "2023-01-12T08:00:00Z",
+      "value": 2225
+    },
+    {
+      "timestamp": "2023-01-12T09:00:00Z",
+      "value": 2832
+    },
+    {
+      "timestamp": "2023-01-12T10:00:00Z",
+      "value": 4056
+    },
+    {
+      "timestamp": "2023-01-12T11:00:00Z",
+      "value": 4244
+    },
+    {
+      "timestamp": "2023-01-12T12:00:00Z",
+      "value": 5204
+    },
+    {
+      "timestamp": "2023-01-12T13:00:00Z",
+      "value": 5261
+    },
+    {
+      "timestamp": "2023-01-12T14:00:00Z",
+      "value": 5181
+    },
+    {
+      "timestamp": "2023-01-12T15:00:00Z",
+      "value": 4259
+    },
+    {
+      "timestamp": "2023-01-12T16:00:00Z",
+      "value": 3922
+    },
+    {
+      "timestamp": "2023-01-12T17:00:00Z",
+      "value": 2769
+    },
+    {
+      "timestamp": "2023-01-12T18:00:00Z",
+      "value": 2235
+    },
+    {
+      "timestamp": "2023-01-12T19:00:00Z",
+      "value": 1332
+    },
+    {
+      "timestamp": "2023-01-12T20:00:00Z",
+      "value": 951
+    },
+    {
+      "timestamp": "2023-01-12T21:00:00Z",
+      "value": 593
+    },
+    {
+      "timestamp": "2023-01-12T22:00:00Z",
+      "value": 613
+    },
+    {
+      "timestamp": "2023-01-12T23:00:00Z",
+      "value": 459
+    },
+    {
+      "timestamp": "2023-01-13T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-13T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-13T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-13T03:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-13T04:00:00Z",
+      "value": 53
+    },
+    {
+      "timestamp": "2023-01-13T05:00:00Z",
+      "value": 652
+    },
+    {
+      "timestamp": "2023-01-13T06:00:00Z",
+      "value": 1221
+    },
+    {
+      "timestamp": "2023-01-13T07:00:00Z",
+      "value": 1486
+    },
+    {
+      "timestamp": "2023-01-13T08:00:00Z",
+      "value": 2382
+    },
+    {
+      "timestamp": "2023-01-13T09:00:00Z",
+      "value": 2817
+    },
+    {
+      "timestamp": "2023-01-13T10:00:00Z",
+      "value": 3588
+    },
+    {
+      "timestamp": "2023-01-13T11:00:00Z",
+      "value": 4322
+    },
+    {
+      "timestamp": "2023-01-13T12:00:00Z",
+      "value": 5044
+    },
+    {
+      "timestamp": "2023-01-13T13:00:00Z",
+      "value": 4911
+    },
+    {
+      "timestamp": "2023-01-13T14:00:00Z",
+      "value": 5020
+    },
+    {
+      "timestamp": "2023-01-13T15:00:00Z",
+      "value": 4359
+    },
+    {
+      "timestamp": "2023-01-13T16:00:00Z",
+      "value": 3567
+    },
+    {
+      "timestamp": "2023-01-13T17:00:00Z",
+      "value": 2643
+    },
+    {
+      "timestamp": "2023-01-13T18:00:00Z",
+      "value": 2211
+    },
+    {
+      "timestamp": "2023-01-13T19:00:00Z",
+      "value": 1446
+    },
+    {
+      "timestamp": "2023-01-13T20:00:00Z",
+      "value": 1283
+    },
+    {
+      "timestamp": "2023-01-13T21:00:00Z",
+      "value": 784
+    },
+    {
+      "timestamp": "2023-01-13T22:00:00Z",
+      "value": 83
+    },
+    {
+      "timestamp": "2023-01-13T23:00:00Z",
+      "value": 408
+    },
+    {
+      "timestamp": "2023-01-14T00:00:00Z",
+      "value": 141
+    },
+    {
+      "timestamp": "2023-01-14T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-14T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-14T03:00:00Z",
+      "value": 198
+    },
+    {
+      "timestamp": "2023-01-14T04:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-14T05:00:00Z",
+      "value": 275
+    },
+    {
+      "timestamp": "2023-01-14T06:00:00Z",
+      "value": 771
+    },
+    {
+      "timestamp": "2023-01-14T07:00:00Z",
+      "value": 1041
+    },
+    {
+      "timestamp": "2023-01-14T08:00:00Z",
+      "value": 1481
+    },
+    {
+      "timestamp": "2023-01-14T09:00:00Z",
+      "value": 1960
+    },
+    {
+      "timestamp": "2023-01-14T10:00:00Z",
+      "value": 2102
+    },
+    {
+      "timestamp": "2023-01-14T11:00:00Z",
+      "value": 3147
+    },
+    {
+      "timestamp": "2023-01-14T12:00:00Z",
+      "value": 3030
+    },
+    {
+      "timestamp": "2023-01-14T13:00:00Z",
+      "value": 3449
+    },
+    {
+      "timestamp": "2023-01-14T14:00:00Z",
+      "value": 2870
+    },
+    {
+      "timestamp": "2023-01-14T15:00:00Z",
+      "value": 2777
+    },
+    {
+      "timestamp": "2023-01-14T16:00:00Z",
+      "value": 2350
+    },
+    {
+      "timestamp": "2023-01-14T17:00:00Z",
+      "value": 1806
+    },
+    {
+      "timestamp": "2023-01-14T18:00:00Z",
+      "value": 1453
+    },
+    {
+      "timestamp": "2023-01-14T19:00:00Z",
+      "value": 1042
+    },
+    {
+      "timestamp": "2023-01-14T20:00:00Z",
+      "value": 829
+    },
+    {
+      "timestamp": "2023-01-14T21:00:00Z",
+      "value": 487
+    },
+    {
+      "timestamp": "2023-01-14T22:00:00Z",
+      "value": 266
+    },
+    {
+      "timestamp": "2023-01-14T23:00:00Z",
+      "value": 246
+    },
+    {
+      "timestamp": "2023-01-15T00:00:00Z",
+      "value": 323
+    },
+    {
+      "timestamp": "2023-01-15T01:00:00Z",
+      "value": 64
+    },
+    {
+      "timestamp": "2023-01-15T02:00:00Z",
+      "value": 207
+    },
+    {
+      "timestamp": "2023-01-15T03:00:00Z",
+      "value": 176
+    },
+    {
+      "timestamp": "2023-01-15T04:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-15T05:00:00Z",
+      "value": 240
+    },
+    {
+      "timestamp": "2023-01-15T06:00:00Z",
+      "value": 480
+    },
+    {
+      "timestamp": "2023-01-15T07:00:00Z",
+      "value": 709
+    },
+    {
+      "timestamp": "2023-01-15T08:00:00Z",
+      "value": 1264
+    },
+    {
+      "timestamp": "2023-01-15T09:00:00Z",
+      "value": 1479
+    },
+    {
+      "timestamp": "2023-01-15T10:00:00Z",
+      "value": 2335
+    },
+    {
+      "timestamp": "2023-01-15T11:00:00Z",
+      "value": 2555
+    },
+    {
+      "timestamp": "2023-01-15T12:00:00Z",
+      "value": 3170
+    },
+    {
+      "timestamp": "2023-01-15T13:00:00Z",
+      "value": 3093
+    },
+    {
+      "timestamp": "2023-01-15T14:00:00Z",
+      "value": 2667
+    },
+    {
+      "timestamp": "2023-01-15T15:00:00Z",
+      "value": 2619
+    },
+    {
+      "timestamp": "2023-01-15T16:00:00Z",
+      "value": 2289
+    },
+    {
+      "timestamp": "2023-01-15T17:00:00Z",
+      "value": 1698
+    },
+    {
+      "timestamp": "2023-01-15T18:00:00Z",
+      "value": 1316
+    },
+    {
+      "timestamp": "2023-01-15T19:00:00Z",
+      "value": 771
+    },
+    {
+      "timestamp": "2023-01-15T20:00:00Z",
+      "value": 517
+    },
+    {
+      "timestamp": "2023-01-15T21:00:00Z",
+      "value": 477
+    },
+    {
+      "timestamp": "2023-01-15T22:00:00Z",
+      "value": 187
+    },
+    {
+      "timestamp": "2023-01-15T23:00:00Z",
+      "value": 390
+    },
+    {
+      "timestamp": "2023-01-16T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-16T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-16T02:00:00Z",
+      "value": 54
+    },
+    {
+      "timestamp": "2023-01-16T03:00:00Z",
+      "value": 531
+    },
+    {
+      "timestamp": "2023-01-16T04:00:00Z",
+      "value": 636
+    },
+    {
+      "timestamp": "2023-01-16T05:00:00Z",
+      "value": 843
+    },
+    {
+      "timestamp": "2023-01-16T06:00:00Z",
+      "value": 1291
+    },
+    {
+      "timestamp": "2023-01-16T07:00:00Z",
+      "value": 1958
+    },
+    {
+      "timestamp": "2023-01-16T08:00:00Z",
+      "value": 2439
+    },
+    {
+      "timestamp": "2023-01-16T09:00:00Z",
+      "value": 2999
+    },
+    {
+      "timestamp": "2023-01-16T10:00:00Z",
+      "value": 3825
+    },
+    {
+      "timestamp": "2023-01-16T11:00:00Z",
+      "value": 4281
+    },
+    {
+      "timestamp": "2023-01-16T12:00:00Z",
+      "value": 4814
+    },
+    {
+      "timestamp": "2023-01-16T13:00:00Z",
+      "value": 5088
+    },
+    {
+      "timestamp": "2023-01-16T14:00:00Z",
+      "value": 4759
+    },
+    {
+      "timestamp": "2023-01-16T15:00:00Z",
+      "value": 4446
+    },
+    {
+      "timestamp": "2023-01-16T16:00:00Z",
+      "value": 3700
+    },
+    {
+      "timestamp": "2023-01-16T17:00:00Z",
+      "value": 2782
+    },
+    {
+      "timestamp": "2023-01-16T18:00:00Z",
+      "value": 2013
+    },
+    {
+      "timestamp": "2023-01-16T19:00:00Z",
+      "value": 1775
+    },
+    {
+      "timestamp": "2023-01-16T20:00:00Z",
+      "value": 1100
+    },
+    {
+      "timestamp": "2023-01-16T21:00:00Z",
+      "value": 855
+    },
+    {
+      "timestamp": "2023-01-16T22:00:00Z",
+      "value": 389
+    },
+    {
+      "timestamp": "2023-01-16T23:00:00Z",
+      "value": 229
+    },
+    {
+      "timestamp": "2023-01-17T00:00:00Z",
+      "value": 91
+    },
+    {
+      "timestamp": "2023-01-17T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-17T02:00:00Z",
+      "value": 402
+    },
+    {
+      "timestamp": "2023-01-17T03:00:00Z",
+      "value": 432
+    },
+    {
+      "timestamp": "2023-01-17T04:00:00Z",
+      "value": 489
+    },
+    {
+      "timestamp": "2023-01-17T05:00:00Z",
+      "value": 479
+    },
+    {
+      "timestamp": "2023-01-17T06:00:00Z",
+      "value": 985
+    },
+    {
+      "timestamp": "2023-01-17T07:00:00Z",
+      "value": 1675
+    },
+    {
+      "timestamp": "2023-01-17T08:00:00Z",
+      "value": 2532
+    },
+    {
+      "timestamp": "2023-01-17T09:00:00Z",
+      "value": 3035
+    },
+    {
+      "timestamp": "2023-01-17T10:00:00Z",
+      "value": 3779
+    },
+    {
+      "timestamp": "2023-01-17T11:00:00Z",
+      "value": 4527
+    },
+    {
+      "timestamp": "2023-01-17T12:00:00Z",
+      "value": 4879
+    },
+    {
+      "timestamp": "2023-01-17T13:00:00Z",
+      "value": 4978
+    },
+    {
+      "timestamp": "2023-01-17T14:00:00Z",
+      "value": 4630
+    },
+    {
+      "timestamp": "2023-01-17T15:00:00Z",
+      "value": 4667
+    },
+    {
+      "timestamp": "2023-01-17T16:00:00Z",
+      "value": 3772
+    },
+    {
+      "timestamp": "2023-01-17T17:00:00Z",
+      "value": 2938
+    },
+    {
+      "timestamp": "2023-01-17T18:00:00Z",
+      "value": 2276
+    },
+    {
+      "timestamp": "2023-01-17T19:00:00Z",
+      "value": 1366
+    },
+    {
+      "timestamp": "2023-01-17T20:00:00Z",
+      "value": 753
+    },
+    {
+      "timestamp": "2023-01-17T21:00:00Z",
+      "value": 327
+    },
+    {
+      "timestamp": "2023-01-17T22:00:00Z",
+      "value": 479
+    },
+    {
+      "timestamp": "2023-01-17T23:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-18T00:00:00Z",
+      "value": 54
+    },
+    {
+      "timestamp": "2023-01-18T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-18T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-18T03:00:00Z",
+      "value": 102
+    },
+    {
+      "timestamp": "2023-01-18T04:00:00Z",
+      "value": 256
+    },
+    {
+      "timestamp": "2023-01-18T05:00:00Z",
+      "value": 544
+    },
+    {
+      "timestamp": "2023-01-18T06:00:00Z",
+      "value": 1432
+    },
+    {
+      "timestamp": "2023-01-18T07:00:00Z",
+      "value": 1668
+    },
+    {
+      "timestamp": "2023-01-18T08:00:00Z",
+      "value": 2176
+    },
+    {
+      "timestamp": "2023-01-18T09:00:00Z",
+      "value": 3211
+    },
+    {
+      "timestamp": "2023-01-18T10:00:00Z",
+      "value": 3715
+    },
+    {
+      "timestamp": "2023-01-18T11:00:00Z",
+      "value": 4660
+    },
+    {
+      "timestamp": "2023-01-18T12:00:00Z",
+      "value": 4538
+    },
+    {
+      "timestamp": "2023-01-18T13:00:00Z",
+      "value": 5221
+    },
+    {
+      "timestamp": "2023-01-18T14:00:00Z",
+      "value": 4634
+    },
+    {
+      "timestamp": "2023-01-18T15:00:00Z",
+      "value": 4270
+    },
+    {
+      "timestamp": "2023-01-18T16:00:00Z",
+      "value": 3819
+    },
+    {
+      "timestamp": "2023-01-18T17:00:00Z",
+      "value": 2822
+    },
+    {
+      "timestamp": "2023-01-18T18:00:00Z",
+      "value": 1965
+    },
+    {
+      "timestamp": "2023-01-18T19:00:00Z",
+      "value": 1548
+    },
+    {
+      "timestamp": "2023-01-18T20:00:00Z",
+      "value": 1025
+    },
+    {
+      "timestamp": "2023-01-18T21:00:00Z",
+      "value": 352
+    },
+    {
+      "timestamp": "2023-01-18T22:00:00Z",
+      "value": 596
+    },
+    {
+      "timestamp": "2023-01-18T23:00:00Z",
+      "value": 58
+    },
+    {
+      "timestamp": "2023-01-19T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-19T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-19T02:00:00Z",
+      "value": 126
+    },
+    {
+      "timestamp": "2023-01-19T03:00:00Z",
+      "value": 433
+    },
+    {
+      "timestamp": "2023-01-19T04:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-19T05:00:00Z",
+      "value": 680
+    },
+    {
+      "timestamp": "2023-01-19T06:00:00Z",
+      "value": 1260
+    },
+    {
+      "timestamp": "2023-01-19T07:00:00Z",
+      "value": 1672
+    },
+    {
+      "timestamp": "2023-01-19T08:00:00Z",
+      "value": 2275
+    },
+    {
+      "timestamp": "2023-01-19T09:00:00Z",
+      "value": 2811
+    },
+    {
+      "timestamp": "2023-01-19T10:00:00Z",
+      "value": 3843
+    },
+    {
+      "timestamp": "2023-01-19T11:00:00Z",
+      "value": 4316
+    },
+    {
+      "timestamp": "2023-01-19T12:00:00Z",
+      "value": 4874
+    },
+    {
+      "timestamp": "2023-01-19T13:00:00Z",
+      "value": 4789
+    },
+    {
+      "timestamp": "2023-01-19T14:00:00Z",
+      "value": 4784
+    },
+    {
+      "timestamp": "2023-01-19T15:00:00Z",
+      "value": 4384
+    },
+    {
+      "timestamp": "2023-01-19T16:00:00Z",
+      "value": 3479
+    },
+    {
+      "timestamp": "2023-01-19T17:00:00Z",
+      "value": 3239
+    },
+    {
+      "timestamp": "2023-01-19T18:00:00Z",
+      "value": 2265
+    },
+    {
+      "timestamp": "2023-01-19T19:00:00Z",
+      "value": 1367
+    },
+    {
+      "timestamp": "2023-01-19T20:00:00Z",
+      "value": 1031
+    },
+    {
+      "timestamp": "2023-01-19T21:00:00Z",
+      "value": 703
+    },
+    {
+      "timestamp": "2023-01-19T22:00:00Z",
+      "value": 330
+    },
+    {
+      "timestamp": "2023-01-19T23:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-20T00:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-20T01:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-20T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-20T03:00:00Z",
+      "value": 455
+    },
+    {
+      "timestamp": "2023-01-20T04:00:00Z",
+      "value": 739
+    },
+    {
+      "timestamp": "2023-01-20T05:00:00Z",
+      "value": 1050
+    },
+    {
+      "timestamp": "2023-01-20T06:00:00Z",
+      "value": 1534
+    },
+    {
+      "timestamp": "2023-01-20T07:00:00Z",
+      "value": 1895
+    },
+    {
+      "timestamp": "2023-01-20T08:00:00Z",
+      "value": 2103
+    },
+    {
+      "timestamp": "2023-01-20T09:00:00Z",
+      "value": 2920
+    },
+    {
+      "timestamp": "2023-01-20T10:00:00Z",
+      "value": 3995
+    },
+    {
+      "timestamp": "2023-01-20T11:00:00Z",
+      "value": 4318
+    },
+    {
+      "timestamp": "2023-01-20T12:00:00Z",
+      "value": 4776
+    },
+    {
+      "timestamp": "2023-01-20T13:00:00Z",
+      "value": 4996
+    },
+    {
+      "timestamp": "2023-01-20T14:00:00Z",
+      "value": 4930
+    },
+    {
+      "timestamp": "2023-01-20T15:00:00Z",
+      "value": 4140
+    },
+    {
+      "timestamp": "2023-01-20T16:00:00Z",
+      "value": 3781
+    },
+    {
+      "timestamp": "2023-01-20T17:00:00Z",
+      "value": 3131
+    },
+    {
+      "timestamp": "2023-01-20T18:00:00Z",
+      "value": 1879
+    },
+    {
+      "timestamp": "2023-01-20T19:00:00Z",
+      "value": 1848
+    },
+    {
+      "timestamp": "2023-01-20T20:00:00Z",
+      "value": 1235
+    },
+    {
+      "timestamp": "2023-01-20T21:00:00Z",
+      "value": 514
+    },
+    {
+      "timestamp": "2023-01-20T22:00:00Z",
+      "value": 764
+    },
+    {
+      "timestamp": "2023-01-20T23:00:00Z",
+      "value": 303
+    },
+    {
+      "timestamp": "2023-01-21T00:00:00Z",
+      "value": 111
+    },
+    {
+      "timestamp": "2023-01-21T01:00:00Z",
+      "value": 343
+    },
+    {
+      "timestamp": "2023-01-21T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-21T03:00:00Z",
+      "value": 134
+    },
+    {
+      "timestamp": "2023-01-21T04:00:00Z",
+      "value": 452
+    },
+    {
+      "timestamp": "2023-01-21T05:00:00Z",
+      "value": 690
+    },
+    {
+      "timestamp": "2023-01-21T06:00:00Z",
+      "value": 642
+    },
+    {
+      "timestamp": "2023-01-21T07:00:00Z",
+      "value": 937
+    },
+    {
+      "timestamp": "2023-01-21T08:00:00Z",
+      "value": 1220
+    },
+    {
+      "timestamp": "2023-01-21T09:00:00Z",
+      "value": 1753
+    },
+    {
+      "timestamp": "2023-01-21T10:00:00Z",
+      "value": 2093
+    },
+    {
+      "timestamp": "2023-01-21T11:00:00Z",
+      "value": 2167
+    },
+    {
+      "timestamp": "2023-01-21T12:00:00Z",
+      "value": 2790
+    },
+    {
+      "timestamp": "2023-01-21T13:00:00Z",
+      "value": 2798
+    },
+    {
+      "timestamp": "2023-01-21T14:00:00Z",
+      "value": 2787
+    },
+    {
+      "timestamp": "2023-01-21T15:00:00Z",
+      "value": 2556
+    },
+    {
+      "timestamp": "2023-01-21T16:00:00Z",
+      "value": 2167
+    },
+    {
+      "timestamp": "2023-01-21T17:00:00Z",
+      "value": 1840
+    },
+    {
+      "timestamp": "2023-01-21T18:00:00Z",
+      "value": 1360
+    },
+    {
+      "timestamp": "2023-01-21T19:00:00Z",
+      "value": 901
+    },
+    {
+      "timestamp": "2023-01-21T20:00:00Z",
+      "value": 525
+    },
+    {
+      "timestamp": "2023-01-21T21:00:00Z",
+      "value": 385
+    },
+    {
+      "timestamp": "2023-01-21T22:00:00Z",
+      "value": 176
+    },
+    {
+      "timestamp": "2023-01-21T23:00:00Z",
+      "value": 105
+    },
+    {
+      "timestamp": "2023-01-22T00:00:00Z",
+      "value": 291
+    },
+    {
+      "timestamp": "2023-01-22T01:00:00Z",
+      "value": 81
+    },
+    {
+      "timestamp": "2023-01-22T02:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-22T03:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-22T04:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-22T05:00:00Z",
+      "value": 50
+    },
+    {
+      "timestamp": "2023-01-22T06:00:00Z",
+      "value": 825
+    },
+    {
+      "timestamp": "2023-01-22T07:00:00Z",
+      "value": 1194
+    }
+  ],
+  "notes": "512 hourly visitors with daytime peak, weekend dip, Gaussian noise."
+}
