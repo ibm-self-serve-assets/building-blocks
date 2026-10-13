@@ -5,70 +5,13 @@ description: Expert guidance for building real-time streaming systems on Conflue
 
 # Confluent Cloud Streaming System Builder
 
-## Purpose
-This skill defines the process for analyzing streaming use case requirements and generating **complete, production-ready streaming systems** on Confluent Cloud that include:
-- Terraform Infrastructure-as-Code for Confluent Cloud resources
-- Apache Flink SQL for real-time stream processing
-- Python producers with proper schema serialization
-- Comprehensive documentation and testing approaches
+You are a Confluent Cloud streaming architect. When given a streaming use case, generate a **complete streaming system**: Terraform IaC, Flink SQL, Python producer, and docs.
 
-## Objective
-Transform natural language streaming requirements into **deployable streaming systems** that:
-- Can be deployed to Confluent Cloud with minimal configuration
-- Follow Infrastructure-as-Code best practices
-- Implement correct Flink SQL patterns for stream processing
-- Include production-ready error handling and monitoring
-- Provide clear documentation for reproduction
-- Adapt to any streaming domain while maintaining technical correctness
+**Two-phase workflow — order is mandatory:**
+- **Phase 1 — Terraform first:** deploys infrastructure and registers schemas in Schema Registry via Flink DDL.
+- **Phase 2 — Python producer second:** retrieves schemas from Schema Registry and produces matching messages.
 
-## Documentation Principles
-**IMPORTANT**: Generate specifications based on user requirements and streaming best practices.
-
-**Rules:**
-- Analyze the user's domain and infer appropriate streaming patterns
-- Design schemas that match the business entities and events
-- Select aggregation patterns based on use case requirements
-- Generate complete, working code without placeholders
-- Include all critical technical requirements (versions, formats, RBAC)
-- Provide realistic sample data for the domain
-- Document testing approaches with specific queries
-- State assumptions clearly when inferring requirements
-
----
-
-## Scope
-This skill applies to:
-- Real-time data streaming use cases
-- Event-driven architectures
-- Stream processing and aggregation
-- IoT sensor data processing
-- Financial transaction processing
-- Retail inventory management
-- Healthcare vitals monitoring
-- Logistics tracking systems
-- Any domain requiring real-time data processing
-
-The output is a **complete streaming system** with Terraform, Flink SQL, Python, and documentation.
-
----
-
-## Procedure
-
-You are a Confluent Cloud streaming architect specializing in Infrastructure-as-Code and real-time data processing. When provided with a streaming use case, generate a **complete streaming system** following this two-phase workflow.
-
-## CRITICAL: Two-Phase Generation Workflow
-
-**Phase 1: Terraform Infrastructure** (defines schema, creates Flink tables)
-- Generate all Terraform files
-- Deploy infrastructure
-- Flink creates schemas in Schema Registry
-
-**Phase 2: Python Producer** (matches deployed schema)
-- Retrieve schemas from Schema Registry
-- Generate producer matching exact schema
-- Test data flow
-
-**Why This Matters:** The Python producer MUST match the schema that Flink registers in Schema Registry. Always generate Terraform first, deploy it, then generate Python.
+Generate complete working code without placeholders. State assumptions clearly when inferring requirements.
 
 ---
 
@@ -164,18 +107,27 @@ terraform {
 
 **Resource Creation Order (Critical for Dependencies):**
 1. Data source: `confluent_organization`
-2. Environment: `confluent_environment`
+2. Environment: `confluent_environment` — **do NOT add a `stream_governance` block**; omitting it lets Confluent auto-provision Schema Registry (adding `package = "ESSENTIALS"` does NOT provision Schema Registry and will cause `data.confluent_schema_registry_cluster` to fail with "no schema registry clusters found")
 3. Kafka Cluster: `confluent_kafka_cluster` (Basic tier)
 4. Service Account: `confluent_service_account`
-5. Data source: `confluent_schema_registry_cluster` (auto-provisioned)
-6. Flink Compute Pool: `confluent_flink_compute_pool`
-7. Data source: `confluent_flink_region`
+5. Data source: `confluent_schema_registry_cluster` — must have `depends_on = [confluent_kafka_cluster.main]` (not the environment) so it resolves only after the cluster is ready
+6. Flink Compute Pool: `confluent_flink_compute_pool` — must have `depends_on = [confluent_kafka_cluster.main]`
+7. Data source: `confluent_flink_region` — must have `depends_on = [confluent_environment.main]`
+
+**Do NOT declare `confluent_kafka_topic` resources** for topics that will be owned by Flink DDL. The `CREATE TABLE` Flink statement auto-creates the backing Kafka topic. Pre-declaring the topic as a Terraform resource causes:
+- Partition count conflicts (Flink may create with different defaults)
+- Read-only config errors on re-apply (`compression.type` etc.)
+- State drift between Kafka topic resource and Flink catalog
+Only declare `confluent_kafka_topic` resources for topics consumed by non-Flink systems that Flink will not `CREATE TABLE` against.
 
 #### Phase 3: Security & Access
 
-**API Keys (3 types with correct associations):**
+**API Keys (3 types with correct associations and `depends_on`):**
+
+Each API key must depend on its **specific** role binding — not on `time_sleep.wait_for_rbac`. Using `time_sleep` as the dependency for all three is incorrect and can cause race conditions where a key is created before its permission is granted.
+
 ```hcl
-# Flink API Key → Associated with Flink Region
+# Flink API Key → Associated with Flink Region, depends on FlinkDeveloper role binding
 resource "confluent_api_key" "flink" {
   owner {
     id          = confluent_service_account.app.id
@@ -186,10 +138,14 @@ resource "confluent_api_key" "flink" {
     id          = data.confluent_flink_region.main.id
     api_version = data.confluent_flink_region.main.api_version
     kind        = data.confluent_flink_region.main.kind
+    environment {
+      id = confluent_environment.main.id
+    }
   }
+  depends_on = [confluent_role_binding.flink_developer]
 }
 
-# Kafka API Key → Associated with Kafka Cluster
+# Kafka API Key → Associated with Kafka Cluster, depends on CloudClusterAdmin role binding
 resource "confluent_api_key" "kafka_producer" {
   owner {
     id          = confluent_service_account.app.id
@@ -200,10 +156,14 @@ resource "confluent_api_key" "kafka_producer" {
     id          = confluent_kafka_cluster.main.id
     api_version = confluent_kafka_cluster.main.api_version
     kind        = confluent_kafka_cluster.main.kind
+    environment {
+      id = confluent_environment.main.id
+    }
   }
+  depends_on = [confluent_role_binding.kafka_admin]
 }
 
-# Schema Registry API Key → Associated with Schema Registry
+# Schema Registry API Key → Associated with Schema Registry, depends on EnvironmentAdmin role binding
 resource "confluent_api_key" "schema_registry" {
   owner {
     id          = confluent_service_account.app.id
@@ -214,7 +174,11 @@ resource "confluent_api_key" "schema_registry" {
     id          = data.confluent_schema_registry_cluster.main.id
     api_version = data.confluent_schema_registry_cluster.main.api_version
     kind        = data.confluent_schema_registry_cluster.main.kind
+    environment {
+      id = confluent_environment.main.id
+    }
   }
+  depends_on = [confluent_role_binding.env_admin]
 }
 ```
 
@@ -335,21 +299,26 @@ For time-based windows (TUMBLE, HOP, SESSION), Flink requires the watermark to a
 - Events group by timestamp, not arrival time
 - All events must fall within the same window boundary
 
-**Correct Pattern for Windowed Test Data:**
+**Correct Pattern for Windowed Test Data (`--windowed` mode):**
 ```python
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
-# Round to next window boundary
-now = datetime.now()
+# ALWAYS use timezone-aware UTC — datetime.utcnow() is deprecated and interprets
+# .timestamp() as local time on non-UTC machines, producing wrong window alignment.
+now = datetime.now(timezone.utc)
+
+# Round UP to the NEXT 5-minute boundary. Use second=0 (not second=10) so
+# timestamps align exactly to epoch-aligned window boundaries.
 minutes = ((now.minute // 5) + 1) * 5
-base_time = now.replace(minute=minutes if minutes < 60 else 0, second=10, microsecond=0)
-if minutes >= 60:
-    base_time += timedelta(hours=1)
+if minutes < 60:
+    base_time = now.replace(minute=minutes, second=0, microsecond=0)
+else:
+    base_time = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
 
 base_timestamp_ms = int(base_time.timestamp() * 1000)
 
-# Generate events within window (leave 10s buffer)
-window_duration_ms = (5 * 60 - 20) * 1000
+# Generate events within window (leave 30s buffer before window end)
+window_duration_ms = (5 * 60 - 30) * 1000
 spacing_ms = window_duration_ms // 7  # For 8 events
 
 events = []
@@ -359,18 +328,21 @@ for i in range(8):
         'event_time': base_timestamp_ms + (i * spacing_ms)
     })
 
-# CRITICAL: Add event after window to advance watermark
+# Watermark-advance event: use 7 minutes (not 6).
+# Rule: advance_ts - watermark_slack > window_end on ALL partitions.
+# With 10s slack and 5-min window: 7 min past window_start = 2 min past window_end + slack.
 events.append({
     'entity_id': 'WATERMARK-TRIGGER',
-    'event_time': base_timestamp_ms + (6 * 60 * 1000)  # 6 minutes later
+    'event_time': base_timestamp_ms + (7 * 60 * 1000)  # 7 minutes — guaranteed closure
 })
 ```
 
 **Best Practices:**
-1. Align test data to window boundaries
-2. Spread events across window duration minus buffers
-3. Include events AFTER window to trigger closure
-4. Set watermark delay based on out-of-order tolerance (5-30 seconds)
+1. Always use `datetime.now(timezone.utc)` — never `datetime.utcnow()` (deprecated, wrong on non-UTC hosts)
+2. Always use `second=0, microsecond=0` — `second=10` misaligns timestamps past the window boundary
+3. Spread events across window duration minus a 30-second buffer at the end
+4. Watermark-advance event: `window_start + 7 min` (not 6×) to clear the 10s slack on all partitions
+5. Set watermark slack (`INTERVAL '10' SECONDS`) based on out-of-order tolerance
 
 **Aggregation Job Example:**
 ```sql
@@ -417,8 +389,14 @@ resource "confluent_flink_statement" "create_source_table" {
     time_sleep.wait_for_rbac,
     confluent_api_key.flink
   ]
+
+  lifecycle {
+    prevent_destroy = false
+  }
 }
 ```
+
+**Statement ordering:** The first `CREATE TABLE` statement (source table) depends on `[time_sleep.wait_for_rbac, confluent_api_key.flink]`. Each subsequent statement depends only on the preceding Flink statement resource — do not re-list `time_sleep` on later statements.
 
 **Important Provider Note:**
 - Do **not** rely on partial provider-level Flink environment variables for `confluent_flink_statement` resources.
@@ -472,7 +450,8 @@ output "schema_registry_api_secret" {
 }
 
 output "flink_rest_endpoint" {
-  value = "https://flink.${var.region}.${var.cloud_provider}.confluent.cloud"
+  # Use the data source — do NOT hardcode a URL template
+  value = data.confluent_flink_region.main.rest_endpoint
 }
 
 output "environment_id" {
@@ -496,6 +475,11 @@ SCHEMA_REGISTRY_URL=${data.confluent_schema_registry_cluster.main.rest_endpoint}
 SCHEMA_REGISTRY_API_KEY=${confluent_api_key.schema_registry.id}
 SCHEMA_REGISTRY_API_SECRET=${confluent_api_key.schema_registry.secret}
 EOT
+
+  depends_on = [
+    confluent_api_key.kafka_producer,
+    confluent_api_key.schema_registry
+  ]
 }
 ```
 
@@ -516,7 +500,38 @@ python-dotenv>=1.0.0
 
 #### Sample Data Generation (`python/sample-transactions.json`)
 
-Generate realistic domain-specific sample data with appropriate entity IDs, value ranges, event types, and timestamps (milliseconds since epoch).
+Generate realistic domain-specific sample data with appropriate entity IDs, value ranges, and event types.
+
+**CRITICAL — Never store absolute (epoch) timestamps in sample JSON files.** This is the root cause of frozen Flink watermarks: hardcoded values like `1700000010000` are in the distant past when the producer runs. The Flink job sets each partition's watermark to that historical value. The global watermark = `min(all partition watermarks)` — one stale partition permanently freezes it. No window in the present ever closes.
+
+**The structural fix: store `offset_ms` (relative ms from first event), never an absolute timestamp.** The producer anchors to the current window boundary at runtime:
+
+```json
+[
+  { "account_id": "ACC-FRAUD-01", "transaction_id": "TXN-FRAUD-01", "amount": 1500.00, "transaction_type": "PURCHASE", "merchant": "Offshore Casino",    "offset_ms": 0      },
+  { "account_id": "ACC-FRAUD-01", "transaction_id": "TXN-FRAUD-02", "amount": 2300.50, "transaction_type": "TRANSFER", "merchant": "Anonymous Transfer", "offset_ms": 24545  },
+  ...12 total fraud events with offset_ms 0–269995 (all within one 5-min window)...
+  { "account_id": "ACC-WATERMARK", "transaction_id": "TXN-WATERMARK", "amount": 0.01, "transaction_type": "PURCHASE", "merchant": "Watermark Trigger", "offset_ms": 420000 }
+]
+```
+
+**Always include a watermark-trigger record** as the last entry. Formula: `offset_ms = window_ms + slack_ms + buffer_ms`. For a 5-min window with 10s slack: `300000 + 10000 + 110000 = 420000 ms` (7 min). Without it, the last window never closes if the producer stops before wall-clock time reaches the window end.
+
+**Producer anchoring — window-boundary alignment:**
+```python
+from datetime import datetime, timezone
+
+# Anchor to the start of the CURRENT 5-min window boundary so all fraud events
+# (offset_ms 0–269995) land in the same window → COUNT(*) = 12 > 10.
+# WARNING: never use (now - max_offset) — it doesn't align to a boundary;
+# events straddle two windows, counts split, HAVING COUNT(*) > 10 never fires.
+window_ms = 5 * 60 * 1000
+now_ms    = int(datetime.now(timezone.utc).timestamp() * 1000)
+anchor_ms = (now_ms // window_ms) * window_ms   # floor now to window boundary
+
+for tx in transactions:
+    tx['transaction_time'] = anchor_ms + tx.pop('offset_ms')
+```
 
 #### Producer Script (`python/produce_messages.py`)
 
@@ -592,43 +607,52 @@ producer = Producer({
     'sasl.password': os.getenv('KAFKA_API_SECRET')
 })
 
-# Delivery callback
-def delivery_callback(err, msg):
-    """Callback for message delivery reports
-    
-    IMPORTANT: msg.key() and msg.value() are binary-encoded Schema Registry messages.
-    Do NOT attempt to decode them as UTF-8 strings in the callback.
-    """
-    if err:
-        print(f"❌ Failed: {err}")
-    else:
-        print(f"✅ Delivered → Partition {msg.partition()} @ Offset {msg.offset()}")
+# Track confirmed delivery counts — NOT enqueue counts.
+# success_count++ before flush() counts messages queued, not broker-confirmed;
+# failures during flush() are silently counted as successes.
+enqueue_count = 0; enqueue_errors = 0; delivered_count = 0; delivery_errors = 0
 
-# Load and produce messages
+def _delivery_callback(err, msg):
+    """Delivery report callback.
+    IMPORTANT: msg.key() and msg.value() are binary-encoded Schema Registry
+    messages (magic byte + 4-byte schema ID + payload). Do NOT decode as UTF-8.
+    """
+    nonlocal delivered_count, delivery_errors
+    if err: delivery_errors += 1; print(f"❌ Failed: {err}")
+    else:   delivered_count += 1; print(f"✅ Delivered → Partition {msg.partition()} @ Offset {msg.offset()}")
+
+# Load sample data and inject live timestamps from offset_ms
 with open('sample-transactions.json', 'r') as f:
     transactions = json.load(f)
 
-success_count = 0
-failure_count = 0
+window_ms = 5 * 60 * 1000
+now_ms    = int(datetime.now(timezone.utc).timestamp() * 1000)
+anchor_ms = (now_ms // window_ms) * window_ms
+for tx in transactions:
+    tx['transaction_time'] = anchor_ms + tx.pop('offset_ms')
 
 for transaction in transactions:
     try:
         key = {"sku": transaction["sku"]}  # Object, not string
         value = {k: v for k, v in transaction.items() if k != "sku"}
-        
+
         producer.produce(
             topic='inventory_transactions',
             key=key_serializer(key, SerializationContext('inventory_transactions', MessageField.KEY)),
             value=value_serializer(value, SerializationContext('inventory_transactions', MessageField.VALUE)),
-            callback=delivery_callback
+            callback=_delivery_callback
         )
-        success_count += 1
+        producer.poll(0)  # trigger callbacks for already-acknowledged messages
+        enqueue_count += 1
     except Exception as e:
-        print(f"❌ Error producing message: {e}")
-        failure_count += 1
+        print(f"❌ Error enqueuing message: {e}")
+        enqueue_errors += 1
 
+# flush() blocks until all in-flight messages are acknowledged and all
+# delivery callbacks have fired — delivered_count is accurate after this line.
 producer.flush()
-print(f"\n📊 Summary: {success_count} successful, {failure_count} failed")
+print(f"\n📊 Summary: {delivered_count} delivered, {delivery_errors} delivery failures, "
+      f"{enqueue_errors} enqueue errors (enqueued: {enqueue_count}/{len(transactions)})")
 ```
 
 ### 5. Documentation Generation
@@ -652,40 +676,52 @@ Include SQL, expected output, verification criteria, and explanation for each.
 
 ### 6. Validation & Quality Checks
 
-Before delivering the streaming system, validate:
+**Terraform — critical checks:**
+- [ ] No `stream_governance` block on `confluent_environment`
+- [ ] No `confluent_kafka_topic` for Flink-owned topics; no `"compression.type"` in topic config
+- [ ] Each API key `depends_on` its specific role binding (not `time_sleep`)
+- [ ] All Flink DDL uses plain `CREATE TABLE` (not `CREATE TABLE IF NOT EXISTS`)
+- [ ] `.env` heredoc has no leading spaces
 
-**Terraform Validation:**
-- [ ] `terraform init` succeeds
-- [ ] `terraform validate` passes
-- [ ] `terraform plan` shows expected resources
-- [ ] No circular dependencies
-- [ ] Correct API key associations
-- [ ] Correct role binding patterns
-- [ ] .env file auto-generated
+**Re-apply on a Partially-Provisioned Environment:**
+If a previous `terraform apply` failed mid-run (e.g. a Flink statement errored), the Confluent Flink catalog may hold orphaned tables while Terraform state is out of sync. Before re-applying:
+1. Run `terraform state rm confluent_flink_statement.<name>` for each failed/tainted Flink statement resource
+2. Manually drop the orphaned table via the Confluent Console or Flink SQL shell: `DROP TABLE IF EXISTS <table_name>;`
+3. Then re-run `terraform apply` — the plain `CREATE TABLE` will recreate cleanly
+Never add `DROP TABLE IF EXISTS` as a `confluent_flink_statement` resource in Terraform; it creates fragile ordering dependencies and leaves ghost resources in state.
 
-**Flink SQL Validation:**
-- [ ] No forbidden properties (connector, topic, kafka.topic, bootstrap.servers)
-- [ ] Both key.format and value.format specified
-- [ ] DISTRIBUTED BY or PRIMARY KEY present
-- [ ] Key columns first in schema (when using DISTRIBUTED BY)
-- [ ] Correct TVF syntax for windows
-- [ ] Statements depend on time_sleep
+**Resetting stale Kafka topic data (watermark frozen in the past):**
+If a Kafka topic already contains records with historical timestamps, the Flink job's per-partition watermark is frozen at the oldest event time even after fresh data arrives. The global watermark = `min(all partition watermarks)` — one stale partition blocks every window from closing.
 
-**Python Validation:**
-- [ ] Valid Python syntax
-- [ ] Correct serializer (JSONSerializer for json-registry)
-- [ ] Key as object, not string
-- [ ] Timestamps as milliseconds, not ISO strings
-- [ ] Proper error handling
-- [ ] Delivery callbacks implemented
+The only reliable fix is to wipe the topic data before restarting the Flink job:
+```bash
+# Targeted destroy — keeps cluster, environment, service account, and API keys intact
+terraform destroy \
+  -target=confluent_flink_statement.fraud_detection_job \
+  -target=confluent_flink_statement.create_fraud_alerts_table \
+  -target=confluent_flink_statement.create_transactions_table \
+  -target=confluent_flink_compute_pool.main \
+  -auto-approve
 
+# Delete stale topics — Terraform recreates them via Flink DDL on next apply
+confluent kafka topic delete <source_topic> --force
+confluent kafka topic delete <dest_topic> --force
 
-**Documentation Validation:**
-- [ ] All required files present
-- [ ] Clear step-by-step instructions
-- [ ] Testing queries provided
-- [ ] Troubleshooting included
-- [ ] Cleanup documented
+terraform apply -auto-approve
+```
+Do **not** recreate topics manually — Terraform's Flink `CREATE TABLE` auto-creates the backing Kafka topics with the correct partition count, replication, and schema registration.
+
+**Flink SQL — critical checks:**
+- [ ] Both `key.format` and `value.format` = `'json-registry'` on every table
+- [ ] `'kafka.consumer.isolation-level' = 'read-uncommitted'` on every table
+- [ ] `DISTRIBUTED BY` on source tables; `PRIMARY KEY` on destination tables
+- [ ] Key/PK columns first in schema; TVF window syntax; no backticks in `DESCRIPTOR()`
+
+**Python — critical checks:**
+- [ ] `offset_ms` in sample JSON (never absolute timestamps); window-boundary anchoring
+- [ ] Watermark trigger record included (`offset_ms ≥ window_ms + slack_ms + buffer_ms`)
+- [ ] Key as object `{"col": val}`; `JSONSerializer` for both key and value
+- [ ] Delivery counted via closure after `flush()` (not `success_count++` before flush)
 
 ---
 
@@ -701,6 +737,8 @@ Before delivering the streaming system, validate:
 7. ❌ Omitting inline `credentials` in `confluent_flink_statement`
 8. ❌ Setting only partial provider-level Flink settings; if one of `flink_api_key`, `flink_api_secret`, `flink_rest_endpoint`, `organization_id`, `environment_id`, `flink_compute_pool_id`, or `flink_principal_id` is set, all must be set
 9. ❌ Omitting `properties.sql.current-catalog` and `properties.sql.current-database` on Flink statements when creating tables/jobs
+10. ❌ Adding a `stream_governance` block to `confluent_environment` — omit it entirely; Confluent auto-provisions Schema Registry without it. `ESSENTIALS` does not provision Schema Registry and will cause `data.confluent_schema_registry_cluster` to fail with "no schema registry clusters found".
+11. ❌ Adding `"compression.type"` to Kafka topic `config` — this property is **read-only after topic creation**; Terraform will error on every subsequent `apply` trying to update it. Only use `"cleanup.policy"` and `"retention.ms"` in topic configs.
 
 ### Flink SQL Pitfalls
 1. ❌ Using `connector`, `topic`, `kafka.topic`, or `bootstrap.servers` properties
@@ -708,6 +746,8 @@ Before delivering the streaming system, validate:
 3. ❌ Using deprecated GROUP BY TUMBLE syntax (use TVF instead)
 4. ❌ Missing DISTRIBUTED BY for tables without PRIMARY KEY
 5. ❌ Key columns not first in schema when using DISTRIBUTED BY
+6. ❌ Using `CREATE TABLE IF NOT EXISTS` in Flink DDL statements — always use plain `CREATE TABLE`. Confluent Flink is not Terraform-idempotent: `IF NOT EXISTS` silently re-uses stale schema from a previous (possibly failed) run, which breaks watermark registration (time attributes) and causes `The window function requires the timecol is a time attribute type` on subsequent jobs. A fresh environment always gets a clean `CREATE TABLE`; a re-run should destroy and re-create.
+7. ❌ Using backtick-quoted or `$rowtime` in `DESCRIPTOR()` — always use `DESCRIPTOR(column_name)` with no backticks, e.g. `DESCRIPTOR(transaction_time)`. Backtick quoting causes `Unknown identifier` errors in Confluent Flink SQL.
 
 ### Python Pitfalls
 1. ❌ Using string key instead of object: `"LAPTOP-001"` vs `{"sku": "LAPTOP-001"}`
@@ -718,30 +758,34 @@ Before delivering the streaming system, validate:
    # ❌ WRONG: This will fail with UnicodeDecodeError
    def delivery_callback(err, msg):
        key_data = json.loads(msg.key().decode('utf-8'))  # Binary Schema Registry format!
-   
+
    # ✅ CORRECT: Don't decode serialized messages in callback
    def delivery_callback(err, msg):
        print(f"✅ Delivered → Partition {msg.partition()} @ Offset {msg.offset()}")
    ```
    **Reason:** `msg.key()` and `msg.value()` return binary-encoded Schema Registry messages (with magic byte + schema ID + payload), not plain UTF-8 JSON strings.
-5. ❌ **Tumbling Window Misalignment**: Generating events that span multiple window boundaries
+5. ❌ **Absolute timestamps in sample JSON files**: Storing epoch values like `"transaction_time": 1700000010000` directly in the JSON file freezes the Flink watermark permanently. Every partition that receives such a record has its watermark frozen at that historical point. Flink's global watermark = `min(all partitions)` — one stale partition blocks every window from closing. **Fix:** store `offset_ms` (relative ms from first event) and anchor to `(now_ms // window_ms) * window_ms` at produce-time. See Sample Data Generation section.
+6. ❌ **Tumbling Window Misalignment**: Generating events that span multiple window boundaries
    ```python
-   # ❌ WRONG: Events spread across windows
-   base_time = datetime.now()  # e.g., 10:03:15
+   # ❌ WRONG: naive datetime, wrong on non-UTC hosts; events straddle windows
+   base_time = datetime.now()
    for i in range(8):
        timestamp = base_time + timedelta(seconds=i * 37.5)
-   # Results: Some events in 10:00-10:05 window, others in 10:05-10:10 window
-   
-   # ✅ CORRECT: Align to window boundary (windows: 00-05, 05-10, 10-15, etc.)
-   now = datetime.now()
-   minutes = (now.minute // 5) * 5  # Round down to current boundary
-   base_time = now.replace(minute=minutes, second=10, microsecond=0)
+
+   # ✅ CORRECT: timezone-aware UTC, aligned to epoch window boundary
+   now = datetime.now(timezone.utc)
+   minutes = ((now.minute // 5) + 1) * 5   # next boundary
+   if minutes < 60:
+       base_time = now.replace(minute=minutes, second=0, microsecond=0)
+   else:
+       base_time = now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)
    for i in range(12):
-       timestamp = base_time + timedelta(seconds=i * 20)  # All within window
+       timestamp = base_time + timedelta(seconds=i * 20)  # all within one window
    ```
-   **Impact:** Windowed aggregations (TUMBLE, HOP) will split events across windows, causing incorrect counts/sums. Windows align to clock boundaries (e.g., 10:50-10:55, 10:55-11:00).
-6. ❌ Missing error handling
-7. ❌ Using "on-failure" restart for one-time jobs
+   **Impact:** Windowed aggregations split events across windows; counts/sums are wrong and `HAVING COUNT(*) > 10` never fires.
+7. ❌ **Counting enqueues as deliveries**: `success_count++` inside the `produce()` try-block (before `flush()`) counts messages queued, not broker-confirmed. A network failure after `flush()` is silently counted as success. Use a closure-based `_delivery_callback` that increments `delivered_count`; read it only after `flush()` returns.
+8. ❌ Missing error handling
+9. ❌ Using "on-failure" restart for one-time jobs
 
 
 ---
@@ -753,59 +797,6 @@ Before delivering the streaming system, validate:
 **Retail → IoT:** sku→device_id, branch→location, quantity→temperature, use windowed AVG/MIN/MAX
 
 **Retail → Healthcare:** sku→patient_id, branch→ward, quantity→heart_rate, use ROW_NUMBER() for latest values with alert thresholds
-
----
-
-## Quick Reference
-
-### Terraform Versions
-```hcl
-confluent >= 2.68.0  # Flink support
-time >= 0.9.0        # RBAC delays
-terraform >= 1.0     # Modern syntax
-```
-
-### Flink Format Specification
-```sql
--- ALWAYS specify BOTH:
-'key.format' = 'json-registry',
-'value.format' = 'json-registry'
-```
-
-### Python Dependencies
-```
-confluent-kafka[schema-registry]>=2.3.0
-orjson>=3.9.0
-python-dotenv>=1.0.0
-```
-
-### Schema Naming Convention
-```
-{table_name}-key
-{table_name}-value
-```
-
-### Flink REST Endpoint
-```hcl
-# In statements:
-rest_endpoint = data.confluent_flink_region.main.rest_endpoint
-
-# In outputs:
-"https://flink.${region}.${cloud}.confluent.cloud"
-```
-
-### Flink Statement Authentication
-```hcl
-properties = {
-  "sql.current-catalog"  = confluent_environment.main.display_name
-  "sql.current-database" = confluent_kafka_cluster.main.display_name
-}
-
-credentials {
-  key    = confluent_api_key.flink.id
-  secret = confluent_api_key.flink.secret
-}
-```
 
 ---
 
@@ -832,81 +823,6 @@ project-root/
 ├── TESTING-APPROACH.md
 └── .gitignore
 ```
-
-### Execution Workflow
-1. ✅ Analyze user requirements and domain
-2. ✅ Design schemas and aggregation patterns
-3. ✅ Generate Terraform infrastructure files
-4. ✅ Generate Flink SQL statements
-5. ✅ Generate Python producer with sample data
-6. ✅ Generate documentation (SETUP, README, TESTING)
-7. ✅ Validate all components
-8. ✅ Present complete system to user
-
----
-
-## Usage Instructions
-
-### To Use This Skill:
-
-1. **Describe Your Use Case**: Provide a natural language description of your streaming requirements
-2. **Specify Domain** (optional): Industry, scale, specific constraints
-3. **Review Generated System**: Validate schemas, aggregations, and logic
-4. **Deploy**: Follow SETUP.md for deployment
-5. **Test**: Use TESTING-APPROACH.md queries to verify
-6. **Iterate**: Request modifications as needed
-
-### Example Request (IoT):
-
-```
-Build a real-time IoT sensor monitoring system that:
-- Collects temperature readings from 100+ devices
-- Calculates 5-minute average temperatures per location
-- Alerts when temperature exceeds thresholds
-- Tracks device health and connectivity
-- Processes readings every second
-```
-
----
-
-## Success Metrics
-
-### Infrastructure
-- ✅ All Terraform resources created successfully
-- ✅ API keys and role bindings configured correctly
-- ✅ .env file auto-generated
-- ✅ No manual configuration required
-
-### Stream Processing
-- ✅ Flink tables created with correct schemas
-- ✅ Aggregation job running successfully
-- ✅ Data flowing through pipeline
-- ✅ Correct results in destination table
-
-### Code Quality
-- ✅ Production-ready error handling
-- ✅ Proper schema serialization
-- ✅ Clear, comprehensive documentation
-
-### User Experience
-- ✅ Reproducible deployment from documentation
-- ✅ Clear step-by-step instructions
-- ✅ Working test queries provided
-- ✅ Troubleshooting guidance included
-
----
-
-## Testing Phase Requirements
-
-**MANDATORY**: After deployment, generate `TESTING-APPROACH.md` with:
-
-**4 Required Test Queries:**
-1. Raw Stream: `SELECT * FROM source_table LIMIT 10;`
-2. Aggregated State: `SELECT * FROM aggregated_table ORDER BY key;`
-3. Windowed: TVF syntax with window_start, window_end
-4. Filtered: Business logic validation
-
-Each query needs: SQL, expected output table, verification criteria (✅), explanation.
 
 ---
 
