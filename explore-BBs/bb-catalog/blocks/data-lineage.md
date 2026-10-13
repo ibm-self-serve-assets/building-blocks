@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-lineage
 name: Data Lineage
 group: lakehouse

@@ -1,4 +1,4 @@
-﻿---
+---
 id: watsonxdata-lakehouse
 name: watsonxdata-lakehouse
 description: Expert guidance for IBM watsonx.data zero-copy lakehouse configuration — covers Iceberg catalog

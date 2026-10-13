@@ -1,16 +1,16 @@
 ---
 id: agent-ops
 name: Agent Ops
-group: control
+group: govern
 capability: ai
 description: Evaluate, score, red-team, and observe watsonx Orchestrate agents before release and after every change — ground-truth test cases with LLM-simulated users, failure analysis, plain-language rubrics, adversarial testing with 15 attack types, and platform traces (ADK 2.18+, SaaS or Developer Edition) — plus metric-level evaluation of GenAI applications
-repo_path: ai/control/agent-ops
-docs_path: ai-core/control/agent-ops.md
+repo_path: ai/govern/agent-ops
+docs_path: ai-core/govern/agent-ops.md
 products:
   - watsonx Orchestrate
   - watsonx.governance
 tags:
-  - control
+  - govern
   - evaluation
   - red-teaming
   - observability
@@ -24,8 +24,8 @@ tags:
 
 Evaluate, score, red-team, and observe watsonx Orchestrate agents before release and after every change — ground-truth test cases with LLM-simulated users, failure analysis, plain-language rubrics, adversarial testing with 15 attack types, and platform traces (ADK 2.18+, SaaS or Developer Edition) — plus metric-level evaluation of GenAI applications
 
-- **Repo**: [ai/control/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/agent-ops)
-- **Docs**: [ai-core/control/agent-ops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/agent-ops/)
+- **Repo**: [ai/govern/agent-ops](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/govern/agent-ops)
+- **Docs**: [ai-core/govern/agent-ops.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/govern/agent-ops/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

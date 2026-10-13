@@ -1,4 +1,4 @@
-﻿---
+---
 id: rag
 name: RAG
 group: pipelines

@@ -1,4 +1,4 @@
-﻿---
+---
 id: astradb-vector-setup
 name: astradb-vector-setup
 description: IBM-focused guidance for the Astra DB serverless vector service available through IBM watsonx.data,

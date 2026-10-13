@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-ingestion-unstructured
 name: data-ingestion-unstructured
 description: IBM Bob guidance for IBM watsonx.data integration — Unstructured Data Integration (UDI),

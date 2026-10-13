@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-observability
 name: Data Observability
 group: lakehouse

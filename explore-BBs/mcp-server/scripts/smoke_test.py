@@ -41,7 +41,7 @@ def main() -> int:
     # --- catalog-driven tools (no GitHub content calls) ---
     check("list_building_blocks()", list_building_blocks(),
           detail=lambda r: f"{r['total']} blocks")
-    check("list_building_blocks(group=control)", list_building_blocks(group="control"),
+    check("list_building_blocks(group=govern)", list_building_blocks(group="govern"),
           detail=lambda r: f"{r['total']} blocks")
     check("search_building_blocks(rag, registry)", search_building_blocks("rag", scope="registry"),
           detail=lambda r: f"{r['total']} hits")

@@ -30,7 +30,7 @@ Embeddable capabilities across key domains:
 
 ---
 
-## AI Control Plane — Agents, Control, and Engineering
+## AI Control Plane — Agents, Govern, and Engineering
 
 The **[AI Control Plane](ai/README.md)** is a composable foundation for building, controlling, and engineering enterprise AI systems. Its building blocks are organized into three groups:
 
@@ -38,10 +38,10 @@ The **[AI Control Plane](ai/README.md)** is a composable foundation for building
 |---|---|---|
 | **Agents** | [Agent Builder](ai/agents/agent-builder/) | IBM watsonx Orchestrate ADK + Tools + Knowledge Bases |
 | **Agents** | [Multi-Agent Orchestration](ai/agents/multi-agent-orchestration/) | IBM watsonx Orchestrate + AI Gateway + MCP/A2A |
-| **Control** | [Agent Ops](ai/control/agent-ops/) | IBM watsonx Orchestrate + watsonx.governance — evaluation, red-teaming, traces |
-| **Control** | [Guardrails](ai/control/guardrails/) | Agent Controls + Real-Time Guardrails SDK (watsonx.governance) |
-| **Control** | [Cost Management](ai/control/cost-management/) | Per-interaction cost and token tracking with Langfuse |
-| **Control** | [Compliance](ai/control/compliance/) | IBM watsonx.governance + OpenPages — regulation mapping and Enforcement Tracking |
+| **Govern** | [Agent Ops](ai/govern/agent-ops/) | IBM watsonx Orchestrate + watsonx.governance — evaluation, red-teaming, traces |
+| **Govern** | [Guardrails](ai/govern/guardrails/) | Agent Controls + Real-Time Guardrails SDK (watsonx.governance) |
+| **Govern** | [Cost Management](ai/govern/cost-management/) | Per-interaction cost and token tracking with Langfuse |
+| **Govern** | [Compliance](ai/govern/compliance/) | IBM watsonx.governance + OpenPages — regulation mapping and Enforcement Tracking |
 | **Engineering** | [Agentic SDLC](ai/engineering/agentic-sdlc/) | IBM Bob + In-IDE Agentic Development |
 | **Engineering** | [Code Modernization](ai/engineering/code-modernization/) | IBM Bob + Legacy Refactoring + Java/Maximo |
 | **Engineering** | [headlessbob](ai/engineering/headless-bob/) | Node.js + REST/ACP APIs + Threads UI |

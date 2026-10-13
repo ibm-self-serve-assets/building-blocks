@@ -1,12 +1,11 @@
-﻿---
+---
 id: streamhouse-continuous-rag
 name: streamhouse-continuous-rag
 description: Build, review, explain, and extend the FactoryPulse Continuous RAG Streamhouse demo on Confluent
   Cloud. Use this skill for Kafka/Flink continuous knowledge ingestion, manufacturing exception-to-action
   flows, RAG freshness, Confluent configuration, API/UI changes, Bob-assisted development, and IBM Code
   Engine deployment in this repository.
-blocks:
-- data-streaming
+blocks: []
 status: active
 sources:
 - location: block

@@ -1,12 +1,11 @@
-﻿---
+---
 id: data-streaming-confluent
 name: data-streaming-confluent
 description: Expert Confluent Cloud architect specializing in creating complete, production-ready streaming
   solutions with Infrastructure-as-Code (Terraform), Apache Flink SQL (including ML_FORECAST time-series
   forecasting), and Python producers. Generates structured artifacts organized by domain (code, scripts,
   documentation) for repeatable, business-focused streaming architectures.
-blocks:
-- data-streaming
+blocks: []
 status: active
 sources:
 - location: block

@@ -15,21 +15,21 @@ pages:
   - title: Multi-Agent Orchestration
     section: "AI > Agents"
     path: ai-core/agents/multi-agent-orchestration.md
-  - title: Control Overview
-    section: "AI > Control"
-    path: ai-core/control/index.md
+  - title: Govern Overview
+    section: "AI > Govern"
+    path: ai-core/govern/index.md
   - title: Agent Ops
-    section: "AI > Control"
-    path: ai-core/control/agent-ops.md
+    section: "AI > Govern"
+    path: ai-core/govern/agent-ops.md
   - title: Guardrails
-    section: "AI > Control"
-    path: ai-core/control/guardrails.md
+    section: "AI > Govern"
+    path: ai-core/govern/guardrails.md
   - title: Cost Management
-    section: "AI > Control"
-    path: ai-core/control/cost-management.md
+    section: "AI > Govern"
+    path: ai-core/govern/cost-management.md
   - title: Compliance
-    section: "AI > Control"
-    path: ai-core/control/compliance.md
+    section: "AI > Govern"
+    path: ai-core/govern/compliance.md
   - title: Engineering Overview
     section: "AI > Engineering"
     path: ai-core/engineering/index.md
@@ -159,14 +159,14 @@ pages:
   # Present in docs-src but commented out of the site nav (hidden for now);
   # listed here because catalog blocks reference them and get_docs_page serves them.
   - title: Lifecycle Management
-    section: "AI > Control"
-    path: ai-core/control/lifecycle-management.md
+    section: "AI > Govern"
+    path: ai-core/govern/lifecycle-management.md
   - title: Shadow AI Discovery
-    section: "AI > Control"
-    path: ai-core/control/shadow-ai-discovery.md
+    section: "AI > Govern"
+    path: ai-core/govern/shadow-ai-discovery.md
   - title: Model Evaluation
-    section: "AI > Control"
-    path: ai-core/control/model-evaluation.md
+    section: "AI > Govern"
+    path: ai-core/govern/model-evaluation.md
 ---
 # Documentation Pages
 

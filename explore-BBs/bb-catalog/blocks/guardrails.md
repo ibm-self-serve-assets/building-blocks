@@ -1,16 +1,16 @@
 ---
 id: guardrails
 name: Guardrails
-group: control
+group: govern
 capability: ai
 description: Runtime policy enforcement for AI agents — Agent Controls for watsonx Orchestrate (PII filters, content guardrails, secrets detection, rate limits, model fallback) and the Real-Time Guardrails SDK with Pass/Flag/Block checks for any framework
-repo_path: ai/control/guardrails
-docs_path: ai-core/control/guardrails.md
+repo_path: ai/govern/guardrails
+docs_path: ai-core/govern/guardrails.md
 products:
   - watsonx.governance
   - watsonx Orchestrate
 tags:
-  - control
+  - govern
   - guardrails
   - real-time
   - safety
@@ -26,8 +26,8 @@ bob_modes:
 
 Runtime policy enforcement for AI agents — Agent Controls for watsonx Orchestrate (PII filters, content guardrails, secrets detection, rate limits, model fallback) and the Real-Time Guardrails SDK with Pass/Flag/Block checks for any framework
 
-- **Repo**: [ai/control/guardrails](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/guardrails)
-- **Docs**: [ai-core/control/guardrails.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/guardrails/)
+- **Repo**: [ai/govern/guardrails](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/govern/guardrails)
+- **Docs**: [ai-core/govern/guardrails.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/govern/guardrails/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

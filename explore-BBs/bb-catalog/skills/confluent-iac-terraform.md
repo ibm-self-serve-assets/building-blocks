@@ -1,12 +1,11 @@
-﻿---
+---
 id: confluent-iac-terraform
 name: confluent-iac-terraform
 description: Expert guidance for building real-time streaming systems on Confluent Cloud using Infrastructure-as-Code
   (Terraform), Apache Flink SQL, and Python producers. Adapts to any streaming use case (IoT, finance,
   retail, healthcare, logistics) while maintaining production-ready quality.
-blocks:
-- data-streaming
-status: active
+blocks: []
+status: divergent
 sources:
 - location: block
   path: streamhouse/real-time/stream/bob-skills/confluent-iac-terraform.zip

@@ -1,4 +1,4 @@
-﻿---
+---
 id: opensearch-vector-search
 name: opensearch-vector-search
 description: IBM-focused guidance for OpenSearch vector and hybrid search used with IBM watsonx.data RAG

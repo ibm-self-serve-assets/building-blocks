@@ -1,4 +1,4 @@
-﻿---
+---
 id: serverless-vector
 name: Serverless Vector
 group: lakehouse

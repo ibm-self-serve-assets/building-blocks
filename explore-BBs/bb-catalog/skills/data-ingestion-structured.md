@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-ingestion-structured
 name: data-ingestion-structured
 description: IBM-focused guidance for structured ingestion using IBM watsonx.data integration capabilities

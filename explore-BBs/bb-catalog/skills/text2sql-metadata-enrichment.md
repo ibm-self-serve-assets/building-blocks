@@ -1,4 +1,4 @@
-﻿---
+---
 id: text2sql-metadata-enrichment
 name: text2sql-metadata-enrichment
 description: Expert guidance for enriching IBM watsonx.data Intelligence metadata to maximise Text2SQL

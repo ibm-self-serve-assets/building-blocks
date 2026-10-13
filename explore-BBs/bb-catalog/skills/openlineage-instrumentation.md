@@ -1,4 +1,4 @@
-﻿---
+---
 id: openlineage-instrumentation
 name: openlineage-instrumentation
 description: IBM-focused guidance for OpenLineage instrumentation and ingestion into IBM watsonx.data

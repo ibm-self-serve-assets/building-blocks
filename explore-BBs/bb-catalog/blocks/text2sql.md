@@ -1,4 +1,4 @@
-﻿---
+---
 id: text2sql
 name: Text2SQL
 group: pipelines

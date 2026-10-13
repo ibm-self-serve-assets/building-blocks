@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-quality
 name: Data Quality
 group: lakehouse

@@ -1,4 +1,4 @@
-﻿---
+---
 id: rag-mcp-server-builder
 name: rag-mcp-server-builder
 description: Expert guidance for building IBM RAG MCP servers (SSE and stdio transport) using the building-blocks

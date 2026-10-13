@@ -1,4 +1,4 @@
-﻿---
+---
 id: databand-pipeline-setup
 name: databand-pipeline-setup
 description: IBM-focused guidance for IBM watsonx.data integration Data Observability / Databand-compatible

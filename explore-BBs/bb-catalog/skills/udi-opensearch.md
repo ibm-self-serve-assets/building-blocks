@@ -1,4 +1,4 @@
-﻿---
+---
 id: udi-opensearch
 name: udi-opensearch
 description: Use when the user wants to create a UDI flow, ingest documents into OpenSearch, set up a

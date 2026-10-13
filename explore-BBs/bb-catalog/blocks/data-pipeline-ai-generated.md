@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-pipeline-ai-generated
 name: Data Pipeline (AI Generated)
 group: pipelines

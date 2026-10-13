@@ -1,4 +1,4 @@
-﻿---
+---
 id: rag-pipeline-builder
 name: rag-pipeline-builder
 description: Expert guidance for designing end-to-end IBM RAG pipelines — covers chunking strategy selection,

@@ -28,8 +28,8 @@ def list_building_blocks(
     source of truth for which blocks exist — the catalog changes over time.
 
     Args:
-        group: Filter by group. Valid values: "agents", "control", "engineering" (AI);
-            "context", "pipelines", "query-engines" (Data);
+        group: Filter by group. Valid values: "agents", "govern", "engineering" (AI);
+            "streamhouse", "pipelines", "lakehouse" (Data);
             "operate", "secure", "optimize" (Automation). Omit to list all.
         capability: Filter by core capability ("ai", "data", "automation"). Omit for all.
         tag: Case-insensitive partial match against any tag (e.g., "rag", "terraform").

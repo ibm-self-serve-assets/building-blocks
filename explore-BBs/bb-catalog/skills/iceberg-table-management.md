@@ -1,4 +1,4 @@
-﻿---
+---
 id: iceberg-table-management
 name: iceberg-table-management
 description: Expert guidance for Apache Iceberg table lifecycle management on IBM watsonx.data — covers

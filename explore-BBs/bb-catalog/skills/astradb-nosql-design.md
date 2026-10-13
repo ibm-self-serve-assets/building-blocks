@@ -1,4 +1,4 @@
-﻿---
+---
 id: astradb-nosql-design
 name: astradb-nosql-design
 description: IBM-focused guidance for document/NoSQL applications using the Astra DB service available

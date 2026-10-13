@@ -4,7 +4,7 @@ Ground-truth test cases, rubric and evaluation configs, and hand-authored red-te
 
 The system exists in two versions. **v1** ships with a defect: the compliance agent is instructed to skip anti-money-laundering (AML) screening for self-employed applicants. **v2** is the same system after evaluating and fixing. Running both shows what each evaluation surfaces.
 
-The agents and tools (all data fictitious and deterministic) live in the building block: `ai/control/agent-ops/assets/wxo-agents/examples/loan-underwriting/` — import them first with the `import.sh` there (names carry the prefix `agentops_d1_` so they can share an instance).
+The agents and tools (all data fictitious and deterministic) live in the building block: `ai/govern/agent-ops/assets/wxo-agents/examples/loan-underwriting/` — import them first with the `import.sh` there (names carry the prefix `agentops_d1_` so they can share an instance).
 
 ## Files
 

@@ -1,4 +1,4 @@
-﻿---
+---
 id: text2sql-query-optimizer
 name: text2sql-query-optimizer
 description: Expert guidance for evaluating and improving IBM watsonx.data Intelligence Text2SQL generated

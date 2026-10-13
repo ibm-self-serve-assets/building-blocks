@@ -4,8 +4,8 @@ groups:
     name: Agents
     capability: ai
     description: Build, orchestrate, and deploy autonomous AI agents with the watsonx Orchestrate ADK and multi-agent patterns
-  - id: control
-    name: Control
+  - id: govern
+    name: Govern
     capability: ai
     description: Visibility and control across the AI lifecycle — Agent Ops (evaluate and observe), Guardrails (runtime enforcement), Cost Management, and Compliance, powered by watsonx.governance and watsonx Orchestrate
   - id: engineering

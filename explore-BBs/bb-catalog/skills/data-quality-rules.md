@@ -1,4 +1,4 @@
-﻿---
+---
 id: data-quality-rules
 name: data-quality-rules
 description: Expert guidance for implementing IBM watsonx.data Intelligence data quality rules on IBM

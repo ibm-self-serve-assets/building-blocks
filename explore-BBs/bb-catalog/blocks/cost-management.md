@@ -1,16 +1,16 @@
 ---
 id: cost-management
 name: Cost Management
-group: control
+group: govern
 capability: ai
 description: Track the cost of watsonx Orchestrate agents in dollars with Langfuse — integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection — alongside the watsonx Orchestrate Agentic Control Plane token views
-repo_path: ai/control/cost-management
-docs_path: ai-core/control/cost-management.md
+repo_path: ai/govern/cost-management
+docs_path: ai-core/govern/cost-management.md
 products:
   - watsonx Orchestrate
   - Langfuse
 tags:
-  - control
+  - govern
   - cost
   - tokens
   - finops
@@ -21,8 +21,8 @@ tags:
 
 Track the cost of watsonx Orchestrate agents in dollars with Langfuse — integration setup, model pricing, cost per trace, session, and evaluation scenario, context growth, and production cost projection — alongside the watsonx Orchestrate Agentic Control Plane token views
 
-- **Repo**: [ai/control/cost-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/control/cost-management)
-- **Docs**: [ai-core/control/cost-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/control/cost-management/)
+- **Repo**: [ai/govern/cost-management](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/ai/govern/cost-management)
+- **Docs**: [ai-core/govern/cost-management.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/govern/cost-management/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

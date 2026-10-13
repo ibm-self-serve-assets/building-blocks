@@ -1,4 +1,4 @@
-﻿---
+---
 id: zero-copy
 name: Zero Copy
 group: lakehouse
