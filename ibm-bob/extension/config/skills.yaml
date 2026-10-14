@@ -63,17 +63,6 @@ skills:
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
     mcps: []
 
-  # TTM Forecasting: Dashboard sub-skill
-  - folderName: ttm-forecasting/ttm-dashboard
-    domain: AI
-    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
-    mcps: []
-
-  # TTM Forecasting: Fleet sub-skill
-  - folderName: ttm-forecasting/ttm-fleet
-    domain: AI
-    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
-    mcps: []
 
   # ─── Data / Context ───────────────────────────────────────────────────────
   # Data-streaming: Confluent
