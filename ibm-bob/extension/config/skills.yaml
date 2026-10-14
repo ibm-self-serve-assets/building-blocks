@@ -57,11 +57,6 @@ skills:
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
     mcps: []
 
-  # TTM Forecasting: Inference sub-skill
-  - folderName: ttm-forecasting/ttm-inference
-    domain: AI
-    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
-    mcps: []
 
 
   # ─── Data / Context ───────────────────────────────────────────────────────
