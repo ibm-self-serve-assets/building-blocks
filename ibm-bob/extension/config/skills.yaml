@@ -51,6 +51,30 @@ skills:
     mcps:
       - "https://raw.githubusercontent.com/ibm-self-serve-assets/building-blocks/main/ibm-bob/extension/config/mcp/agent-mcp.json"
 
+  # IBM Granite TTM Time-Series Forecasting (master skill — routes to sub-skills)
+  - folderName: ttm-forecasting
+    domain: AI
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
+
+  # TTM Forecasting: Inference sub-skill
+  - folderName: ttm-forecasting/ttm-inference
+    domain: AI
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
+
+  # TTM Forecasting: Dashboard sub-skill
+  - folderName: ttm-forecasting/ttm-dashboard
+    domain: AI
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
+
+  # TTM Forecasting: Fleet sub-skill
+  - folderName: ttm-forecasting/ttm-fleet
+    domain: AI
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/ai-core/bob-skills-and-modes/
+    mcps: []
+
   # ─── Data / Context ───────────────────────────────────────────────────────
   # Data-streaming: Confluent
   - folderName: data-streaming-confluent
