@@ -9,10 +9,11 @@ When integration fails, check these in order:
 1. ✓ Is message formatted as `{"role": "user", "content": "text"}`?
 2. ✓ Are you polling GET /v1/orchestrate/runs/{run_id} after POST?
 3. ✓ Are you extracting from `result.data.message.content[0].text`?
-4. ✓ Is hostname `api.dl.watson-orchestrate.ibm.com` (no region)?
-5. ✓ Does path include `/instances/{instance_id}`?
-6. ✓ Is JWT token still valid (not expired)?
-7. ✓ Is agent ID correct and accessible?
+4. ✓ Is hostname derived from `WXO_SERVICE_URL` (not hardcoded)?
+5. ✓ Is the token endpoint correct for your platform (IBM Cloud ≠ AWS)?
+6. ✓ Does path include `/instances/{instance_id}`?
+7. ✓ Is token still valid (not expired)?
+8. ✓ Is agent ID correct and accessible?
 
 ## Authentication Issues
 
@@ -88,6 +89,53 @@ class TokenManager:
         return self.token
 ```
 
+### Token/Key Type Mismatch (401 WXO-PROXY-10080E)
+
+**Symptoms:**
+- `401 — "kid is not found in the customer's token"` (code: WXO-PROXY-10080E)
+- `400/401 — "ApiKey is not valid"`
+
+**What this means:**
+The token was generated successfully but is the wrong type for your WXO instance.
+The WXO proxy validates token signatures using platform-specific public keys (`kid`).
+An IBM Cloud IAM token presented to an AWS-backed proxy fails `kid` lookup, and vice versa.
+
+**Diagnosis — check service URL domain:**
+```
+watson-orchestrate.cloud.ibm.com  →  IBM Cloud  →  iam.cloud.ibm.com/identity/token
+dl.watson-orchestrate.ibm.com     →  AWS        →  account-iam.platform.saas.ibm.com/api/2.0/apikeys/token (MCSP V2)
+```
+
+> ⚠️ **AWS MCSP V1 vs V2:** If the service URL domain is `dl.watson-orchestrate.ibm.com` and you
+> still get `WXO-PROXY-10080E`, your token endpoint may be mismatched. All current AWS regions
+> (`us-east-1`, `eu-central-1`, `ap-south-1`, `ap-southeast-1`) use **MCSP V2**
+> (`account-iam.platform.saas.ibm.com/api/2.0/apikeys/token`).
+> MCSP V1 (`iam.platform.saas.ibm.com`) is legacy and will cause the `kid not found` error
+> on migrated tenants. See `critical-patterns.md` → Issue #7.
+
+**Quick test to identify key type:**
+```bash
+# IBM Cloud IAM endpoint
+curl -s -X POST "https://iam.cloud.ibm.com/identity/token" \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=YOUR_KEY"
+# → "access_token" in response = IBM Cloud key → use iam.cloud.ibm.com
+
+# AWS MCSP V2 endpoint (try this first for AWS)
+curl -s -X POST "https://account-iam.platform.saas.ibm.com/api/2.0/apikeys/token" \
+  -H "Content-Type: application/json" \
+  -d '{"apikey": "YOUR_KEY"}'
+# → "token" in response = MCSP V2 key → correct for current AWS regions
+
+# AWS MCSP V1 endpoint (fallback for unmigrated tenants)
+curl -s -X POST "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token" \
+  -H "Content-Type: application/json" \
+  -d '{"apikey": "YOUR_KEY"}'
+# → "token" in response = MCSP V1 key → legacy, only for unmigrated AWS tenants
+```
+
+**Fix:** Always derive the token endpoint from `WXO_SERVICE_URL`. See `getting-started.md` → `detect_from_service_url()`.
+
 ### Wrong Platform Configuration
 
 **Symptoms:**
@@ -96,26 +144,28 @@ class TokenManager:
 - Incorrect URL format errors
 
 **Diagnosis:**
-1. Verify `WATSONX_PLATFORM` environment variable
-2. Check service URL format
-3. Confirm region/endpoint is correct
-
-**Solutions:**
-- Ask user to confirm platform (IBM Cloud/AWS/On-prem)
-- Validate URL format matches platform
-- Provide platform detection helper
-- Show example URLs for each platform
+1. Check the domain of your service URL
+2. Confirm it matches the platform you think you're on
 
 **Platform Detection:**
 ```python
-def detect_platform_from_url(url):
-    """Detect platform from service URL"""
-    if 'watson-orchestrate.ibm.com' in url:
-        if 'api.' in url:
-            return 'ibm_cloud'
-        elif '.dl.' in url:
-            return 'aws'
-    return 'unknown'
+def detect_platform_from_url(url: str) -> str:
+    """Derive platform from service URL domain."""
+    if "watson-orchestrate.cloud.ibm.com" in url:
+        return "ibm_cloud"
+    elif "dl.watson-orchestrate.ibm.com" in url:
+        return "aws"
+    elif "cpd" in url or "/orchestrate/" in url:
+        return "onprem"
+    return "unknown"
+```
+
+**Platform → token endpoint mapping:**
+```
+ibm_cloud  →  iam.cloud.ibm.com/identity/token
+aws        →  account-iam.platform.saas.ibm.com/api/2.0/apikeys/token   (MCSP V2 — current)
+           →  iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token (MCSP V1 — legacy fallback)
+onprem     →  <host>/icp4d-api/v1/authorize
 ```
 
 ## Connection Issues
@@ -169,12 +219,48 @@ def retry_with_backoff(func, max_retries=3):
             time.sleep(wait_time)
 ```
 
-### SSL Certificate Error
+### TLS Handshake Failure on macOS (SSL: TLSV1_ALERT_INTERNAL_ERROR)
+
+**Symptoms:**
+- `ssl.SSLError: [SSL: TLSV1_ALERT_INTERNAL_ERROR] tlsv1 alert internal error`
+- Fails only when connecting to IBM Cloud WXO endpoints
+- Token generation succeeds (different host) but agent invocation fails
+
+**Cause:**
+macOS system Python (`/usr/bin/python3`) ships with **LibreSSL 2.x** which fails
+TLS handshakes with modern IBM Cloud endpoints. This is a macOS system Python limitation,
+not a credentials or configuration problem.
+
+**Check:**
+```bash
+python3 -c "import ssl; print(ssl.OPENSSL_VERSION)"
+# LibreSSL 2.x  → affected
+# OpenSSL 1.1+  → not affected
+```
+
+**Fix option 1 — Use Homebrew Python (recommended):**
+```bash
+brew install python@3.11
+/opt/homebrew/bin/python3.11 your_script.py
+```
+
+**Fix option 2 — Pass explicit SSL context:**
+```python
+import ssl
+import http.client
+
+ctx  = ssl.create_default_context()
+conn = http.client.HTTPSConnection(host, context=ctx)
+```
+
+Note: Option 2 may not fully resolve the issue on LibreSSL — option 1 is more reliable.
+
+### SSL Certificate Error (Other)
 
 **Symptoms:**
 - SSL certificate verification failed
 - Certificate errors
-- HTTPS connection issues
+- HTTPS connection issues (not the `TLSV1_ALERT_INTERNAL_ERROR` above)
 
 **Diagnosis:**
 1. Check system time is correct
@@ -350,8 +436,8 @@ def safe_json_parse(response_data):
 
 | Code | Meaning | Common Causes | Solution |
 |------|---------|---------------|----------|
-| 400 | Bad Request | Wrong endpoint, invalid payload | Check URL and payload format |
-| 401 | Unauthorized | Invalid/expired token | Regenerate token |
+| 400 | Bad Request | Wrong endpoint, invalid payload, wrong key type for token endpoint | Check URL, payload, and key/endpoint match |
+| 401 | Unauthorized | Invalid/expired token, wrong token endpoint for platform (WXO-PROXY-10080E) | Check platform detection and token endpoint |
 | 403 | Forbidden | Insufficient permissions | Check user permissions |
 | 404 | Not Found | Wrong agent ID or endpoint | Verify IDs and URLs |
 | 422 | Unprocessable Entity | Invalid message format | Use `{"role": "user", "content": "text"}` |
@@ -435,7 +521,16 @@ If issues persist after troubleshooting:
 
 6. **Test with curl:**
    Isolate whether issue is in code or API
+
+   IBM Cloud:
+   ```bash
+   curl -X POST "https://iam.cloud.ibm.com/identity/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=YOUR_KEY"
+   ```
+
+   AWS:
    ```bash
    curl -X POST "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token" \
      -H "Content-Type: application/json" \
-     -d '{"apikey": "your_key"}'
+     -d '{"apikey": "YOUR_KEY"}'

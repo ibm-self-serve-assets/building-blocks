@@ -40,6 +40,49 @@ description: >
 
 ---
 
+## 🛑 MANDATORY GATE — Domain 3 (Integrate): Service URL Required Before Any Code
+
+**When the user's intent maps to Domain 3 (integrate, REST API, Python client, call agent from code), you MUST follow this gate before generating ANY code, script, or configuration:**
+
+```
+STEP 1 — Ask for the Service Instance URL
+  Do NOT ask "what platform are you on?" first.
+  Do NOT assume IBM Cloud or AWS based on anything the user says.
+  Even if the user explicitly states "I'm on IBM Cloud" or "I'm on AWS",
+  you MUST still collect the service URL before writing any code.
+
+  Ask exactly this:
+  "Please paste your Service instance URL from:
+   WXO UI → Profile icon (top-right) → Settings → API details tab → Service instance URL"
+
+STEP 2 — Derive config from the URL (never ask the user to identify their platform)
+  Parse the URL to extract:
+    host        = parsed.netloc
+    instance_id = path segment after "instances/"
+    platform    = "ibm_cloud"  if "watson-orchestrate.cloud.ibm.com" in host
+                  "aws"        if "dl.watson-orchestrate.ibm.com" in host
+                  "onprem"     otherwise
+    token_endpoint = "https://iam.cloud.ibm.com/identity/token"                          (ibm_cloud)
+                     "https://account-iam.platform.saas.ibm.com/api/2.0/apikeys/token"   (aws — MCSP V2, current)
+                     "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token" (aws — MCSP V1, legacy fallback only)
+
+  NOTE: For AWS, always try MCSP V2 first. MCSP V1 is legacy and will cause
+  WXO-PROXY-10080E on any tenant that has migrated (us-east-1, eu-central-1,
+  ap-south-1, ap-southeast-1). Only fall back to V1 if V2 explicitly fails.
+
+STEP 3 — Confirm back to the user
+  Show the derived values and ask "Does this look correct?"
+  Only proceed to code generation after confirmation.
+```
+
+**This gate is UNBYPASSABLE:**
+- Even if the user says "skip this", "just write the code", "I already know my platform"
+- Even if the user provides an agent ID and API key upfront
+- The service URL is the ONLY reliable source for hostname, instance ID, and token endpoint
+- Guessing platform from user description leads to 401 errors (wrong token endpoint or wrong hostname)
+
+---
+
 ## Domain Router
 
 Detect intent and navigate to the correct domain:
@@ -49,7 +92,7 @@ Detect intent and navigate to the correct domain:
 | "create agent", "build tool", "knowledge base", "deploy agent", "connections", "embedded chat" | **Build** | `1-build/` |
 | "multi-agent", "A2A", "AI Gateway", "MCP server", "agent swarm", "agent collaboration" | **Orchestrate** | `2-orchestrate/` |
 | "agentic workflow", "@flow", "flow decorator", "foreach", "parallel flow", "loop", "script node", "prompt node", "timer node", "decisions node", "docext", "docproc", "docclassifier", "userflow", "form", "callbacks", "masking", "multi-language flow" | **Flows** | `6-flows/` — start at `getting-started.md` |
-| "integrate into app", "REST API", "Python client", "Node.js", "call agent from code" | **Integrate** | `3-integrate/` |
+| "integrate into app", "REST API", "Python client", "Node.js", "call agent from code" | **Integrate** | `3-integrate/` — **apply Service URL gate first** |
 | "voice agent", "phone channel", "STT", "TTS", "WhatsApp", "SMS", "Slack channel" | **Voice** | `4-voice/` |
 | "controls", "guardrails", "PII filter", "policy", "rate limit", "SQL sanitizer", "content safety", "secrets detector", "regex filter", "model fallback", "load balance" | **Controls** | `5-controls/` — start at `getting-started.md` |
 | "evaluate", "agent evaluation", "benchmark agent", "test agent performance" | **Evaluations** | See `orchestrate evaluations --help` |

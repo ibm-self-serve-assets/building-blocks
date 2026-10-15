@@ -2,15 +2,58 @@
 
 ⚠️ **READ THIS BEFORE GENERATING ANY CODE** ⚠️
 
-The most common mistake is assuming API patterns without checking documentation. This leads to using wrong API versions, incorrect authentication endpoints, and unnecessary API key parsing.
+The most common mistakes are assuming a single auth endpoint for all platforms and hardcoding the IBM Cloud hostname. Both are wrong and will cause 401 errors.
 
-**ALWAYS reference this guide FIRST.**
+**ALWAYS derive platform, host, and token endpoint from the service URL first.**
+See `getting-started.md` → `detect_from_service_url()`.
 
-## Correct Endpoint Patterns
+---
 
-### Authentication (All Platforms)
+## Authentication
 
-**Endpoint:** `https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token`
+Token endpoint, request format, and response field **differ by platform**. Always determine platform from the service URL before writing auth code.
+
+### IBM Cloud
+
+**Endpoint:** `https://iam.cloud.ibm.com/identity/token`
+
+**Method:** POST
+
+**Headers:**
+```
+Content-Type: application/x-www-form-urlencoded
+```
+
+**Payload:**
+```
+grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=<your_api_key>
+```
+
+**Response:**
+```json
+{
+  "access_token": "<IAM_ACCESS_TOKEN>",
+  "expires_in": 3600
+}
+```
+
+**Token field:** `access_token`
+
+> ⚠️ The IBM Cloud "Generate API key" button in WXO Settings → API details redirects to
+> `cloud.ibm.com/iam/apikeys`. This is **expected and correct** for IBM Cloud instances.
+> The key produced there works **only** with `iam.cloud.ibm.com`, NOT with `iam.platform.saas.ibm.com`.
+
+---
+
+### AWS
+
+> ⚠️ **AWS has two MCSP versions.** The correct endpoint depends on whether your tenant has
+> migrated to MCSP V2. Use the API key format to identify: keys starting with `k1:usr_` are
+> MCSP V2 keys. When in doubt, try V2 first — it is the active standard for all current AWS regions.
+
+#### MCSP V2 (Current — migrated regions: us-east-1, eu-central-1, ap-south-1, ap-southeast-1)
+
+**Endpoint:** `https://account-iam.platform.saas.ibm.com/api/2.0/apikeys/token`
 
 **Method:** POST
 
@@ -22,7 +65,7 @@ Content-Type: application/json
 **Payload:**
 ```json
 {
-  "apikey": "your_base64_encoded_api_key"
+  "apikey": "<your_api_key>"
 }
 ```
 
@@ -34,21 +77,71 @@ Content-Type: application/json
 }
 ```
 
-**Key Points:**
-- Same endpoint for AWS, IBM Cloud, and On-premises
-- Returns JWT token valid for 2 hours
-- Use token in Authorization header for API calls
-- API key is used AS-IS (no decoding or parsing)
+**Token field:** `token`
 
-### Agent Invocation (Create Run)
+#### MCSP V1 (Legacy — unmigrated regions only)
 
-**Endpoint:** `https://{host}/instances/{instance_id}/v1/orchestrate/runs`
+**Endpoint:** `https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token`
+
+Same payload and response shape as V2. If V2 returns 401 `kid is not found`, the tenant may
+still be on V1 — try this endpoint as a fallback.
+
+---
+
+### On-Premises
+
+**Endpoint:** `https://<your-host>/icp4d-api/v1/authorize`
 
 **Method:** POST
 
 **Headers:**
 ```
-Authorization: Bearer {jwt_token}
+Content-Type: application/json
+```
+
+**Payload:**
+```json
+{
+  "username": "<your_username>",
+  "password": "<your_password>"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "<CPD_TOKEN>"
+}
+```
+
+**Token field:** `token`
+
+---
+
+### Platform Auth Summary Table
+
+| Platform | Token endpoint | Body format | Token field |
+|----------|---------------|-------------|-------------|
+| IBM Cloud | `iam.cloud.ibm.com/identity/token` | `application/x-www-form-urlencoded` with `grant_type` + `apikey` | `access_token` |
+| AWS (MCSP V2 — current) | `account-iam.platform.saas.ibm.com/api/2.0/apikeys/token` | `application/json` with `apikey` | `token` |
+| AWS (MCSP V1 — legacy) | `iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token` | `application/json` with `apikey` | `token` |
+| On-premises | `<host>/icp4d-api/v1/authorize` | `application/json` with `username` + `password` | `token` |
+
+---
+
+## Agent Invocation (Create Run)
+
+**Endpoint:** `https://{host}/instances/{instance_id}/v1/orchestrate/runs`
+
+> `{host}` and `{instance_id}` are **always derived from the service URL** — never hardcoded.
+> IBM Cloud example host: `api.us-south.watson-orchestrate.cloud.ibm.com`
+> AWS example host: `api.dl.watson-orchestrate.ibm.com`
+
+**Method:** POST
+
+**Headers:**
+```
+Authorization: Bearer {token}
 Content-Type: application/json
 ```
 
@@ -74,11 +167,12 @@ Content-Type: application/json
 ```
 
 **Key Points:**
-- Returns immediately with run metadata
-- Actual response requires polling run status
-- Host: `api.dl.watson-orchestrate.ibm.com` (for AWS/IBM Cloud)
+- Returns immediately with run metadata — actual response requires polling
+- Message must be an object `{"role": "user", "content": "..."}` — NOT a string
 
-### Get Run Status and Response
+---
+
+## Get Run Status and Response
 
 **Endpoint:** `https://{host}/instances/{instance_id}/v1/orchestrate/runs/{run_id}`
 
@@ -86,7 +180,7 @@ Content-Type: application/json
 
 **Headers:**
 ```
-Authorization: Bearer {jwt_token}
+Authorization: Bearer {token}
 ```
 
 **Response:**
@@ -110,35 +204,45 @@ Authorization: Bearer {jwt_token}
 
 **Key Points:**
 - Poll this endpoint after agent invocation
-- Wait until status is "completed"
+- Wait until status is `"completed"`
 - Extract response from `result.data.message.content[0].text`
+
+---
+
+## Platform-Specific Hostnames
+
+| Platform | Hostname pattern | Example |
+|----------|-----------------|---------|
+| IBM Cloud | `api.<region>.watson-orchestrate.cloud.ibm.com` | `api.us-south.watson-orchestrate.cloud.ibm.com` |
+| AWS | `api.dl.watson-orchestrate.ibm.com` | (no region prefix) |
+| On-premises | Custom hostname from your deployment | `cpd-instance.apps.example.com` |
+
+> **Always derive the host from the service URL.** Never hardcode it.
+> IBM Cloud instances are region-specific — hardcoding `api.dl` will cause 401/connection errors.
+
+---
 
 ## URL Structure Breakdown
 
-### Authentication URL
+### IBM Cloud API Operation URL
 ```
-https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token
-       └─────────┬─────────┘ └────┬────┘ └──────┬──────┘
-           Global IBM IAM      Service    API Path
-```
-
-**Notes:**
-- Global IBM IAM service
-- Not instance-specific
-- Same for all platforms
-
-### API Operation URL
-```
-https://api.dl.watson-orchestrate.ibm.com/instances/{instance_id}/v1/orchestrate/runs
-       └──────────┬──────────┘ └────────┬────────┘ └┬┘ └────┬────┘ └─┬─┘
-              Hostname          Instance Prefix    Ver Service  Resource
+https://api.us-south.watson-orchestrate.cloud.ibm.com/instances/{id}/v1/orchestrate/runs
+        └────────────────┬────────────────┘ └────────┬────────┘ └┬┘ └─────┬─────┘ └─┬─┘
+               Region-specific hostname      Instance prefix    Ver  Service   Resource
 ```
 
-**Notes:**
-- Instance-specific operations
+### AWS API Operation URL
+```
+https://api.dl.watson-orchestrate.ibm.com/instances/{id}/v1/orchestrate/runs
+        └──────────┬──────────┘ └────────┬────────┘ └┬┘ └─────┬─────┘ └─┬─┘
+            Fixed hostname        Instance prefix    Ver  Service   Resource
+```
+
+**Notes for both:**
 - Always includes `/instances/{id}` prefix
-- Uses v1 API version
-- Host is same for AWS and IBM Cloud
+- Uses v1 API version (v2 does not exist)
+
+---
 
 ## Common Endpoint Failures
 
@@ -154,25 +258,28 @@ run_url = f"{service_url}/v2/agents/{agent_id}/runs"
 
 **Correct:**
 ```python
+# IBM Cloud
+auth_url = "https://iam.cloud.ibm.com/identity/token"
+# AWS
 auth_url = "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token"
 run_url = f"https://{host}/instances/{instance_id}/v1/orchestrate/runs"
 ```
 
-### ❌ Failure #2: Wrong Authentication Endpoint
+### ❌ Failure #2: Hardcoding the Wrong Auth Endpoint
 
 **Wrong:**
 ```python
-# Auth endpoint is NOT instance-specific
-auth_url = f"{service_url}/v2/api_keys/token"
-auth_url = f"https://{host}/instances/{instance_id}/api_keys/token"
+# Using iam.platform.saas for an IBM Cloud IAM key
+auth_url = "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token"
 ```
 
-**Error:** 400 Bad Request
+**Error:** 401 — `"kid is not found in the customer's token"` or `"ApiKey is not valid"`
 
 **Correct:**
 ```python
-# Global IBM IAM endpoint - ALWAYS the same
-auth_url = "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token"
+# Derive from service URL — see detect_from_service_url() in getting-started.md
+config = detect_from_service_url(service_url)
+auth_url = config["token_endpoint"]
 ```
 
 ### ❌ Failure #3: API Key Parsing
@@ -182,110 +289,105 @@ auth_url = "https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token"
 # Don't decode or parse the API key
 decoded_key = base64.b64decode(api_key).decode('utf-8')
 username, apikey, client_id = decoded_key.split(':')
-payload = {"username": username, "api_key": apikey, "client_id": client_id}
 ```
-
-**Error:** "Invalid API key format" or authentication failure
 
 **Correct:**
 ```python
 # Use API key as-is
-payload = {"apikey": api_key}
+payload = {"apikey": api_key}   # AWS
+# or
+payload = f"grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey={api_key}"  # IBM Cloud
 ```
+
+### ❌ Failure #4: Hardcoding IBM Cloud Host as AWS Host
+
+**Wrong:**
+```python
+# ❌ AWS host used for IBM Cloud instance
+host = "api.dl.watson-orchestrate.ibm.com"
+```
+
+**Error:** 401 — token `kid` mismatch or connection error
+
+**Correct:**
+```python
+# ✅ Always derive from service URL
+config = detect_from_service_url(service_url)
+host = config["host"]   # e.g. api.us-south.watson-orchestrate.cloud.ibm.com
+```
+
+---
 
 ## Implementation Checklist
 
 Before writing ANY integration code:
 
-1. ✓ Have you read the "Complete Working Flow" section?
-2. ✓ Are you using the correct authentication endpoint?
-   - Correct: `iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token`
-   - Wrong: Any endpoint containing your instance URL or `/v2/`
-3. ✓ Are you using v1 orchestrate endpoints?
+1. ✓ Do you have the service URL from WXO Settings → API details?
+2. ✓ Have you run `detect_from_service_url()` and confirmed platform + host?
+3. ✓ Are you using the correct token endpoint for your platform?
+   - IBM Cloud: `iam.cloud.ibm.com/identity/token`
+   - AWS: `iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token`
+4. ✓ Is host derived from the service URL (not hardcoded)?
+5. ✓ Are you using v1 orchestrate endpoints?
    - Correct: `/v1/orchestrate/runs`
-   - Wrong: `/v2/agents/{id}/runs` or `/api/v2/`
-4. ✓ Are you using the API key as-is?
-   - Correct: `{"apikey": api_key}`
-   - Wrong: Decoding, parsing, or splitting the API key
-5. ✓ Does your URL include `/instances/{instance_id}`?
-   - Correct: `https://{host}/instances/{id}/v1/orchestrate/runs`
-   - Wrong: `https://{host}/v1/orchestrate/runs` (missing instance prefix)
-6. ✓ Are you using the correct hostname?
-   - Correct: `api.dl.watson-orchestrate.ibm.com`
-   - Wrong: `us-east-1.dl.watson-orchestrate.ibm.com` (region prefix)
+   - Wrong: `/v2/agents/{id}/runs`
+6. ✓ Is the message formatted as `{"role": "user", "content": "text"}`?
+7. ✓ Does path include `/instances/{instance_id}`?
 
-## Platform-Specific Hostnames
-
-| Platform | Hostname |
-|----------|----------|
-| AWS | `api.dl.watson-orchestrate.ibm.com` |
-| IBM Cloud | `api.dl.watson-orchestrate.ibm.com` |
-| On-Premises | Custom hostname from deployment |
-
-**Important:** No region prefix for AWS/IBM Cloud!
+---
 
 ## Quick Reference Card
 
-### Authentication
+### IBM Cloud Authentication
 ```
-Endpoint: https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token
-Payload:  {"apikey": "your_key"}
-Returns:  {"token": "jwt", "expires_in": 7200}
+Endpoint: POST https://iam.cloud.ibm.com/identity/token
+Headers:  Content-Type: application/x-www-form-urlencoded
+Payload:  grant_type=urn:ibm:params:oauth:grant-type:apikey&apikey=<key>
+Returns:  {"access_token": "...", "expires_in": 3600}
 ```
 
-### Agent Invocation
+### AWS Authentication
 ```
-Endpoint: https://api.dl.watson-orchestrate.ibm.com/instances/{id}/v1/orchestrate/runs
+Endpoint: POST https://iam.platform.saas.ibm.com/siusermgr/api/1.0/apikeys/token
+Headers:  Content-Type: application/json
+Payload:  {"apikey": "<key>"}
+Returns:  {"token": "...", "expires_in": 7200}
+```
+
+### Agent Invocation (both platforms)
+```
+Endpoint: POST https://{host}/instances/{id}/v1/orchestrate/runs
 Payload:  {"agent_id": "id", "message": {"role": "user", "content": "text"}}
 Returns:  {"run_id": "uuid", "thread_id": "uuid"}
 ```
 
-### Run Status
+### Run Status (both platforms)
 ```
-Endpoint: https://api.dl.watson-orchestrate.ibm.com/instances/{id}/v1/orchestrate/runs/{run_id}
+Endpoint: GET https://{host}/instances/{id}/v1/orchestrate/runs/{run_id}
 Returns:  {"status": "completed", "result": {"data": {"message": {"content": [{"text": "response"}]}}}}
 ```
+
+---
 
 ## Key Rules
 
 ✅ **DO:**
+- Derive host and instance ID from `WXO_SERVICE_URL`
+- Use platform-specific token endpoint (IBM Cloud ≠ AWS)
 - Use v1, not v2
-- Use IBM IAM for auth, not instance URL
 - Use API key as-is, no parsing
 - Include `/instances/{id}` prefix
-- Reference this guide first, assume nothing
 
 ❌ **DON'T:**
+- Hardcode `api.dl.watson-orchestrate.ibm.com` for IBM Cloud instances
+- Use `iam.platform.saas.ibm.com` with an IBM Cloud IAM key
+- Use `iam.cloud.ibm.com` with a WXO MCSP (AWS) key
 - Assume v2 API exists
-- Use instance URL for authentication
-- Decode or parse API keys
-- Forget `/instances/{id}` prefix
-- Use region-based hostnames for AWS
+- Use the IBM Cloud resources page URL as the service URL
 
-## Debugging 400/404 Errors
-
-**Symptoms:**
-- 400 Bad Request
-- "Endpoint not found"
-- "Invalid request"
-
-**Likely Causes:**
-1. Using v2 endpoints instead of v1
-2. Wrong authentication endpoint
-3. Missing `/instances/{id}` prefix
-4. Incorrect payload format
-
-**Solution:**
-Compare your URLs to the examples in this guide. Use exact URLs from "Quick Reference Card" section.
+---
 
 ## Additional Resources
 
 **Official API Documentation:**
-https://developer.ibm.com/apis/catalog/watsonorchestrate--custom-assistants/Introduction
-
-This resource provides:
-- Complete endpoint documentation
-- Interactive API testing
-- Detailed parameter descriptions
-- Request/response examples
-- Error code explanations
+https://developer.watson-orchestrate.ibm.com/apis
