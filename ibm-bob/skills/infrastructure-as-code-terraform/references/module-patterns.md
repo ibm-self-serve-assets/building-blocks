@@ -3,7 +3,7 @@
 > **Part of:** [terraform-skill](../SKILL.md)
 > **Purpose:** Best practices for Terraform/OpenTofu module development
 
-This document provides detailed guidance on creating reusable, maintainable Terraform modules. For high-level principles, see the [main skill file](../SKILL.md#core-principles).
+This document provides detailed guidance on creating reusable, maintainable Terraform modules. For high-level principles, see the [main skill file](../SKILL.md#key-principles).
 
 ---
 

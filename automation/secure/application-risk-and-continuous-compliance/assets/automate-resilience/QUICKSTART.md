@@ -174,8 +174,8 @@ Enjoy exploring your IBM Concert data! 🚀
 
 - [Main README](README.md) - Comprehensive documentation
 - [Project Summary](PROJECT_SUMMARY.md) - Detailed overview
-- [FinOps](../../../finops/README.md) - Cost optimization
-- [Application Observability](../../../../observe/application-observability/README.md)
+- [FinOps](../../../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md)
 
 ---
 

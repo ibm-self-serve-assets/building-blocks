@@ -372,8 +372,8 @@ The solution is ready for immediate use and can be easily extended or customized
 
 ### Building Blocks
 - [IaaS Overview](../../README.md)
-- [Application Observability](../../../../../observe/application-observability/README.md)
-- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md)
+- [Automated Resilience](../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
 
 ---
 

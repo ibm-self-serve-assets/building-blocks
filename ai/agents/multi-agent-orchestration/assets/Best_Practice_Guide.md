@@ -538,7 +538,7 @@ Security is paramount in multi-agent systems, especially when agents need to acc
 - **Compliance**: Many security standards require proper credential management
 - **Team collaboration**: Team members shouldn't have access to production credentials in code
 
-**Examples:** [Watsonx Orchestrate Credentials](URL_HERE)
+**Examples:** [Watsonx Orchestrate Credentials](https://developer.watson-orchestrate.ibm.com/connections/build_connections#setting-credentials)
 
 **Insecure Credential Management (Never Do This):**
 ```python
@@ -906,7 +906,7 @@ orchestrate connections set-credentials -a application_id \
   -u username \
   -p password
 ```
-More info at [Watsonx Orchestrate Credentials]([URL_HERE](https://developer.watson-orchestrate.ibm.com/connections/build_connections#setting-credentials))
+More info at [Watsonx Orchestrate Credentials](https://developer.watson-orchestrate.ibm.com/connections/build_connections#setting-credentials)
 
 ## Common Pitfalls and Solutions
 

@@ -18,12 +18,12 @@
 
 **Secure Building Blocks:**
 - [← Back to Secure](../README.md)
-- [Quantum-Safe →](../quantum-safe/README.md)
+- [Quantum-Safe →](../cryptographic-and-quantum-safe-readiness/README.md)
 - [Secrets Management →](secrets-management/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Optimize](../../optimize/finops/README.md)
+- [Build & Deploy](../../operate/infrastructure-as-code/README.md)
+- [Optimize](../../optimize/technology-financial-management-and-finops/README.md)
 
 ---
 
@@ -160,21 +160,21 @@ ibm-security-verify-demo/
 ## 📚 Related Resources
 
 ### Secure Building Blocks
-- [Quantum-Safe](../quantum-safe/README.md) - IBM Guardium Crypto Manager
+- [Quantum-Safe](../cryptographic-and-quantum-safe-readiness/README.md) - IBM Guardium Crypto Manager
 - [Secrets Management](secrets-management/README.md) - IBM Secrets Management
 
 ### Build & Deploy Building Blocks
-- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
-  - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
-  - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md)
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
-- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
+- [Infrastructure as a Service (IaaS)](../../operate/infrastructure-as-code/README.md) - Ansible and Terraform automation
+  - [Ansible Deployment](../../operate/infrastructure-as-code/assets/deploy-bob-anisble/README.md)
+  - [Retail Application](../../operate/infrastructure-as-code/assets/retailapp/README.md)
+- [iPaaS](../../../ai/engineering/integrate-as-code/README.md) - Integration workflows
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md) - Middleware modernization
 
 ### Optimize Building Blocks
-- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic/Apptio
-  - [IBM Bob Apptio Mode](../../optimize/finops/ibm-bob-apptio-mode.md)
-- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/README.md) - IBM Concert
+- [FinOps](../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization with IBM Turbonomic/Apptio
+  - [IBM Bob Apptio Mode](../../optimize/technology-financial-management-and-finops/ibm-bob-apptio-mode.md)
+- [Automated Resource Management](../../optimize/application-performance/README.md) - IBM Turbonomic
+- [Automated Resilience](../application-risk-and-continuous-compliance/README.md) - IBM Concert
 
 ---
 

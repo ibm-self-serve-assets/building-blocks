@@ -422,4 +422,4 @@ Test your scripts with these malicious inputs:
 - Source: Scripting Best Practices for Performance (Pages 8-12)
 - Source: Maximo Security Guide
 - Related: [Maximo Scripting Fundamentals](maximo-scripting-fundamentals.md)
-- Related: [Common Vulnerabilities](../troubleshooting/common-vulnerabilities.md)
+- Related: Common Vulnerabilities

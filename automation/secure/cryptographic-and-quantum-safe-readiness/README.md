@@ -20,11 +20,11 @@
 
 **Secure Building Blocks:**
 - [← Back to Secure](../README.md)
-- [← Non-Human Identity](../non-human-identity/README.md)
+- [← Non-Human Identity](../non-human-identity-and-secret-management/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Optimize](../../optimize/finops/README.md)
+- [Build & Deploy](../../operate/infrastructure-as-code/README.md)
+- [Optimize](../../optimize/technology-financial-management-and-finops/README.md)
 
 ---
 
@@ -1132,18 +1132,18 @@ guardium_crypto_mode:
 ## 📚 Related Resources
 
 ### Secure Building Blocks
-- [Non-Human Identity](../non-human-identity/README.md) - Identity and access management
-  - [Secrets Management](../non-human-identity/secrets-management/README.md)
+- [Non-Human Identity](../non-human-identity-and-secret-management/README.md) - Identity and access management
+  - [Secrets Management](../non-human-identity-and-secret-management/secrets-management/README.md)
 
 ### Build & Deploy Building Blocks
-- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Infrastructure deployment
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration platform
-- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
+- [Infrastructure as a Service (IaaS)](../../operate/infrastructure-as-code/README.md) - Infrastructure deployment
+- [iPaaS](../../../ai/engineering/integrate-as-code/README.md) - Integration platform
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md) - Middleware modernization
 
 ### Optimize Building Blocks
-- [FinOps](../../optimize/finops/README.md) - Cost optimization
-- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - Resource optimization
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/README.md) - IBM Concert
+- [FinOps](../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization
+- [Automated Resource Management](../../optimize/application-performance/README.md) - Resource optimization
+- [Automated Resilience](../application-risk-and-continuous-compliance/README.md) - IBM Concert
 
 ### External Resources
 - [IBM Guardium Crypto Manager Documentation](https://www.ibm.com/docs/en/sgklm)

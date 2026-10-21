@@ -22,16 +22,16 @@
 - [Bob Modes →](bob-modes/README.md) | [⬇ Download Modes ZIP](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-modes/application-observability.zip)
 
 **Other Optimize Building Blocks:**
-- [Automated Resilience & Compliance](../automated-resilience-and-compliance/README.md)
-- [Automated Resource Management](../automated-resource-mgmt/README.md)
+- [Automated Resilience & Compliance](../../secure/application-risk-and-continuous-compliance/README.md)
+- [Automated Resource Management](../application-performance/README.md)
 - [Budget & Forecasting](../budget-and-forecasting/README.md)
-- [FinOps](../finops/README.md)
+- [FinOps](../technology-financial-management-and-finops/README.md)
 
 **Build & Deploy Building Blocks:**
-- [Asset Management](../../build-and-deploy/asset-management/README.md)
-- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md)
-- [Infrastructure as Code](../../build-and-deploy/infrastructure-as-code/README.md)
-- [iPaaS](../../build-and-deploy/ipaas/README.md)
+- [Asset Management](../../operate/asset-management/README.md)
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md)
+- [Infrastructure as Code](../../operate/infrastructure-as-code/README.md)
+- [iPaaS](../../../ai/engineering/integrate-as-code/README.md)
 
 ---
 
@@ -367,16 +367,16 @@ Identify and resolve performance issues:
 - [Bob Skills](bob-skills/README.md) — Pre-built Bob skills for observability | [⬇ Download](https://github.com/ibm-self-serve-assets/building-blocks/blob/main/optimize/application-observability/bob-skills/application-observability.zip)
 
 ### Optimize Building Blocks
-- [Automated Resilience & Compliance](../automated-resilience-and-compliance/README.md) — IBM Concert insights
-- [Automated Resource Management](../automated-resource-mgmt/README.md) — Resource optimization
+- [Automated Resilience & Compliance](../../secure/application-risk-and-continuous-compliance/README.md) — IBM Concert insights
+- [Automated Resource Management](../application-performance/README.md) — Resource optimization
 - [Budget & Forecasting](../budget-and-forecasting/README.md) — Cost forecasting
-- [FinOps](../finops/README.md) — Cost optimization with IBM Turbonomic
+- [FinOps](../technology-financial-management-and-finops/README.md) — Cost optimization with IBM Turbonomic
 
 ### Build & Deploy Building Blocks
-- [Asset Management](../../build-and-deploy/asset-management/README.md) — Asset lifecycle management
-- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) — Application modernization
-- [Infrastructure as Code](../../build-and-deploy/infrastructure-as-code/README.md) — IaC automation
-- [iPaaS](../../build-and-deploy/ipaas/README.md) — Integration platform
+- [Asset Management](../../operate/asset-management/README.md) — Asset lifecycle management
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md) — Application modernization
+- [Infrastructure as Code](../../operate/infrastructure-as-code/README.md) — IaC automation
+- [iPaaS](../../../ai/engineering/integrate-as-code/README.md) — Integration platform
 
 ---
 

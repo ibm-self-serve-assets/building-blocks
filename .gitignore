@@ -8,7 +8,8 @@ _docs_Site/
 **/.venv/
 *.log
 **/cache.db
-
+# IBM Bob local workspace data
+.bob/
 data-for-ai/question-and-answer/rag/assets/rag-accelerator/.dockerignore
 data-for-ai/question-and-answer/rag/assets/rag-accelerator/.env.rishit
 data-for-ai/question-and-answer/rag/assets/rag-accelerator/app/src/utils/elastic_search/elastic_search_ELSER_BM25_hybrid_template.json

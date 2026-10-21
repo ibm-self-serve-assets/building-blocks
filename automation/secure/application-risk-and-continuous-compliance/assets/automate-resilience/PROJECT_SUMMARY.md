@@ -359,16 +359,16 @@ This dashboard is provided as-is for use with IBM Concert APIs.
 - [Quick Start Guide](QUICKSTART.md) - Get started quickly
 
 ### Optimize Building Blocks
-- [FinOps](../../../finops/README.md) - Cost optimization
+- [FinOps](../../../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization
 
 ### Observe Building Blocks
-- [Application Observability](../../../../observe/application-observability/README.md)
-  - [Dashboard](../../../../observe/application-observability/assets/application-observability/README.md)
-- [Network Performance](../../../../observe/network-performance/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md)
+  - [Dashboard](../../../../optimize/full-stack-application-observability/README.md)
+- [Network Performance](../../../../optimize/network-performance-management/README.md)
 
 ### Build & Deploy
-- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md)
-- [Ansible Deployment](../../../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
+- [Retail Application](../../../../operate/infrastructure-as-code/assets/retailapp/README.md)
+- [Ansible Deployment](../../../../operate/infrastructure-as-code/assets/deploy-bob-anisble/README.md)
 
 ---
 

@@ -239,11 +239,11 @@ Verify backend route:
 
 ### Testing & Monitoring
 - [JMeter Load Testing](jmeter/README.md) - Performance testing
-- [Application Observability](../../../../../observe/application-observability/README.md) - Monitor with Instana
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md) - Monitor with Instana
 
 ### Building Blocks
 - [IaaS Overview](../../README.md)
-- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Automated Resilience](../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
 
 ---
 

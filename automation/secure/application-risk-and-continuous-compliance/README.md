@@ -19,16 +19,16 @@
 
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
-- [FinOps →](../finops/README.md)
-- [Automated Resource Management →](../automated-resource-mgmt/README.md)
+- [FinOps →](../../optimize/technology-financial-management-and-finops/README.md)
+- [Automated Resource Management →](../../optimize/application-performance/README.md)
 
 **Assets:**
 - [Concert Insights Dashboard →](assets/automate-resilience/README.md)
 - [Bob Modes →](bob-modes/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Secure](../../secure/non-human-identity/README.md)
+- [Build & Deploy](../../operate/infrastructure-as-code/README.md)
+- [Secure](../non-human-identity-and-secret-management/README.md)
 
 ---
 
@@ -126,7 +126,7 @@ Specialized IBM Bob modes for automated resilience and compliance workflows.
 **Location:** [`bob-modes/`](bob-modes/README.md)
 
 **Includes:**
-- **Application Resilience Mode** ([`application-resilience.yaml`](bob-modes/base-modes/application-resilience.yaml))
+- **Application Resilience Mode** ([`application-resilience.zip`](bob-modes/base-modes/application-resilience.zip))
   - Domain-specific resilience expertise
   - IBM Concert integration patterns
   - Vulnerability management workflows
@@ -536,19 +536,19 @@ API_PAGE_LIMIT=100
 - [Bob Modes](bob-modes/README.md) - Custom Bob modes for resilience
 
 ### Optimize Building Blocks
-- [FinOps](../finops/README.md) - Cost optimization with IBM Turbonomic
-- [Automated Resource Management](../automated-resource-mgmt/README.md) - IBM Turbonomic
+- [FinOps](../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization with IBM Turbonomic
+- [Automated Resource Management](../../optimize/application-performance/README.md) - IBM Turbonomic
 
 ### Build & Deploy Building Blocks
-- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
-  - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
-  - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
-- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
+- [Infrastructure as a Service (IaaS)](../../operate/infrastructure-as-code/README.md) - Ansible and Terraform automation
+  - [Retail Application](../../operate/infrastructure-as-code/assets/retailapp/README.md) - Sample application
+  - [Ansible Deployment](../../operate/infrastructure-as-code/assets/deploy-bob-anisble/README.md) - Automated deployment
+- [iPaaS](../../../ai/engineering/integrate-as-code/README.md) - Integration workflows
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md) - Middleware modernization
 
 ### Secure Building Blocks
-- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
-- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
+- [Non-Human Identity](../non-human-identity-and-secret-management/README.md) - IBM Security Verify
+- [Quantum-Safe](../cryptographic-and-quantum-safe-readiness/README.md) - IBM Guardium Crypto Manager
 
 ---
 

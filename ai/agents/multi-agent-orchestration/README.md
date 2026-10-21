@@ -61,4 +61,4 @@ Explore specialized skills for multi-agent workflows and flows:
 ## Related Building Blocks
 
 - [Agent Builder](../agent-builder/)
-- [AI Engineering](../../ai-engineering/)
+- [AI Engineering](../../engineering/)

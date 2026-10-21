@@ -19,16 +19,16 @@
 
 **Build & Deploy Building Blocks:**
 - [← Back to Build & Deploy](../README.md)
-- [iPaaS →](../ipaas/README.md)
-- [Code Modernisation →](../code-modernisation/README.md)
+- [iPaaS →](../../../ai/engineering/integrate-as-code/README.md)
+- [Code Modernisation →](../../../ai/engineering/code-modernization/README.md)
 
 **IaaS Assets:**
 - [Ansible Deployment Guide →](assets/deploy-bob-anisble/README.md)
 - [Retail Application →](assets/retailapp/README.md)
 
 **Other Categories:**
-- [Optimize](../../optimize/finops/README.md)
-- [Secure](../../secure/quantum-safe/README.md)
+- [Optimize](../../optimize/technology-financial-management-and-finops/README.md)
+- [Secure](../../secure/cryptographic-and-quantum-safe-readiness/README.md)
 
 ---
 
@@ -601,7 +601,7 @@ ansible-playbook playbooks/deploy-development.yml --skip-tags seed
 - Use spot instances where applicable
 - Tag resources for cost tracking
 - Regular cleanup of unused resources
-- Monitor with [FinOps tools](../../optimize/finops/README.md)
+- Monitor with [FinOps tools](../../optimize/technology-financial-management-and-finops/README.md)
 
 ---
 
@@ -616,18 +616,18 @@ ansible-playbook playbooks/deploy-development.yml --skip-tags seed
   - [JMeter Load Testing](assets/retailapp/jmeter/README.md)
 
 ### Build & Deploy Building Blocks
-- [Integration Platform as a Service (iPaaS)](../ipaas/README.md) - Integration workflows
-- [Code Modernisation](../code-modernisation/README.md) - Middleware modernization
+- [Integration Platform as a Service (iPaaS)](../../../ai/engineering/integrate-as-code/README.md) - Integration workflows
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md) - Middleware modernization
 
 ### Optimize Building Blocks
-- [Automated Resilience](../../optimize/automated-resilience-and-compliance/README.md) - IBM Concert insights
-  - [Dashboard](../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
-- [FinOps](../../optimize/finops/README.md) - Cost optimization with IBM Turbonomic
-- [Automated Resource Management](../../optimize/automated-resource-mgmt/README.md) - IBM Turbonomic
+- [Automated Resilience](../../secure/application-risk-and-continuous-compliance/README.md) - IBM Concert insights
+  - [Dashboard](../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization with IBM Turbonomic
+- [Automated Resource Management](../../optimize/application-performance/README.md) - IBM Turbonomic
 
 ### Secure Building Blocks
-- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
-- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
+- [Non-Human Identity](../../secure/non-human-identity-and-secret-management/README.md) - IBM Security Verify
+- [Quantum-Safe](../../secure/cryptographic-and-quantum-safe-readiness/README.md) - IBM Guardium Crypto Manager
 
 ---
 

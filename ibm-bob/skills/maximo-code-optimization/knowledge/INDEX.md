@@ -101,7 +101,7 @@ This knowledge base provides comprehensive guidance for optimizing IBM Maximo au
   - Lessons learned
 
 ### Sample Interaction
-- **[Sample Interaction](../examples/sample-interaction.md)**
+- **[Sample Interaction](../examples/optimization-example.md)**
   - Example user requests
   - Expected skill responses
   - Optimization workflow demonstration
@@ -112,18 +112,18 @@ This knowledge base provides comprehensive guidance for optimizing IBM Maximo au
 
 #### Security
 - [Security Best Practices](core/security-best-practices.md)
-- [SQL Injection Prevention](core/security-best-practices.md#sql-injection-vulnerabilities)
+- [SQL Injection Prevention](core/security-best-practices.md#1-sql-injection-vulnerabilities)
 - [Input Validation](core/security-best-practices.md#input-validation)
 - [Access Control](core/security-best-practices.md#access-control)
 
 #### Performance
 - [Performance Optimization](core/performance-optimization.md)
-- [Database Query Optimization](core/performance-optimization.md#minimize-database-queries)
+- [Database Query Optimization](core/performance-optimization.md#1-minimize-database-queries)
 - [Resource Management](core/performance-optimization.md#resource-management)
 - [Loop Optimization](core/performance-optimization.md#loop-optimization)
 
 #### Error Handling
-- [Error Handling Patterns](core/maximo-scripting-fundamentals.md#error-handling)
+- [Error Handling Patterns](core/maximo-scripting-fundamentals.md#4-handle-errors)
 - [Logging Best Practices](core/maximo-scripting-fundamentals.md#mxloggerfactory)
 - [Exception Handling](troubleshooting/common-issues.md#error-handling-issues)
 
@@ -135,9 +135,9 @@ This knowledge base provides comprehensive guidance for optimizing IBM Maximo au
 ### By Severity
 
 #### Critical Issues
-- [SQL Injection](core/security-best-practices.md#sql-injection-vulnerabilities)
-- [Hardcoded Credentials](core/security-best-practices.md#sensitive-data-protection)
-- [Resource Leaks](core/performance-optimization.md#always-close-mbosets)
+- [SQL Injection](core/security-best-practices.md#1-sql-injection-vulnerabilities)
+- [Hardcoded Credentials](core/security-best-practices.md#4-sensitive-data-protection)
+- [Resource Leaks](core/performance-optimization.md#1-always-close-mbosets)
 
 #### High Issues
 - [Unclosed MboSets](troubleshooting/common-issues.md#issue-4-mboset-not-closed)
@@ -170,7 +170,7 @@ This knowledge base provides comprehensive guidance for optimizing IBM Maximo au
 
 #### Escalation Scripts
 - [Escalation Scripts](core/maximo-scripting-fundamentals.md#4-escalation-scripts)
-- [Scheduled Processing](core/performance-optimization.md#process-in-chunks)
+- [Scheduled Processing](core/performance-optimization.md#2-process-in-chunks)
 
 ## Usage Guidelines
 

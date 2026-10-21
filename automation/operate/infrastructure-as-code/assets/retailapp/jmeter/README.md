@@ -135,9 +135,9 @@ These can be analyzed using:
 - [Ansible Deployment Guide](../../deploy-bob-anisble/README.md)
 
 ### Monitoring & Optimization
-- [Application Observability](../../../../../../observe/application-observability/README.md) - Monitor performance with Instana
-- [Automated Resilience](../../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
-- [FinOps](../../../../../../optimize/finops/README.md) - Cost optimization
+- [Application Observability](../../../../../optimize/full-stack-application-observability/README.md) - Monitor performance with Instana
+- [Automated Resilience](../../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../../../../optimize/technology-financial-management-and-finops/README.md) - Cost optimization
 
 ---
 

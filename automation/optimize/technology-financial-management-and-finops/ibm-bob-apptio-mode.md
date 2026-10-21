@@ -21,11 +21,11 @@
 **Optimize Building Blocks:**
 - [← Back to FinOps](./README.md)
 - [← Back to Optimize](../README.md)
-- [Automated Resource Management →](../automated-resource-mgmt/README.md)
+- [Automated Resource Management →](../application-performance/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Modernize](../../modernize/legacy-code-understanding/README.md)
+- [Build & Deploy](../../operate/infrastructure-as-code/README.md)
+- [Modernize](../../../ai/engineering/code-modernization/README.md)
 
 ---
 
@@ -989,18 +989,18 @@ Would you like me to send it to the engineering lead?
 
 ### FinOps Building Blocks
 - [FinOps Overview](./README.md) - IBM Turbonomic and Apptio
-- [Automated Resource Management](../automated-resource-mgmt/README.md) - IBM Turbonomic
+- [Automated Resource Management](../application-performance/README.md) - IBM Turbonomic
 
 ### Optimize Building Blocks
-- [Automated Resilience](../_archive/automated-resilience-and-compliance/README.md) - IBM Concert
+- [Automated Resilience](../../secure/application-risk-and-continuous-compliance/README.md) - IBM Concert
 
 ### Observe Building Blocks
-- [Application Observability](../../observe/application-observability/README.md) - IBM Instana
-- [Network Performance](../../observe/network-performance/README.md) - IBM SevOne
+- [Application Observability](../full-stack-application-observability/README.md) - IBM Instana
+- [Network Performance](../network-performance-management/README.md) - IBM SevOne
 
 ### Build & Deploy Building Blocks
-- [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md) - Sample application
-- [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md) - Automated deployment
+- [Retail Application](../../operate/infrastructure-as-code/assets/retailapp/README.md) - Sample application
+- [Ansible Deployment](../../operate/infrastructure-as-code/assets/deploy-bob-anisble/README.md) - Automated deployment
 
 ### External Resources
 - [IBM Apptio Documentation](https://www.ibm.com/products/apptio)

@@ -50,4 +50,4 @@ Explore specialized agent building and lifecycle skills:
 ## Related Building Blocks
 
 - [Multi-Agent Orchestration](../multi-agent-orchestration/)
-- [AI Engineering](../../ai-engineering/)
+- [AI Engineering](../../engineering/)

@@ -284,9 +284,9 @@ oc rollout status deployment/headlessbob -n binb
 ## Related Building Blocks
 
 - [Headless Bob Building Block Overview](../../README.md)
-- [Agentic SDLC](../../agentic-sdlc/README.md)
-- [Code Modernization](../../code-modernization/README.md)
-- [Integrate as Code](../../integrate-as-code/README.md)
+- [Agentic SDLC](../../../agentic-sdlc/README.md)
+- [Code Modernization](../../../code-modernization/README.md)
+- [Integrate as Code](../../../integrate-as-code/README.md)
 
 ## Container Bob Shell version
 

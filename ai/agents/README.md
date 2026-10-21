@@ -13,7 +13,7 @@ This repository is structured code-first to help developers understand agent pat
 | [Agent Builder](agent-builder/) | IBM watsonx Orchestrate Agentic Development Kit (ADK) | Autonomous, task-driven AI agents with tools, knowledge bases, voice channels, and REST APIs |
 | [Multi-Agent Orchestration](multi-agent-orchestration/) | IBM watsonx Orchestrate, IBM watsonx.ai AI Gateway | Multi-agent collaboration, dynamic task delegation, shared context, and MCP/A2A integrations |
 
-> **Note**: For agentic software development and engineering capabilities, refer to [AI Engineering](../ai-engineering/).
+> **Note**: For agentic software development and engineering capabilities, refer to [AI Engineering](../engineering/).
 
 ---
 
@@ -34,7 +34,7 @@ A typical developer flow is:
 1. Open the building-block [`README.md`](README.md) and confirm the capability matches your use case.
 2. Review **Architecture / Flow** to understand the agent communication and tool boundaries.
 3. Review **Included assets** and best practice guides.
-4. Use **IBM Bob modes** under `bob-modes/` and **Bob skills** from [`building-blocks/ibm-bob/skills/`](../ibm-bob/skills/) to accelerate agent authoring, testing, and troubleshooting.
+4. Use **IBM Bob modes** under `bob-modes/` and **Bob skills** from [`building-blocks/ibm-bob/skills/`](../../ibm-bob/skills/) to accelerate agent authoring, testing, and troubleshooting.
 5. Validate target product configurations, IAM permissions, and regional availability before production deployment.
 
 ---
@@ -56,7 +56,7 @@ Never commit API keys, service instance IDs, secret tokens, or populated `.env` 
 ## IBM Bob Modes & Skills
 
 - **Bob Modes**: Pre-configured developer modes with tailored permissions and instructions are located under `bob-modes/` in each building block folder.
-- **Bob Skills**: Specialized domain skills are maintained centrally in [`building-blocks/ibm-bob/skills/`](../ibm-bob/skills/) (including `agent/` and `agent-ops/`).
+- **Bob Skills**: Specialized domain skills are maintained centrally in [`building-blocks/ibm-bob/skills/`](../../ibm-bob/skills/) (including `agent/` and `agent-ops/`).
 
 ---
 

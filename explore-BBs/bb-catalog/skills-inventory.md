@@ -49,31 +49,31 @@
 
 ## Divergent copies (same skill, different content — needs owner decision)
 
-- `astradb-nosql-design`: 2 copies with 2 distinct contents — serving streamhouse/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip. Copies: streamhouse/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip [24063aa92234bd5d], ibm-bob/skills/astradb-nosql-design [a265ee3cdffa3b81]
+- `astradb-nosql-design`: 2 copies with 2 distinct contents — serving data/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip. Copies: data/lakehouse/serverless-vector/bob-skills/astradb-nosql-design.zip [24063aa92234bd5d], ibm-bob/skills/astradb-nosql-design [a265ee3cdffa3b81]
 - `automated-resource-mgmt-turbonomic`: 2 copies with 2 distinct contents — serving automation/optimize/application-performance/bob-skills/automated-resource-mgmt-turbonomic.zip. Copies: automation/optimize/application-performance/bob-skills/automated-resource-mgmt-turbonomic.zip [b54c4254f4c25956], ibm-bob/skills/automated-resource-mgmt-turbonomic [6acad63c62715f5a]
-- `confluent-iac-terraform`: 3 copies with 2 distinct contents — serving streamhouse/real-time/stream/bob-skills/confluent-iac-terraform.zip. Copies: streamhouse/real-time/stream/bob-skills/confluent-iac-terraform.zip [791badc9e2e41a53], ibm-bob/skills/confluent-iac-terraform [3898abac013257b3], ibm-bob/skills/data-streaming-confluent-terraform [791badc9e2e41a53]
-- `data-ingestion-structured`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/udi/bob-skills/data-ingestion-structured.zip. Copies: streamhouse/pipelines/udi/bob-skills/data-ingestion-structured.zip [3e5983c00b7f5afc], ibm-bob/skills/data-ingestion-structured [0afe99d4c1bf2a56]
-- `data-ingestion-unstructured`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/udi/bob-skills/data-ingestion-unstructured.zip. Copies: streamhouse/pipelines/udi/bob-skills/data-ingestion-unstructured.zip [5275b09307590f29], ibm-bob/skills/data-ingestion-unstructured [36bb22ceb3a446d3]
+- `confluent-iac-terraform`: 3 copies with 2 distinct contents — serving data/streamhouse/stream/bob-skills/confluent-iac-terraform.zip. Copies: data/streamhouse/stream/bob-skills/confluent-iac-terraform.zip [791badc9e2e41a53], ibm-bob/skills/confluent-iac-terraform [3898abac013257b3], ibm-bob/skills/data-streaming-confluent-terraform [791badc9e2e41a53]
+- `data-ingestion-structured`: 2 copies with 2 distinct contents — serving data/pipelines/udi/bob-skills/data-ingestion-structured.zip. Copies: data/pipelines/udi/bob-skills/data-ingestion-structured.zip [3e5983c00b7f5afc], ibm-bob/skills/data-ingestion-structured [0afe99d4c1bf2a56]
+- `data-ingestion-unstructured`: 2 copies with 2 distinct contents — serving data/pipelines/udi/bob-skills/data-ingestion-unstructured.zip. Copies: data/pipelines/udi/bob-skills/data-ingestion-unstructured.zip [5275b09307590f29], ibm-bob/skills/data-ingestion-unstructured [36bb22ceb3a446d3]
 - `maximo-code-optimization`: 2 copies with 2 distinct contents — serving automation/operate/asset-management/bob-skills/maximo-code-optimization.zip. Copies: automation/operate/asset-management/bob-skills/maximo-code-optimization.zip [6162b6fad4d97a4f], ibm-bob/skills/maximo-code-optimization [75130467204bc8e5]
-- `opensearch-vector-search`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/rag/bob-skills/opensearch-vector-search.zip. Copies: streamhouse/pipelines/rag/bob-skills/opensearch-vector-search.zip [6e6b782211290243], ibm-bob/skills/opensearch-vector-search [49542c7fac248aae]
-- `rag-mcp-server-builder`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/rag/bob-skills/rag-mcp-server-builder.zip. Copies: streamhouse/pipelines/rag/bob-skills/rag-mcp-server-builder.zip [c5b3ebe02f58e2c4], ibm-bob/skills/rag-mcp-server-builder [ce507deaf0c391f2]
-- `rag-pipeline-builder`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/rag/bob-skills/rag-pipeline-builder.zip. Copies: streamhouse/pipelines/rag/bob-skills/rag-pipeline-builder.zip [59876553d952120c], ibm-bob/skills/rag-pipeline-builder [bf9f91468d39f78f]
-- `text2sql-metadata-enrichment`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/text2sql/bob-skills/text2sql-metadata-enrichment.zip. Copies: streamhouse/pipelines/text2sql/bob-skills/text2sql-metadata-enrichment.zip [44942add6a364f6b], ibm-bob/skills/text2sql-metadata-enrichment [ef3a3e50679ae62a]
-- `text2sql-query-optimizer`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/text2sql/bob-skills/text2sql-query-optimizer.zip. Copies: streamhouse/pipelines/text2sql/bob-skills/text2sql-query-optimizer.zip [22bca83b17d53467], ibm-bob/skills/text2sql-query-optimizer [cc6b262d434ad644]
-- `udi-opensearch`: 2 copies with 2 distinct contents — serving streamhouse/pipelines/udi/bob-skills/udi-opensearch.zip. Copies: streamhouse/pipelines/udi/bob-skills/udi-opensearch.zip [203d23938d6e25ee], ibm-bob/skills/udi-opensearch [78bcead98db3b161]
+- `opensearch-vector-search`: 2 copies with 2 distinct contents — serving data/pipelines/rag/bob-skills/opensearch-vector-search.zip. Copies: data/pipelines/rag/bob-skills/opensearch-vector-search.zip [6e6b782211290243], ibm-bob/skills/opensearch-vector-search [49542c7fac248aae]
+- `rag-mcp-server-builder`: 2 copies with 2 distinct contents — serving data/pipelines/rag/bob-skills/rag-mcp-server-builder.zip. Copies: data/pipelines/rag/bob-skills/rag-mcp-server-builder.zip [c5b3ebe02f58e2c4], ibm-bob/skills/rag-mcp-server-builder [ce507deaf0c391f2]
+- `rag-pipeline-builder`: 2 copies with 2 distinct contents — serving data/pipelines/rag/bob-skills/rag-pipeline-builder.zip. Copies: data/pipelines/rag/bob-skills/rag-pipeline-builder.zip [59876553d952120c], ibm-bob/skills/rag-pipeline-builder [bf9f91468d39f78f]
+- `text2sql-metadata-enrichment`: 2 copies with 2 distinct contents — serving data/pipelines/text2sql/bob-skills/text2sql-metadata-enrichment.zip. Copies: data/pipelines/text2sql/bob-skills/text2sql-metadata-enrichment.zip [44942add6a364f6b], ibm-bob/skills/text2sql-metadata-enrichment [ef3a3e50679ae62a]
+- `text2sql-query-optimizer`: 2 copies with 2 distinct contents — serving data/pipelines/text2sql/bob-skills/text2sql-query-optimizer.zip. Copies: data/pipelines/text2sql/bob-skills/text2sql-query-optimizer.zip [22bca83b17d53467], ibm-bob/skills/text2sql-query-optimizer [cc6b262d434ad644]
+- `udi-opensearch`: 2 copies with 2 distinct contents — serving data/pipelines/udi/bob-skills/udi-opensearch.zip. Copies: data/pipelines/udi/bob-skills/udi-opensearch.zip [203d23938d6e25ee], ibm-bob/skills/udi-opensearch [78bcead98db3b161]
 
 ## Skills without an owning block (block missing from catalog, or cross-cutting)
 
 - `application-observability` — sources: automation/optimize/full-stack-application-observability/bob-skills/application-observability.zip, ibm-bob/skills/application-observability
 - `code-modernization-expert` — sources: ibm-bob/skills/code-modernization-expert
-- `confluent-iac-terraform` — sources: streamhouse/real-time/stream/bob-skills/confluent-iac-terraform.zip, ibm-bob/skills/confluent-iac-terraform, ibm-bob/skills/data-streaming-confluent-terraform
-- `data-streaming-confluent` — sources: streamhouse/real-time/stream/bob-skills/data-streaming-confluent.zip, ibm-bob/skills/data-streaming-confluent
+- `confluent-iac-terraform` — sources: data/streamhouse/stream/bob-skills/confluent-iac-terraform.zip, ibm-bob/skills/confluent-iac-terraform, ibm-bob/skills/data-streaming-confluent-terraform
+- `data-streaming-confluent` — sources: data/streamhouse/stream/bob-skills/data-streaming-confluent.zip, ibm-bob/skills/data-streaming-confluent
 - `ibm-cloud` — sources: ibm-bob/skills/ibm-cloud
 - `infrastructure-as-code-ansible` — sources: automation/operate/configure-and-automate/bob-skills/configure-and-automate.zip, ibm-bob/skills/infrastructure-as-code-ansible
 - `non-human-identity-vault` — sources: ibm-bob/skills/non-human-identity-vault
 - `pipeline-standards` — sources: ibm-bob/skills/pipeline-standards
 - `sdd-pipeline-builder` — sources: ibm-bob/skills/sdd-pipeline-builder
-- `streamhouse-continuous-rag` — sources: streamhouse/real-time/serve/bob-skills/streamhouse-continuous-rag.zip, ibm-bob/skills/streamhouse-continuous-rag
+- `streamhouse-continuous-rag` — sources: data/streamhouse/serve/bob-skills/streamhouse-continuous-rag.zip, ibm-bob/skills/streamhouse-continuous-rag
 - `tech-financial-mgmt-finOps` — sources: ibm-bob/skills/tech-financial-mgmt-finOps
 - `ttm-forecasting` — sources: ibm-bob/skills/ttm-forecasting
 

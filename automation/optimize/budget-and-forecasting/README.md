@@ -6,12 +6,12 @@
 
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
-- [← Automated Resource Management](../automated-resource-mgmt/README.md)
-- [Automated Resilience →](../automated-resilience-and-compliance/README.md)
+- [← Automated Resource Management](../application-performance/README.md)
+- [Automated Resilience →](../../secure/application-risk-and-continuous-compliance/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/README.md)
-- [Secure](../../secure/non-human-identity/README.md)
+- [Build & Deploy](../../README.md)
+- [Secure](../../secure/non-human-identity-and-secret-management/README.md)
 
 ---
 

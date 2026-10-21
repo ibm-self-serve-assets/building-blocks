@@ -591,4 +591,4 @@ logger.info("Query time: " + str(queryTime) + " seconds")
 - Source: Scripting Best Practices for Performance (Pages 1-20)
 - Source: Maximo Performance Tuning Guide
 - Related: [Maximo Scripting Fundamentals](maximo-scripting-fundamentals.md)
-- Related: [Resource Management](../procedures/resource-management.md)
+- Related: Resource Management

@@ -20,7 +20,7 @@ The Govern building blocks provide frameworks, production-ready code samples, an
 | **[Compliance](compliance/)** | Ensure your AI applications meet regulatory requirements and industry standards for responsible AI use — and prove it continuously with Enforcement Tracking | Available |
 
 <!-- Hidden for now — restore this row to the table above:
-| **[Lifecycle Management](lifecycle-management/)** | Manage AI models and agents across their full lifecycle, from onboarding to retirement | Coming soon |
+| **Lifecycle Management** | Manage AI models and agents across their full lifecycle, from onboarding to retirement | Coming soon |
 -->
 
 ---

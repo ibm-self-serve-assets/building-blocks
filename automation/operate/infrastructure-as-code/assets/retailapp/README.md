@@ -13,8 +13,8 @@
 - [JMeter Load Testing →](jmeter/README.md)
 
 **Other Building Blocks:**
-- [Application Observability](../../../../../observe/application-observability/README.md)
-- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md)
+- [Automated Resilience](../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
 
 ---
 
@@ -57,8 +57,8 @@ See [`deploy-steps.md`](deploy-steps.md) for deployment steps on OpenShift.
 
 ### Building Blocks
 - [IaaS Overview](../../README.md)
-- [Application Observability](../../../../../observe/application-observability/README.md) - Monitor with Instana
-- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md) - Monitor with Instana
+- [Automated Resilience](../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
 
 ---
 

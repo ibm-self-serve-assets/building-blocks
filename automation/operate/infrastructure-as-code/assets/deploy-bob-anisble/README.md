@@ -13,9 +13,9 @@
 - [Project Summary →](PROJECT_SUMMARY.md)
 
 **Other Building Blocks:**
-- [Authentication Management](../../../../authentication-mgmt/README.md)
-- [Application Observability](../../../../../observe/application-observability/README.md)
-- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
+- [Authentication Management](../../../../secure/non-human-identity-and-secret-management/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md)
+- [Automated Resilience](../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
 
 ---
 
@@ -507,14 +507,14 @@ For issues and questions:
 
 ### Build & Deploy Building Blocks
 - [IaaS Overview](../../README.md) - Infrastructure as a Service
-- [Authentication Management](../../../../authentication-mgmt/README.md)
-- [Code Assistant](../../../../code-assistant/README.md)
-- [iPaaS](../../../../ipaas/README.md)
+- [Authentication Management](../../../../secure/non-human-identity-and-secret-management/README.md)
+- Code Assistant
+- [iPaaS](../../../../../ai/engineering/integrate-as-code/README.md)
 
 ### Observe & Optimize
-- [Application Observability](../../../../../observe/application-observability/README.md) - Monitor with Instana
-- [Automated Resilience](../../../../../optimize/automated-resilience-and-compliance/assets/automate-resilience/README.md)
-- [FinOps](../../../../../optimize/finops/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md) - Monitor with Instana
+- [Automated Resilience](../../../../secure/application-risk-and-continuous-compliance/assets/automate-resilience/README.md)
+- [FinOps](../../../../optimize/technology-financial-management-and-finops/README.md)
 
 ---
 

@@ -6,7 +6,7 @@ Data mapping controls how values flow between nodes. The ADK supports both **aut
 
 ## Automatic Mapping
 
-When nodes have matching schemas, the flow engine maps outputs to inputs automatically. If data exceeds token limits, enable compression (see [`getting-started.md`](./getting-started.md#context-window-management)).
+When nodes have matching schemas, the flow engine maps outputs to inputs automatically. If data exceeds token limits, enable compression (see [`getting-started.md`](./getting-started.md#context-window-management-flowcontextwindow)).
 
 ---
 

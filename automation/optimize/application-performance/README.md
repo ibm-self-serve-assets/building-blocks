@@ -6,12 +6,12 @@
 
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
-- [← FinOps](../finops/README.md)
-- [Automated Resilience →](../automated-resilience-and-compliance/README.md)
+- [← FinOps](../technology-financial-management-and-finops/README.md)
+- [Automated Resilience →](../../secure/application-risk-and-continuous-compliance/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Secure](../../secure/quantum-safe/README.md)
+- [Build & Deploy](../../operate/infrastructure-as-code/README.md)
+- [Secure](../../secure/cryptographic-and-quantum-safe-readiness/README.md)
 
 ---
 

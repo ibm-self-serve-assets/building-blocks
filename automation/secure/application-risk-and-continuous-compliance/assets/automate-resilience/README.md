@@ -12,9 +12,9 @@
 - [Project Summary →](PROJECT_SUMMARY.md)
 
 **Other Building Blocks:**
-- [Application Observability](../../../../observe/application-observability/README.md)
-- [FinOps](../../../finops/README.md)
-- [Retail Application](../../../../build-and-deploy/Iaas/assets/retailapp/README.md)
+- [Application Observability](../../../../optimize/full-stack-application-observability/README.md)
+- [FinOps](../../../../optimize/technology-financial-management-and-finops/README.md)
+- [Retail Application](../../../../operate/infrastructure-as-code/assets/retailapp/README.md)
 
 ---
 

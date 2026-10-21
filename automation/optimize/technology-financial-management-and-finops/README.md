@@ -16,12 +16,12 @@
 **Optimize Building Blocks:**
 - [← Back to Optimize](../README.md)
 - [IBM Bob Apptio Mode →](./ibm-bob-apptio-mode.md)
-- [Automated Resource Management →](../automated-resource-mgmt/README.md)
-- [Automated Resilience →](../automated-resilience-and-compliance/README.md)
+- [Automated Resource Management →](../application-performance/README.md)
+- [Automated Resilience →](../../secure/application-risk-and-continuous-compliance/README.md)
 
 **Other Categories:**
-- [Build & Deploy](../../build-and-deploy/Iaas/README.md)
-- [Secure](../../secure/quantum-safe/README.md)
+- [Build & Deploy](../../operate/infrastructure-as-code/README.md)
+- [Secure](../../secure/cryptographic-and-quantum-safe-readiness/README.md)
 
 ---
 
@@ -134,19 +134,19 @@ finops-turbonomic-building block/
 
 ### Optimize Building Blocks
 - [IBM Bob Apptio Mode](./ibm-bob-apptio-mode.md) - AI-powered FinOps with IBM Apptio
-- [Automated Resource Management](../automated-resource-mgmt/README.md) - IBM Turbonomic resource optimization
-- [Automated Resilience](../automated-resilience-and-compliance/README.md) - IBM Concert insights
+- [Automated Resource Management](../application-performance/README.md) - IBM Turbonomic resource optimization
+- [Automated Resilience](../../secure/application-risk-and-continuous-compliance/README.md) - IBM Concert insights
 
 ### Build & Deploy Building Blocks
-- [Infrastructure as a Service (IaaS)](../../build-and-deploy/Iaas/README.md) - Ansible and Terraform automation
-  - [Ansible Deployment](../../build-and-deploy/Iaas/assets/deploy-bob-anisble/README.md)
-  - [Retail Application](../../build-and-deploy/Iaas/assets/retailapp/README.md)
-- [iPaaS](../../build-and-deploy/ipaas/README.md) - Integration workflows
-- [Code Modernisation](../../build-and-deploy/code-modernisation/README.md) - Middleware modernization
+- [Infrastructure as a Service (IaaS)](../../operate/infrastructure-as-code/README.md) - Ansible and Terraform automation
+  - [Ansible Deployment](../../operate/infrastructure-as-code/assets/deploy-bob-anisble/README.md)
+  - [Retail Application](../../operate/infrastructure-as-code/assets/retailapp/README.md)
+- [iPaaS](../../../ai/engineering/integrate-as-code/README.md) - Integration workflows
+- [Code Modernisation](../../../ai/engineering/code-modernization/README.md) - Middleware modernization
 
 ### Secure Building Blocks
-- [Non-Human Identity](../../secure/non-human-identity/README.md) - IBM Security Verify
-- [Quantum-Safe](../../secure/quantum-safe/README.md) - IBM Guardium Crypto Manager
+- [Non-Human Identity](../../secure/non-human-identity-and-secret-management/README.md) - IBM Security Verify
+- [Quantum-Safe](../../secure/cryptographic-and-quantum-safe-readiness/README.md) - IBM Guardium Crypto Manager
 
 ---
 
