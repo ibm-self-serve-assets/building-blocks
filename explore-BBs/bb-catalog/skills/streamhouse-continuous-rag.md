@@ -5,7 +5,8 @@ description: Build, review, explain, and extend the FactoryPulse Continuous RAG 
   Cloud. Use this skill for Kafka/Flink continuous knowledge ingestion, manufacturing exception-to-action
   flows, RAG freshness, Confluent configuration, API/UI changes, Bob-assisted development, and IBM Code
   Engine deployment in this repository.
-blocks: []
+blocks:
+- data-streaming
 status: active
 sources:
 - location: block

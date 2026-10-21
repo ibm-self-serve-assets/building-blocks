@@ -6,7 +6,7 @@ description: Use when writing, reviewing, or debugging Terraform/OpenTofu module
   corruption) with version-aware guidance.
 blocks:
 - infrastructure-as-code
-status: active
+status: divergent
 sources:
 - location: block
   path: automation/operate/infrastructure-as-code/bob-skills/infrastructure-as-code-terraform.zip

@@ -4,7 +4,8 @@ name: confluent-iac-terraform
 description: Expert guidance for building real-time streaming systems on Confluent Cloud using Infrastructure-as-Code
   (Terraform), Apache Flink SQL, and Python producers. Adapts to any streaming use case (IoT, finance,
   retail, healthcare, logistics) while maintaining production-ready quality.
-blocks: []
+blocks:
+- data-streaming
 status: divergent
 sources:
 - location: block
