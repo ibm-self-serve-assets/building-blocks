@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<title>Factory Assembly Line — Robot Preview</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#071827;font-family:-apple-system,"Segoe UI",system-ui,sans-serif;color:#c8dce8;overflow:hidden;height:100vh;display:flex;flex-direction:column}
+  #canvas-wrap{flex:1;min-height:0;position:relative}
+  canvas{width:100%!important;height:100%!important;display:block}
+  #hud{position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none}
+  #title{position:absolute;top:14px;left:18px}
+  #title h1{font-size:13px;font-weight:700;color:#e0edf5;letter-spacing:.04em}
+  #title p{font-size:10px;color:#5a8aaa;margin-top:2px}
+  #legend{display:flex;align-items:center;gap:14px;padding:8px 18px;border-top:1px solid #1a3550;flex-shrink:0;flex-wrap:wrap}
+  .leg{display:flex;align-items:center;gap:6px;font-size:10px;color:#6a94b0}
+  .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .sep{width:1px;height:14px;background:#1a3550}
+  #phase-label{margin-left:auto;font-size:10px;font-weight:700;color:#34d399;letter-spacing:.06em;background:#0d2e1a;border:1px solid #065f46;padding:2px 10px;border-radius:10px}
+</style>
+</head>
+<body>
+<div id="canvas-wrap">
+  <canvas id="cv"></canvas>
+  <div id="hud">
+    <div id="title">
+      <h1>Factory Assembly Line — 6-Robot Choreography Preview</h1>
+      <p>Drag to orbit · Scroll to zoom · Each robot reaches down to the belt with its own motion pattern</p>
+    </div>
+  </div>
+</div>
+<div id="legend">
+  <div class="leg"><div class="dot" style="background:#f97316"></div>R1 Welding</div>
+  <div class="leg"><div class="dot" style="background:#06b6d4"></div>R2 Pick &amp; Place</div>
+  <div class="leg"><div class="dot" style="background:#8b5cf6"></div>R3 Quality Scan</div>
+  <div class="leg"><div class="dot" style="background:#f97316"></div>R4 Assembly Cobot</div>
+  <div class="leg"><div class="dot" style="background:#06b6d4"></div>R5 Pick &amp; Place</div>
+  <div class="leg"><div class="dot" style="background:#10b981"></div>R6 Packaging</div>
+  <div class="sep"></div>
+  <div class="leg"><div class="dot" style="background:#fcd34d"></div>Part on belt</div>
+  <div id="phase-label">WELDING</div>
+</div>
+
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+/* ═══════════════════ RENDERER ═══════════════════ */
+const canvas = document.getElementById('cv');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.1;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color('#071827');
+scene.fog = new THREE.FogExp2('#071827', 0.032);
+
+const camera = new THREE.PerspectiveCamera(46, 1, 0.1, 80);
+// Angle looking slightly down along the belt — robots should visibly reach to belt surface
+camera.position.set(0, 9, 16);
+
+const controls = new OrbitControls(camera, canvas);
+controls.target.set(0, 1.2, 0);
+controls.enablePan = true;
+controls.minDistance = 5;
+controls.maxDistance = 30;
+controls.maxPolarAngle = Math.PI / 2.08;
+controls.dampingFactor = 0.07;
+controls.enableDamping = true;
+controls.update();
+
+function resize() {
+  const w = canvas.parentElement.clientWidth, h = canvas.parentElement.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+}
+resize();
+new ResizeObserver(resize).observe(canvas.parentElement);
+
+/* ═══════════════════ LIGHTS ═══════════════════ */
+scene.add(new THREE.AmbientLight('#d8f0ff', 0.5));
+scene.add(new THREE.HemisphereLight('#c8e0ff', '#1c2b3d', 0.85));
+
+const dir = new THREE.DirectionalLight('#f0f4ff', 2.2);
+dir.position.set(4, 14, 8);
+dir.castShadow = true;
+dir.shadow.mapSize.set(2048, 2048);
+dir.shadow.camera.left = -20; dir.shadow.camera.right = 20;
+dir.shadow.camera.top = 14; dir.shadow.camera.bottom = -14;
+scene.add(dir);
+
+// Overhead factory strip lights
+[-8,-4,0,4,8].forEach(x => {
+  const l = new THREE.PointLight('#c8e8ff', 3.5, 9); l.position.set(x, 7, 0); scene.add(l);
+});
+// Warm fill from one side
+const warm = new THREE.PointLight('#ffa953', 6, 14); warm.position.set(8, 5, 5); scene.add(warm);
+
+/* ═══════════════════ MATERIAL HELPERS ═══════════════════ */
+const M = {
+  std:   (c, m=0.55, r=0.35) => new THREE.MeshStandardMaterial({ color:c, metalness:m, roughness:r }),
+  glow:  (c, i=1.8)          => new THREE.MeshStandardMaterial({ color:c, emissive:c, emissiveIntensity:i, metalness:0.4, roughness:0.3 }),
+  basic: (c, o=1)            => new THREE.MeshBasicMaterial({ color:c, transparent:o<1, opacity:o, side:THREE.DoubleSide }),
+};
+function add(geo, mat, parent, pos=[0,0,0], rot=[0,0,0]) {
+  const m = new THREE.Mesh(geo, mat);
+  m.position.set(...pos); m.rotation.set(...rot);
+  m.castShadow = true; m.receiveShadow = true;
+  parent.add(m); return m;
+}
+
+/* ═══════════════════ FLOOR + STRUCTURE ═══════════════════ */
+const floor = add(new THREE.PlaneGeometry(38,20), M.std('#16293b',0.12,0.90), scene);
+floor.rotation.x = -Math.PI/2; floor.position.y = 0;
+
+const grid = new THREE.GridHelper(36, 72, '#1a3550','#1a3550');
+grid.position.y = 0.003; grid.material.opacity = 0.45; grid.material.transparent = true;
+scene.add(grid);
+
+// Painted lane lines flanking conveyor
+[-1.05, 1.05].forEach(z => {
+  const l = add(new THREE.PlaneGeometry(36, 0.07), M.basic('#19d2e6',0.35), scene);
+  l.rotation.x = -Math.PI/2; l.position.set(0, 0.005, z * 2.0);
+});
+
+// Safety rings (yellow) at each robot station
+[-8,-4.6,-1.4, 1.4,4.6,8].forEach(x =>
+  [-3.5,3.5].forEach(z => {
+    const r = add(new THREE.RingGeometry(0.78, 0.90, 36), M.basic('#fcd34d',0.28), scene);
+    r.rotation.x = -Math.PI/2; r.position.set(x, 0.004, z);
+  })
+);
+
+// Gantry columns
+[-9.8,9.8].forEach(x =>
+  [-6.5,0,6.5].forEach(z => {
+    add(new THREE.BoxGeometry(0.17,9,0.17), M.std('#0c1c2d',0.65,0.4), scene, [x,4.5,z]);
+  })
+);
+// Gantry crossbeams
+[-6.5,0,6.5].forEach(z => {
+  add(new THREE.BoxGeometry(20.5,0.17,0.17), M.std('#0c1c2d',0.65,0.4), scene, [0,9,z]);
+});
+
+/* ═══════════════════ CONVEYOR ═══════════════════ */
+// Main body
+add(new THREE.BoxGeometry(23,0.18,1.5), M.std('#2a3e52',0.55,0.35), scene, [0,0.42,0]);
+// Side rails
+[-0.70,0.70].forEach(z =>
+  add(new THREE.BoxGeometry(23.2,0.22,0.10), M.std('#b2c2ce',0.65,0.25), scene, [0,0.54,z])
+);
+// Belt surface
+add(new THREE.BoxGeometry(23,0.06,1.26), M.std('#1a2635',0.2,0.95), scene, [0,0.54,0]);
+// Roller legs
+for(let x=-10.5; x<=10.5; x+=1.5)
+  [-0.55,0.55].forEach(z =>
+    add(new THREE.BoxGeometry(0.10,0.40,0.14), M.std('#384c62',0.5), scene, [x,0.20,z])
+  );
+// Belt tick marks
+for(let x=-11;x<=11;x+=0.9) {
+  const t = add(new THREE.PlaneGeometry(0.055,1.20), M.basic('#253a4e',0.45), scene, [x,0.562,0]);
+  t.rotation.x = -Math.PI/2;
+}
+
+/* ═══════════════════ PARTS ON BELT ═══════════════════ */
+// 5 chassis parts travel right→left on belt surface (y=0.63)
+const BELT_Y    = 0.63;
+const BELT_X0   =  12;
+const BELT_X1   = -12;
+const BELT_SPEED = 1.3; // world units/sec
+const NUM_PARTS  = 5;
+
+const parts = [];
+for(let i=0;i<NUM_PARTS;i++) {
+  const g = new THREE.Group();
+  scene.add(g);
+  // Body
+  add(new THREE.BoxGeometry(1.05,0.16,0.68), M.std('#dde6f0',0.42,0.40), g, [0,0.08,0]);
+  // Frame rails
+  [-0.38,0.38].forEach(x =>
+    add(new THREE.BoxGeometry(0.13,0.14,0.62), M.std('#94a3b8',0.6,0.3), g, [x,0.23,0])
+  );
+  // Progress indicator — unique clone so colour can change per-part
+  const indMat = M.glow('#fcd34d',0.4).clone();
+  const ind = add(new THREE.SphereGeometry(0.065,8,8), indMat, g, [0,0.34,0]);
+  ind.material = indMat;
+
+  g.position.set(BELT_X0 - i*(BELT_X0-BELT_X1)/NUM_PARTS, BELT_Y, 0);
+  parts.push({ root:g, indMat, x: g.position.x });
+}
+
+/* ═══════════════════════════════════════════════════
+   ROBOT ARM BUILDER
+   ─────────────────────────────────────────────────
+   Joint convention (all groups pivot around their
+   LOCAL origin, which sits AT the joint centre):
+
+   root  (world position, rotation.y = facing dir)
+   └ base collar (static)
+   └ j1  (Y-axis: waist swivel)
+     └ j2brkt (static shoulder bracket + pivot bolt)
+       └ j2  (Z-axis: shoulder pitch — FORWARD = +Z)
+         └ upper arm geometry
+         └ j3brkt (static elbow bracket)
+           └ j3  (Z-axis: elbow bend — UP = −Z)
+             └ forearm geometry
+             └ j4  (Y-axis: forearm roll)
+               └ j5  (Z-axis: wrist pitch)
+                 └ j6  (Y-axis: tool spin)
+                   └ end-effector geometry
+
+   REST POSE target for each robot:
+     The tool tip should rest at approximately the
+     same height as the belt surface (y ≈ 0.63)
+     and roughly above the belt centreline (z ≈ 0).
+
+   Key angles to reach belt from station z=±3.5:
+     j2z ≈  1.10 rad  (shoulder pitched well forward)
+     j3z ≈ -1.40 rad  (elbow curled under)
+     j5z ≈  0.30 rad  (wrist levelled)
+
+   The kinematic functions add DELTAS on top of
+   this rest pose for each robot's specific motion.
+═══════════════════════════════════════════════════ */
+
+// Belt centre is at world z=0.
+// Front-row robots are at z=-3.5 (face toward +z i.e. toward belt).
+// Back-row  robots are at z=+3.5 (face toward −z i.e. rotOffset=π).
+// Base-to-shoulder height: ~1.15 world units.
+// Arm total reach: upper arm ~0.86 + forearm ~0.76 = 1.62 units.
+
+// REST POSE — shared baseline all robots start from
+const REST = {
+  j1y:  0,
+  j2z:  1.10,   // shoulder pitches forward toward belt
+  j3z: -1.45,   // elbow folds under to bring forearm horizontal
+  j4y:  0,
+  j5z:  0.28,   // wrist levels tool tip toward belt surface
+  j6y:  0,
+};
+
+const ROBOT_DEFS = [
+  /* ── R1 WELDING ─────────────────────────────────
+     Reaches over belt, tracks part slowly, fires arc,
+     lifts clear, sweeps to next position.           */
+  {
+    name:'Welding Robot', color:0xf97316, accent:'#f97316',
+    pos:[-8, 0, -3.5], rotOffset:0,
+    kinematic(t, ph) {
+      // ph 0→1: approach(0→0.3) · weld(0.3→0.7) · retract(0.7→1.0)
+      const approach = ph < 0.30 ? ph/0.30 : 1;
+      const weld     = ph >= 0.30 && ph <= 0.70 ? Math.sin((ph-0.30)/0.40 * Math.PI) : 0;
+      const retract  = ph > 0.70 ? (ph-0.70)/0.30 : 0;
+
+      // During approach: arm swings in from idle position (j1y offset)
+      // During weld: slight XY tracking oscillation simulating seam following
+      // During retract: arm pulls back up and rotates away
+      const trackX = weld * Math.sin(t * 3.5) * 0.06;   // seam tracking jitter
+      const trackZ = weld * Math.cos(t * 2.8) * 0.04;
+
+      return {
+        j1y:  (1 - approach) * 0.55 - retract * 0.30 + trackX,
+        j2z:  REST.j2z + approach * 0.22 - retract * 0.30,   // dip toward belt when approaching
+        j3z:  REST.j3z - approach * 0.18 + retract * 0.25,   // elbow adjusts reach
+        j4y:  t * 1.1,                                         // forearm rolls continuously
+        j5z:  REST.j5z + weld * 0.12 + trackZ,                // wrist fine-tunes angle
+        j6y:  t * 1.6,                                         // torch spin
+        toolOn: weld > 0.15,
+      };
+    },
+    buildTool(g) {
+      // Welding torch: tapered body + nozzle cone + arc glow
+      add(new THREE.CylinderGeometry(0.05,0.085,0.26,10), M.std('#334155',0.7,0.2), g, [0,0.13,0]);
+      add(new THREE.CylinderGeometry(0.011,0.05,0.12,8),  M.std('#94a3b8',0.85,0.15), g, [0,0.32,0]);
+      // Cable loop
+      const pts=[];
+      for(let i=0;i<=16;i++){const a=(i/16)*Math.PI; pts.push(new THREE.Vector3(Math.sin(a)*0.14,Math.cos(a)*0.14-0.04,i*0.011-0.09));}
+      add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),16,0.017,6,false), M.std('#1e293b',0.3,0.9), g);
+      const arcMat = M.glow('#fff7aa',4).clone(); arcMat.transparent=true; arcMat.opacity=0;
+      add(new THREE.SphereGeometry(0.030,8,8), arcMat, g, [0,0.40,0]);
+      return { arcMat };
+    },
+    updateTool(tool, on, t) {
+      tool.arcMat.opacity = on ? 0.75 + Math.sin(t*22)*0.25 : 0;
+      tool.arcMat.emissiveIntensity = on ? 4 + Math.sin(t*18) : 0;
+    },
+  },
+
+  /* ── R2 PICK & PLACE ────────────────────────────
+     Descends onto belt, grips part, lifts, swings
+     45° to drop zone beside belt, returns.         */
+  {
+    name:'Pick & Place', color:0x06b6d4, accent:'#06b6d4',
+    pos:[-4.6, 0, -3.5], rotOffset:0,
+    kinematic(t, ph) {
+      // ph: descend(0→0.25)·grip+hold(0.25→0.45)·lift(0.45→0.55)·swing(0.55→0.70)·drop(0.70→0.85)·return(0.85→1)
+      const desc  = ph < 0.25 ? Math.sin(ph/0.25 * Math.PI/2) : ph < 0.55 ? 1 : 0;
+      const lift  = ph > 0.45 && ph < 0.55 ? Math.sin((ph-0.45)/0.10 * Math.PI/2) : ph >= 0.55 ? 1 : 0;
+      const swing = ph > 0.55 && ph < 0.85 ? Math.sin((ph-0.55)/0.30 * Math.PI) : 0;
+      const drop  = ph > 0.70 && ph < 0.85 ? Math.sin((ph-0.70)/0.15 * Math.PI) * 0.6 : 0;
+      const grip  = ph > 0.25 && ph < 0.70;
+
+      return {
+        j1y:  swing * -0.55,              // swing arm sideways to drop zone
+        j2z:  REST.j2z + desc * 0.28 - lift * 0.20 + drop * 0.15,
+        j3z:  REST.j3z - desc * 0.22 + lift * 0.18 - drop * 0.12,
+        j4y:  t * 0.5,
+        j5z:  REST.j5z + desc * 0.10 - drop * 0.08,
+        j6y:  0,
+        toolOn: grip,
+      };
+    },
+    buildTool(g) {
+      // 2×2 suction cup frame
+      add(new THREE.BoxGeometry(0.27,0.055,0.27), M.std('#334155',0.7,0.2), g, [0,0.027,0]);
+      [[-0.075,-0.075],[0.075,-0.075],[-0.075,0.075],[0.075,0.075]].forEach(([x,z])=>{
+        add(new THREE.CylinderGeometry(0.038,0.048,0.065,10), M.std('#1e293b',0.3,0.8), g, [x,-0.033,z]);
+      });
+      const suckMat = M.glow('#06b6d4',0).clone();
+      const pad = add(new THREE.PlaneGeometry(0.26,0.26), suckMat, g, [0,-0.045,0]);
+      pad.rotation.x = Math.PI/2;
+      return { suckMat };
+    },
+    updateTool(tool, on) { tool.suckMat.emissiveIntensity = on ? 1.8 : 0; },
+  },
+
+  /* ── R3 QUALITY SCANNER ─────────────────────────
+     Slow deliberate sweep across the full part
+     length, then lifts and returns. Laser visible.  */
+  {
+    name:'Quality Scanner', color:0x8b5cf6, accent:'#8b5cf6',
+    pos:[-1.4, 0, -3.5], rotOffset:0,
+    kinematic(t, ph) {
+      // Steady horizontal scan: j1y sweeps ±25° over the part while
+      // arm holds a near-constant height just above belt.
+      const scan  = Math.sin(ph * Math.PI * 2);         // −1→+1→−1 sweep
+      const hover = 0.5 + 0.5*Math.sin(ph*Math.PI*2);  // gentle Z bob
+
+      return {
+        j1y:  scan * 0.28,                               // slow azimuth sweep
+        j2z:  REST.j2z + 0.12 + hover * 0.04,           // arm pitched well forward, slight bob
+        j3z:  REST.j3z - 0.08 + hover * 0.03,
+        j4y:  Math.sin(t*0.35)*0.25,                    // slow forearm roll
+        j5z:  REST.j5z + 0.06,                           // scanner angled slightly down
+        j6y:  scan * 0.55,                               // scanner head tracks with sweep
+        toolOn: true,
+      };
+    },
+    buildTool(g) {
+      add(new THREE.BoxGeometry(0.28,0.095,0.19), M.std('#1e293b',0.7,0.2), g, [0,0.048,0]);
+      add(new THREE.BoxGeometry(0.20,0.018,0.13), M.std('#0f172a',0.9,0.1), g, [0,0.10,0]);
+      const beamMat = M.glow('#8b5cf6',2.2).clone(); beamMat.transparent=true; beamMat.opacity=0.72;
+      add(new THREE.CylinderGeometry(0.005,0.022,0.52,6), beamMat, g, [0,0.26,0]);
+      const dotMat  = M.glow('#c4b5fd',3.2).clone(); dotMat.transparent=true; dotMat.opacity=0.85;
+      add(new THREE.SphereGeometry(0.020,8,8), dotMat, g, [0,0.53,0]);
+      return { beamMat, dotMat };
+    },
+    updateTool(tool, on, t) {
+      tool.beamMat.opacity = on ? 0.55 + Math.sin(t*7)*0.18 : 0;
+      tool.dotMat.opacity  = on ? 0.8  + Math.sin(t*9)*0.20 : 0;
+    },
+  },
+
+  /* ── R4 ASSEMBLY COBOT ──────────────────────────
+     Short-stroke press cycle: approach, press down
+     firmly 3 times, retract. (fastener driving)    */
+  {
+    name:'Assembly Cobot', color:0xf97316, accent:'#f97316',
+    pos:[1.4, 0, 3.5], rotOffset:Math.PI,   // opposite side of belt
+    kinematic(t, ph) {
+      // 3 press strokes per cycle
+      const press = Math.max(0, Math.sin(ph * Math.PI * 3)) * 0.38;
+      const idle  = ph < 0.08 || ph > 0.92;   // brief park at start/end
+
+      return {
+        j1y:  Math.sin(ph * Math.PI * 2) * 0.18,   // slight pan
+        j2z:  REST.j2z + (idle ? -0.25 : 0.14) + press * 0.30,
+        j3z:  REST.j3z + (idle ?  0.20 : 0.00) - press * 0.22,
+        j4y:  t * 0.45,
+        j5z:  REST.j5z + press * 0.18,
+        j6y:  t * 0.30,
+        toolOn: press > 0.20,
+      };
+    },
+    buildTool(g) {
+      add(new THREE.CylinderGeometry(0.058,0.078,0.19,10), M.std('#334155',0.7,0.2), g, [0,0.095,0]);
+      add(new THREE.CylinderGeometry(0.022,0.058,0.11,8),  M.std('#94a3b8',0.85,0.15), g, [0,0.24,0]);
+      const tipMat = M.glow('#f97316',0).clone();
+      add(new THREE.SphereGeometry(0.028,8,8), tipMat, g, [0,0.32,0]);
+      return { tipMat };
+    },
+    updateTool(tool, on, t) { tool.tipMat.emissiveIntensity = on ? 1.8 + Math.sin(t*14)*0.5 : 0; },
+  },
+
+  /* ── R5 PICK & PLACE B ───────────────────────────
+     Same as R2 but phase-shifted 0.5 and swings
+     in the opposite lateral direction.              */
+  {
+    name:'Pick & Place B', color:0x06b6d4, accent:'#06b6d4',
+    pos:[4.6, 0, 3.5], rotOffset:Math.PI,
+    kinematic(t, ph) {
+      const ph2   = (ph + 0.50) % 1;     // half-cycle offset so R2 and R5 don't mirror
+      const desc  = ph2 < 0.25 ? Math.sin(ph2/0.25 * Math.PI/2) : ph2 < 0.55 ? 1 : 0;
+      const lift  = ph2 > 0.45 && ph2 < 0.55 ? Math.sin((ph2-0.45)/0.10 * Math.PI/2) : ph2 >= 0.55 ? 1 : 0;
+      const swing = ph2 > 0.55 && ph2 < 0.85 ? Math.sin((ph2-0.55)/0.30 * Math.PI) : 0;
+      const drop  = ph2 > 0.70 && ph2 < 0.85 ? Math.sin((ph2-0.70)/0.15 * Math.PI) * 0.6 : 0;
+      const grip  = ph2 > 0.25 && ph2 < 0.70;
+
+      return {
+        j1y:  swing * 0.55,              // swings opposite direction to R2
+        j2z:  REST.j2z + desc * 0.28 - lift * 0.20 + drop * 0.15,
+        j3z:  REST.j3z - desc * 0.22 + lift * 0.18 - drop * 0.12,
+        j4y:  t * 0.5,
+        j5z:  REST.j5z + desc * 0.10 - drop * 0.08,
+        j6y:  0,
+        toolOn: grip,
+      };
+    },
+    buildTool(g) {
+      add(new THREE.BoxGeometry(0.27,0.055,0.27), M.std('#334155',0.7,0.2), g, [0,0.027,0]);
+      [[-0.075,-0.075],[0.075,-0.075],[-0.075,0.075],[0.075,0.075]].forEach(([x,z])=>{
+        add(new THREE.CylinderGeometry(0.038,0.048,0.065,10), M.std('#1e293b',0.3,0.8), g, [x,-0.033,z]);
+      });
+      const suckMat = M.glow('#06b6d4',0).clone();
+      const pad = add(new THREE.PlaneGeometry(0.26,0.26), suckMat, g, [0,-0.045,0]);
+      pad.rotation.x = Math.PI/2;
+      return { suckMat };
+    },
+    updateTool(tool, on) { tool.suckMat.emissiveIntensity = on ? 1.8 : 0; },
+  },
+
+  /* ── R6 PACKAGING ────────────────────────────────
+     Sweeps in, folds flap, pushes part off belt end
+     with a smooth gliding motion.                  */
+  {
+    name:'Packaging Arm', color:0x10b981, accent:'#10b981',
+    pos:[8, 0, 3.5], rotOffset:Math.PI,
+    kinematic(t, ph) {
+      const scoop = ph < 0.35 ? Math.sin(ph/0.35 * Math.PI/2) : ph < 0.65 ? 1 : Math.sin((1-ph)/0.35 * Math.PI/2);
+      const fold  = ph > 0.35 && ph < 0.70 ? Math.sin((ph-0.35)/0.35 * Math.PI) * 0.45 : 0;
+
+      return {
+        j1y:  Math.sin(ph * Math.PI * 2) * 0.38,
+        j2z:  REST.j2z + scoop * 0.20 - fold * 0.12,
+        j3z:  REST.j3z - scoop * 0.16 + fold * 0.10,
+        j4y:  t * 1.0,
+        j5z:  REST.j5z + fold * 0.30,
+        j6y:  scoop * Math.PI * 1.8,     // paddle rotates through fold
+        toolOn: scoop > 0.4,
+      };
+    },
+    buildTool(g) {
+      add(new THREE.BoxGeometry(0.34,0.048,0.21), M.std('#334155',0.7,0.2), g, [0,0.024,0]);
+      [-0.15,0.15].forEach(x =>
+        add(new THREE.BoxGeometry(0.048,0.115,0.21), M.std('#475569',0.6,0.3), g, [x,0.058,0])
+      );
+      const sealMat = M.glow('#10b981',0).clone();
+      const seal = add(new THREE.PlaneGeometry(0.28,0.17), sealMat, g, [0,0.052,0]);
+      seal.rotation.x = -Math.PI/2;
+      return { sealMat };
+    },
+    updateTool(tool, on, t) { tool.sealMat.emissiveIntensity = on ? 1.4 + Math.sin(t*5)*0.3 : 0; },
+  },
+];
+
+/* ═══════════════════ BUILD A SINGLE ARM ═══════════════════ */
+function buildArm(def) {
+  const c = def.color;
+  const root = new THREE.Group();
+  root.position.set(...def.pos);
+  root.rotation.y = def.rotOffset;
+  scene.add(root);
+
+  // ── Static base ──
+  add(new THREE.CylinderGeometry(0.50,0.60,0.14,24), M.std('#1a3550',0.75,0.28), root, [0,0.07,0]);
+  add(new THREE.CylinderGeometry(0.46,0.56,0.18,24), M.std('#1a2e42',0.78,0.22), root, [0,0.21,0]);
+  // Base accent rim
+  const brim = add(new THREE.TorusGeometry(0.46,0.030,10,28), M.glow(def.accent,0.7), root, [0,0.30,0]);
+  brim.rotation.x = Math.PI/2;
+
+  // ── J1 — waist (rotates Y) ──
+  const j1 = new THREE.Group(); j1.position.y = 0.32; root.add(j1);
+  add(new THREE.CylinderGeometry(0.26,0.30,0.44,20), M.std(0x667788,0.78,0.22), j1, [0,0.22,0]);
+
+  // ── Shoulder bracket (static, sits at top of waist) ──
+  const j2brkt = new THREE.Group(); j2brkt.position.y = 0.50; j1.add(j2brkt);
+  [-.22,.22].forEach(x => {
+    // Ear plates
+    add(new THREE.BoxGeometry(0.13,0.54,0.31), M.std(c,0.52,0.30), j2brkt, [x,0.27,0]);
+    // Rounded top cap of ear
+    const cap = add(new THREE.CylinderGeometry(0.155,0.155,0.13,14), M.std(c,0.52,0.30), j2brkt, [0,0.52,0]);
+    cap.rotation.z = Math.PI/2;
+  });
+  // Pivot bolt through ears
+  const bolt2 = add(new THREE.CylinderGeometry(0.050,0.050,0.50,12),
+    new THREE.MeshStandardMaterial({color:'#c8d8e8',metalness:0.92,roughness:0.08}), j2brkt, [0,0.52,0]);
+  bolt2.rotation.z = Math.PI/2;
+
+  // ── J2 — shoulder pitch (rotates Z, origin at pivot) ──
+  const j2 = new THREE.Group(); j2.position.y = 0.52; j2brkt.add(j2);
+
+  // Upper arm: 3-section taper (shoulder housing → shaft → elbow housing)
+  add(new THREE.CylinderGeometry(0.185,0.230,0.26,16), M.std(c,0.52,0.30), j2, [0,0.13,0]);
+  add(new THREE.CylinderGeometry(0.145,0.185,0.68,16), M.std(0x667788,0.72,0.25), j2, [0,0.60,0]);
+  add(new THREE.CylinderGeometry(0.185,0.145,0.24,16), M.std(c,0.52,0.30), j2, [0,1.08,0]);
+  // Cable conduit on back of upper arm
+  add(new THREE.CylinderGeometry(0.031,0.031,0.96,8), M.std('#1e3048',0.35,0.75), j2, [0.22,0.60,0.08]);
+
+  // ── Elbow bracket (static, end of upper arm) ──
+  const j3brkt = new THREE.Group(); j3brkt.position.y = 1.24; j2.add(j3brkt);
+  [-.17,.17].forEach(x =>
+    add(new THREE.BoxGeometry(0.10,0.26,0.24), M.std(0x20354b,0.68,0.25), j3brkt, [x,0.13,0])
+  );
+  const bolt3 = add(new THREE.CylinderGeometry(0.046,0.046,0.38,12),
+    new THREE.MeshStandardMaterial({color:'#c8d8e8',metalness:0.92,roughness:0.08}), j3brkt, [0,0.12,0]);
+  bolt3.rotation.z = Math.PI/2;
+
+  // ── J3 — elbow bend (rotates Z, origin at pivot) ──
+  const j3 = new THREE.Group(); j3.position.y = 0.12; j3brkt.add(j3);
+  // Forearm: tapered tube
+  add(new THREE.CylinderGeometry(0.115,0.170,0.72,16), M.std(0xd9e4ed,0.50,0.30), j3, [0,0.36,0]);
+
+  // ── J4 roll housing (collar visible at wrist end of forearm) ──
+  add(new THREE.CylinderGeometry(0.155,0.155,0.11,16), M.std('#0f6b8e',0.72,0.2), j3, [0,0.78,0]);
+  const j4rim = add(new THREE.TorusGeometry(0.152,0.014,8,24), M.glow(def.accent,0.9), j3, [0,0.78,0]);
+  j4rim.rotation.x = Math.PI/2;
+
+  // ── J4 — forearm roll (rotates Y) ──
+  const j4 = new THREE.Group(); j4.position.y = 0.86; j3.add(j4);
+  add(new THREE.CylinderGeometry(0.115,0.145,0.19,14), M.std(0x667788,0.75,0.22), j4, [0,0.095,0]);
+
+  // ── J5 wrist pitch housing ──
+  const j5h = add(new THREE.CylinderGeometry(0.115,0.115,0.085,14), M.std('#6d28d9',0.68,0.22), j4, [0,0.23,0]);
+  j5h.rotation.z = Math.PI/2;
+  const j5rim = add(new THREE.TorusGeometry(0.110,0.013,8,20), M.glow('#c084fc',0.80), j4, [0,0.23,0]);
+
+  // ── J5 — wrist pitch (rotates Z) ──
+  const j5 = new THREE.Group(); j5.position.y = 0.23; j4.add(j5);
+  add(new THREE.CylinderGeometry(0.082,0.105,0.19,12), M.std(0xd9e4ed,0.55,0.3), j5, [0,0.095,0]);
+
+  // ── J6 tool flange ──
+  add(new THREE.CylinderGeometry(0.100,0.100,0.070,14), M.std('#92400e',0.65,0.2), j5, [0,0.235,0]);
+  const j6rim = add(new THREE.TorusGeometry(0.095,0.011,8,20), M.glow('#fcd34d',0.85), j5, [0,0.235,0]);
+  j6rim.rotation.x = Math.PI/2;
+
+  // ── J6 — tool spin (rotates Y) ──
+  const j6 = new THREE.Group(); j6.position.y = 0.275; j5.add(j6);
+  const tool = def.buildTool(j6);
+
+  // Status LED
+  const ledMat = M.glow('#24d7b4',2.0).clone();
+  const led = add(new THREE.SphereGeometry(0.050,10,10), ledMat, root, [0.33,0.20,0.24]);
+
+  // Floor rings (accent colour)
+  [0.60,0.72].forEach((r,i) => {
+    const fr = add(new THREE.RingGeometry(r,r+0.030,36), M.basic(def.accent, i?0.18:0.42), root);
+    fr.rotation.x = -Math.PI/2; fr.position.y = 0.003;
+  });
+
+  return { root, j1, j2, j3, j4, j5, j6, tool, ledMat, def };
+}
+
+// Construct all 6 arms
+const arms = ROBOT_DEFS.map(buildArm);
+
+/* ═══════════════════ WELD FLASH LIGHTS ═══════════════════ */
+const weldL1 = new THREE.PointLight('#fff7aa',0,4); weldL1.position.set(-8,3.2,-1.5); scene.add(weldL1);
+const weldL4 = new THREE.PointLight('#fff7aa',0,4); weldL4.position.set( 1.4,3.2,1.5); scene.add(weldL4);
+
+/* ═══════════════════ PHASE LABEL ═══════════════════ */
+const PHASE_NAMES = ['WELDING','PICK & PLACE','SCANNING','ASSEMBLY','TRANSFER','PACKAGING'];
+const phaseEl = document.getElementById('phase-label');
+
+/* ═══════════════════ ANIMATION ═══════════════════ */
+const CYCLE = 7.0;   // seconds per full assembly cycle
+let lastT = 0;
+
+(function loop() {
+  requestAnimationFrame(loop);
+  const now = performance.now() * 0.001;
+  const dt  = Math.min(now - lastT, 0.05);   // cap at 50ms to avoid jumps
+  lastT = now;
+
+  arms.forEach((arm, i) => {
+    // Stagger each robot by 1/6 of the full cycle
+    const phase = ((now / CYCLE) + i / 6) % 1;
+    const k = arm.def.kinematic(now, phase);
+
+    arm.j1.rotation.y = k.j1y;
+    arm.j2.rotation.z = k.j2z;
+    arm.j3.rotation.z = k.j3z;
+    arm.j4.rotation.y = k.j4y;
+    arm.j5.rotation.z = k.j5z;
+    arm.j6.rotation.y = k.j6y;
+
+    // LED: orange when tool active, teal when idle
+    const ledC = k.toolOn ? '#f97316' : '#24d7b4';
+    arm.ledMat.color.set(ledC);
+    arm.ledMat.emissive.set(ledC);
+    arm.ledMat.emissiveIntensity = k.toolOn ? 2.8 + Math.sin(now*10)*0.4 : 1.5;
+
+    if (arm.tool) arm.def.updateTool(arm.tool, k.toolOn, now);
+  });
+
+  // Weld flash point lights
+  const ph1 = ((now / CYCLE) + 0/6) % 1;
+  const ph4 = ((now / CYCLE) + 3/6) % 1;
+  const w1  = arms[0].def.kinematic(now, ph1);
+  const w4  = arms[3].def.kinematic(now, ph4);
+  weldL1.intensity = w1.toolOn ? 9 + Math.sin(now*24)*3 : 0;
+  weldL4.intensity = w4.toolOn ? 9 + Math.sin(now*24)*3 : 0;
+
+  // Conveyor parts
+  parts.forEach(p => {
+    p.root.position.x -= BELT_SPEED * dt;
+    if (p.root.position.x < BELT_X1 - 1.5) p.root.position.x = BELT_X0 + 0.5;
+    // Progress colour: red(0%) → amber → green(100%)
+    const prog = Math.max(0, Math.min(1, (BELT_X0 - p.root.position.x) / (BELT_X0 - BELT_X1)));
+    p.indMat.color.setHSL(prog * 0.33, 1, 0.52);
+    p.indMat.emissive.setHSL(prog * 0.33, 1, 0.52);
+    p.indMat.emissiveIntensity = 0.5 + prog * 2.5;
+  });
+
+  // Phase label: whichever robot is mid-cycle right now
+  const labelIdx = Math.floor(((now / CYCLE) % 1) * 6);
+  phaseEl.textContent = PHASE_NAMES[labelIdx] || '';
+
+  controls.update();
+  renderer.render(scene, camera);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+Factory Pulse Streamhouse - Backup Manifest
+Created    : 2026-10-28 23:01:10
+Timestamp  : 20261028_230101
+Files OK   : 61
+Files Skip : 0
+
+Backed-up files:
+  [OK]   server/app.py
+  [OK]   server/kafka.py
+  [OK]   server/simulation.py
+  [OK]   server/context.py
+  [OK]   server/mcp.py
+  [OK]   server/plants.py
+  [OK]   server/schemas.py
+  [OK]   frontend/index.html
+  [OK]   frontend/vite.config.js
+  [OK]   frontend/package.json
+  [OK]   frontend/src/App.jsx
+  [OK]   frontend/src/main.jsx
+  [OK]   frontend/src/styles.scss
+  [OK]   frontend/src/sql.js
+  [OK]   frontend/src/components/FactoryTwin.jsx
+  [OK]   frontend/src/components/PlantMap.jsx
+  [OK]   frontend/src/components/Login.jsx
+  [OK]   frontend/src/sim/api.js
+  [OK]   frontend/src/sim/localBackend.js
+  [OK]   frontend/src/twin/lineControl.js
+  [OK]   frontend/src/twin/plantProfiles.js
+  [OK]   frontend/src/twin/plantSim.js
+  [OK]   docs/architecture.md
+  [OK]   docs/cloud-setup.md
+  [OK]   docs/confluent-feature-matrix.md
+  [OK]   docs/demo-script.md
+  [OK]   docs/digital-twin-explained.md
+  [OK]   docs/digital-twin-creation-guide.html
+  [OK]   docs/factory-pulse-full-ui-component-anatomy.html
+  [OK]   docs/factory-pulse-ui-anatomy.html
+  [OK]   docs/one-click-terraform.md
+  [OK]   docs/robot-arm-preview.html
+  [OK]   docs/robot-arm-preview-v2.html
+  [OK]   docs/streamhouse-capabilities.md
+  [OK]   docs/watsonx-orchestrate-agent-spec.md
+  [OK]   deploy/Dockerfile
+  [OK]   deploy/requirements.txt
+  [OK]   deploy/.dockerignore
+  [OK]   deploy/deploy-local.sh
+  [OK]   deploy/deploy-local.cmd
+  [OK]   deploy/deploy-confluent.sh
+  [OK]   deploy/deploy-confluent.cmd
+  [OK]   deploy/deploy-ce.sh
+  [OK]   scripts/start.sh
+  [OK]   scripts/start.cmd
+  [OK]   scripts/start.py
+  [OK]   scripts/backup.sh
+  [OK]   scripts/backup.ps1
+  [OK]   scripts/deploy.py
+  [OK]   scripts/e2e_test.py
+  [OK]   scripts/e2e_full_test.py
+  [OK]   scripts/sse_test.py
+  [OK]   scripts/sse_verify_test.py
+  [OK]   scripts/browser_path_test.py
+  [OK]   scripts/_check_state.py
+  [OK]   tests/simulation.test.js
+  [OK]   tests/test_deploy.py
+  [OK]   .env.example
+  [OK]   .dockerignore
+  [OK]   .gitignore
+  [OK]   README.md

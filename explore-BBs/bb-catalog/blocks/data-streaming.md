@@ -5,7 +5,7 @@ group: streamhouse
 capability: data
 description: Streamhouse — real-time data streaming capabilities for continuous data processing and event-driven architectures
 repo_path: data/streamhouse
-docs_path: data-core/streamhouse/index.md
+docs_path: data/streamhouse/index.md
 products:
   - watsonx.data
 tags:
@@ -21,7 +21,7 @@ tags:
 Streamhouse — real-time data streaming capabilities for continuous data processing and event-driven architectures
 
 - **Repo**: [data/streamhouse](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/streamhouse)
-- **Docs**: [data-core/streamhouse/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/streamhouse/)
+- **Docs**: [data/streamhouse/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data/streamhouse/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

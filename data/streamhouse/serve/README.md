@@ -26,6 +26,7 @@ flowchart TD
 |---|---|
 | [`assets/live-context-for-supply-chain-resilience/`](assets/live-context-for-supply-chain-resilience/) | Full-stack AI demo -- RTCE live context + watsonx Orchestrate agents + Carbon React supply-chain control tower |
 | [`assets/streamhouse-continous-rag/`](assets/streamhouse-continous-rag/) | FactoryPulse Continuous RAG demo -- Kafka/Flink RAG profiles, FastAPI backend, IBM Carbon UI, Code Engine deployment |
+| [`assets/streamhouse/`](assets/streamhouse/) | Factory Pulse Streamhouse showcase -- Carbon control tower, 3D factory digital twin, Flask backend, Kafka/Schema Registry producer, Flink SQL, RTCE/MCP, Terraform and Code Engine deployment |
 | [`bob-modes/`](bob-modes/) | IBM Bob Streamhouse Context Builder mode -- coming soon |
 | [`bob-skills/streamhouse-continuous-rag.zip`](bob-skills/streamhouse-continuous-rag.zip) | Bob skill for Continuous RAG pipeline design combining live operational state with enterprise knowledge |
 
@@ -53,6 +54,16 @@ python -m app.main
 
 See [`assets/streamhouse-continous-rag/README.md`](assets/streamhouse-continous-rag/README.md) for Flink RAG profile setup and UI options.
 
+## Quick start: Factory Pulse Streamhouse showcase
+
+```bash
+cd assets/streamhouse
+cp .env.example .env        # defaults to STREAM_MODE=mock (no cloud account needed)
+python scripts/start.py     # backend on :4000, UI on :5173
+```
+
+See [`assets/streamhouse/README.md`](assets/streamhouse/README.md) for Confluent Cloud connection, Terraform, container and Code Engine deployment.
+
 ## What the assets demonstrate
 
 **Live Context for Supply Chain Resilience** covers:
@@ -68,6 +79,13 @@ See [`assets/streamhouse-continous-rag/README.md`](assets/streamhouse-continous-
 - Kafka/Flink profiles for local deterministic demos and managed Flink AI embedding;
 - FastAPI backend with live RAG freshness and evidence retrieval;
 - Code Engine stateless deployment pattern.
+
+**Factory Pulse Streamhouse showcase** covers:
+
+- End-to-end Stream → Transform → Govern → Serve walkthrough with synthetic data for six US factories;
+- Python Flask backend publishing JSON Schema–governed events to Confluent Cloud, with a local simulation mode;
+- Carbon React control tower with a 3D factory digital twin and fault injection;
+- Flink SQL recipes, Tableflow/Iceberg and RTCE/MCP integration points, and one-command Terraform deployment.
 
 ## Continuous RAG pattern
 
@@ -94,7 +112,7 @@ flowchart TD
 - RTCE materialized view schemas must align with the Kafka topic schema and downstream consumer expectations.
 - Tableflow Iceberg sinks inherit topic partitioning -- design topic keys and partitions for downstream query patterns.
 - Protect RTCE API endpoints with IAM or OAuth before exposing to external agents.
-- Treat the supply-chain and Continuous RAG demos as reference patterns, not production-hardened deployments.
+- Treat the supply-chain, Continuous RAG and Factory Pulse demos as reference patterns, not production-hardened deployments.
 - Validate Confluent RTCE and Tableflow availability in the target IBM Confluent plan and region.
 
 ## IBM references

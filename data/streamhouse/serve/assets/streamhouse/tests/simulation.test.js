@@ -1,0 +1,11 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {FactorySimulation} from '../server/src/simulation.js';
+import {KEY_SCHEMA,VALUE_SCHEMAS} from '../server/src/schemas.js';
+const sim=()=>new FactorySimulation({random:()=>0.5});
+test('six factories, all baseline and 36 robotic assets',()=>{const s=sim().snapshot();assert.equal(s.sites.length,6);assert.equal(s.summary.assets,36);assert.equal(s.summary.activeAlerts,0);});
+test('synthetic telemetry includes events keyed for Kafka Schema Registry',()=>{const s=sim();const events=s.step();const t=events.find(x=>x.topic==='factory-iot-telemetry');assert.equal(typeof t.key.id,'string');assert.equal(typeof t.value.vibration,'number');assert.equal(typeof t.value.siteId,'string');assert.ok(events.length>=12);});
+test('bearing fault triggers critical risk and reduces OEE',()=>{const s=sim();s.inject('DET','bearing',90);for(let i=0;i<10;i++)s.step();const det=s.snapshot().sites.find(x=>x.id==='DET');assert.equal(det.status,'warning');assert.ok(det.oee<90);assert.ok(s.snapshot().alerts.some(x=>x.siteId==='DET'&&x.severity==='critical'));assert.ok(s.lastBatch.length>0);});
+test('repair restores healthy state and acknowledges incidents separately',()=>{const s=sim();s.inject('AUS','thermal',95);for(let i=0;i<6;i++)s.step();assert.ok(s.snapshot().summary.activeAlerts>0);s.act('AUS','acknowledge');assert.equal(s.snapshot().summary.activeAlerts,0);s.act('AUS','maintenance');s.step();assert.equal(s.snapshot().sites.find(x=>x.id==='AUS').scenario,'baseline');});
+test('bad plant/scenario/action rejected',()=>{const s=sim();assert.throws(()=>s.inject('XYZ','bearing'));assert.throws(()=>s.inject('DET','wrong'));assert.throws(()=>s.act('DET','factory-reset'));});
+test('all outbound Kafka topics have registered key and value schema definitions',()=>{assert.equal(KEY_SCHEMA.properties.id.type,'string');for(const k of ['factory-iot-telemetry','factory-maintenance-events','factory-asset-state'])assert.ok(VALUE_SCHEMAS[k]);});

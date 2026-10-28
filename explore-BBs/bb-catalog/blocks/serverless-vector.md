@@ -5,7 +5,7 @@ group: lakehouse
 capability: data
 description: Serverless vector ingestion and similarity search plus NoSQL document access using the Astra DB service in IBM watsonx.data
 repo_path: data/lakehouse/serverless-vector
-docs_path: data-core/lakehouse/serverless-vector/index.md
+docs_path: data/lakehouse/serverless-vector/index.md
 products:
   - watsonx.data
   - watsonx.ai
@@ -32,7 +32,7 @@ tags:
 Serverless vector ingestion and similarity search plus NoSQL document access using the Astra DB service in IBM watsonx.data
 
 - **Repo**: [data/lakehouse/serverless-vector](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/lakehouse/serverless-vector)
-- **Docs**: [data-core/lakehouse/serverless-vector/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/lakehouse/serverless-vector/)
+- **Docs**: [data/lakehouse/serverless-vector/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data/lakehouse/serverless-vector/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

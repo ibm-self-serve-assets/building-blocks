@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Factory Pulse — Digital Twin Creation Guide</title>
+<style>
+/* ── Reset & base ─────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#ffffff;font-family:-apple-system,"Segoe UI",system-ui,sans-serif;font-size:14px;line-height:1.65;color:#1f2328}
+a{color:#3b82d4;text-decoration:none}
+a:hover{text-decoration:underline}
+code{font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:12.5px;background:#f0f2f5;padding:1px 5px;border-radius:3px;color:#1f2328}
+pre{background:#0d1a26;color:#c8dce8;font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;font-size:12px;line-height:1.6;padding:16px 18px;border-radius:6px;overflow-x:auto;margin:10px 0}
+pre code{background:none;padding:0;color:inherit;font-size:inherit}
+
+/* ── Layout ───────────────────────────────────────────────────── */
+.wrap{max-width:820px;margin:0 auto;padding:0 28px 60px}
+
+/* ── Header ───────────────────────────────────────────────────── */
+.doc-header{background:#0d1a26;color:#c8dce8;padding:36px 0 32px;margin-bottom:0}
+.doc-header .wrap{display:flex;flex-direction:column;gap:8px}
+.doc-eyebrow{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:#5a8aaa;font-weight:600}
+.doc-title{font-size:26px;font-weight:700;color:#e0edf5;line-height:1.25}
+.doc-sub{font-size:13px;color:#7aaccc;max-width:600px;margin-top:4px}
+.doc-meta{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
+.doc-tag{font-size:11px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;border:1px solid #1e3d58;border-radius:10px;padding:2px 10px;color:#5a8aaa}
+.doc-tag.hi{border-color:#3b82d4;color:#3b82d4}
+
+/* ── TOC ──────────────────────────────────────────────────────── */
+.toc{background:#f7f8fa;border:1px solid #e5e7eb;border-radius:8px;padding:20px 22px;margin:28px 0 32px}
+.toc h2{font-size:11px;letter-spacing:.10em;text-transform:uppercase;color:#57606a;font-weight:700;margin-bottom:12px}
+.toc ol{padding-left:20px;display:grid;grid-template-columns:1fr 1fr;gap:2px 30px}
+.toc li{font-size:13px;margin-bottom:3px}
+@media(max-width:560px){.toc ol{grid-template-columns:1fr}}
+
+/* ── Section headings ─────────────────────────────────────────── */
+.section{margin-top:44px}
+.section-label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:#57606a;margin-bottom:6px}
+h2.section-title{font-size:18px;font-weight:700;color:#1f2328;padding-bottom:8px;border-bottom:2px solid #e5e7eb;margin-bottom:18px}
+h3{font-size:14px;font-weight:700;color:#1f2328;margin:20px 0 8px}
+h4{font-size:13px;font-weight:600;color:#57606a;margin:16px 0 6px;text-transform:uppercase;letter-spacing:.06em}
+p{margin-bottom:10px}
+
+/* ── Tables ───────────────────────────────────────────────────── */
+.table-wrap{overflow-x:auto;margin:12px 0 18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead tr{background:#f0f2f5}
+th{text-align:left;padding:7px 12px;font-weight:600;color:#57606a;font-size:11px;text-transform:uppercase;letter-spacing:.07em;border-bottom:2px solid #e5e7eb;white-space:nowrap}
+td{padding:7px 12px;border-bottom:1px solid #e5e7eb;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even){background:#fafbfc}
+
+/* ── Callout boxes ────────────────────────────────────────────── */
+.callout{border-left:3px solid #3b82d4;background:#f0f5ff;padding:12px 16px;border-radius:0 6px 6px 0;margin:14px 0;font-size:13px}
+.callout.warn{border-color:#d97706;background:#fffbeb}
+.callout.green{border-color:#059669;background:#f0fdf4}
+.callout strong{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ── Layer diagram ────────────────────────────────────────────── */
+.layer-diagram{display:flex;flex-direction:column;gap:0;margin:18px 0 22px;border-radius:8px;overflow:hidden;border:1px solid #e5e7eb}
+.layer{display:flex;align-items:stretch;border-bottom:1px solid #e5e7eb}
+.layer:last-child{border-bottom:none}
+.layer-num{background:#0d1a26;color:#5a8aaa;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:12px 16px;min-width:34px;display:flex;align-items:center;writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg)}
+.layer-body{flex:1;padding:12px 16px}
+.layer-name{font-weight:700;font-size:13px;margin-bottom:3px}
+.layer-desc{font-size:12px;color:#57606a}
+.layer-tech{font-size:11px;color:#3b82d4;margin-top:4px;font-weight:600}
+
+/* ── Color swatches ───────────────────────────────────────────── */
+.swatch-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.swatch{display:flex;align-items:center;gap:8px;border:1px solid #e5e7eb;border-radius:6px;padding:6px 10px;font-size:12px}
+.swatch-dot{width:20px;height:20px;border-radius:4px;flex-shrink:0}
+
+/* ── Joint diagram ────────────────────────────────────────────── */
+.joint-tree{background:#0d1a26;color:#c8dce8;font-family:"SFMono-Regular",Consolas,monospace;font-size:12px;line-height:1.75;padding:16px 20px;border-radius:6px;margin:12px 0}
+.jt-root{color:#fcd34d}
+.jt-static{color:#6a94b0}
+.jt-rot{color:#34d399}
+.jt-geo{color:#f0abfc}
+
+/* ── Signal gauge bar ─────────────────────────────────────────── */
+.gauge-row{display:flex;flex-direction:column;gap:6px;margin:12px 0 18px}
+.gauge{display:flex;align-items:center;gap:12px;font-size:12px}
+.gauge-label{min-width:120px;color:#57606a;font-weight:600}
+.gauge-track{flex:1;height:8px;background:#e5e7eb;border-radius:4px;overflow:hidden}
+.gauge-fill{height:100%;border-radius:4px}
+.gauge-val{min-width:70px;text-align:right;font-family:monospace;color:#1f2328}
+
+/* ── Pipeline flow ────────────────────────────────────────────── */
+.pipeline{display:flex;align-items:center;gap:0;margin:16px 0 20px;flex-wrap:wrap}
+.pipe-step{background:#f0f2f5;border:1px solid #e5e7eb;border-radius:6px;padding:8px 14px;font-size:12px;font-weight:600;color:#1f2328;text-align:center;white-space:nowrap}
+.pipe-arrow{color:#9ca3af;font-size:16px;padding:0 6px}
+
+/* ── Glossary ─────────────────────────────────────────────────── */
+.glossary-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 28px}
+@media(max-width:600px){.glossary-grid{grid-template-columns:1fr}}
+.gloss-item{border-bottom:1px solid #e5e7eb;padding:8px 0}
+.gloss-term{font-weight:700;font-size:13px;color:#1f2328}
+.gloss-def{font-size:12.5px;color:#57606a;margin-top:2px}
+
+/* ── Footer ───────────────────────────────────────────────────── */
+.doc-footer{text-align:center;font-size:11px;color:#9ca3af;margin-top:52px;padding-top:16px;border-top:1px solid #e5e7eb}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<div class="doc-header">
+<div class="wrap">
+  <div class="doc-eyebrow">Factory Pulse · Technical Reference</div>
+  <div class="doc-title">Digital Twin Creation Guide</div>
+  <div class="doc-sub">A complete walkthrough of every term, layer, and technique used to build the Factory Pulse manufacturing digital twin — from physics simulation through Kafka streaming to the Three.js 3D scene.</div>
+  <div class="doc-meta">
+    <span class="doc-tag hi">6 Factory Sites</span>
+    <span class="doc-tag">6 Robot Types</span>
+    <span class="doc-tag">3 Kafka Topics</span>
+    <span class="doc-tag">4 Flink SQL Recipes</span>
+    <span class="doc-tag">6-Axis Robot Arms</span>
+    <span class="doc-tag">React Three Fiber</span>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════ BODY ══════════════════ -->
+<div class="wrap">
+
+<!-- TOC -->
+<nav class="toc">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#s1">What is a digital twin?</a></li>
+    <li><a href="#s2">Physical world — the factory network</a></li>
+    <li><a href="#s3">Simulation engine</a></li>
+    <li><a href="#s4">Sensor signals &amp; telemetry</a></li>
+    <li><a href="#s5">Fault scenarios</a></li>
+    <li><a href="#s6">Streaming backbone — Kafka</a></li>
+    <li><a href="#s7">Schema governance</a></li>
+    <li><a href="#s8">Stream processing — Flink SQL</a></li>
+    <li><a href="#s9">Backend server</a></li>
+    <li><a href="#s10">3D scene construction</a></li>
+    <li><a href="#s11">Robot arm kinematics</a></li>
+    <li><a href="#s12">UI component reference</a></li>
+    <li><a href="#s13">AI context &amp; MCP</a></li>
+    <li><a href="#s14">Deployment modes</a></li>
+    <li><a href="#s15">Glossary</a></li>
+  </ol>
+</nav>
+
+<!-- ══ S1 ══════════════════════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-label">Section 1</div>
+  <h2 class="section-title">What is a digital twin?</h2>
+
+  <p>A <strong>digital twin</strong> is a continuously updated software model of a physical object or system. Factory Pulse models a network of six fictional US manufacturing plants, each with robots, conveyors, and automated guided vehicles (AGVs).</p>
+
+  <p>The twin is built from three interdependent layers:</p>
+
+  <div class="layer-diagram">
+    <div class="layer">
+      <div class="layer-num">1</div>
+      <div class="layer-body">
+        <div class="layer-name">Simulation</div>
+        <div class="layer-desc">Generates synthetic but physically plausible sensor readings on every clock tick. Applies scenario-based fault injection to create realistic anomalies for demonstration.</div>
+        <div class="layer-tech">Python · FactorySimulation · plants.py · simulation.py</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">2</div>
+      <div class="layer-body">
+        <div class="layer-name">Event stream</div>
+        <div class="layer-desc">Transports every sensor reading as a structured event from the simulator to all consumers. Schema Registry enforces message contracts. Flink SQL derives secondary analytics streams.</div>
+        <div class="layer-tech">Confluent Kafka · Schema Registry · Apache Flink SQL · Tableflow</div>
+      </div>
+    </div>
+    <div class="layer">
+      <div class="layer-num">3</div>
+      <div class="layer-body">
+        <div class="layer-name">Visualisation</div>
+        <div class="layer-desc">Renders the live simulation state as an interactive 3D factory floor, real-time KPI dashboard, trend charts, event feed, and AI context panel — all driven by Server-Sent Events from the backend.</div>
+        <div class="layer-tech">React · React Three Fiber · Three.js · Recharts · Carbon Design System</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S2 ══════════════════════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-label">Section 2</div>
+  <h2 class="section-title">Physical world — the factory network</h2>
+
+  <h3>Factory sites</h3>
+  <p>Six fictional US plants are declared in <code>server/plants.py</code>. Geographic coordinates are real, but facilities are invented for demonstration purposes.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Site ID</th><th>Name</th><th>Type</th><th>Lines</th><th>Robots</th><th>Region</th></tr></thead>
+    <tbody>
+      <tr><td><code>DET</code></td><td>Detroit Assembly</td><td>Automotive assembly</td><td>8</td><td>12</td><td>Midwest</td></tr>
+      <tr><td><code>AUS</code></td><td>Austin Gigafactory</td><td>Battery / robotics</td><td>6</td><td>14</td><td>South</td></tr>
+      <tr><td><code>SEA</code></td><td>Seattle Precision</td><td>Precision components</td><td>5</td><td>10</td><td>West</td></tr>
+      <tr><td><code>PHX</code></td><td>Phoenix Semicon</td><td>Electronics</td><td>7</td><td>16</td><td>West</td></tr>
+      <tr><td><code>CLT</code></td><td>Charlotte Manufacturing</td><td>Industrial machinery</td><td>6</td><td>11</td><td>East</td></tr>
+      <tr><td><code>CHI</code></td><td>Chicago Distribution</td><td>Packaging / fulfillment</td><td>4</td><td>9</td><td>Midwest</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Robot types</h3>
+  <p>Each site models six robot roles (indices 0–5). Asset IDs follow the pattern <code>{SITE_ID}-R0{N}</code>, e.g., <code>DET-R01</code>.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Index</th><th>Role</th><th>Tool</th><th>Primary motion</th></tr></thead>
+    <tbody>
+      <tr><td>0</td><td>Welding robot</td><td>Welding torch + arc glow</td><td>Approaches part, tracks seam, fires arc, retracts</td></tr>
+      <tr><td>1</td><td>Pick &amp; place</td><td>4-cup vacuum gripper</td><td>Descends, grips, lifts, swings 45° to drop zone, returns</td></tr>
+      <tr><td>2</td><td>Quality scanner</td><td>Laser scan head + beam</td><td>Slow sweep across part; j1 azimuth ±25°, laser always on</td></tr>
+      <tr><td>3</td><td>Assembly cobot</td><td>Press/fastener driver</td><td>3 press strokes per cycle; brief park at start/end</td></tr>
+      <tr><td>4</td><td>AGV transporter</td><td>—</td><td>Wheeled cart oscillating along X-axis on the floor</td></tr>
+      <tr><td>5</td><td>Packaging arm</td><td>Paddle / seal plate</td><td>Scoop, fold flap, push off belt end</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Other scene assets</h3>
+  <ul style="margin:6px 0 10px 20px;font-size:13px;line-height:1.8">
+    <li><strong>Conveyor belt</strong> — single belt with side rails, roller legs, and belt tick marks; parts travel right → left at 1.3 world-units/sec.</li>
+    <li><strong>AGV</strong> — yellow cart oscillating along the X-axis; rotates 180° at each end.</li>
+    <li><strong>Gantry structure</strong> — vertical columns at X = ±9.8 with horizontal crossbeams at Y = 9; purely decorative factory skeleton.</li>
+    <li><strong>Safety rings</strong> — yellow floor markers beneath each robot station.</li>
+    <li><strong>Grid &amp; lane lines</strong> — dark blue grid tiles and cyan lane-line stripes on the factory floor.</li>
+  </ul>
+</div>
+
+<!-- ══ S3 ══════════════════════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-label">Section 3</div>
+  <h2 class="section-title">Simulation engine</h2>
+
+  <p>The <code>FactorySimulation</code> class in <code>server/simulation.py</code> is the engine. It initialises a state object for each site and advances it on every call to <code>step()</code>.</p>
+
+  <h3>Simulation tick</h3>
+  <p>The Flask background thread calls <code>sim.step()</code> every <strong>1 700 ms</strong> (configurable via <code>SIM_INTERVAL_MS</code>). Each tick:</p>
+  <ol style="margin:6px 0 10px 24px;font-size:13px;line-height:1.9">
+    <li>Increments the global <code>tick</code> counter.</li>
+    <li>Loops over every site and every robot within that site.</li>
+    <li>Applies sinusoidal noise to each sensor reading — the noise is offset by the site's <strong>seed</strong> integer to give each plant a distinct signal shape.</li>
+    <li>Applies the active <strong>scenario</strong> multiplier to distort signals (see Section 5).</li>
+    <li>Evaluates alert thresholds to derive the robot's <code>status</code>.</li>
+    <li>Recomputes site-level OEE and throughput.</li>
+    <li>Appends a rolling <strong>history</strong> entry (55-tick buffer) for trend charts.</li>
+    <li>Selects 2 robots per site (round-robin) and emits <code>factory-iot-telemetry</code> records.</li>
+    <li>Every 3 ticks, emits <code>factory-asset-state</code> for the first 3 robots per site.</li>
+    <li>Every 5 ticks (if a fault is active at ≥ 35 % severity), emits a <code>factory-maintenance-events</code> alert.</li>
+    <li>Broadcasts the full snapshot to all SSE listeners.</li>
+  </ol>
+
+  <h3>OEE formula</h3>
+  <p>Overall Equipment Effectiveness is smoothed on each tick using an exponential moving average:</p>
+  <pre><code>site_oee = site_oee × 0.67 + target_oee × 0.33</code></pre>
+
+  <h3>Throughput formula</h3>
+  <pre><code>throughput = lines × 16 × (oee / 98)   # ×1.25 during surge; 0 when paused</code></pre>
+
+  <h3>Sinusoidal noise</h3>
+  <p>Each robot signal is computed as a base value plus a small sine-derived noise term, ensuring readings feel live without being chaotic:</p>
+  <pre><code>noise = sin(tick × freq + seed × phase_offset) × amplitude</code></pre>
+</div>
+
+<!-- ══ S4 ══════════════════════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-label">Section 4</div>
+  <h2 class="section-title">Sensor signals &amp; telemetry</h2>
+
+  <p>The following physical signals are computed per robot on every tick:</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Signal</th><th>Unit</th><th>Normal range</th><th>Alert threshold</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>temperature</code></td><td>°C</td><td>35 – 45</td><td>&gt; 72 °C → warning</td><td>Surface/motor temperature</td></tr>
+      <tr><td><code>vibration</code></td><td>mm/s</td><td>1.1 – 2.0</td><td>&gt; 5.2 mm/s → warning</td><td>Spindle/bearing vibration amplitude</td></tr>
+      <tr><td><code>rpm</code></td><td>RPM</td><td>1 750 – 1 850</td><td>—</td><td>Motor shaft rotation speed</td></tr>
+      <tr><td><code>energyKw</code></td><td>kW</td><td>12 – 15</td><td>—</td><td>Instantaneous power draw</td></tr>
+      <tr><td><code>qualityScore</code></td><td>%</td><td>97 – 99.3</td><td>&lt; 86 % → warning</td><td>First-pass yield / inspection pass rate</td></tr>
+      <tr><td><code>health</code></td><td>%</td><td>85 – 100</td><td>—</td><td>Composite asset condition index</td></tr>
+      <tr><td><code>status</code></td><td>enum</td><td><code>running</code></td><td>Derived from thresholds</td><td><code>running</code> / <code>warning</code> / <code>stopped</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Normal-range gauges</h3>
+  <div class="gauge-row">
+    <div class="gauge"><div class="gauge-label">temperature</div><div class="gauge-track"><div class="gauge-fill" style="width:40%;background:#3b82d4"></div></div><div class="gauge-val">35 – 45 °C</div></div>
+    <div class="gauge"><div class="gauge-label">vibration</div><div class="gauge-track"><div class="gauge-fill" style="width:25%;background:#3b82d4"></div></div><div class="gauge-val">1.1 – 2.0 mm/s</div></div>
+    <div class="gauge"><div class="gauge-label">rpm</div><div class="gauge-track"><div class="gauge-fill" style="width:96%;background:#3b82d4"></div></div><div class="gauge-val">1 750 – 1 850</div></div>
+    <div class="gauge"><div class="gauge-label">qualityScore</div><div class="gauge-track"><div class="gauge-fill" style="width:98%;background:#059669"></div></div><div class="gauge-val">97 – 99.3 %</div></div>
+    <div class="gauge"><div class="gauge-label">health</div><div class="gauge-track"><div class="gauge-fill" style="width:92%;background:#059669"></div></div><div class="gauge-val">85 – 100 %</div></div>
+  </div>
+
+  <div class="callout">
+    <strong>Alert derivation</strong>
+    A robot's <code>status</code> becomes <code>"warning"</code> when <em>any one</em> of the three threshold checks fires: <code>temperature &gt; 72</code>, <code>vibration &gt; 5.2</code>, or <code>qualityScore &lt; 86</code>.
+  </div>
+</div>
+
+<!-- ══ S5 ══════════════════════════════════════ -->
+<div class="section" id="s5">
+  <div class="section-label">Section 5</div>
+  <h2 class="section-title">Fault scenarios</h2>
+
+  <p>The <code>inject(site_id, scenario, intensity)</code> method accepts one of five named scenarios. <strong>Intensity</strong> (0–100 %) scales how strongly signals are distorted.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Scenario ID</th><th>Display name</th><th>Primary signals</th><th>OEE impact</th><th>Alert emitted</th></tr></thead>
+    <tbody>
+      <tr><td><code>baseline</code></td><td>Healthy operations</td><td>All nominal</td><td>~96 %</td><td>None</td></tr>
+      <tr><td><code>bearing</code></td><td>Bearing wear</td><td>Vibration ↑, health ↓</td><td>−17 × severity</td><td><code>BEARING_RISK</code></td></tr>
+      <tr><td><code>thermal</code></td><td>Thermal excursion</td><td>Temperature ↑, energy ↑</td><td>−23 × severity</td><td><code>OVERHEAT</code></td></tr>
+      <tr><td><code>quality</code></td><td>Quality drift</td><td>Quality score ↓</td><td>−21 × severity</td><td><code>QUALITY_DRIFT</code></td></tr>
+      <tr><td><code>surge</code></td><td>Demand surge</td><td>Throughput ↑, RPM ↑, energy ↑</td><td>+2 × severity</td><td><code>CAPACITY_PRESSURE</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p>Alerts are emitted every 5 ticks when the scenario is active and severity ≥ 35 %. They are published to the <code>factory-maintenance-events</code> Kafka topic and displayed in the Actions tab event feed.</p>
+</div>
+
+<!-- ══ S6 ══════════════════════════════════════ -->
+<div class="section" id="s6">
+  <div class="section-label">Section 6</div>
+  <h2 class="section-title">Streaming backbone — Kafka</h2>
+
+  <p>Three <strong>source topics</strong> are produced by the simulator. In <code>STREAM_MODE=kafka</code> they carry real Confluent Cloud messages; in the default mode they use an in-memory queue.</p>
+
+  <h3>Source topics</h3>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Topic</th><th>Rate</th><th>Purpose</th><th>Key field</th></tr></thead>
+    <tbody>
+      <tr><td><code>factory-iot-telemetry</code></td><td>2 robots/site/tick</td><td>Full sensor snapshot — temperature, vibration, RPM, energy, quality, health, status, scenario</td><td><code>assetId</code></td></tr>
+      <tr><td><code>factory-asset-state</code></td><td>Every 3 ticks, 3 robots/site</td><td>Compacted latest-state record — designed for RTCE consumption</td><td><code>assetId</code></td></tr>
+      <tr><td><code>factory-maintenance-events</code></td><td>Every 5 ticks (when fault active)</td><td>Alert events — eventType, severity, message, acknowledged flag</td><td><code>alertId</code></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Flink-derived output topics</h3>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Topic</th><th>Produced by</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td><code>factory-risk-signals</code></td><td><code>02-risk-signal.sql</code></td><td>Per-event risk classification with type and severity</td></tr>
+      <tr><td><code>factory-shift-kpis</code></td><td><code>03-shift-kpis.sql</code></td><td>1-minute aggregated KPIs per site</td></tr>
+      <tr><td><code>factory-quality-alerts</code></td><td><code>04-quality-alerts.sql</code></td><td>Inspection/quarantine routing decisions</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="pipeline">
+    <div class="pipe-step">Simulator (Python)</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Confluent Producer</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Kafka Topics</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Flink SQL</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">Derived Topics</div><div class="pipe-arrow">→</div>
+    <div class="pipe-step">UI / RTCE / Iceberg</div>
+  </div>
+</div>
+
+<!-- ══ S7 ══════════════════════════════════════ -->
+<div class="section" id="s7">
+  <div class="section-label">Section 7</div>
+  <h2 class="section-title">Schema governance</h2>
+
+  <p>When running in Kafka mode, the backend registers <strong>JSON Schema</strong> contracts in Confluent Schema Registry before producing any messages. Schemas are defined in <code>server/schemas.py</code>.</p>
+
+  <h3>Subject naming convention</h3>
+  <p>Follows <strong>TopicNameStrategy</strong>: each topic gets a <code>-key</code> and <code>-value</code> subject, e.g., <code>factory-iot-telemetry-value</code>.</p>
+
+  <h3>Wire format</h3>
+  <p>Each message is encoded with Confluent's binary wire format: a 1-byte magic byte (<code>0x00</code>) followed by a 4-byte schema ID, then the JSON payload. This allows every consumer to retrieve the correct schema version from the registry.</p>
+
+  <h3>Schema strictness</h3>
+  <p>All value schemas use <code>"additionalProperties": false</code>, ensuring downstream consumers (Flink, Tableflow, RTCE) reject malformed messages at the contract boundary.</p>
+</div>
+
+<!-- ══ S8 ══════════════════════════════════════ -->
+<div class="section" id="s8">
+  <div class="section-label">Section 8</div>
+  <h2 class="section-title">Stream processing — Flink SQL</h2>
+
+  <p>Four SQL files in <code>flink/</code> implement the <strong>TRANSFORM</strong> layer. They run on a Confluent Cloud Flink compute pool — not embedded locally.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>File</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>01-create-tables.sql</code></td><td>Declares the three derived output tables. Source tables are inferred from Schema Registry — no CREATE TABLE needed for them.</td></tr>
+      <tr><td><code>02-risk-signal.sql</code></td><td>Per-event INSERT INTO … SELECT that classifies each sensor reading into BEARING_RISK, THERMAL_RISK, or QUALITY_RISK using CASE WHEN threshold logic.</td></tr>
+      <tr><td><code>03-shift-kpis.sql</code></td><td>1-minute tumbling window aggregates: sample count, mean temperature/vibration/quality, and kWh estimate per site.</td></tr>
+      <tr><td><code>04-quality-alerts.sql</code></td><td>Filters qualityScore &lt; 86 and routes to REQUEST_INSPECTION (78–86) or QUARANTINE_BATCH (&lt; 78).</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Tumbling window</h3>
+  <p>A Flink windowing pattern that groups events into <em>fixed, non-overlapping</em> time intervals. The shift KPIs SQL uses a 1-minute window on the <code>$rowtime</code> attribute, which Confluent Flink infers from the Kafka message timestamp.</p>
+
+  <h3>Risk classification thresholds</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Condition</th><th>Risk type</th><th>Severity</th></tr></thead>
+    <tbody>
+      <tr><td><code>vibration &gt; 5.2</code></td><td>BEARING_RISK</td><td>critical if &gt; 6.5, else warning</td></tr>
+      <tr><td><code>temperature &gt; 72</code></td><td>THERMAL_RISK</td><td>critical if &gt; 85, else warning</td></tr>
+      <tr><td><code>qualityScore &lt; 86</code></td><td>QUALITY_RISK</td><td>critical if &lt; 80, else warning</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══ S9 ══════════════════════════════════════ -->
+<div class="section" id="s9">
+  <div class="section-label">Section 9</div>
+  <h2 class="section-title">Backend server</h2>
+
+  <p>The Python/Flask backend in <code>server/app.py</code> is the central nervous system. It runs the simulation loop, pushes state to browsers via SSE, and exposes REST routes for UI interactions.</p>
+
+  <h3>Server-Sent Events (SSE)</h3>
+  <p>The browser subscribes to <code>GET /api/events</code> using the <code>EventSource</code> Web API. The server pushes named events over a persistent HTTP connection:</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Event name</th><th>Payload</th><th>Trigger</th></tr></thead>
+    <tbody>
+      <tr><td><code>snapshot</code></td><td>Full factory network state</td><td>Every simulation tick</td></tr>
+      <tr><td><code>alert</code></td><td>Newly generated maintenance alert</td><td>Threshold breach</td></tr>
+      <tr><td><code>scenario</code></td><td>Active scenario change</td><td><code>inject()</code> call</td></tr>
+      <tr><td><code>action</code></td><td>Control action taken</td><td><code>act()</code> call</td></tr>
+      <tr><td><code>cloud</code></td><td>Kafka transport status</td><td>After each publish batch</td></tr>
+      <tr><td><code>flink</code></td><td>Derived Flink topic record</td><td>When derived consumer is active</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>REST API summary</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Route</th><th>Method</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>/api/health</code></td><td>GET</td><td>Server and Kafka transport status</td></tr>
+      <tr><td><code>/api/bootstrap</code></td><td>GET</td><td>Initial snapshot, sites, scenarios</td></tr>
+      <tr><td><code>/api/events</code></td><td>GET</td><td>SSE stream</td></tr>
+      <tr><td><code>/api/simulate</code></td><td>POST</td><td>Inject a fault scenario</td></tr>
+      <tr><td><code>/api/control</code></td><td>POST</td><td>Pause, resume, maintenance, acknowledge</td></tr>
+      <tr><td><code>/api/context</code></td><td>POST</td><td>Rule-based AI Q&amp;A</td></tr>
+      <tr><td><code>/api/mcp/tools</code></td><td>GET</td><td>List RTCE MCP tools</td></tr>
+      <tr><td><code>/api/mcp/call</code></td><td>POST</td><td>Call an RTCE MCP tool</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══ S10 ══════════════════════════════════════ -->
+<div class="section" id="s10">
+  <div class="section-label">Section 10</div>
+  <h2 class="section-title">3D scene construction</h2>
+
+  <p>The 3D factory floor is rendered by <strong>React Three Fiber (R3F)</strong> — a React renderer that wraps Three.js — inside <code>frontend/src/components/FactoryTwin.jsx</code>. The standalone preview lives in <code>docs/robot-arm-preview.html</code> (pure Three.js, no React).</p>
+
+  <h3>Renderer setup</h3>
+  <p>The <code>WebGLRenderer</code> is created with <code>antialias: true</code>, PCF soft shadow maps, ACES filmic tone mapping at exposure 1.1, and a pixel ratio capped at 2×. A <code>ResizeObserver</code> updates the camera aspect ratio and renderer size whenever the canvas container resizes.</p>
+
+  <h3>Lighting rig</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Light</th><th>Type</th><th>Position / sky</th><th>Key settings</th></tr></thead>
+    <tbody>
+      <tr><td>Ambient</td><td>AmbientLight</td><td>Global</td><td>color <code>#d8f0ff</code>, intensity 0.5</td></tr>
+      <tr><td>Hemisphere</td><td>HemisphereLight</td><td>sky / ground</td><td>sky <code>#c8e0ff</code>, ground <code>#1c2b3d</code>, intensity 0.85</td></tr>
+      <tr><td>Sun / key</td><td>DirectionalLight</td><td>[4, 14, 8]</td><td>intensity 2.2, shadow map 2048×2048, castShadow</td></tr>
+      <tr><td>Strip lights × 5</td><td>PointLight</td><td>X = −8, −4, 0, 4, 8 at Y = 7</td><td>color <code>#c8e8ff</code>, intensity 3.5, distance 9</td></tr>
+      <tr><td>Warm fill</td><td>PointLight</td><td>[8, 5, 5]</td><td>color <code>#ffa953</code>, intensity 6, distance 14</td></tr>
+      <tr><td>Weld flash × 2</td><td>PointLight</td><td>Above R1 and R4</td><td>intensity 0 at rest; pulses 9 ± 3 when torch is firing</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Scene geometry layers</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Element</th><th>Geometry</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Floor</td><td>PlaneGeometry 38×20</td><td>Dark blue-gray, low metalness, rotated −90° on X</td></tr>
+      <tr><td>Grid</td><td>GridHelper 36×36</td><td>72 divisions, semi-transparent, sits at Y = 0.003</td></tr>
+      <tr><td>Lane lines</td><td>PlaneGeometry 36×0.07 × 2</td><td>Cyan tint, flanking the conveyor belt</td></tr>
+      <tr><td>Conveyor body</td><td>BoxGeometry 23×0.18×1.5</td><td>Belt surface at Y = 0.54; parts travel at Y = 0.63</td></tr>
+      <tr><td>Belt ticks</td><td>PlaneGeometry 0.055×1.20 each</td><td>Spaced every 0.9 units along X</td></tr>
+      <tr><td>Gantry columns</td><td>BoxGeometry 0.17×9×0.17</td><td>12 columns at X = ±9.8, Z = −6.5 / 0 / 6.5</td></tr>
+      <tr><td>Gantry beams</td><td>BoxGeometry 20.5×0.17×0.17</td><td>3 crossbeams at Y = 9</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Camera &amp; controls</h3>
+  <p>The camera is a <code>PerspectiveCamera</code> at position [0, 9, 16], FOV 46°, looking toward target [0, 1.2, 0]. OrbitControls are enabled with damping (factor 0.07), min distance 5, max distance 30, and max polar angle π / 2.08 (prevents going below the floor).</p>
+</div>
+
+<!-- ══ S11 ══════════════════════════════════════ -->
+<div class="section" id="s11">
+  <div class="section-label">Section 11</div>
+  <h2 class="section-title">Robot arm kinematics</h2>
+
+  <p>Each robot is a <strong>6-axis articulated arm</strong> built from a hierarchy of <code>THREE.Group</code> nodes. Every joint group pivots around its <em>local Y=0 origin</em>, which is placed at the joint centre when the group is positioned.</p>
+
+  <h3>Joint hierarchy</h3>
+  <div class="joint-tree">
+<span class="jt-root">root</span>  <span class="jt-static">(world position + rotOffset facing direction)</span>
+  └ <span class="jt-static">base collar + accent rim  (static geometry)</span>
+  └ <span class="jt-rot">j1</span>  <span class="jt-static">Y-axis — waist swivel</span>
+    └ <span class="jt-static">waist cylinder  (static geometry)</span>
+    └ <span class="jt-static">j2brkt  — shoulder bracket + ear plates + pivot bolt  (static)</span>
+      └ <span class="jt-rot">j2</span>  <span class="jt-static">Z-axis — shoulder pitch</span>
+        └ <span class="jt-geo">upper arm geometry  (3-section tapered cylinder)</span>
+        └ <span class="jt-static">cable conduit  (static on back of upper arm)</span>
+        └ <span class="jt-static">j3brkt  — elbow bracket + pivot bolt  (static)</span>
+          └ <span class="jt-rot">j3</span>  <span class="jt-static">Z-axis — elbow bend</span>
+            └ <span class="jt-geo">forearm tube  (tapered cylinder)</span>
+            └ <span class="jt-static">j4 roll housing  (collar with accent torus)</span>
+            └ <span class="jt-rot">j4</span>  <span class="jt-static">Y-axis — forearm roll</span>
+              └ <span class="jt-static">wrist housing  (cylinder)</span>
+              └ <span class="jt-rot">j5</span>  <span class="jt-static">Z-axis — wrist pitch</span>
+                └ <span class="jt-geo">wrist body  (tapered cylinder)</span>
+                └ <span class="jt-static">j6 tool flange  (cylinder + accent torus)</span>
+                └ <span class="jt-rot">j6</span>  <span class="jt-static">Y-axis — tool spin</span>
+                  └ <span class="jt-geo">end-effector geometry  (role-specific tool)</span>
+  </div>
+
+  <h3>Joint axis conventions</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Joint</th><th>Group ref</th><th>Rotation axis</th><th>Motion</th></tr></thead>
+    <tbody>
+      <tr><td>j1</td><td><code>j1</code></td><td>Y</td><td>Waist swivel — azimuth sweep left/right</td></tr>
+      <tr><td>j2</td><td><code>j2</code></td><td>Z</td><td>Shoulder pitch — pitches arm forward/back; +Z = forward (toward belt)</td></tr>
+      <tr><td>j3</td><td><code>j3</code></td><td>Z</td><td>Elbow bend — curls forearm; −Z = folds under (brings tip down)</td></tr>
+      <tr><td>j4</td><td><code>j4</code></td><td>Y</td><td>Forearm roll — rotates tool about the forearm's long axis</td></tr>
+      <tr><td>j5</td><td><code>j5</code></td><td>Z</td><td>Wrist pitch — fine angle adjustment of the tool</td></tr>
+      <tr><td>j6</td><td><code>j6</code></td><td>Y</td><td>Tool spin — rotates the end-effector</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>REST pose — reaching the belt</h3>
+  <p>The <strong>REST pose</strong> is the shared baseline from which all per-robot kinematic deltas are applied. It is tuned so the tool tip rests approximately at belt-surface height (world Y ≈ 0.63):</p>
+
+  <pre><code>const REST = {
+  j1y:  0,       // waist centred
+  j2z:  1.10,    // shoulder pitched forward toward belt
+  j3z: -1.45,    // elbow folded under, bringing forearm horizontal
+  j4y:  0,       // forearm roll neutral
+  j5z:  0.28,    // wrist levelled so tool face points toward belt surface
+  j6y:  0,       // tool spin neutral
+};</code></pre>
+
+  <div class="callout green">
+    <strong>Why the REST pose matters</strong>
+    Without a REST pose baseline the arms point upward (the Three.js default for Y-up geometry). The REST pose pre-pitches the shoulder 1.10 rad forward and curls the elbow −1.45 rad under so the arm geometry naturally drapes toward the belt. Each robot's kinematic function then adds small deltas on top of these values for its specific motion pattern.
+  </div>
+
+  <h3>Phase stagger</h3>
+  <p>Each robot is offset by <code>i / 6</code> of the 7-second cycle so the work wave rolls sequentially down the line:</p>
+  <pre><code>const phase = ((now / CYCLE) + i / 6) % 1;   // i = robot index 0–5</code></pre>
+
+  <h3>Per-robot kinematic patterns</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Robot</th><th>Row</th><th>Pattern</th><th>toolOn condition</th></tr></thead>
+    <tbody>
+      <tr><td>R1 Welding</td><td>Front (Z = −3.5)</td><td>Approach → weld (seam tracking jitter) → retract. j4y and j6y spin continuously for torch effect.</td><td>weld phase > 0.15</td></tr>
+      <tr><td>R2 Pick &amp; Place</td><td>Front</td><td>Descend → grip → lift → swing 45° to drop zone → drop → return.</td><td>grip active (ph 0.25–0.70)</td></tr>
+      <tr><td>R3 Scanner</td><td>Front</td><td>Constant hover above belt; j1y sweeps ±0.28 rad; j6y tracks sweep. Laser always on.</td><td>always true</td></tr>
+      <tr><td>R4 Assembly cobot</td><td>Back (Z = +3.5)</td><td>3 press strokes per cycle (sin × 3); brief park idle at start/end of cycle.</td><td>press > 0.20</td></tr>
+      <tr><td>R5 Pick &amp; Place B</td><td>Back</td><td>Same as R2 but phase-shifted +0.5 and j1y swings +0.55 (opposite direction).</td><td>grip active</td></tr>
+      <tr><td>R6 Packaging</td><td>Back</td><td>Scoop in → fold flap → push off belt end → return. j6y rotates through full paddle arc.</td><td>scoop > 0.4</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>End-effector geometry by role</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Robot</th><th>Tool geometry</th><th>Active visual effect</th></tr></thead>
+    <tbody>
+      <tr><td>Welding</td><td>Tapered torch body + nozzle cone + cable loop</td><td>Arc sphere fades in (<code>opacity 0.75 + sin flicker</code>) + weld flash PointLight pulses</td></tr>
+      <tr><td>Pick &amp; Place</td><td>Square frame + 4 suction cup cylinders</td><td>Suction pad emissive glow at intensity 1.8</td></tr>
+      <tr><td>Scanner</td><td>Scanner box + dark lens plate + laser beam cone + laser dot sphere</td><td>Beam and dot opacity flicker at 7–9 Hz</td></tr>
+      <tr><td>Assembly cobot</td><td>Press cylinder + driver tip + glow sphere</td><td>Tip emissive at 1.8 + sin(14t) × 0.5</td></tr>
+      <tr><td>Packaging</td><td>Flat paddle + two grip arms + seal plane</td><td>Seal emissive at 1.4 + sin(5t) × 0.3</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Status LED colours</h3>
+  <div class="swatch-row">
+    <div class="swatch"><div class="swatch-dot" style="background:#24d7b4"></div><code>running</code> — teal #24d7b4</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#f97316"></div><code>toolOn</code> — orange #f97316</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#ff6b5a"></div><code>warning</code> — red #ff6b5a</div>
+    <div class="swatch"><div class="swatch-dot" style="background:#888fa1"></div><code>stopped</code> — gray #888fa1</div>
+  </div>
+</div>
+
+<!-- ══ S12 ══════════════════════════════════════ -->
+<div class="section" id="s12">
+  <div class="section-label">Section 12</div>
+  <h2 class="section-title">UI component reference</h2>
+
+  <p>All UI source lives under <code>frontend/src/</code>. The entry point is <code>main.jsx</code> → <code>App.jsx</code>. Styles are in <code>styles.scss</code>.</p>
+
+  <h3>Shared primitive components</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Component</th><th>Props</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>Dot</code></td><td><code>status</code></td><td>Small colored circle: teal = healthy, amber = warning, gray = idle</td></tr>
+      <tr><td><code>Status</code></td><td><code>status</code></td><td>Dot + label: "Operational" / "Attention" / "Paused"</td></tr>
+      <tr><td><code>PanelHeading</code></td><td><code>eyebrow</code>, <code>title</code>, <code>action</code></td><td>Two-row heading with small-caps label and optional action slot</td></tr>
+      <tr><td><code>MetricCard</code></td><td><code>icon</code>, <code>label</code>, <code>value</code>, <code>unit</code>, <code>trend</code>, <code>detail</code></td><td>KPI tile used in the 4-column metrics grid</td></tr>
+      <tr><td><code>MiniTrends</code></td><td><code>history</code>, <code>keyName</code>, <code>stroke</code>, <code>height</code></td><td>Recharts AreaChart of the 55-tick rolling history buffer</td></tr>
+      <tr><td><code>SitePicker</code></td><td><code>sites</code>, <code>selected</code>, <code>onSelect</code></td><td>Horizontal site-switching button strip</td></tr>
+      <tr><td><code>DataBadge</code></td><td><code>cloud</code></td><td>Green "CONFLUENT CLOUD CONNECTED" pill or gray "SIMULATION MODE" pill</td></tr>
+      <tr><td><code>Bar</code></td><td><code>value</code>, <code>color</code></td><td>CSS progress bar clamped 0–100 %</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Application tabs</h3>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Tab ID</th><th>Label</th><th>Key content</th></tr></thead>
+    <tbody>
+      <tr><td><code>overview</code></td><td>Command center</td><td>Hero banner, 4-KPI metrics grid, PlantMap, live site pulse, architecture flow strip</td></tr>
+      <tr><td><code>twin</code></td><td>Digital twin</td><td>3D factory canvas (FactoryTwin), site picker, fault injection lab, sensor list, trend charts</td></tr>
+      <tr><td><code>architecture</code></td><td>Streamhouse</td><td>Interactive 5-node architecture diagram, analytical/operational outcome cards, deep-dive panel</td></tr>
+      <tr><td><code>flink</code></td><td>Flink SQL</td><td>SQL script browser, syntax-highlighted code viewer, derived topic monitor</td></tr>
+      <tr><td><code>actions</code></td><td>Actions</td><td>Flink Topic Actions panel, business action buttons, event alert feed</td></tr>
+      <tr><td><code>context</code></td><td>AI context / MCP</td><td>Rule-based Q&amp;A chat panel, MCP tool explorer (RTCE integration)</td></tr>
+      <tr><td><code>story</code></td><td>Demo playbook</td><td>6-step guided narrative; step 03 auto-injects bearing fault at 85 %</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Global state variables</h3>
+  <p>All state is held in a single <code>useState</code> set at the top of <code>App()</code>. Notable variables:</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Variable</th><th>Type</th><th>Role</th></tr></thead>
+    <tbody>
+      <tr><td><code>data</code></td><td>object | null</td><td>Full factory snapshot; updated on every SSE <code>snapshot</code> event</td></tr>
+      <tr><td><code>selected</code></td><td>string</td><td>Active site ID (e.g., <code>'DET'</code>)</td></tr>
+      <tr><td><code>scenario</code></td><td>string</td><td>Active fault scenario name</td></tr>
+      <tr><td><code>intensity</code></td><td>number</td><td>Fault severity 0–100 %</td></tr>
+      <tr><td><code>playing</code></td><td>boolean</td><td>When false, freezes all Three.js <code>useFrame</code> animations</td></tr>
+      <tr><td><code>cloud</code></td><td>object | null</td><td>Kafka transport status from SSE <code>cloud</code> events</td></tr>
+      <tr><td><code>derived</code></td><td>object | null</td><td>Last Flink-derived topic record from SSE <code>flink</code> events</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══ S13 ══════════════════════════════════════ -->
+<div class="section" id="s13">
+  <div class="section-label">Section 13</div>
+  <h2 class="section-title">AI context &amp; MCP</h2>
+
+  <h3>Rule-based demo context (<code>context.py</code>)</h3>
+  <p>The <code>POST /api/context</code> endpoint uses <strong>regex keyword matching</strong> on the user's question and returns a deterministic, transparently labelled demo answer. It is explicitly <em>not</em> an LLM call.</p>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Regex trigger</th><th>Response topic</th></tr></thead>
+    <tbody>
+      <tr><td><code>maintenance|failure|risk|bearing|critical</code></td><td>Maintenance risk — lists robots above threshold</td></tr>
+      <tr><td><code>quality|reject|yield</code></td><td>Quality and yield — average quality score</td></tr>
+      <tr><td><code>energy|power|consumption</code></td><td>Energy — total modelled kW load</td></tr>
+      <tr><td><em>(default)</em></td><td>Live operations briefing — OEE, throughput, robot count</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Confluent RTCE MCP connector (<code>mcp.py</code>)</h3>
+  <p>A real integration with Confluent <strong>Real-Time Context Engine (RTCE)</strong> via the <strong>Model Context Protocol (MCP)</strong> over a streamable-HTTP transport. Activates only when <code>RTCE_MCP_ENDPOINT</code> and <code>RTCE_MCP_BASIC_TOKEN</code> are set.</p>
+  <p>Credentials never leave the server. The browser calls <code>/api/mcp/tools</code> and <code>/api/mcp/call</code>; the Flask route proxies to RTCE via an async <code>anyio.run()</code> session.</p>
+
+  <h3>Analytical path — Tableflow + Apache Iceberg</h3>
+  <p>Tableflow materialises governed Kafka topics as <strong>Apache Iceberg</strong> tables in object storage. IBM <strong>watsonx.data</strong> connects to the Iceberg catalog for governed SQL queries over the full telemetry history — no separate ETL pipeline required.</p>
+
+  <h3>Operational path — RTCE + MCP + watsonx Orchestrate</h3>
+  <p>RTCE materialises the latest value of each <code>factory-asset-state</code> record as a low-latency context store. IBM <strong>watsonx Orchestrate</strong> calls RTCE MCP tools to read current robot state and act autonomously — for example, scheduling maintenance when health drops below threshold.</p>
+</div>
+
+<!-- ══ S14 ══════════════════════════════════════ -->
+<div class="section" id="s14">
+  <div class="section-label">Section 14</div>
+  <h2 class="section-title">Deployment modes</h2>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Mode</th><th>How to enable</th><th>What is real</th></tr></thead>
+    <tbody>
+      <tr><td>Local simulation</td><td>Default; no <code>.env</code> changes</td><td>Everything synthetic in-process</td></tr>
+      <tr><td>Kafka mode</td><td><code>STREAM_MODE=kafka</code> + Confluent env vars</td><td>Real Kafka messages, schema subjects, ACKs</td></tr>
+      <tr><td>Flink mode</td><td>Deploy SQL files to Flink compute pool; <code>KAFKA_CONSUME_DERIVED=true</code></td><td>Real Flink risk/KPI/quality output in the UI</td></tr>
+      <tr><td>Tableflow</td><td>Enable in Confluent Cloud Data Portal</td><td>Iceberg tables populated from live topics</td></tr>
+      <tr><td>RTCE / MCP</td><td>Set <code>RTCE_MCP_ENDPOINT</code> + <code>RTCE_MCP_BASIC_TOKEN</code></td><td>Real tool discovery and invocation</td></tr>
+      <tr><td>Maintenance webhook</td><td>Set <code>ACTION_WEBHOOK_URL</code></td><td>Repair events dispatched to external system</td></tr>
+      <tr><td>Google Maps</td><td>Set <code>VITE_GOOGLE_MAPS_API_KEY</code></td><td>Interactive tile map instead of SVG fallback</td></tr>
+      <tr><td>Container</td><td><code>podman build -t factory-pulse -f deploy/Dockerfile .</code></td><td>Single-image deploy of compiled frontend + backend</td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- ══ S15 — GLOSSARY ══════════════════════════ -->
+<div class="section" id="s15">
+  <div class="section-label">Section 15</div>
+  <h2 class="section-title">Glossary of all terms</h2>
+
+  <div class="glossary-grid">
+
+    <div class="gloss-item"><div class="gloss-term">AGV (Automated Guided Vehicle)</div><div class="gloss-def">Wheeled robot that transports parts along the factory floor. Modelled in Three.js as a yellow box cart oscillating along X.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Alert</div><div class="gloss-def">Structured event emitted when a sensor reading crosses a threshold. Severity is <code>warning</code> or <code>critical</code>.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Apache Flink</div><div class="gloss-def">Distributed stream-processing framework. Factory Pulse uses Confluent Cloud for Apache Flink to run SQL queries continuously over Kafka topics.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Apache Iceberg</div><div class="gloss-def">Open table format for large analytical datasets. Used in the analytical path to provide SQL-queryable history from Kafka via Tableflow.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Asset ID</div><div class="gloss-def">Unique identifier for a robot, e.g., <code>DET-R01</code>. Composed of the site ID and a zero-padded role index.</div></div>
+    <div class="gloss-item"><div class="gloss-term">batchId</div><div class="gloss-def">Production batch identifier in the telemetry record. Increments every 12 simulation ticks.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Bearing wear</div><div class="gloss-def">A fault scenario that increases vibration to simulate progressive mechanical degradation of a spindle bearing.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Canvas (R3F)</div><div class="gloss-def">React Three Fiber's root component. Creates a WebGL context; JSX children like <code>&lt;mesh&gt;</code> map to Three.js objects.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Cobot</div><div class="gloss-def">Collaborative robot. The Assembly cobot (R4) works alongside humans on the production line performing fastener driving.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Compute pool</div><div class="gloss-def">Managed Flink resource in Confluent Cloud on which SQL statements run. Must be provisioned before deploying the Flink SQL files.</div></div>
+    <div class="gloss-item"><div class="gloss-term">ContactShadows</div><div class="gloss-def">A @react-three/drei utility that adds soft drop shadows beneath objects without per-mesh shadow receivers.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Conveyor belt</div><div class="gloss-def">Single centre-line belt carrying parts (world Z = 0). Parts travel right → left at 1.3 world-units / second; belt surface at world Y = 0.54, parts at Y = 0.63.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Digital twin</div><div class="gloss-def">A continuously updated software model of a physical system. In Factory Pulse, each factory site has a digital twin maintained by the simulation loop.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Derived topic</div><div class="gloss-def">A Kafka topic whose data is produced by a Flink SQL transformation rather than directly by the simulator, e.g., <code>factory-risk-signals</code>.</div></div>
+    <div class="gloss-item"><div class="gloss-term">energyKw</div><div class="gloss-def">Instantaneous electrical power draw of a robot in kilowatts. Increases during thermal excursion and surge scenarios.</div></div>
+    <div class="gloss-item"><div class="gloss-term">EventSource</div><div class="gloss-def">Browser Web API used to receive Server-Sent Events from <code>/api/events</code> over a persistent HTTP connection.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Fault injection</div><div class="gloss-def">Deliberate introduction of an anomaly (bearing, thermal, quality, or surge) via the UI to demonstrate the detection and response pipeline.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Flink Topic Action</div><div class="gloss-def">A Confluent Data Portal feature that applies built-in Flink transformations (deduplicate, mask, transform) to a topic without writing SQL.</div></div>
+    <div class="gloss-item"><div class="gloss-term">health</div><div class="gloss-def">Composite integer score 0–100 representing the overall condition of a robot asset. Degrades under fault scenarios; reset to 99 by maintenance action.</div></div>
+    <div class="gloss-item"><div class="gloss-term">history</div><div class="gloss-def">Rolling 55-tick buffer of <code>{ t, output, oee, temp, vibration, quality }</code> per site, used to render the MiniTrends area charts.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Intensity / severity</div><div class="gloss-def">Scale factor 0–100 % applied to a fault scenario's signal distortion. Higher intensity = larger deviations and faster OEE degradation.</div></div>
+    <div class="gloss-item"><div class="gloss-term">j1 – j6</div><div class="gloss-def">The six joint groups in each robot arm. j1 = waist (Y), j2 = shoulder pitch (Z), j3 = elbow bend (Z), j4 = forearm roll (Y), j5 = wrist pitch (Z), j6 = tool spin (Y).</div></div>
+    <div class="gloss-item"><div class="gloss-term">JSON Schema</div><div class="gloss-def">A vocabulary for annotating and validating JSON documents. Used as the contract format for all Kafka topics in this demo.</div></div>
+    <div class="gloss-item"><div class="gloss-term">kinematic function</div><div class="gloss-def">A per-robot JavaScript function that receives elapsed time <code>t</code> and cycle phase <code>ph</code> (0–1) and returns the six joint angle deltas on top of the REST pose.</div></div>
+    <div class="gloss-item"><div class="gloss-term">lineId</div><div class="gloss-def">Identifies which production line a robot belongs to within a site. Values cycle as LINE-1, LINE-2, LINE-3.</div></div>
+    <div class="gloss-item"><div class="gloss-term">MCP (Model Context Protocol)</div><div class="gloss-def">Open protocol for connecting AI agents to live data tools. Confluent RTCE exposes factory context via MCP; the backend proxies calls via <code>mcp.py</code>.</div></div>
+    <div class="gloss-item"><div class="gloss-term">MES (Manufacturing Execution System)</div><div class="gloss-def">Category of plant software (alongside SCADA and ERP) that Factory Pulse is conceptually augmenting, not replacing.</div></div>
+    <div class="gloss-item"><div class="gloss-term">mock mode</div><div class="gloss-def">Default operational mode when <code>STREAM_MODE</code> is not <code>kafka</code>. Events are queued in memory; no Confluent Cloud credentials required.</div></div>
+    <div class="gloss-item"><div class="gloss-term">OEE (Overall Equipment Effectiveness)</div><div class="gloss-def">Manufacturing KPI (target ≥ 95 %) combining availability, performance, and quality. Computed here as a smoothed exponential moving average.</div></div>
+    <div class="gloss-item"><div class="gloss-term">OrbitControls</div><div class="gloss-def">A drei / Three.js control that lets users drag to orbit and scroll to zoom the 3D factory view.</div></div>
+    <div class="gloss-item"><div class="gloss-term">phase</div><div class="gloss-def">A 0–1 progress value within the robot's 7-second animation cycle, used as the input to kinematic functions.</div></div>
+    <div class="gloss-item"><div class="gloss-term">qualityScore</div><div class="gloss-def">Simulated first-pass yield percentage for a robot. Drops significantly during a quality drift scenario.</div></div>
+    <div class="gloss-item"><div class="gloss-term">React Three Fiber (R3F)</div><div class="gloss-def">A React renderer for Three.js. <code>&lt;Canvas&gt;</code> creates a WebGL context; components like <code>&lt;mesh&gt;</code> map to Three.js objects.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Recharts</div><div class="gloss-def">React charting library used for the area trend charts in the twin overview panels.</div></div>
+    <div class="gloss-item"><div class="gloss-term">REST pose</div><div class="gloss-def">The shared baseline joint angles all 6 robot arms start from before per-robot kinematic deltas are applied. Tuned so the tool tip rests at belt-surface height.</div></div>
+    <div class="gloss-item"><div class="gloss-term">rotOffset</div><div class="gloss-def">The initial <code>rotation.y</code> applied to a robot's root group. Front-row robots = 0 (face toward belt); back-row = π (face toward belt from other side).</div></div>
+    <div class="gloss-item"><div class="gloss-term">rpm</div><div class="gloss-def">Revolutions per minute. Simulated motor speed of a robot's drive shaft. Increases during surge scenario.</div></div>
+    <div class="gloss-item"><div class="gloss-term">RTCE (Real-Time Context Engine)</div><div class="gloss-def">Confluent feature that materialises the latest Kafka record per key as a queryable, low-latency context store, exposed via MCP.</div></div>
+    <div class="gloss-item"><div class="gloss-term">SASL_SSL</div><div class="gloss-def">Security protocol for the Confluent Kafka producer: SASL (Simple Authentication and Security Layer) over TLS/SSL.</div></div>
+    <div class="gloss-item"><div class="gloss-term">scenario</div><div class="gloss-def">One of five operation modes: <code>baseline</code>, <code>bearing</code>, <code>thermal</code>, <code>quality</code>, <code>surge</code>. Each modifies sensor physics during the simulation step.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Schema Registry</div><div class="gloss-def">Confluent central repository for JSON Schema / Avro / Protobuf contracts. Factory Pulse registers JSON Schema subjects before producing any messages.</div></div>
+    <div class="gloss-item"><div class="gloss-term">seed</div><div class="gloss-def">Per-site integer 0–5 used as a phase offset in sinusoidal noise functions to differentiate each plant's signal pattern.</div></div>
+    <div class="gloss-item"><div class="gloss-term">siteId</div><div class="gloss-def">Two or three-character plant code: <code>DET</code>, <code>AUS</code>, <code>SEA</code>, <code>PHX</code>, <code>CLT</code>, <code>CHI</code>.</div></div>
+    <div class="gloss-item"><div class="gloss-term">snapshot</div><div class="gloss-def">The full serialised state of the simulation at a given tick, broadcast to all SSE clients on every step.</div></div>
+    <div class="gloss-item"><div class="gloss-term">SSE (Server-Sent Events)</div><div class="gloss-def">Unidirectional HTTP streaming protocol used to push live factory state from the Flask backend to the browser.</div></div>
+    <div class="gloss-item"><div class="gloss-term">status</div><div class="gloss-def">Per-robot: <code>running</code> (nominal), <code>warning</code> (threshold exceeded), <code>stopped</code> (site paused). Per-site: <code>healthy</code>, <code>warning</code>, <code>idle</code>.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Streamhouse</div><div class="gloss-def">IBM and Confluent's reference architecture for streaming data integration, comprising Kafka, Flink, Stream Governance, Tableflow, and RTCE.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Tableflow</div><div class="gloss-def">Confluent Cloud feature that materialises Kafka topic records as Apache Iceberg tables stored in object storage.</div></div>
+    <div class="gloss-item"><div class="gloss-term">temperature</div><div class="gloss-def">Simulated surface/motor temperature in °C. Rises sharply during a thermal excursion scenario.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Three.js</div><div class="gloss-def">JavaScript 3D rendering library. React Three Fiber wraps it for use inside React components.</div></div>
+    <div class="gloss-item"><div class="gloss-term">throughput</div><div class="gloss-def">Number of units produced per minute by a factory site, derived from OEE and line count.</div></div>
+    <div class="gloss-item"><div class="gloss-term">tick</div><div class="gloss-def">A single simulation step. Increments on every <code>sim.step()</code> call, which fires every 1 700 ms by default.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Tumbling window</div><div class="gloss-def">Flink windowing pattern that groups events into fixed non-overlapping intervals. Used in the shift KPIs SQL with a 1-minute interval.</div></div>
+    <div class="gloss-item"><div class="gloss-term">useFrame</div><div class="gloss-def">React Three Fiber hook that registers a callback executed on every animation frame. Used for robot kinematics and conveyor animation.</div></div>
+    <div class="gloss-item"><div class="gloss-term">vibration</div><div class="gloss-def">Simulated bearing/spindle vibration in mm/s. The primary diagnostic signal for bearing wear detection.</div></div>
+    <div class="gloss-item"><div class="gloss-term">watsonx.data</div><div class="gloss-def">IBM open lakehouse data platform. Connects to Iceberg tables produced by Tableflow for governed historical analytics.</div></div>
+    <div class="gloss-item"><div class="gloss-term">watsonx Orchestrate</div><div class="gloss-def">IBM AI agent orchestration platform. Downstream consumer of RTCE MCP tools for automated factory operations.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Webhook</div><div class="gloss-def">Optional HTTPS POST called by the backend when a maintenance action is triggered; dispatches the event to an external service desk.</div></div>
+    <div class="gloss-item"><div class="gloss-term">Wire format</div><div class="gloss-def">Binary Confluent encoding prepended to each Kafka message: 1 magic byte (0x00) + 4-byte schema ID + JSON payload.</div></div>
+    <div class="gloss-item"><div class="gloss-term">world coordinates</div><div class="gloss-def">The Three.js scene uses Y-up coordinates. Belt surface = Y 0.54, parts = Y 0.63, robot bases = Y 0. Front-row robots at Z = −3.5, back-row at Z = +3.5.</div></div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="doc-footer">Made with IBM Bob &nbsp;·&nbsp; Factory Pulse Digital Twin &nbsp;·&nbsp; All data synthetic for demonstration purposes</div>
+
+</div><!-- /wrap -->
+</body>
+</html>

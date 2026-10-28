@@ -32,6 +32,14 @@ flowchart TD
     TF   --> WXD["IBM watsonx.data\nLakehouse (Presto / Spark)"]
 ```
 
+## Reference assets
+
+| Asset | Path | What it shows |
+|---|---|---|
+| Factory Pulse Streamhouse showcase | [`serve/assets/streamhouse/`](serve/assets/streamhouse/) | End-to-end Stream → Transform → Govern → Serve demo with a Carbon control tower, 3D factory digital twin, and optional live Confluent Cloud connection |
+| Continuous RAG | [`serve/assets/streamhouse-continous-rag/`](serve/assets/streamhouse-continous-rag/) | Kafka/Flink continuous knowledge ingestion with grounded RAG answers |
+| Live Context for Supply Chain Resilience | [`serve/assets/live-context-for-supply-chain-resilience/`](serve/assets/live-context-for-supply-chain-resilience/) | RTCE live context with watsonx Orchestrate agents |
+
 ## How to use this section
 
 Start at the building block that matches your use case. Each block is independently deployable.

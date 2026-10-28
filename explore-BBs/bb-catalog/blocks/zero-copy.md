@@ -5,7 +5,7 @@ group: lakehouse
 capability: data
 description: Query across data sources without duplication using open table formats and federated query engines for lakehouse access
 repo_path: data/lakehouse/zero-copy-lakehouse
-docs_path: data-core/lakehouse/zero-copy-lakehouse/index.md
+docs_path: data/lakehouse/zero-copy-lakehouse/index.md
 products:
   - watsonx.data
 tags:
@@ -23,7 +23,7 @@ tags:
 Query across data sources without duplication using open table formats and federated query engines for lakehouse access
 
 - **Repo**: [data/lakehouse/zero-copy-lakehouse](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/lakehouse/zero-copy-lakehouse)
-- **Docs**: [data-core/lakehouse/zero-copy-lakehouse/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/lakehouse/zero-copy-lakehouse/)
+- **Docs**: [data/lakehouse/zero-copy-lakehouse/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data/lakehouse/zero-copy-lakehouse/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

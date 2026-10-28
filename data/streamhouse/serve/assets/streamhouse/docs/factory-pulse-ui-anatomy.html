@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Factory Pulse — Full UI Component Anatomy</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", system-ui, sans-serif; font-size: 14px; line-height: 1.6; background: #ffffff; color: #1f2328; }
+  .page { max-width: 760px; margin: 0 auto; padding: 32px 20px 48px; }
+  h1 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #57606a; margin-bottom: 28px; }
+  h2 { font-size: 15px; font-weight: 700; margin: 28px 0 8px; border-bottom: 1px solid #e5e7eb; padding-bottom: 6px; color: #1f2328; }
+  h3 { font-size: 13px; font-weight: 600; color: #3b82d4; margin: 14px 0 4px; }
+  .section { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 14px 16px; margin-bottom: 12px; }
+  .section + .section { margin-top: 8px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 6px; }
+  th { text-align: left; font-weight: 600; color: #57606a; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 8px 4px 0; border-bottom: 1px solid #e5e7eb; }
+  td { padding: 5px 8px 5px 0; vertical-align: top; border-bottom: 1px solid #f0f1f3; }
+  tr:last-child td { border-bottom: none; }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.12); vertical-align: middle; margin-right: 5px; flex-shrink: 0; }
+  .color-cell { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+  code { font-family: "SFMono-Regular", Consolas, monospace; font-size: 11.5px; background: #eef0f3; padding: 1px 5px; border-radius: 3px; }
+  .tag { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .tag-layout  { background: #dbeafe; color: #1d4ed8; }
+  .tag-state   { background: #dcfce7; color: #15803d; }
+  .tag-event   { background: #fef3c7; color: #b45309; }
+  .tag-css     { background: #ede9fe; color: #7c3aed; }
+  .tag-chart   { background: #fff1f2; color: #be123c; }
+  .tag-3d      { background: #e0f2fe; color: #0369a1; }
+  .tag-prop    { background: #fdf4ff; color: #7e22ce; }
+  .tag-api     { background: #f0fdf4; color: #166534; }
+  .note { font-size: 12px; color: #57606a; margin-top: 4px; }
+  .module-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .module-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px; }
+  .module-name { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+  .module-meta { font-size: 11px; color: #57606a; margin-top: 4px; }
+  .dot-row { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-top: 4px; }
+  .tab-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .tab-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px; }
+  .state-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+  .state-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 12px; }
+  .toc { background: #f7f8fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; margin-bottom: 24px; }
+  .toc-title { font-size: 11px; font-weight: 700; color: #57606a; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+  .toc ol { padding-left: 18px; font-size: 12px; color: #3b82d4; line-height: 2; }
+  .toc a { color: #3b82d4; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 10px; background: #e5e7eb; color: #57606a; margin-left: 6px; vertical-align: middle; }
+  .change-note { font-size: 11px; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 4px; padding: 4px 8px; margin-top: 6px; color: #92400e; }
+  .how-to { font-size: 11px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 4px; padding: 4px 8px; margin-top: 6px; color: #1e40af; }
+  footer { text-align: center; font-size: 12px; color: #57606a; border-top: 1px solid #e5e7eb; padding-top: 16px; margin-top: 40px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>Factory Pulse — Full UI Component Anatomy</h1>
+<p class="subtitle">Every component, CSS class, prop, state variable, and color in the Factory Pulse React frontend —
+<code>App.jsx</code>, <code>FactoryTwin.jsx</code>, and <code>PlantMap.jsx</code>. Use this reference to plan and scope UI changes.</p>
+
+<!-- TOC -->
+<div class="toc">
+  <div class="toc-title">Contents</div>
+  <ol>
+    <li><a href="#shell">App Shell &amp; Global Layout</a></li>
+    <li><a href="#state">Global State &amp; Data Flow</a></li>
+    <li><a href="#primitives">Shared Primitive Components</a></li>
+    <li><a href="#overview">Overview Tab — Command Center</a></li>
+    <li><a href="#twin">Digital Twin Tab</a></li>
+    <li><a href="#architecture">Streamhouse Architecture Tab</a></li>
+    <li><a href="#flink">Flink SQL Tab</a></li>
+    <li><a href="#actions">Actions Tab</a></li>
+    <li><a href="#context">AI Context / MCP Tab</a></li>
+    <li><a href="#story">Demo Playbook Tab</a></li>
+    <li><a href="#factorytwin">FactoryTwin — 3D Scene Component</a></li>
+    <li><a href="#plantmap">PlantMap — Geography Component</a></li>
+    <li><a href="#responsive">Responsive Breakpoints</a></li>
+  </ol>
+</div>
+
+<!-- ─── 1. APP SHELL ─── -->
+<h2 id="shell">🏗️ App Shell &amp; Global Layout</h2>
+<p class="note" style="margin-bottom:10px">
+  <strong>File:</strong> <code>frontend/src/App.jsx</code> · <strong>Styles:</strong> <code>frontend/src/styles.scss</code> (imports <code>@carbon/react</code> tokens + IBM Plex fonts).
+  The shell is a fixed three-zone layout rendered at all times regardless of the active tab.
+</p>
+
+<h3>Layout zones</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Zone</th><th>CSS class</th><th>Position / Size</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Global header</td>
+        <td><code>.global-header</code></td>
+        <td><span class="tag tag-layout">Fixed</span> top 0, height 56 px, z-index 120, full width</td>
+        <td>Brand mark · Simulation clock · Connection badge · Avatar</td>
+      </tr>
+      <tr>
+        <td>Left sidebar</td>
+        <td><code>.sidebar</code></td>
+        <td><span class="tag tag-layout">Fixed</span> top 56 px, left 0, bottom 0, width 220 px</td>
+        <td>Nav label · 7 icon+label nav buttons · Version footer · Copyright</td>
+      </tr>
+      <tr>
+        <td>Main scrollable area</td>
+        <td><code>.main-content</code> › <code>.main-inner</code></td>
+        <td><span class="tag tag-layout">Scroll</span> margin-left 220 px, padding 30px 30px 0</td>
+        <td>Page top bar · Toast · Active tab content</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Global header sub-elements</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class / component</th><th>Content &amp; behavior</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Brand mark</td>
+        <td><code>.brand</code></td>
+        <td><code>.brand-symbol</code> — "◈" <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#78a9ff"></span><code>#78a9ff</code></div> 32 px bold · <code>.brand-text</code> — "Factory" + <span style="font-weight:400"><code>.brand-text span</code></span> "Pulse" <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#b3d7ff"></span><code>#b3d7ff</code></div> · <code>.brand-divider</code> 23 px tall 1 px rule · <code>.brand-subtitle</code> "Streamhouse showcase"</td>
+      </tr>
+      <tr>
+        <td>Simulation clock</td>
+        <td><code>.header-clock</code></td>
+        <td>IBM Plex Mono 10 px · Blinking <code>Radio</code> icon (.blink — green <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#42be65"></span><code>#42be65</code></div>, 2 s opacity pulse) · "SIMULATION CLOCK" label · <code>&lt;strong&gt;</code> formatted time from <code>data.timestamp</code></td>
+      </tr>
+      <tr>
+        <td>Connection badge</td>
+        <td><code>DataBadge</code> → <code>.connection-tag</code></td>
+        <td>Two variants: <code>.cloud-live</code> <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#003a2e"></span><code>#003a2e</code></div> bg, green text — or <code>.mock</code> <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#343434"></span><code>#343434</code></div> bg, gray text</td>
+      </tr>
+      <tr>
+        <td>Avatar</td>
+        <td><code>.avatar</code></td>
+        <td>31×31 px, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0043ce"></span><code>#0043ce</code></div> bg, white "FP" 11 px 600wt. Static initials block.</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To change the brand name: edit the <code>.brand</code> JSX block in <code>App.jsx</code> ~line 43 and the <code>.brand-symbol</code>, <code>.brand-text</code> CSS rules in <code>styles.scss</code>.</div>
+</div>
+
+<h3>Sidebar nav</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Section label</td><td><code>.nav-label</code></td><td>10 px mono, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#8d8d8d"></span><code>#8d8d8d</code></div> "WORKSPACE" — hidden below 1050 px</td></tr>
+      <tr><td>Nav button (inactive)</td><td><code>sidebar nav button</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#c6c6c6"></span><code>#c6c6c6</code></div> text, transparent bg, 13 px, flex row icon + label + chevron slot</td></tr>
+      <tr><td>Nav button (active)</td><td><code>sidebar nav button.active</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#78a9ff"></span><code>#78a9ff</code></div> text, 3 px left border, <code>ChevronRight</code> icon shown</td></tr>
+      <tr><td>Version footer</td><td><code>.side-version</code></td><td>"IBM + CONFLUENT" + "Reference demonstration v1.0" — hidden below 1050 px</td></tr>
+      <tr><td>Copyright</td><td><code>.side-copyright</code></td><td>"© 2026 Factory Pulse" — hidden below 1050 px</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add a tab: push <code>{ id, label, icon }</code> onto the <code>NAV</code> array in <code>App.jsx</code> line 8, then add a <code>{tab==='id'&amp;&amp;&lt;&gt;…&lt;/&gt;}</code> block in the render.</div>
+</div>
+
+<h3>NAV array — all 7 entries</h3>
+<div class="tab-grid">
+  <div class="tab-card"><div class="module-name"><code>overview</code></div><div class="module-meta">Label: "Command center" · Icon: <code>Activity</code></div></div>
+  <div class="tab-card"><div class="module-name"><code>twin</code></div><div class="module-meta">Label: "Digital twin" · Icon: <code>Boxes</code></div></div>
+  <div class="tab-card"><div class="module-name"><code>architecture</code></div><div class="module-meta">Label: "Streamhouse" · Icon: <code>Network</code></div></div>
+  <div class="tab-card"><div class="module-name"><code>flink</code></div><div class="module-meta">Label: "Flink SQL" · Icon: <code>Workflow</code></div></div>
+  <div class="tab-card"><div class="module-name"><code>actions</code></div><div class="module-meta">Label: "Actions" · Icon: <code>Zap</code></div></div>
+  <div class="tab-card"><div class="module-name"><code>context</code></div><div class="module-meta">Label: "AI context / MCP" · Icon: <code>BrainCircuit</code></div></div>
+  <div class="tab-card"><div class="module-name"><code>story</code></div><div class="module-meta">Label: "Demo playbook" · Icon: <code>BookOpen</code></div></div>
+</div>
+
+<!-- ─── 2. GLOBAL STATE ─── -->
+<h2 id="state">🗄️ Global State &amp; Data Flow</h2>
+<p class="note" style="margin-bottom:10px"><strong>File:</strong> <code>App.jsx</code>, <code>App()</code> function, line 29. All state in a flat <code>useState</code> set — no external state library.</p>
+
+<h3>State variables</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Variable</th><th>Type</th><th>Initial</th><th>Set by</th></tr></thead>
+    <tbody>
+      <tr><td><code>tab</code></td><td>string</td><td><code>'overview'</code></td><td>Sidebar clicks, story step buttons</td></tr>
+      <tr><td><code>data</code></td><td>object | null</td><td><code>null</code></td><td><code>/api/bootstrap</code> then SSE <code>snapshot</code> events every tick</td></tr>
+      <tr><td><code>cloud</code></td><td>object | null</td><td><code>null</code></td><td><code>/api/bootstrap</code> then SSE <code>cloud</code> events</td></tr>
+      <tr><td><code>selected</code></td><td>string</td><td><code>'DET'</code></td><td><code>SitePicker</code> buttons, <code>PlantMap</code> marker clicks</td></tr>
+      <tr><td><code>scenario</code></td><td>string</td><td><code>'baseline'</code></td><td>Scenario <code>&lt;select&gt;</code> in twin tab</td></tr>
+      <tr><td><code>intensity</code></td><td>number</td><td><code>85</code></td><td>Range slider 20–100 in twin tab</td></tr>
+      <tr><td><code>playing</code></td><td>boolean</td><td><code>true</code></td><td>Pause/Resume button in twin toolbar</td></tr>
+      <tr><td><code>notice</code></td><td>string</td><td><code>''</code></td><td>Any API call result; cleared by toast × button</td></tr>
+      <tr><td><code>script</code></td><td>string</td><td><code>'risk'</code></td><td>SQL sidebar script selection in Flink tab</td></tr>
+      <tr><td><code>focusBlock</code></td><td>string</td><td><code>'transform'</code></td><td>Architecture node clicks; flow step clicks in Overview</td></tr>
+      <tr><td><code>question</code></td><td>string</td><td><code>QUESTIONS[0]</code></td><td>Prompt chip clicks, chat <code>&lt;input&gt;</code> onChange</td></tr>
+      <tr><td><code>answer</code></td><td>object | null</td><td><code>null</code></td><td><code>/api/context</code> response</td></tr>
+      <tr><td><code>thinking</code></td><td>boolean</td><td><code>false</code></td><td><code>true</code> while <code>/api/context</code> is in-flight</td></tr>
+      <tr><td><code>tools</code></td><td>array | null</td><td><code>null</code></td><td><code>/api/mcp/tools</code> response</td></tr>
+      <tr><td><code>mcpStatus</code></td><td>string</td><td><code>'idle'</code></td><td><code>'idle'</code> / <code>'loading'</code> / <code>'connected'</code> / <code>'error'</code></td></tr>
+      <tr><td><code>toolName</code></td><td>string</td><td><code>''</code></td><td>MCP tool <code>&lt;select&gt;</code></td></tr>
+      <tr><td><code>toolArgs</code></td><td>string</td><td><code>'{}'</code></td><td>MCP arguments <code>&lt;textarea&gt;</code></td></tr>
+      <tr><td><code>toolResult</code></td><td>object | null</td><td><code>null</code></td><td><code>/api/mcp/call</code> response</td></tr>
+      <tr><td><code>derived</code></td><td>object | null</td><td><code>null</code></td><td><code>/api/bootstrap</code> then SSE <code>flink</code> events</td></tr>
+      <tr><td><code>busy</code></td><td>boolean</td><td><code>false</code></td><td><code>true</code> while any mutation API call is in-flight; disables action buttons</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Data helper functions</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Helper</th><th>Signature</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>call</code></td><td><code>call(path, body?)</code></td><td><span class="tag tag-api">Fetch</span> GET if no body, POST+JSON otherwise. Throws on non-2xx. Used by all API helpers below.</td></tr>
+      <tr><td><code>inject</code></td><td><code>inject(sc, value)</code></td><td><span class="tag tag-api">POST</span> <code>/api/simulate</code> → sets <code>scenario</code>, emits notice. Sets <code>busy</code> guard.</td></tr>
+      <tr><td><code>control</code></td><td><code>control(action)</code></td><td><span class="tag tag-api">POST</span> <code>/api/control</code> → emits notice. Detects <code>webhookDispatched</code> in response for maintenance action.</td></tr>
+      <tr><td><code>ask</code></td><td><code>ask(q)</code></td><td><span class="tag tag-api">POST</span> <code>/api/context</code> → sets <code>answer</code>. Sets <code>thinking</code> guard.</td></tr>
+      <tr><td><code>discover</code></td><td><code>discover()</code></td><td><span class="tag tag-api">GET</span> <code>/api/mcp/tools</code> → sets <code>tools</code>, <code>toolName</code> to first tool, <code>mcpStatus</code>.</td></tr>
+      <tr><td><code>invoke</code></td><td><code>invoke()</code></td><td><span class="tag tag-api">POST</span> <code>/api/mcp/call</code> → sets <code>toolResult</code>.</td></tr>
+      <tr><td><code>copy</code></td><td><code>copy(text)</code></td><td>Writes to <code>navigator.clipboard</code>. Shows notice on success or fallback instruction.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Boot screen</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Shown when</th></tr></thead>
+    <tbody>
+      <tr><td>Full-page loading overlay</td><td><code>.boot-screen</code></td><td><code>data === null</code> — before bootstrap resolves. Dark <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#161616"></span><code>#161616</code></div> bg, white text, centered Carbon <code>Loading</code> spinner.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── 3. SHARED PRIMITIVES ─── -->
+<h2 id="primitives">🧩 Shared Primitive Components</h2>
+<p class="note" style="margin-bottom:10px">Defined inline at the top of <code>App.jsx</code> before the <code>App()</code> function. Reused across all tabs.</p>
+
+<div class="section">
+  <table>
+    <thead><tr><th>Component</th><th>Props</th><th>CSS class</th><th>Colors / behavior</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>Dot</code></td>
+        <td><code>status</code></td>
+        <td><code>.status-dot.{status}</code></td>
+        <td>
+          <span class="tag tag-state">healthy</span> <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#42be65"></span><code>#42be65</code></div> ·
+          <span class="tag tag-event">warning</span> amber-red ·
+          <span class="tag tag-css">idle</span> gray. Small circle <code>&lt;span&gt;</code>.
+        </td>
+      </tr>
+      <tr>
+        <td><code>Status</code></td>
+        <td><code>status</code></td>
+        <td><code>.site-status.{status}</code></td>
+        <td>Wraps <code>Dot</code> + human label: "Operational" / "Attention" / "Paused". Used in panel headings.</td>
+      </tr>
+      <tr>
+        <td><code>PanelHeading</code></td>
+        <td><code>eyebrow</code>, <code>title</code>, <code>action?</code></td>
+        <td><code>.panel-heading</code></td>
+        <td>Small-caps eyebrow row + <code>&lt;h3&gt;</code> title + optional right-aligned action slot (badge or link).</td>
+      </tr>
+      <tr>
+        <td><code>MetricCard</code></td>
+        <td><code>icon</code>, <code>label</code>, <code>value</code>, <code>unit</code>, <code>trend</code>, <code>detail</code></td>
+        <td><code>.metric-card</code></td>
+        <td><code>.metric-head</code> label+icon · <code>.metric-value</code> large number + unit · <code>.metric-foot</code> trend <code>.positive</code> + detail text.</td>
+      </tr>
+      <tr>
+        <td><code>MiniTrends</code></td>
+        <td><code>history</code>, <code>keyName</code>, <code>stroke</code>, <code>height</code></td>
+        <td>—</td>
+        <td>Recharts <code>AreaChart</code> in <code>ResponsiveContainer</code>. Dark tooltip bg <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#172838"></span><code>#172838</code></div>. Animation disabled. Gradient fill fades from <code>stroke</code> at 35% → 1% opacity. Valid <code>keyName</code> values: <code>oee</code>, <code>output</code>, <code>temp</code>, <code>vibration</code>, <code>quality</code>.</td>
+      </tr>
+      <tr>
+        <td><code>SitePicker</code></td>
+        <td><code>sites</code>, <code>selected</code>, <code>onSelect</code></td>
+        <td><code>.site-picker</code></td>
+        <td>Row of <code>&lt;button&gt;</code>. Active gets <code>.selected</code>: <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#e8f0ff"></span><code>#e8f0ff</code></div> bg, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0043ce"></span><code>#0043ce</code></div> text, blue border. Each shows <code>Dot</code> + city + site ID in mono.</td>
+      </tr>
+      <tr>
+        <td><code>DataBadge</code></td>
+        <td><code>cloud</code></td>
+        <td><code>.connection-tag</code></td>
+        <td><code>.cloud-live</code> when <code>mode==='kafka'</code> &amp; <code>status==='connected'</code>; <code>.mock</code> otherwise. Shows Cloud/CloudOff icon + status string.</td>
+      </tr>
+      <tr>
+        <td><code>Bar</code></td>
+        <td><code>value</code> (0–100), <code>color</code></td>
+        <td><code>.bar-track</code> › <code>.bar-fill</code></td>
+        <td>CSS width = clamped value %. Default color <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0f9ed5"></span><code>#0f9ed5</code></div>.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── 4. OVERVIEW TAB ─── -->
+<h2 id="overview">📊 Overview Tab — Command Center</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'overview'</code>. Layout top-to-bottom: hero → KPI strip → overview grid → flow strip.</p>
+
+<h3>Hero banner — <code>.hero</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Left text block</td><td><code>.hero &gt; div:first-child</code></td><td><code>.hero-eyebrow</code> "THE CONNECTED FACTORY, IN REAL TIME" · <code>&lt;h2&gt;</code> headline · <code>&lt;p&gt;</code> sub-copy · <code>.hero-btn</code> CTA → switches to <code>twin</code> tab</td></tr>
+      <tr><td>Decorative orbital</td><td><code>.hero-decoration</code></td><td><code>.big-orbit.orbit-a</code> + <code>.big-orbit.orbit-b</code> CSS rings · <code>.orbit-core</code> Factory icon + "LIVE FACTORY NETWORK" · <code>.orbit-label.orbit-0/1/2</code> "STREAM" / "TRANSFORM" / "SERVE"</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To change headline or CTA: edit the <code>&lt;h2&gt;</code> and <code>.hero-btn</code> JSX ~line 48 in <code>App.jsx</code>.</div>
+</div>
+
+<h3>KPI strip — <code>.metrics-grid</code> (4 columns)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Card</th><th>Icon</th><th>Value source</th><th>Unit</th></tr></thead>
+    <tbody>
+      <tr><td>Total throughput</td><td><code>Factory</code></td><td><code>data.summary.throughput</code></td><td>units / min</td></tr>
+      <tr><td>Network OEE</td><td><code>Activity</code></td><td><code>data.summary.oee</code></td><td>%</td></tr>
+      <tr><td>Active incidents</td><td><code>AlertTriangle</code></td><td><code>data.summary.activeAlerts</code></td><td>open</td></tr>
+      <tr><td>Telemetry rate</td><td><code>RadioTower</code></td><td><code>data.summary.eventsPerSecond</code></td><td>ev / sec</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add a KPI: insert a <code>&lt;MetricCard&gt;</code> in the <code>.metrics-grid</code> div feeding a value from <code>data.summary</code>. Grid collapses to 2 columns below 730 px.</div>
+</div>
+
+<h3>Overview grid — <code>.overview-grid</code> (1.7fr / 1fr)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Panel</th><th>CSS class</th><th>Contents</th></tr></thead>
+    <tbody>
+      <tr><td>Network / map panel</td><td><code>.network-panel</code></td><td><code>PanelHeading</code> · <code>.map-wrap</code> contains <code>PlantMap</code> · <code>.plant-strip</code> — 6 mini <code>.plant-pill</code> buttons: Dot + city name + OEE %</td></tr>
+      <tr><td>Pulse / site-detail panel</td><td><code>.pulse-panel</code></td><td><code>PanelHeading</code> + <code>Status</code> · <code>.plant-detail</code> Factory icon + type + city/lines · <code>.detail-oee</code> label + value + <code>Bar</code> · <code>.insight-box</code> contextual text · <code>.scenario-mini-grid</code> 2 quick-inject buttons · Carbon <code>Button</code> → twin tab</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add a quick-inject scenario: add a <code>&lt;button&gt;</code> in <code>.scenario-mini-grid</code> calling <code>inject('scenarioId', severity)</code>.</div>
+</div>
+
+<h3>Flow strip — <code>.under-flow</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>5 × <code>.flow-step</code> buttons</td><td>Rendered from <code>FLOW</code> array (line 9). Each shows step number/tag, icon, name, product label. Click → sets <code>focusBlock</code> + switches to <code>architecture</code> tab.</td></tr>
+      <tr><td><code>ArrowRight</code> separators</td><td>4 arrows between the 5 steps. Rotate 90° on mobile.</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:6px"><strong>FLOW array fields:</strong> <code>id</code>, <code>step</code> (e.g. "01"), <code>tag</code> (e.g. "CAPTURE"), <code>name</code>, <code>product</code>, <code>desc</code>, <code>detail</code>. Edit directly in <code>App.jsx</code> line 9.</p>
+</div>
+
+<!-- ─── 5. TWIN TAB ─── -->
+<h2 id="twin">🏭 Digital Twin Tab</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'twin'</code>. Layout: toolbar → two-column layout → two trend charts.</p>
+
+<h3>Twin toolbar — <code>.twin-toolbar</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Site picker</td><td><code>SitePicker</code></td><td>Switches <code>selected</code> state; resets <code>answer</code> via <code>choose</code> callback</td></tr>
+      <tr><td>Running count badge</td><td><code>.twin-meta</code></td><td>IBM Plex Mono 10 px · "N/6 RUNNING" · Dot with site status</td></tr>
+      <tr><td>Pause / Resume button</td><td><code>.outlined-action</code></td><td>Toggles <code>playing</code> state · Shows <code>Pause</code> or <code>Play</code> icon accordingly</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Twin layout — <code>.twin-layout</code> (1.8fr / 0.8fr)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Column</th><th>CSS class</th><th>Contents</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Left — 3D stage</td>
+        <td><code>.twin-stage</code></td>
+        <td>
+          <code>.twin-stage-header</code>: eyebrow "DIGITAL TWIN / {CITY}" + 3 tally badges (robots · lines · "3D SCENE") ·
+          <code>FactoryTwin</code> 3D canvas (see §11) ·
+          <code>.stage-bottom</code>: asset name + "Drag to orbit · scroll to zoom"
+        </td>
+      </tr>
+      <tr>
+        <td>Right — condition panel</td>
+        <td><code>.twin-side</code></td>
+        <td>
+          <code>PanelHeading</code> "Plant health" + <code>Status</code> ·
+          <code>.twin-kpi-row</code>: OEE % + Bar / throughput value ·
+          Fault injection lab (below) ·
+          <code>.sensor-list</code>: scrollable robot rows
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Fault injection lab (inside <code>.twin-side</code>)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Control</th><th>Type</th><th>State affected</th></tr></thead>
+    <tbody>
+      <tr><td>Scenario selector</td><td><code>&lt;select&gt;</code> 5 options</td><td><code>scenario</code> · Values: <code>baseline</code>, <code>bearing</code>, <code>thermal</code>, <code>quality</code>, <code>surge</code></td></tr>
+      <tr><td>Severity slider</td><td><code>&lt;input type="range"&gt;</code> 20–100</td><td><code>intensity</code> · Displays current % inline</td></tr>
+      <tr><td>Inject / Restore button</td><td>Carbon <code>Button</code> primary, full-width, <code>Zap</code> icon</td><td>Calls <code>inject()</code>; label changes to "Restore healthy state" when <code>scenario==='baseline'</code>. Disabled while <code>busy</code>.</td></tr>
+      <tr><td>Control row</td><td>2 plain buttons</td><td>Pause/Resume line → <code>control('pause'/'resume')</code> · "Simulate repair" → <code>control('maintenance')</code>. Both disabled while <code>busy</code>.</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add a scenario: add an <code>&lt;option&gt;</code> to the <code>&lt;select&gt;</code> and add the physics case in <code>simulation.py</code> <code>inject()</code> and <code>step()</code>.</div>
+</div>
+
+<h3>Sensor list — <code>.sensor-list</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Per-robot row — <code>.sensor-item</code></th><th>Data shown</th></tr></thead>
+    <tbody>
+      <tr><td>Left info block</td><td><code>Dot</code> status · robot name · asset ID in mono · vibration <code>Bar</code></td></tr>
+      <tr><td>Right reading block</td><td>Temperature °C · Quality % · Status tag (running / warning / stopped)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Twin bottom grid — <code>.twin-bottom-grid</code> (1fr / 1fr)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Chart</th><th><code>keyName</code></th><th>Stroke color</th><th>Height</th></tr></thead>
+    <tbody>
+      <tr><td>Vibration / last 55 ticks</td><td><code>vibration</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#36afc6"></span><code>#36afc6</code></div></td><td>145 px</td></tr>
+      <tr><td>OEE / last 55 ticks</td><td><code>oee</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#8f77d3"></span><code>#8f77d3</code></div></td><td>145 px</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── 6. ARCHITECTURE TAB ─── -->
+<h2 id="architecture">🏛️ Streamhouse Architecture Tab</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'architecture'</code>. Layout: intro → dark surface diagram → deep-dive panel → principles strip.</p>
+
+<h3>Architecture intro — <code>.architecture-intro</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Eyebrow label</td><td>IBM Plex Mono 10 px · <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0f62fe"></span><code>#0f62fe</code></div> "IBM STREAMHOUSE REFERENCE ARCHITECTURE"</td></tr>
+      <tr><td><code>&lt;h2&gt;</code> headline</td><td>"From signals in motion to <em>decisions in context.</em>" — <code>&lt;em&gt;</code> is blue. 32 px, 400 weight.</td></tr>
+      <tr><td>Description paragraph</td><td>max-width 680 px, 13 px, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#525252"></span><code>#525252</code></div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Architecture surface — <code>.arch-surface</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Behavior</th></tr></thead>
+    <tbody>
+      <tr><td>Title bar</td><td><code>.arch-title</code></td><td><code>Dot</code> + "REAL-TIME PILLAR / STREAMHOUSE" left · "SOURCE → … → SERVE" right</td></tr>
+      <tr><td>5 × node buttons</td><td><code>.arch-node</code> · active: <code>.arch-node.focused</code></td><td>Blue top-border when focused (<code>focusBlock</code> state). Click sets <code>focusBlock</code>. Icon array by index: <code>[Cpu, RadioTower, Workflow, ShieldCheck, Layers3]</code>.</td></tr>
+      <tr><td>4 × arrow connectors</td><td><code>.arch-join</code> · <code>.join-line</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#78a9ff"></span><code>#78a9ff</code></div> horizontal line + <code>ArrowRight</code> icon layered on top</td></tr>
+      <tr><td>Outcome cards</td><td><code>.arch-outcomes</code> 2-col grid · <code>.outcome</code></td><td>Analytical path (blue icon) + Operational path (mint icon). Each: icon badge + span label + <code>&lt;strong&gt;</code> + <code>&lt;p&gt;</code>.</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To change a node: update the matching object in the <code>FLOW</code> array. Icon mapping is index-positional in the array <code>[Cpu, RadioTower, Workflow, ShieldCheck, Layers3]</code> — replace by array position.</div>
+</div>
+
+<h3>Deep-dive panel — <code>.arch-detail</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>Eyebrow "BUILDING BLOCK DEEP DIVE / {step}"</td><td><code>block.step</code> from FLOW array</td></tr>
+      <tr><td><code>&lt;h3&gt;</code> name</td><td><code>block.name</code></td></tr>
+      <tr><td>Description <code>&lt;p&gt;</code></td><td><code>block.desc</code></td></tr>
+      <tr><td><code>.arch-detail-note</code> detail with <code>Info</code> icon</td><td><code>block.detail</code></td></tr>
+      <tr><td>IBM reference link button</td><td>Opens <code>ibm-self-serve-assets.github.io/building-blocks-docs/streamhouse-core/</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Principles strip — <code>.arch-principles</code> (3 columns)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>#</th><th>Icon</th><th>Heading</th><th>Body</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td><code>ShieldCheck</code></td><td>"Governed by default"</td><td>"Schema Registry, discoverability, compatibility and lineage."</td></tr>
+      <tr><td>2</td><td><code>RefreshCw</code></td><td>"Continuously current"</td><td>"A single stream feeds real-time decisions and analytical consumers."</td></tr>
+      <tr><td>3</td><td><code>Layers3</code></td><td>"Open &amp; composable"</td><td>"Iceberg, connectors and MCP meet customers where their data already lives."</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── 7. FLINK TAB ─── -->
+<h2 id="flink">⚡ Flink SQL Tab</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'flink'</code>. SQL content imported as raw strings via <code>?raw</code> Vite imports in <code>frontend/src/sql.js</code>.</p>
+
+<h3>Studio header — <code>.studio-top</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Left: heading + description</td><td>"SQL that never stops listening." + paragraph</td></tr>
+      <tr><td>Right: <code>.studio-tag</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#e8f0ff"></span><code>#e8f0ff</code></div> bg · <code>Terminal</code> icon · "4 SQL recipes" bold + "Real deployable source files" gray</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>SQL studio — <code>.sql-studio</code> (235px / flex)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Script list</td><td><code>.sql-sidebar</code></td><td>One <code>&lt;button&gt;</code> per <code>SCRIPTS</code> entry. Active gets <code>.active</code>: <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#e8f0ff"></span><code>#e8f0ff</code></div> bg, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0f62fe"></span><code>#0f62fe</code></div> left border + text.</td></tr>
+      <tr><td>Help callout</td><td><code>.sql-help</code></td><td>"Provision a Flink compute pool before running statements." <code>Info</code> icon.</td></tr>
+      <tr><td>Script header</td><td><code>.sql-main-header</code></td><td>Eyebrow + <code>&lt;h3&gt;</code> title + description + "Copy SQL" <code>.outlined-action</code> button → <code>copy(activeScript.code)</code></td></tr>
+      <tr><td>Code view</td><td><code>.code-view</code> (<code>&lt;pre&gt;</code>)</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#161c27"></span><code>#161c27</code></div> bg · <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#c8e6f6"></span><code>#c8e6f6</code></div> text · IBM Plex Mono 12 px/1.8 · max-height 520 px, scrollable</td></tr>
+      <tr><td>Status footer</td><td><code>.sql-status</code></td><td>Idle Dot + "STATEMENTS PROVIDED · NOT AUTO-DEPLOYED" + Confluent Flink guide link</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add a SQL script: add a raw Vite import in <code>sql.js</code> and a matching <code>.sql</code> file under <code>flink/</code>.</div>
+</div>
+
+<h3>SCRIPTS entries (from <code>sql.js</code>)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>id</th><th>Title</th><th>Source file</th></tr></thead>
+    <tbody>
+      <tr><td><code>create</code></td><td>"01 · Schema &amp; sources"</td><td><code>flink/01-create-tables.sql</code></td></tr>
+      <tr><td><code>risk</code></td><td>"02 · Predictive risk"</td><td><code>flink/02-risk-signal.sql</code></td></tr>
+      <tr><td><code>kpis</code></td><td>"03 · Shift performance"</td><td><code>flink/03-shift-kpis.sql</code></td></tr>
+      <tr><td><code>quality</code></td><td>"04 · Quality actions"</td><td><code>flink/04-quality-alerts.sql</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Derived topic monitor — <code>.flink-output</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>State</th><th>Rendered content</th></tr></thead>
+    <tbody>
+      <tr><td><code>derived !== null</code></td><td><code>&lt;pre&gt;</code> with <code>JSON.stringify(derived, null, 2)</code> — pretty-printed Flink output record</td></tr>
+      <tr><td><code>derived === null</code></td><td>Empty state: <code>Workflow</code> icon + explanation paragraph including env var <code>KAFKA_CONSUME_DERIVED=true</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── 8. ACTIONS TAB ─── -->
+<h2 id="actions">⚡ Actions Tab</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'actions'</code>. Layout: intro → two-panel actions grid → event feed table.</p>
+
+<h3>Actions grid — <code>.actions-grid</code> (1fr / 1fr)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Panel</th><th>CSS class</th><th>Contents</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Flink Topic Actions</td>
+        <td><code>.action-panel</code></td>
+        <td>
+          3 × <code>.action-option</code> rows: <code>.action-symbol</code> blue icon box + name/detail + <code>FLINK ACTION</code> mono tag.
+          Rows: Deduplicate / Mask sensitive fields / Transform topic.
+          Link button → Confluent Flink Topic Actions docs.
+        </td>
+      </tr>
+      <tr>
+        <td>Business actions</td>
+        <td><code>.action-panel</code></td>
+        <td>
+          <code>.action-status-card</code>: plant state + unacknowledged alerts + Kafka producer status ·
+          <code>.action-cta-list</code>: 3 action buttons (below)
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Business action buttons — <code>.action-cta-list</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Button</th><th>Icon</th><th>Action sent</th><th>Effect</th></tr></thead>
+    <tbody>
+      <tr><td>Schedule maintenance</td><td><code>Settings2</code></td><td><code>control('maintenance')</code></td><td>Resets wear; fires optional webhook if configured</td></tr>
+      <tr><td>Acknowledge incidents</td><td><code>Check</code></td><td><code>control('acknowledge')</code></td><td>Clears open alert count for selected site</td></tr>
+      <tr><td>Generate critical event</td><td><code>ShieldAlert</code></td><td><code>inject('bearing', 90)</code></td><td>Drives a bearing fault at max severity to the alert topic</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add an action button: add a <code>&lt;button&gt;</code> to <code>.action-cta-list</code> calling <code>control('newAction')</code>, and add the case to <code>simulation.py</code> <code>act()</code>.</div>
+</div>
+
+<h3>Event feed — <code>.event-feed</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Column</th><th>Source</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>TIME</td><td><code>alert.timestamp</code></td><td><code>toLocaleTimeString()</code></td></tr>
+      <tr><td>PLANT</td><td><code>alert.siteId</code></td><td>Site code e.g. "DET"</td></tr>
+      <tr><td>EVENT / SIGNAL</td><td><code>alert.message</code></td><td>Free-text alert message</td></tr>
+      <tr><td>SEVERITY</td><td><code>alert.severity</code> + <code>alert.acknowledged</code></td><td>Carbon <code>Tag</code>: <code>red</code> unacked critical · <code>warm-gray</code> warning · <code>gray</code> acknowledged</td></tr>
+    </tbody>
+  </table>
+  <p class="note" style="margin-top:6px">Shows up to 9 latest alerts from <code>data.alerts</code>. Empty state: "No incidents yet. Inject a bearing, thermal or quality fault."</p>
+</div>
+
+<!-- ─── 9. CONTEXT TAB ─── -->
+<h2 id="context">🧠 AI Context / MCP Tab</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'context'</code>. Layout: header → two-panel context grid.</p>
+
+<h3>Context grid — <code>.context-grid</code> (1.1fr / 0.9fr)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Panel</th><th>CSS class</th><th>Contents</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Ask Factory Pulse</td>
+        <td><code>.chat-panel</code></td>
+        <td>
+          <code>.chat-selected</code>: active site + "latest sensor snapshot" label ·
+          <code>.prompt-chips</code>: 4 preset question buttons from <code>QUESTIONS</code> array ·
+          <code>.answer-space</code>: answer card or placeholder ·
+          <code>.chat-form</code>: <code>&lt;input&gt;</code> + <code>&lt;button&gt;</code> (Enter submits)
+        </td>
+      </tr>
+      <tr>
+        <td>MCP tool explorer</td>
+        <td><code>.mcp-panel</code></td>
+        <td>
+          Description paragraph · <code>.mcp-outline</code> 3 feature rows ·
+          "Discover remote MCP tools" button → <code>discover()</code> ·
+          Tool <code>&lt;select&gt;</code> + args <code>&lt;textarea&gt;</code> (shown when <code>tools</code> populated) ·
+          "Invoke tool" button → <code>invoke()</code> ·
+          <code>.mcp-result</code> <code>&lt;pre&gt;</code> for JSON output ·
+          <code>.mcp-note</code> prerequisites callout
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Answer card structure (when <code>answer !== null</code>)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Source field</th></tr></thead>
+    <tbody>
+      <tr><td>Avatar square</td><td><code>.answer-avatar</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0f62fe"></span><code>#0f62fe</code></div> bg · <code>BrainCircuit</code> icon 22 px white</td></tr>
+      <tr><td>Source label</td><td><code>.answer-source</code></td><td>"LOCAL DEMO RULES — NOT MCP/LLM" — always shown</td></tr>
+      <tr><td>Title</td><td><code>.answer-card h4</code></td><td><code>answer.title</code></td></tr>
+      <tr><td>Body text</td><td><code>.answer-card p</code></td><td><code>answer.answer</code></td></tr>
+      <tr><td>Evidence chips</td><td><code>.answer-evidence span</code></td><td><code>answer.evidence[]</code> — array of strings</td></tr>
+      <tr><td>Suggestion row</td><td><code>.answer-next</code></td><td><code>Zap</code> icon + <code>answer.suggestion</code></td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To change preset questions: edit the <code>QUESTIONS</code> array constant, line 10 in <code>App.jsx</code>.</div>
+</div>
+
+<!-- ─── 10. STORY TAB ─── -->
+<h2 id="story">📖 Demo Playbook Tab</h2>
+<p class="note" style="margin-bottom:10px">Rendered when <code>tab === 'story'</code>. Layout: dark hero → 2-column step grid → outcome panel.</p>
+
+<h3>Story hero — <code>.story-hero</code></h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>CSS class</th><th>Content</th></tr></thead>
+    <tbody>
+      <tr><td>Eyebrow</td><td><code>.eyebrow</code></td><td>"15-MINUTE EXECUTIVE + TECHNICAL NARRATIVE"</td></tr>
+      <tr><td>Headline</td><td><code>h2</code></td><td>"One factory problem. <em>The complete data story.</em>" — <code>&lt;em&gt;</code> accent blue <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#86b7ff"></span><code>#86b7ff</code></div></td></tr>
+      <tr><td>Persona paragraph</td><td><code>p</code></td><td>Maya Chen, VP Manufacturing Operations narrative</td></tr>
+      <tr><td>Tag pills</td><td><code>.story-tags span</code></td><td>"PERSONA · VP OPERATIONS" · "TRIGGER · BEARING WEAR" · "OUTCOME · PREDICTIVE RESPONSE"</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Story steps — <code>.story-steps</code> (2-col grid)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Step</th><th><code>no</code></th><th><code>title</code></th><th><code>tab</code> navigated to</th><th>Side-effect</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>01</td><td>Establish a healthy network</td><td><code>overview</code></td><td>—</td></tr>
+      <tr><td>2</td><td>02</td><td>Investigate Detroit live</td><td><code>twin</code></td><td>—</td></tr>
+      <tr><td>3</td><td>03</td><td>Inject a bearing fault</td><td><code>twin</code></td><td>Calls <code>inject('bearing', 85)</code> automatically</td></tr>
+      <tr><td>4</td><td>04</td><td>Transform with Flink</td><td><code>flink</code></td><td>—</td></tr>
+      <tr><td>5</td><td>05</td><td>Govern &amp; serve</td><td><code>architecture</code></td><td>—</td></tr>
+      <tr><td>6</td><td>06</td><td>Close the loop</td><td><code>context</code></td><td>—</td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add or edit a step: modify the <code>STEPS</code> array, lines 11–18 in <code>App.jsx</code>. Each entry: <code>{ no, title, body, tab }</code>.</div>
+</div>
+
+<!-- ─── 11. FACTORY TWIN ─── -->
+<h2 id="factorytwin">🤖 FactoryTwin — 3D Scene Component</h2>
+<p class="note" style="margin-bottom:10px">
+  <strong>File:</strong> <code>frontend/src/components/FactoryTwin.jsx</code> · Uses React Three Fiber + @react-three/drei.
+  Outer div: <code>.twin-canvas</code> (height 495 px, dark bg <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#071827"></span><code>#071827</code></div>, <code>position: relative</code>).
+  Two <code>.twin-overlay</code> HUD labels float over the canvas.
+</p>
+
+<h3>FactoryTwin props</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Prop</th><th>Type</th><th>Default</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>site</code></td><td>object</td><td>—</td><td>Selected site snapshot from <code>data.sites</code>. Drives robot states, status colors, asset label.</td></tr>
+      <tr><td><code>playing</code></td><td>boolean</td><td><code>true</code></td><td>When <code>false</code>, all <code>useFrame</code> animation callbacks return early — freezes kinematics and conveyor.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Scene primitives</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Component</th><th>Props</th><th>Geometry</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>Beam</code></td><td><code>position</code>, <code>size</code> [w,h,d], <code>color</code></td><td><span class="tag tag-3d">BoxGeometry</span></td><td>Structural beams, conveyor rails, wall panels. Default color <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#435365"></span><code>#435365</code></div></td></tr>
+      <tr><td><code>Robot</code></td><td><code>position</code>, <code>index</code>, <code>state</code>, <code>active</code></td><td><span class="tag tag-3d">Cylinder + Box + Sphere</span></td><td>4-joint articulated arm: base → shoulder → forearm → gripper jaw. One per robot slot.</td></tr>
+      <tr><td><code>Conveyor</code></td><td><code>z</code> (Z offset), <code>reverse</code></td><td><span class="tag tag-3d">Box + ring</span></td><td>Double-rail belt with 5 animated cargo blocks sliding along X. Single instance at <code>z=−0.50</code>.</td></tr>
+      <tr><td><code>AGV</code></td><td><code>active</code></td><td><span class="tag tag-3d">Box + Cylinder wheels</span></td><td>Wheeled cart oscillating X via <code>sin</code>, Y-rotates 180° at each end. Yellow <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#f5b651"></span><code>#f5b651</code></div> body.</td></tr>
+      <tr><td><code>Scene</code></td><td><code>site</code>, <code>playing</code></td><td>—</td><td>Root assembly: all lights, floor, Grid, 6 robot cells, Conveyor, AGV, ContactShadows, OrbitControls.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Robot joint kinematics — <code>useFrame</code> expressions (phase offset: <code>s = index × 1.7</code>)</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Joint ref</th><th>Animated property</th><th>Expression</th><th>Speed / range</th></tr></thead>
+    <tbody>
+      <tr><td><code>base</code></td><td><code>rotation.y</code></td><td><code>sin(t × 0.55 + s) × 0.7</code></td><td>Full-body horizontal sweep</td></tr>
+      <tr><td><code>shoulder</code></td><td><code>rotation.z</code></td><td><code>0.37 + sin(t × 0.87 + s) × 0.30</code></td><td>Upper arm elevation</td></tr>
+      <tr><td><code>forearm</code></td><td><code>rotation.z</code></td><td><code>−0.75 + sin(t × 1.14 + s + 0.8) × 0.36</code></td><td>Elbow bend</td></tr>
+      <tr><td><code>jaw</code></td><td><code>position.y</code></td><td><code>sin(t × 1.7 + s) × 0.07</code></td><td>Gripper open/close</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Robot status indicator colors</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Status value</th><th>LED sphere color</th><th>Floor ring color</th></tr></thead>
+    <tbody>
+      <tr><td><code>running</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#24d7b4"></span><code>#24d7b4</code></div> teal</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#5ea0ba"></span><code>#5ea0ba</code></div> blue-teal, opacity 0.7</td></tr>
+      <tr><td><code>warning</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#ff6b5a"></span><code>#ff6b5a</code></div> red</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#ff6b5a"></span><code>#ff6b5a</code></div> red, opacity 0.7</td></tr>
+      <tr><td><code>stopped</code></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#888fa1"></span><code>#888fa1</code></div> gray</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#5ea0ba"></span><code>#5ea0ba</code></div> blue-teal (no warning ring)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Material palette — scene body colors</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Asset</th><th>Color</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Robot body (steel parts)</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#667788"></span><code>#667788</code></div> <code>steel</code></td><td>Base cylinder, upper arm collar</td></tr>
+      <tr><td>Robot joint spheres + forearm box</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#f1a648"></span><code>#f1a648</code></div> <code>orange</code></td><td>Shoulder/elbow pivot spheres, upper arm box</td></tr>
+      <tr><td>Robot dark joints</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#20354b"></span><code>#20354b</code></div> <code>dark</code></td><td>Elbow sphere, gripper jaw body</td></tr>
+      <tr><td>Robot forearm + gripper fingers</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#d9e4ed"></span><code>#d9e4ed</code></div> light gray</td><td>Forearm box, gripper jaw beams</td></tr>
+      <tr><td>Conveyor rails + frame</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#384c62"></span><code>#384c62</code></div></td><td>Conveyor belt body</td></tr>
+      <tr><td>Conveyor rail caps</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#b2c2ce"></span><code>#b2c2ce</code></div></td><td>Side rail strips</td></tr>
+      <tr><td>Cargo block A</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#bfcddd"></span><code>#bfcddd</code></div></td><td>Even-index blocks</td></tr>
+      <tr><td>Cargo block B</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#83a1ba"></span><code>#83a1ba</code></div></td><td>Odd-index blocks</td></tr>
+      <tr><td>Cargo QR accent</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#19d2e6"></span><code>#19d2e6</code></div> <code>cyan</code></td><td>Small emissive patch on cargo top, AGV headlight</td></tr>
+      <tr><td>AGV body</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#f5b651"></span><code>#f5b651</code></div> yellow</td><td>metalness 0.48</td></tr>
+      <tr><td>AGV cab</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#38566d"></span><code>#38566d</code></div></td><td>Upper cab box</td></tr>
+      <tr><td>AGV wheels</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#101d28"></span><code>#101d28</code></div></td><td>4 × cylinder, rubber-dark</td></tr>
+      <tr><td>Floor plane</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#16293b"></span><code>#16293b</code></div></td><td>roughness 0.83, metalness 0.16</td></tr>
+      <tr><td>Scene background / fog</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#071827"></span><code>#071827</code></div></td><td>Fog near 20, far 39</td></tr>
+      <tr><td>Grid cells</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#294457"></span><code>#294457</code></div></td><td>cellSize 0.5, cellThickness 0.6</td></tr>
+      <tr><td>Grid sections</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#3a6178"></span><code>#3a6178</code></div></td><td>sectionSize 3, sectionThickness 1</td></tr>
+      <tr><td>Workstation boxes</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#304d65"></span><code>#304d65</code></div></td><td>2 × corner workstation props</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Lighting setup</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Light</th><th>Type</th><th>Position</th><th>Key values</th></tr></thead>
+    <tbody>
+      <tr><td>Ambient</td><td><code>ambientLight</code></td><td>Global</td><td>intensity 1.12 (white)</td></tr>
+      <tr><td>Hemisphere</td><td><code>hemisphereLight</code></td><td>Sky/ground</td><td>sky <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#d8f0ff"></span><code>#d8f0ff</code></div>, ground <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#1c2b3d"></span><code>#1c2b3d</code></div>, intensity 1.3</td></tr>
+      <tr><td>Directional</td><td><code>directionalLight</code></td><td>[4, 12, 6]</td><td>intensity 3.3, castShadow, shadow map 2048×2048, camera ±12 units</td></tr>
+      <tr><td>Point (cool blue)</td><td><code>pointLight</code></td><td>[−6, 6, −5]</td><td>intensity 23, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0f9aeb"></span><code>#0f9aeb</code></div>, distance 20</td></tr>
+      <tr><td>Point (warm orange)</td><td><code>pointLight</code></td><td>[6, 5, 2]</td><td>intensity 15, <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#ffa953"></span><code>#ffa953</code></div>, distance 18</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Camera &amp; controls</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Setting</th><th>Value</th><th>To change</th></tr></thead>
+    <tbody>
+      <tr><td><code>Canvas</code> camera</td><td>position [12, 12, 15], fov 43, near 0.1, far 90</td><td>Edit <code>camera</code> prop on <code>&lt;Canvas&gt;</code></td></tr>
+      <tr><td><code>Canvas</code> DPR</td><td>[1, 1.65] — device-pixel-ratio range</td><td>Edit <code>dpr</code> prop</td></tr>
+      <tr><td><code>OrbitControls</code></td><td>enablePan=false, minDist=10, maxDist=28, maxPolarAngle=π/2.25, minPolarAngle=0.35, target=[0,1,0]</td><td>Edit props on <code>&lt;OrbitControls&gt;</code> in <code>Scene</code></td></tr>
+      <tr><td><code>ContactShadows</code></td><td>pos [0, 0.006, 0], opacity 0.38, scale 20, blur 2.8, far 6</td><td>Edit props on <code>&lt;ContactShadows&gt;</code></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ─── 12. PLANT MAP ─── -->
+<h2 id="plantmap">🗺️ PlantMap — Geography Component</h2>
+<p class="note" style="margin-bottom:10px"><strong>File:</strong> <code>frontend/src/components/PlantMap.jsx</code>. Decides at mount time whether Google Maps or the SVG fallback is rendered based on <code>VITE_GOOGLE_MAPS_API_KEY</code>.</p>
+
+<h3>PlantMap props</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Prop</th><th>Type</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>sites</code></td><td>array</td><td>All site objects from the snapshot, each with <code>lat</code>, <code>lng</code>, <code>status</code>, <code>id</code>, <code>name</code></td></tr>
+      <tr><td><code>selected</code></td><td>string</td><td>Currently active site ID; drives marker size and pulse animation</td></tr>
+      <tr><td><code>onSelect</code></td><td>function</td><td>Callback <code>(siteId) =&gt; void</code> fired on any marker click / Enter key</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Google Maps mode</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>Map initialisation</td><td>Script tag injected into <code>&lt;head&gt;</code> only once. Fires callback <code>__factoryPulseMapsReady</code>. <code>mapId</code> from <code>VITE_GOOGLE_MAPS_MAP_ID</code> env var.</td></tr>
+      <tr><td>Map dark style</td><td>geometry <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#12283a"></span><code>#12283a</code></div> · text fill <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#7b9bb0"></span><code>#7b9bb0</code></div> · water <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#071727"></span><code>#071727</code></div> · roads + POIs hidden</td></tr>
+      <tr><td>Markers</td><td><code>SymbolPath.CIRCLE</code> — selected scale 12, unselected scale 9. strokeColor <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#082134"></span><code>#082134</code></div> strokeWeight 3.</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>SVG fallback mode — projection &amp; marker anatomy</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Element</th><th>Detail</th></tr></thead>
+    <tbody>
+      <tr><td>SVG viewBox</td><td>960×510 px. Grid pattern <code>mapGrid</code> 34×34 px, stroke <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#284153"></span><code>#284153</code></div> 0.8 px opacity 0.35.</td></tr>
+      <tr><td>Land path fill</td><td>Linear gradient <code>land</code>: <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#193a4a"></span><code>#193a4a</code></div> → <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#173244"></span><code>#173244</code></div>. Stroke <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#3d6a7c"></span><code>#3d6a7c</code></div> 2.2 px.</td></tr>
+      <tr><td>Coordinate projection</td><td>Bounds: lon [−125, −66], lat [24, 50]. <code>svgX = 64 + (lng − lonMin)/(lonMax − lonMin) × 836</code> · <code>svgY = 55 + (latMax − lat)/(latMax − latMin) × 395</code></td></tr>
+      <tr><td>Selected marker</td><td>Animated outer pulse <code>&lt;circle&gt;</code> r 20→32 over 2.4 s · Inner ring r=13, fill <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#0c2636"></span><code>#0c2636</code></div>, stroke = status color, strokeWidth 3.2 · Fill dot r=4.7 = status color · White label 17 px 700wt</td></tr>
+      <tr><td>Unselected marker</td><td>Ring r=9.5 · Fill dot r=4.7 · Label 14 px 500wt <div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#b7cfdb"></span><code>#b7cfdb</code></div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<h3>Site status color palette — consistent across both map modes</h3>
+<div class="section">
+  <table>
+    <thead><tr><th>Status</th><th>Google Maps fillColor</th><th>SVG marker color</th></tr></thead>
+    <tbody>
+      <tr><td><code>healthy</code> / operational</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#20d9bb"></span><code>#20d9bb</code></div></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#24d7b4"></span><code>#24d7b4</code></div></td></tr>
+      <tr><td><code>warning</code> / attention</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#ff746a"></span><code>#ff746a</code></div></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#ff867a"></span><code>#ff867a</code></div></td></tr>
+      <tr><td><code>idle</code> / paused</td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#a8a8a8"></span><code>#a8a8a8</code></div></td><td><div class="color-cell" style="display:inline-flex"><span class="swatch" style="background:#9aabbc"></span><code>#9aabbc</code></div></td></tr>
+    </tbody>
+  </table>
+  <div class="how-to">✎ To add a factory site: add an entry to <code>PLANTS</code> in <code>server/plants.py</code> with <code>lat</code>/<code>lng</code>. Both map modes render it automatically on the next snapshot.</div>
+</div>
+
+<!-- ─── 13. RESPONSIVE BREAKPOINTS ─── -->
+<h2 id="responsive">📐 Responsive Breakpoints</h2>
+<p class="note" style="margin-bottom:10px">All breakpoints are in <code>styles.scss</code> as three <code>@media(max-width:…)</code> rules. No JS involved — pure CSS layout changes.</p>
+
+<div class="section">
+  <table>
+    <thead><tr><th>Breakpoint</th><th>Key layout changes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>≤ 1370 px</strong></td>
+        <td>
+          Sidebar → 195 px · main padding 25/24 px · overview grid 1.55fr/0.85fr · arch nodes smaller padding ·
+          twin layout 1.4fr/315px · twin canvas 450 px
+        </td>
+      </tr>
+      <tr>
+        <td><strong>≤ 1050 px</strong></td>
+        <td>
+          Sidebar → 60 px icon-only (nav labels, sidebar bottom, chevrons hidden) · overview/twin/context grid → 1-col ·
+          twin canvas 480 px · hero decoration opacity 0.6 · actions grid → 1-col
+        </td>
+      </tr>
+      <tr>
+        <td><strong>≤ 730 px</strong></td>
+        <td>
+          Header subtitle / divider / clock / page marker / refreshed-tick hidden · sidebar 50 px · main padding 21/13 px ·
+          h1 22 px · hero decoration hidden · metrics grid 2-col · twin canvas 350 px · flow steps vertical ·
+          arch nodes vertical · SQL studio stacked · context chip hidden · footer column
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<footer>Made with IBM Bob</footer>
+</div>
+</body>
+</html>

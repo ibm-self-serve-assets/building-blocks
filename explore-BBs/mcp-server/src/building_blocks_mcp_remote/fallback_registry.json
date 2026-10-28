@@ -195,7 +195,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Track end-to-end data lineage across pipelines, transformations, and consumption for governance and trust",
-   "docs_path": "data-core/lakehouse/metadata-enrichment/index.md",
+   "docs_path": "data/lakehouse/metadata-enrichment/index.md",
    "group": "lakehouse",
    "name": "Data Lineage",
    "products": [
@@ -214,7 +214,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time",
-   "docs_path": "data-core/lakehouse/data-observability/index.md",
+   "docs_path": "data/lakehouse/data-observability/index.md",
    "group": "lakehouse",
    "name": "Data Observability",
    "products": [
@@ -233,7 +233,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "AI-assisted data pipeline generation for ingesting unstructured and structured data via batch, streaming, or hybrid patterns",
-   "docs_path": "data-core/pipelines/udi/index.md",
+   "docs_path": "data/pipelines/udi/index.md",
    "group": "pipelines",
    "name": "Data Pipeline (AI Generated)",
    "products": [
@@ -252,7 +252,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Data quality management with automated validation, profiling, and rule-based checks across data sources",
-   "docs_path": "data-core/lakehouse/metadata-enrichment/index.md",
+   "docs_path": "data/lakehouse/metadata-enrichment/index.md",
    "group": "lakehouse",
    "name": "Data Quality",
    "products": [
@@ -271,7 +271,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Streamhouse \u2014 real-time data streaming capabilities for continuous data processing and event-driven architectures",
-   "docs_path": "data-core/streamhouse/index.md",
+   "docs_path": "data/streamhouse/index.md",
    "group": "streamhouse",
    "name": "Streamhouse",
    "products": [
@@ -437,7 +437,7 @@
    ],
    "capability": "data",
    "description": "Retrieval-Augmented Generation pipeline: document ingestion from IBM COS, watsonx.ai embeddings, vector storage in Milvus or OpenSearch, and hybrid semantic + BM25 search. Ships with a FastAPI service plus ingestion and retrieval MCP servers.",
-   "docs_path": "data-core/pipelines/rag/index.md",
+   "docs_path": "data/pipelines/rag/index.md",
    "group": "pipelines",
    "name": "RAG",
    "products": [
@@ -462,7 +462,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Serverless vector ingestion and similarity search plus NoSQL document access using the Astra DB service in IBM watsonx.data",
-   "docs_path": "data-core/lakehouse/serverless-vector/index.md",
+   "docs_path": "data/lakehouse/serverless-vector/index.md",
    "group": "lakehouse",
    "name": "Serverless Vector",
    "products": [
@@ -487,7 +487,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Natural language to SQL conversion using watsonx.data Intelligence with metadata enrichment for accurate query generation",
-   "docs_path": "data-core/pipelines/text2sql/index.md",
+   "docs_path": "data/pipelines/text2sql/index.md",
    "group": "pipelines",
    "name": "Text2SQL",
    "products": [
@@ -507,7 +507,7 @@
    "bob_modes": [],
    "capability": "data",
    "description": "Query across data sources without duplication using open table formats and federated query engines for lakehouse access",
-   "docs_path": "data-core/lakehouse/zero-copy-lakehouse/index.md",
+   "docs_path": "data/lakehouse/zero-copy-lakehouse/index.md",
    "group": "lakehouse",
    "name": "Zero Copy",
    "products": [
@@ -620,92 +620,92 @@
    "title": "AI Skills and Modes"
   },
   {
-   "path": "data-core/index.md",
+   "path": "data/index.md",
    "section": "Data",
    "title": "Data Overview"
   },
   {
-   "path": "data-core/streamhouse/index.md",
+   "path": "data/streamhouse/index.md",
    "section": "Data > Streamhouse",
    "title": "Streamhouse Overview"
   },
   {
-   "path": "streamhouse-core/real-time/stream/index.md",
+   "path": "data/streamhouse/stream/index.md",
    "section": "Data > Streamhouse",
    "title": "Stream"
   },
   {
-   "path": "data-core/streamhouse/transform/index.md",
+   "path": "data/streamhouse/transform/index.md",
    "section": "Data > Streamhouse",
    "title": "Transform"
   },
   {
-   "path": "data-core/streamhouse/govern/index.md",
+   "path": "data/streamhouse/govern/index.md",
    "section": "Data > Streamhouse",
    "title": "Govern"
   },
   {
-   "path": "data-core/streamhouse/serve/index.md",
+   "path": "data/streamhouse/serve/index.md",
    "section": "Data > Streamhouse",
    "title": "Serve"
   },
   {
-   "path": "data-core/pipelines/index.md",
+   "path": "data/pipelines/index.md",
    "section": "Data > Pipelines",
    "title": "Pipelines Overview"
   },
   {
-   "path": "data-core/pipelines/rag/index.md",
+   "path": "data/pipelines/rag/index.md",
    "section": "Data > Pipelines",
    "title": "RAG"
   },
   {
-   "path": "data-core/pipelines/udi/index.md",
+   "path": "data/pipelines/udi/index.md",
    "section": "Data > Pipelines",
    "title": "UDI"
   },
   {
-   "path": "data-core/pipelines/text2sql/index.md",
+   "path": "data/pipelines/text2sql/index.md",
    "section": "Data > Pipelines",
    "title": "Text2SQL"
   },
   {
-   "path": "data-core/pipelines/etl/index.md",
+   "path": "data/pipelines/etl/index.md",
    "section": "Data > Pipelines",
    "title": "ETL"
   },
   {
-   "path": "data-core/pipelines/data-sync/index.md",
+   "path": "data/pipelines/data-sync/index.md",
    "section": "Data > Pipelines",
    "title": "Data Sync"
   },
   {
-   "path": "data-core/lakehouse/index.md",
+   "path": "data/lakehouse/index.md",
    "section": "Data > Lakehouse",
    "title": "Lakehouse Overview"
   },
   {
-   "path": "data-core/lakehouse/metadata-enrichment/index.md",
+   "path": "data/lakehouse/metadata-enrichment/index.md",
    "section": "Data > Lakehouse",
    "title": "Meta Data Enrichment and Quality"
   },
   {
-   "path": "data-core/lakehouse/data-observability/index.md",
+   "path": "data/lakehouse/data-observability/index.md",
    "section": "Data > Lakehouse",
    "title": "Data Observability"
   },
   {
-   "path": "data-core/lakehouse/zero-copy-lakehouse/index.md",
+   "path": "data/lakehouse/zero-copy-lakehouse/index.md",
    "section": "Data > Lakehouse",
    "title": "Zero-Copy Lakehouse"
   },
   {
-   "path": "data-core/lakehouse/serverless-vector/index.md",
+   "path": "data/lakehouse/serverless-vector/index.md",
    "section": "Data > Lakehouse",
    "title": "Serverless Vector"
   },
   {
-   "path": "data-core/bob-skills-and-modes.md",
+   "path": "data/bob-skills-and-modes.md",
    "section": "Data",
    "title": "Data Skills and Modes"
   },

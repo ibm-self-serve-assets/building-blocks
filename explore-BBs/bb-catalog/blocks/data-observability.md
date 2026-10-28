@@ -5,7 +5,7 @@ group: lakehouse
 capability: data
 description: Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time
 repo_path: data/lakehouse/data-observability
-docs_path: data-core/lakehouse/data-observability/index.md
+docs_path: data/lakehouse/data-observability/index.md
 products:
   - watsonx.data
 tags:
@@ -22,7 +22,7 @@ tags:
 Monitor, profile, and observe data pipelines for freshness, volume, schema drift, and quality in real time
 
 - **Repo**: [data/lakehouse/data-observability](https://github.com/ibm-self-serve-assets/building-blocks/tree/main/data/lakehouse/data-observability)
-- **Docs**: [data-core/lakehouse/data-observability/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data-core/lakehouse/data-observability/)
+- **Docs**: [data/lakehouse/data-observability/index.md](https://ibm-self-serve-assets.github.io/building-blocks-docs/data/lakehouse/data-observability/)
 
 <!--
   Add longer-form description, screenshots, "when to use this block", and

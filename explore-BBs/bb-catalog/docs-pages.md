@@ -50,58 +50,58 @@ pages:
     path: ai-core/bob-skills-and-modes.md
   - title: Data Overview
     section: Data
-    path: data-core/index.md
+    path: data/index.md
   - title: Streamhouse Overview
     section: "Data > Streamhouse"
-    path: data-core/streamhouse/index.md
+    path: data/streamhouse/index.md
   - title: Stream
     section: "Data > Streamhouse"
-    path: streamhouse-core/real-time/stream/index.md
+    path: data/streamhouse/stream/index.md
   - title: Transform
     section: "Data > Streamhouse"
-    path: data-core/streamhouse/transform/index.md
+    path: data/streamhouse/transform/index.md
   - title: Govern
     section: "Data > Streamhouse"
-    path: data-core/streamhouse/govern/index.md
+    path: data/streamhouse/govern/index.md
   - title: Serve
     section: "Data > Streamhouse"
-    path: data-core/streamhouse/serve/index.md
+    path: data/streamhouse/serve/index.md
   - title: Pipelines Overview
     section: "Data > Pipelines"
-    path: data-core/pipelines/index.md
+    path: data/pipelines/index.md
   - title: RAG
     section: "Data > Pipelines"
-    path: data-core/pipelines/rag/index.md
+    path: data/pipelines/rag/index.md
   - title: UDI
     section: "Data > Pipelines"
-    path: data-core/pipelines/udi/index.md
+    path: data/pipelines/udi/index.md
   - title: Text2SQL
     section: "Data > Pipelines"
-    path: data-core/pipelines/text2sql/index.md
+    path: data/pipelines/text2sql/index.md
   - title: ETL
     section: "Data > Pipelines"
-    path: data-core/pipelines/etl/index.md
+    path: data/pipelines/etl/index.md
   - title: Data Sync
     section: "Data > Pipelines"
-    path: data-core/pipelines/data-sync/index.md
+    path: data/pipelines/data-sync/index.md
   - title: Lakehouse Overview
     section: "Data > Lakehouse"
-    path: data-core/lakehouse/index.md
+    path: data/lakehouse/index.md
   - title: Meta Data Enrichment and Quality
     section: "Data > Lakehouse"
-    path: data-core/lakehouse/metadata-enrichment/index.md
+    path: data/lakehouse/metadata-enrichment/index.md
   - title: Data Observability
     section: "Data > Lakehouse"
-    path: data-core/lakehouse/data-observability/index.md
+    path: data/lakehouse/data-observability/index.md
   - title: Zero-Copy Lakehouse
     section: "Data > Lakehouse"
-    path: data-core/lakehouse/zero-copy-lakehouse/index.md
+    path: data/lakehouse/zero-copy-lakehouse/index.md
   - title: Serverless Vector
     section: "Data > Lakehouse"
-    path: data-core/lakehouse/serverless-vector/index.md
+    path: data/lakehouse/serverless-vector/index.md
   - title: Data Skills and Modes
     section: Data
-    path: data-core/bob-skills-and-modes.md
+    path: data/bob-skills-and-modes.md
   - title: Automation Overview
     section: Automation
     path: automation-core/index.md

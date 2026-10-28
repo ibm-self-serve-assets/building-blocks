@@ -1,0 +1,19 @@
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+dist/
+.env
+.DS_Store
+*.log
+coverage/
+# Never commit Confluent credentials, Terraform state, plans or providers.
+**/*.tfstate
+**/*.tfstate.*
+**/*.tfplan
+**/.terraform/
+**/.terraform.lock.hcl
+**/crash.log
+*.tfvars
+*.tfvars.json
+.DS_Store

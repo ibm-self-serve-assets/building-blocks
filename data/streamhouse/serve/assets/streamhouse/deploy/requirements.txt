@@ -1,0 +1,8 @@
+Flask>=3.0,<4.0
+flask-cors>=4.0,<5.0
+python-dotenv>=1.0,<2.0
+# Required when STREAM_MODE=kafka: producer/consumer + Schema Registry (JSON Schema) client.
+confluent-kafka[schemaregistry,json]>=2.4,<3.0
+# Required for the RTCE MCP connector (server/mcp.py).
+mcp>=1.8,<2.0
+anyio>=3.7
