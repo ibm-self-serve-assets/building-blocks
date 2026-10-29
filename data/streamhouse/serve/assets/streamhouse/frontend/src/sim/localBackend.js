@@ -263,6 +263,14 @@ export function createLocalBackend({ autoStart = true, tickMs = 1000 } = {}) {
 
   async function call(path, body) {
     switch (path) {
+      case 'login': {
+        const u = body?.username?.trim() || 'admin';
+        const p = body?.password || '';
+        if (u === 'admin' && p === 'factorypulse') {
+          return { ok: true, user: u, token: 'local-sim-session-token' };
+        }
+        throw new Error('Invalid username or password.');
+      }
       case 'bootstrap': return { snapshot: snapshot(), cloud, lastDerived: null };
       case 'simulate': { const r = simulate(body || {}); step(); return r; }
       case 'control': return control(body || {});

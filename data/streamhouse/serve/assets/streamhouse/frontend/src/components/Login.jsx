@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { Button, TextInput, PasswordInput, InlineNotification } from '@carbon/react';
 import { ArrowRight, Factory, Activity, RadioTower, Workflow, ShieldCheck } from 'lucide-react';
+import { call } from '../sim/api.js';
 
-// Demo-level gate: credentials are checked in the browser and are visible in the bundle.
-// Override at build time with VITE_DEMO_USER / VITE_DEMO_PASS. Not a substitute for server-side auth.
-const USER = import.meta.env.VITE_DEMO_USER || 'admin';
-const PASS = import.meta.env.VITE_DEMO_PASS || 'factorypulse';
 export const SESSION_KEY = 'fp-session';
+export const TOKEN_KEY = 'fp-token';
+const DEFAULT_USER = 'admin';
 
 const FEATURES = [
   { icon: Activity,     label: 'Real-time telemetry',   detail: '36 synthetic assets · 6 US plants' },
@@ -21,20 +20,25 @@ export default function Login({ onSuccess }) {
   const [error, setError]       = useState('');
   const [busy, setBusy]         = useState(false);
 
-  const submit = (e) => {
+  const submit = async (e) => {
     e.preventDefault();
     if (!username.trim() || !password) { setError('Enter your username and password.'); return; }
     setBusy(true);
     setError('');
-    setTimeout(() => {
-      if (username.trim() === USER && password === PASS) {
-        sessionStorage.setItem(SESSION_KEY, username.trim());
-        onSuccess(username.trim());
+    try {
+      const res = await call('login', { username: username.trim(), password });
+      if (res.ok) {
+        sessionStorage.setItem(SESSION_KEY, res.user || username.trim());
+        if (res.token) sessionStorage.setItem(TOKEN_KEY, res.token);
+        onSuccess(res.user || username.trim());
       } else {
-        setError('Invalid username or password.');
-        setBusy(false);
+        setError(res.error || 'Invalid username or password.');
       }
-    }, 350);
+    } catch (err) {
+      setError(err.message || 'Sign-in failed. Please check credentials.');
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -118,7 +122,7 @@ export default function Login({ onSuccess }) {
 
           <div className="login-hint-row">
             <Factory size={13} />
-            <span>Demo access · default user <code>{USER}</code></span>
+            <span>Demo access · default user <code>{DEFAULT_USER}</code></span>
           </div>
         </form>
 

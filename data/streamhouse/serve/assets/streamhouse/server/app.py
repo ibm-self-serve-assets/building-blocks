@@ -2,10 +2,16 @@
 
 Serves the API and, in production, the compiled frontend from dist/ in the same process.
 """
+import collections
+import hashlib
+import hmac
 import json
+import logging
 import os
 import queue
+import secrets
 import threading
+import time
 from datetime import datetime, timezone
 
 from dotenv import load_dotenv
@@ -13,6 +19,9 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
 load_dotenv()
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
+logger = logging.getLogger("factory_pulse")
 
 from context import demo_answer
 from kafka import ConfluentTransport
@@ -23,7 +32,61 @@ from simulation import FactorySimulation
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), "..", "frontend", "dist"), static_url_path="/")
 app.config["JSONIFY_PRETTYPRINT_REGULAR"] = False
 app.config["JSON_SORT_KEYS"] = False
-CORS(app)
+
+# Scoped CORS allowlist
+allowed_origins_env = os.environ.get("ALLOWED_ORIGINS", "http://localhost:5173,http://127.0.0.1:5173,http://localhost:4000,http://localhost:4173")
+ALLOWED_ORIGINS = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
+CORS(app, origins=ALLOWED_ORIGINS, supports_credentials=True)
+
+# Authentication & session token management
+_AUTH_SECRET = os.environ.get("SESSION_SECRET") or secrets.token_hex(32)
+_DEMO_USER = os.environ.get("DEMO_USER", os.environ.get("VITE_DEMO_USER", "admin"))
+_DEMO_PASS = os.environ.get("DEMO_PASS", os.environ.get("VITE_DEMO_PASS", "factorypulse"))
+
+# In-memory sliding-window rate limiter: client_ip -> list of timestamps
+_RATE_LIMITS: dict = collections.defaultdict(list)
+
+
+def _rate_limit_check(client_ip: str, max_requests: int = 60, window_secs: int = 60) -> bool:
+    now_ts = time.time()
+    history = _RATE_LIMITS[client_ip]
+    _RATE_LIMITS[client_ip] = [ts for ts in history if now_ts - ts < window_secs]
+    if len(_RATE_LIMITS[client_ip]) >= max_requests:
+        return False
+    _RATE_LIMITS[client_ip].append(now_ts)
+    return True
+
+
+def _generate_token(username: str) -> str:
+    timestamp = str(int(time.time()))
+    sig = hmac.new(_AUTH_SECRET.encode(), f"{username}:{timestamp}".encode(), hashlib.sha256).hexdigest()
+    return f"{username}:{timestamp}:{sig}"
+
+
+def _verify_token(token: str) -> bool:
+    if not token or not isinstance(token, str):
+        return False
+    parts = token.split(":")
+    if len(parts) != 3:
+        return False
+    username, timestamp, sig = parts
+    expected_sig = hmac.new(_AUTH_SECRET.encode(), f"{username}:{timestamp}".encode(), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(sig, expected_sig):
+        return False
+    try:
+        # 24-hour expiration window
+        if abs(int(time.time()) - int(timestamp)) > 86400:
+            return False
+    except ValueError:
+        return False
+    return True
+
+
+def _get_request_token() -> str:
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        return auth_header[7:].strip()
+    return request.headers.get("X-Session-Token", "")
 
 sim = FactorySimulation()
 cloud = ConfluentTransport()
@@ -126,6 +189,21 @@ def _cloud_info():
     return info
 
 
+@app.post("/api/login")
+def login():
+    try:
+        body = request.get_json(silent=True) or {}
+        username = str(body.get("username", "")).strip()
+        password = str(body.get("password", ""))
+        if username == _DEMO_USER and password == _DEMO_PASS:
+            token = _generate_token(username)
+            return jsonify({"ok": True, "token": token, "user": username})
+        return jsonify({"error": "Invalid username or password"}), 401
+    except Exception as exc:
+        logger.exception("Login failure")
+        return jsonify({"error": "Sign-in process failed."}), 500
+
+
 @app.get("/api/health")
 def health():
     return jsonify({
@@ -176,12 +254,18 @@ def simulate():
         body = request.get_json(silent=True) or {}
         result = sim.inject(body.get("siteId"), body.get("scenario"), body.get("intensity", 75))
         return jsonify({"ok": True, "result": result})
-    except Exception as exc:
+    except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        logger.exception("Error in simulate")
+        return jsonify({"error": "Simulation update failed."}), 500
 
 
 @app.post("/api/control")
 def control():
+    client_ip = request.remote_addr or "127.0.0.1"
+    if not _rate_limit_check(client_ip, max_requests=60, window_secs=60):
+        return jsonify({"error": "Rate limit exceeded. Please wait before retrying."}), 429
     try:
         body = request.get_json(silent=True) or {}
         site_id = body.get("siteId")
@@ -203,8 +287,11 @@ def control():
                     raise ValueError(f"Webhook returned {resp.status}")
             result["webhookDispatched"] = True
         return jsonify({"ok": True, "result": result})
+    except ValueError as exc:
+        return jsonify({"error": str(exc), "note": "Invalid control parameters or webhook rejection."}), 400
     except Exception as exc:
-        return jsonify({"error": str(exc), "note": "The local simulation may already have changed; external workflow failed."}), 400
+        logger.exception("Error in control")
+        return jsonify({"error": "Control action failed.", "note": "The local simulation may already have changed; external workflow failed."}), 400
 
 
 @app.post("/api/context")
@@ -217,8 +304,11 @@ def context():
             return jsonify({"error": "Unknown factory"}), 400
         answer = demo_answer(body.get("question", ""), site)
         return jsonify({"source": "LOCAL DEMO RULES — NOT MCP/LLM", **answer})
-    except Exception as exc:
+    except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        logger.exception("Error in context")
+        return jsonify({"error": "Context generation failed."}), 500
 
 
 @app.get("/api/mcp/tools")
@@ -231,11 +321,15 @@ def mcp_tools():
                           "inputSchema": getattr(t, "inputSchema", {})})
         return jsonify({"connected": True, "tools": tools})
     except Exception as exc:
+        logger.warning("MCP tools listing failed: %s", exc)
         return jsonify({"connected": False, "error": str(exc)}), 503
 
 
 @app.post("/api/mcp/call")
 def mcp_call():
+    client_ip = request.remote_addr or "127.0.0.1"
+    if not _rate_limit_check(client_ip, max_requests=60, window_secs=60):
+        return jsonify({"error": "Rate limit exceeded. Please wait before retrying."}), 429
     try:
         body = request.get_json(silent=True) or {}
         name = body.get("name")
@@ -247,6 +341,7 @@ def mcp_call():
         result = with_mcp(lambda client: client.call_tool(name, arguments=args))
         return jsonify({"source": "CONFLUENT RTCE MCP", "result": result})
     except Exception as exc:
+        logger.warning("MCP call failed: %s", exc)
         return jsonify({"error": str(exc)}), 502
 
 
@@ -265,12 +360,15 @@ def set_stream_mode():
             try:
                 cloud._connect_source()
             except Exception as exc:
-                print("Source consumer start error:", exc)
+                logger.warning("Source consumer start error: %s", exc)
         broadcast("cloud", _cloud_info())
         return jsonify({"ok": True, "sourceMode": "kafka" if _source_mode else "sim",
                         "sourceConnected": cloud.source_consumer is not None})
-    except Exception as exc:
+    except ValueError as exc:
         return jsonify({"error": str(exc)}), 400
+    except Exception as exc:
+        logger.exception("Error in set_stream_mode")
+        return jsonify({"error": "Stream mode toggle failed."}), 400
 
 
 @app.get("/api/stream")

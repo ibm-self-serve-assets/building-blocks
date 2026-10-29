@@ -22,10 +22,14 @@ class Unreachable extends Error {}
 
 async function remote(path, body) {
   let res;
+  const token = typeof window !== 'undefined' ? sessionStorage.getItem('fp-token') : null;
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   try {
     res = await fetch(`/api/${path}`, {
       method: body === undefined ? 'GET' : 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch (e) {
