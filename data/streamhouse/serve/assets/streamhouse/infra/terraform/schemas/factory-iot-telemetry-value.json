@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventId": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "siteId": {
+      "type": "string"
+    },
+    "siteName": {
+      "type": "string"
+    },
+    "assetId": {
+      "type": "string"
+    },
+    "assetType": {
+      "type": "string"
+    },
+    "lineId": {
+      "type": "string"
+    },
+    "scenario": {
+      "type": "string"
+    },
+    "temperature": {
+      "type": "number"
+    },
+    "vibration": {
+      "type": "number"
+    },
+    "rpm": {
+      "type": "integer"
+    },
+    "energyKw": {
+      "type": "number"
+    },
+    "qualityScore": {
+      "type": "number"
+    },
+    "health": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string"
+    },
+    "batchId": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "eventId",
+    "timestamp",
+    "siteId",
+    "siteName",
+    "assetId",
+    "assetType",
+    "lineId",
+    "scenario",
+    "temperature",
+    "vibration",
+    "rpm",
+    "energyKw",
+    "qualityScore",
+    "health",
+    "status",
+    "batchId"
+  ]
+}

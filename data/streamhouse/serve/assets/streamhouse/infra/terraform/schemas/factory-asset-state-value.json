@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "assetId": {
+      "type": "string"
+    },
+    "siteId": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "health": {
+      "type": "integer"
+    },
+    "temperature": {
+      "type": "number"
+    },
+    "vibration": {
+      "type": "number"
+    },
+    "qualityScore": {
+      "type": "number"
+    },
+    "scenario": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "assetId",
+    "siteId",
+    "timestamp",
+    "status",
+    "health",
+    "temperature",
+    "vibration",
+    "qualityScore",
+    "scenario"
+  ]
+}

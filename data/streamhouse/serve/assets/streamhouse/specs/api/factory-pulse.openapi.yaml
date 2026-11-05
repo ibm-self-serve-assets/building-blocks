@@ -1,0 +1,1478 @@
+openapi: 3.1.0
+info:
+  title: Factory Pulse Streamhouse API
+  version: 1.0.0
+  description: |
+    # Factory Pulse — Industrial Streamhouse Backend API
+
+    Factory Pulse is a full-stack manufacturing demonstration built around the IBM Streamhouse architecture:
+    **Stream → Transform → Govern → Serve**, augmented with open Apache Iceberg analytical delivery and current-state AI context.
+
+    The backend is written in Python (Flask) and serves both the REST/SSE API and, in production, compiled frontend assets from `dist/`.
+
+    ---
+
+    ## Real-Time Streaming & SSE Events (`GET /api/events`)
+
+    The backend publishes live telemetry, state snapshots, fault notifications, and cloud status updates to browser clients via Server-Sent Events (SSE) over HTTP (`text/event-stream`).
+
+    ### SSE Connection Framing & Heartbeats
+    - **Mime Type:** `text/event-stream`
+    - **Headers:** `Cache-Control: no-cache, no-transform`, `Connection: keep-alive`
+    - **Initial Event:** Immediately upon connection, the server yields an initial `snapshot` event with the full factory state.
+    - **Heartbeat:** If no simulation or cloud event occurs within 18 seconds, the server sends a comment ping `: heartbeat\n\n` to keep the connection alive.
+
+    ### SSE Event Types & Payload Shapes
+    1. `event: snapshot`
+       - **Trigger:** Initial SSE connection, periodic simulation tick, fault trip, scenario change, or Kafka source message merge.
+       - **Payload:** [`Snapshot`](#/$defs/Snapshot) object containing all 6 plant sites, robot sensors, active alerts, recent actions, and aggregated KPI summary.
+    2. `event: alert`
+       - **Trigger:** Generated automatically when an injected scenario reaches fault severity (bearing wear, overheat, quality drift, surge) or received from the `factory-maintenance-events` Kafka topic.
+       - **Payload:** [`Alert`](#/$defs/Alert) object with severity (`warning` | `critical`), asset ID, site, message, and acknowledgment state.
+    3. `event: scenario`
+       - **Trigger:** Emitted when `POST /api/simulate` injects a scenario into a factory site.
+       - **Payload:** [`ScenarioEvent`](#/$defs/ScenarioEvent) (`{"siteId": string, "scenario": string, "intensity": number}`).
+    4. `event: action`
+       - **Trigger:** Emitted when `POST /api/control` executes an operator action (pause, resume, maintenance, acknowledge).
+       - **Payload:** [`ActionResult`](#/$defs/ActionResult).
+    5. `event: cloud`
+       - **Trigger:** Emitted on each simulation loop tick, during retry loops, or after `POST /api/stream-mode`.
+       - **Payload:** [`CloudInfoExtended`](#/$defs/CloudInfoExtended) containing transport mode (`mock` | `kafka`), status, sent/failed metrics, topic lists, and consumer connection flags.
+    6. `event: flink`
+       - **Trigger:** Emitted when the Kafka derived consumer receives output records from deployed Flink SQL streams (`factory-risk-signals` or `factory-shift-kpis`).
+       - **Payload:** [`DerivedStreamEvent`](#/$defs/DerivedStreamEvent) (`{"topic": string, "value": object, "timestamp": string}`).
+
+    ---
+
+    ## Confluent RTCE & Model Context Protocol (MCP)
+
+    The server includes an opt-in client proxy to **Confluent Real-Time Context Engine (RTCE)** via the **Model Context Protocol (MCP)** using streamable-HTTP transport (`server/mcp.py`).
+
+    ### Security & Isolation
+    All RTCE credentials (`RTCE_MCP_ENDPOINT` and `RTCE_MCP_BASIC_TOKEN`) remain strictly server-side. The browser interacts solely with `/api/mcp/tools` and `/api/mcp/call`.
+
+    ### MCP Dynamic Proxy & Tool Capabilities
+    Rather than hardcoding static tool definitions in the Python backend, `server/mcp.py` acts as a dynamic MCP client session:
+    - **Discovery (`GET /api/mcp/tools`):** Initializes an async `ClientSession` over streamable-HTTP to the remote RTCE endpoint and invokes `client.list_tools()`. Returns the list of tools with their JSON Schema input definitions.
+    - **Invocation (`POST /api/mcp/call`):** Invokes `client.call_tool(name, arguments)` against the remote RTCE server and returns the structured context payload.
+
+    ### Upstream RTCE & Watsonx Orchestrate Tool Catalog
+    When connected to Confluent RTCE and watsonx Orchestrate, standard tools exposed or consumed include:
+    1. **`get_latest_asset_state`**
+       - **Parameters:** `assetId` (string, required), `siteId` (string, optional)
+       - **Purpose:** Materializes the latest sensor readings (temperature, vibration, RPM, health, quality) from the compacted `factory-asset-state` Kafka stream.
+    2. **`list_unacknowledged_alerts`**
+       - **Parameters:** `siteId` (string, optional), `severity` (string, optional: `warning` | `critical`)
+       - **Purpose:** Returns active maintenance alarms requiring operator inspection or automated work orders.
+    3. **`get_factory_kpis`**
+       - **Parameters:** `siteId` (string, required)
+       - **Purpose:** Queries current shift OEE, throughput rate, active line count, and modeled power consumption.
+    4. **`query_fleet_telemetry`**
+       - **Parameters:** `query` (string, required), `timeWindowMinutes` (integer, optional)
+       - **Purpose:** Executes semantic or structured retrieval over real-time stream state for AI agent context augmentation.
+
+    ---
+
+    ## Authentication & Authorization Model
+
+    - **Local HTTP Endpoints:** All `/api/*` endpoints are unauthenticated for local developer and demo convenience, with CORS enabled.
+    - **Upstream Confluent Kafka:** Authenticates using SASL/PLAIN over TLS (`KAFKA_BOOTSTRAP_SERVERS`, `KAFKA_API_KEY`, `KAFKA_API_SECRET`).
+    - **Upstream Schema Registry:** Authenticates using HTTP Basic Auth (`SCHEMA_REGISTRY_URL`, `SCHEMA_REGISTRY_API_KEY`, `SCHEMA_REGISTRY_API_SECRET`).
+    - **Upstream RTCE MCP Endpoint:** Authenticates using HTTP Basic token (`RTCE_MCP_ENDPOINT`, `RTCE_MCP_BASIC_TOKEN`).
+    - **Outbound Action Webhook:** Dispatches maintenance work orders via HTTPS POST with Bearer token authentication (`ACTION_WEBHOOK_URL`, `ACTION_WEBHOOK_TOKEN`).
+servers:
+  - url: "{baseUrl}"
+    description: Factory Pulse Server (local dev default http://localhost:4000)
+    variables:
+      baseUrl:
+        default: http://localhost:4000
+        description: Base URL of the Factory Pulse backend server
+
+paths:
+  /api/health:
+    get:
+      summary: Server health and connectivity status
+      description: Returns the operational status of the server, Kafka transport state, and integration feature flags.
+      operationId: getHealth
+      responses:
+        "200":
+          description: Health check details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /api/bootstrap:
+    get:
+      summary: Initial application bootstrap state
+      description: Returns the full initial snapshot, list of available scenarios, factory site definitions, cloud transport state, and MCP configuration flag.
+      operationId: getBootstrap
+      responses:
+        "200":
+          description: Bootstrap payload for UI hydration
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BootstrapResponse"
+
+  /api/events:
+    get:
+      summary: Server-Sent Events (SSE) live data stream
+      description: |
+        Long-lived HTTP connection streaming live simulation snapshots, alerts, scenario changes, operator actions, Kafka transport metrics, and derived Flink stream events.
+
+        Yields:
+        - `event: snapshot` with [`Snapshot`](#/components/schemas/Snapshot) data
+        - `event: alert` with [`Alert`](#/components/schemas/Alert) data
+        - `event: scenario` with [`ScenarioEvent`](#/components/schemas/ScenarioEvent) data
+        - `event: action` with [`ActionResult`](#/components/schemas/ActionResult) data
+        - `event: cloud` with [`CloudInfoExtended`](#/components/schemas/CloudInfoExtended) data
+        - `event: flink` with [`DerivedStreamEvent`](#/components/schemas/DerivedStreamEvent) data
+        - `: heartbeat\n\n` comment sent every 18 seconds if queue is idle
+      operationId: getEventsStream
+      responses:
+        "200":
+          description: Real-time event stream
+          headers:
+            Cache-Control:
+              schema:
+                type: string
+                example: "no-cache, no-transform"
+            Connection:
+              schema:
+                type: string
+                example: "keep-alive"
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: Text-formatted Server-Sent Events stream
+
+  /api/simulate:
+    post:
+      summary: Inject a fault or demand scenario into a factory
+      description: Changes the active operational scenario and intensity for a specific factory site, driving sensor physics simulation.
+      operationId: postSimulateScenario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SimulateRequest"
+      responses:
+        "200":
+          description: Scenario successfully applied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SimulateResponse"
+        "400":
+          description: Invalid request parameters (e.g. unknown site or invalid scenario)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/control:
+    post:
+      summary: Execute an operator control action
+      description: Triggers operator interventions such as pausing a line, resuming production, performing maintenance reset, or acknowledging alerts. If configured, maintenance actions dispatch an outbound HTTPS webhook.
+      operationId: postControlAction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ControlRequest"
+      responses:
+        "200":
+          description: Action executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ControlResponse"
+        "400":
+          description: Invalid action parameters or failed external webhook dispatch
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/context:
+    post:
+      summary: Query deterministic factory context (rule-based demo engine)
+      description: Returns transparent rule-based answers, evidence lines, and recommendations for a given factory site. Note that this is deterministic demo logic and not an LLM or Confluent RTCE response.
+      operationId: postContextQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ContextRequest"
+      responses:
+        "200":
+          description: Context analysis result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContextResponse"
+        "400":
+          description: Unknown factory site ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/mcp/tools:
+    get:
+      summary: Discover available Confluent RTCE MCP tools
+      description: Proxies an async discovery request to the upstream Confluent RTCE streamable-HTTP MCP endpoint to list available tools and their input schemas.
+      operationId: getMcpTools
+      responses:
+        "200":
+          description: Connected to RTCE and list of tools retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/McpToolsResponse"
+        "503":
+          description: MCP connector not configured or failed to connect to upstream RTCE
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/McpErrorResponse"
+
+  /api/mcp/call:
+    post:
+      summary: Call a Confluent RTCE MCP tool
+      description: Invokes a specific remote MCP tool with the supplied JSON arguments through the streamable-HTTP proxy session.
+      operationId: postMcpCall
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/McpCallRequest"
+      responses:
+        "200":
+          description: MCP tool execution succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/McpCallResponse"
+        "400":
+          description: Invalid tool name format or argument validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Upstream MCP execution error or unconfigured connector
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/stream-mode:
+    post:
+      summary: Toggle UI data stream source mode
+      description: Switches the primary stream consumption source between local simulation (`sim`) and live Kafka consumer roundtrip (`kafka`). Dynamically starts the Kafka source consumer if needed.
+      operationId: postStreamMode
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StreamModeRequest"
+      responses:
+        "200":
+          description: Stream mode successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreamModeResponse"
+        "400":
+          description: Invalid source mode value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /api/stream:
+    get:
+      summary: Kafka transport and stream processing telemetry
+      description: Returns transport statistics (messages sent, failed, status, schemas), last ack time, and the latest derived Flink record.
+      operationId: getStreamStatus
+      responses:
+        "200":
+          description: Cloud transport status and Flink derived stream state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CloudInfoExtended"
+
+components:
+  securitySchemes:
+    noAuth:
+      type: http
+      description: Direct local HTTP API requests require no authentication.
+      scheme: bearer
+    rtceMcpBasicAuth:
+      type: http
+      scheme: basic
+      description: Server-side Basic authentication token (`RTCE_MCP_BASIC_TOKEN`) used when proxying requests to the upstream Confluent RTCE MCP endpoint.
+    kafkaSaslAuth:
+      type: http
+      scheme: basic
+      description: Server-side SASL/PLAIN credentials (`KAFKA_API_KEY`, `KAFKA_API_SECRET`) used for Confluent Kafka broker transport.
+    schemaRegistryBasicAuth:
+      type: http
+      scheme: basic
+      description: Server-side HTTP Basic Auth credentials (`SCHEMA_REGISTRY_API_KEY`, `SCHEMA_REGISTRY_API_SECRET`) used for Schema Registry contract registration.
+    actionWebhookBearerAuth:
+      type: http
+      scheme: bearer
+      description: Server-side Bearer token (`ACTION_WEBHOOK_TOKEN`) dispatched in the Authorization header to external maintenance webhook systems (`ACTION_WEBHOOK_URL`).
+
+  schemas:
+    HealthResponse:
+      type: object
+      description: Server health and capability status payload.
+      required:
+        - ok
+        - server
+        - time
+        - stream
+        - mcpConfigured
+        - googleMapsConfigured
+      properties:
+        ok:
+          type: boolean
+          example: true
+          description: Health check indicator.
+        server:
+          type: string
+          example: "Factory Pulse"
+          description: Server name.
+        time:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: Current UTC timestamp in ISO 8601 format.
+        stream:
+          $ref: "#/components/schemas/CloudStreamInfo"
+        mcpConfigured:
+          type: boolean
+          example: false
+          description: Whether RTCE MCP endpoint and token environment variables are configured.
+        googleMapsConfigured:
+          type: boolean
+          example: true
+          description: Whether the Google Maps API key environment variable is configured.
+
+    BootstrapResponse:
+      type: object
+      description: Complete bootstrap payload used by frontend client to hydrate all view state on startup.
+      required:
+        - snapshot
+        - scenarios
+        - plants
+        - cloud
+        - mcpConfigured
+        - lastDerived
+      properties:
+        snapshot:
+          $ref: "#/components/schemas/Snapshot"
+        scenarios:
+          type: array
+          description: List of available fault and operational scenarios.
+          items:
+            $ref: "#/components/schemas/Scenario"
+        plants:
+          type: array
+          description: List of factory plant definitions with baseline metadata.
+          items:
+            $ref: "#/components/schemas/Plant"
+        cloud:
+          $ref: "#/components/schemas/CloudInfoExtended"
+        mcpConfigured:
+          type: boolean
+          example: false
+          description: Whether RTCE MCP endpoint and token are configured.
+        lastDerived:
+          type:
+            - object
+            - "null"
+          description: Most recent record received from Flink derived topics, if any.
+          nullable: true
+
+    CloudStreamInfo:
+      type: object
+      description: Confluent Kafka transport state and message accounting.
+      required:
+        - mode
+        - status
+        - sent
+        - failed
+        - lastError
+        - lastAck
+        - topics
+        - derivedConnected
+        - sourceConnected
+      properties:
+        mode:
+          type: string
+          enum:
+            - mock
+            - kafka
+          example: "mock"
+          description: Stream transport mode configured via STREAM_MODE environment variable.
+        status:
+          type: string
+          enum:
+            - disconnected
+            - mock
+            - configuration_required
+            - connecting
+            - connected
+            - error
+          example: "mock"
+          description: Connection status of the Confluent Kafka producer.
+        sent:
+          type: integer
+          example: 1420
+          description: Total number of Kafka messages produced and acknowledged.
+        failed:
+          type: integer
+          example: 0
+          description: Total number of Kafka message publish failures.
+        lastError:
+          type:
+            - string
+            - "null"
+          nullable: true
+          example: null
+          description: Last error message encountered by the Kafka producer or consumer.
+        lastAck:
+          type:
+            - string
+            - "null"
+          format: date-time
+          nullable: true
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 timestamp of the most recent successful Kafka producer acknowledgement.
+        topics:
+          type: array
+          description: List of registered Kafka topics governed by Schema Registry.
+          items:
+            type: string
+          example:
+            - "factory-iot-telemetry"
+            - "factory-maintenance-events"
+            - "factory-asset-state"
+        derivedConnected:
+          type: boolean
+          example: false
+          description: Whether the background consumer for Flink derived topics (`factory-risk-signals`, `factory-shift-kpis`) is active.
+        sourceConnected:
+          type: boolean
+          example: false
+          description: Whether the background consumer for source telemetry topics is active.
+
+    CloudInfoExtended:
+      allOf:
+        - $ref: "#/components/schemas/CloudStreamInfo"
+        - type: object
+          required:
+            - lastDerived
+            - sourceMode
+          properties:
+            lastDerived:
+              type:
+                - object
+                - "null"
+              nullable: true
+              description: Most recent derived Flink record.
+            sourceMode:
+              type: string
+              enum:
+                - kafka
+                - sim
+              example: "sim"
+              description: Active UI stream consumption source mode.
+
+    Plant:
+      type: object
+      description: Factory plant metadata definition.
+      required:
+        - id
+        - name
+        - city
+        - state
+        - lat
+        - lng
+        - type
+        - lines
+        - robots
+        - region
+        - asset
+        - oee_base
+        - rate
+      properties:
+        id:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Unique 3-letter factory plant identifier.
+        name:
+          type: string
+          example: "Detroit Assembly"
+          description: Human-readable plant name.
+        city:
+          type: string
+          example: "Detroit"
+          description: City where facility is located.
+        state:
+          type: string
+          example: "Michigan"
+          description: State where facility is located.
+        lat:
+          type: number
+          example: 42.3314
+          description: Latitude coordinate.
+        lng:
+          type: number
+          example: -83.0458
+          description: Longitude coordinate.
+        type:
+          type: string
+          example: "Automotive assembly"
+          description: Manufacturing process category.
+        lines:
+          type: integer
+          example: 8
+          description: Number of active production lines.
+        robots:
+          type: integer
+          example: 12
+          description: Total physical robot count across all lines in this plant.
+        region:
+          type: string
+          enum: [MIDWEST, SOUTH, WEST, EAST]
+          example: "MIDWEST"
+          description: Geographic operational region.
+        asset:
+          type: string
+          example: "EV body shop"
+          description: Primary asset or line description.
+        oee_base:
+          type: number
+          example: 93.0
+          description: Baseline steady-state Overall Equipment Effectiveness percentage.
+        rate:
+          type: integer
+          example: 8
+          description: Nominal production rate in units per line per minute at 100% OEE.
+
+    Scenario:
+      type: object
+      description: Fault or demand scenario definition for simulation injection.
+      required:
+        - id
+        - name
+        - description
+      properties:
+        id:
+          type: string
+          enum: [baseline, bearing, thermal, quality, surge]
+          example: "bearing"
+          description: Scenario identifier.
+        name:
+          type: string
+          example: "Bearing wear"
+          description: Display name of the scenario.
+        description:
+          type: string
+          example: "Vibration increases before a predictive maintenance alarm."
+          description: Description of the simulated physical phenomenon.
+
+    Robot:
+      type: object
+      description: Real-time sensor state and operating metrics for an industrial robot asset.
+      required:
+        - id
+        - name
+        - status
+        - health
+        - rpm
+        - vibration
+        - temperature
+        - energyKw
+        - quality
+      properties:
+        id:
+          type: string
+          example: "DET-R01"
+          description: Asset identifier formatted as {SITE}-{ROBOT_NUM}.
+        name:
+          type: string
+          example: "Welding robot"
+          description: Robot type/role designation.
+        status:
+          type: string
+          enum: [running, warning, stopped]
+          example: "running"
+          description: Current operational status.
+        health:
+          type: integer
+          minimum: 15
+          maximum: 100
+          example: 98
+          description: Computed asset health score (15 to 100).
+        rpm:
+          type: integer
+          example: 1805
+          description: Spindle or motor rotation speed in RPM.
+        vibration:
+          type: number
+          example: 1.25
+          description: Mechanical vibration measurement in mm/s.
+        temperature:
+          type: number
+          example: 36.8
+          description: Operating temperature in degrees Celsius.
+        energyKw:
+          type: number
+          example: 12.3
+          description: Active power draw in kilowatts (kW).
+        quality:
+          type: number
+          example: 99.1
+          description: First-pass inspection quality score percentage.
+
+    HistoryPoint:
+      type: object
+      description: Historical telemetry sample for site trend sparklines.
+      required:
+        - t
+        - output
+        - oee
+        - temp
+        - vibration
+        - quality
+      properties:
+        t:
+          type: integer
+          example: 42
+          description: Simulation tick number.
+        output:
+          type: integer
+          example: 60
+          description: Production throughput at this tick (units/min).
+        oee:
+          type: number
+          example: 92.4
+          description: Overall Equipment Effectiveness percentage.
+        temp:
+          type: number
+          example: 37.1
+          description: Average line temperature in °C.
+        vibration:
+          type: number
+          example: 1.22
+          description: Average line vibration in mm/s.
+        quality:
+          type: number
+          example: 99.0
+          description: Average line quality score percentage.
+
+    Site:
+      allOf:
+        - $ref: "#/components/schemas/Plant"
+        - type: object
+          description: Dynamic operational state of a factory site.
+          required:
+            - scenario
+            - intensity
+            - paused
+            - stopped
+            - oee
+            - throughput
+            - output
+            - alerts
+            - status
+            - robots
+            - history
+          properties:
+            scenario:
+              type: string
+              enum: [baseline, bearing, thermal, quality, surge]
+              example: "baseline"
+              description: Active simulation scenario.
+            intensity:
+              type: number
+              minimum: 0
+              maximum: 100
+              example: 75
+              description: Injected fault severity/intensity percentage.
+            paused:
+              type: boolean
+              example: false
+              description: Operator pause state (planned stop).
+            stopped:
+              type: boolean
+              example: false
+              description: Protective trip state triggered by high fault severity.
+            oee:
+              type: number
+              example: 93.0
+              description: Current modeled OEE percentage.
+            throughput:
+              type: integer
+              example: 60
+              description: Current unit production rate per minute.
+            output:
+              type: integer
+              example: 3600
+              description: Cumulative units produced since simulation start.
+            alerts:
+              type: integer
+              example: 0
+              description: Count of active unacknowledged alerts for this site.
+            status:
+              type: string
+              enum: [healthy, warning, idle]
+              example: "healthy"
+              description: High-level plant health status.
+            robots:
+              type: array
+              description: Modeled robot arm assets on the primary line.
+              items:
+                $ref: "#/components/schemas/Robot"
+            history:
+              type: array
+              description: Rolling telemetry history window (up to 55 points).
+              items:
+                $ref: "#/components/schemas/HistoryPoint"
+
+    Alert:
+      type: object
+      description: Factory maintenance and anomaly notification.
+      required:
+        - id
+        - timestamp
+        - siteId
+        - siteName
+        - assetId
+        - type
+        - severity
+        - message
+        - acknowledged
+      properties:
+        id:
+          type: string
+          example: "AL-DET-12"
+          description: Unique alert event identifier.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 event generation timestamp.
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Factory site identifier.
+        siteName:
+          type: string
+          example: "Detroit Assembly"
+          description: Plant display name.
+        assetId:
+          type: string
+          example: "DET-R01"
+          description: Target robot asset identifier.
+        type:
+          type: string
+          example: "BEARING_RISK"
+          description: Event or risk category (e.g. BEARING_RISK, OVERHEAT, QUALITY_DRIFT, CAPACITY_PRESSURE).
+        severity:
+          type: string
+          enum: [critical, warning]
+          example: "warning"
+          description: Alarm severity level.
+        message:
+          type: string
+          example: "Abnormal spindle vibration detected"
+          description: Diagnostic description of the anomaly.
+        acknowledged:
+          type: boolean
+          example: false
+          description: Whether an operator has acknowledged this alert.
+
+    ActionResult:
+      type: object
+      description: Record of an operator control intervention.
+      required:
+        - id
+        - timestamp
+        - siteId
+        - action
+        - robotId
+        - mode
+      properties:
+        id:
+          type: string
+          example: "ACT-1743330000000"
+          description: Unique action action log identifier.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 action timestamp.
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Target factory site identifier.
+        action:
+          type: string
+          enum: [pause, resume, maintenance, acknowledge]
+          example: "maintenance"
+          description: Operator action performed.
+        robotId:
+          type:
+            - string
+            - "null"
+          nullable: true
+          example: "DET-R01"
+          description: Targeted robot identifier if applicable.
+        mode:
+          type: string
+          example: "simulation"
+          description: Execution mode.
+        webhookDispatched:
+          type: boolean
+          example: true
+          description: Present and true when an external HTTPS maintenance webhook was dispatched.
+
+    SnapshotSummary:
+      type: object
+      description: Aggregated enterprise fleet metrics across all factory sites.
+      required:
+        - plants
+        - assets
+        - throughput
+        - oee
+        - activeAlerts
+        - eventsPerSecond
+      properties:
+        plants:
+          type: integer
+          example: 6
+          description: Total number of active factory facilities.
+        assets:
+          type: integer
+          example: 36
+          description: Total number of modeled robot arm assets across all facilities.
+        throughput:
+          type: integer
+          example: 792
+          description: Sum of instantaneous throughput across all sites (units/min).
+        oee:
+          type: number
+          example: 91.8
+          description: Enterprise-wide line-weighted Overall Equipment Effectiveness percentage.
+        activeAlerts:
+          type: integer
+          example: 2
+          description: Total number of unacknowledged alerts across the enterprise.
+        eventsPerSecond:
+          type: number
+          example: 14.1
+          description: Computed telemetry ingestion rate in events per second.
+
+    TelemetryEvent:
+      type: object
+      description: Schema-governed IoT sensor telemetry payload published to Kafka topic `factory-iot-telemetry`.
+      required:
+        - eventId
+        - timestamp
+        - siteId
+        - siteName
+        - assetId
+        - assetType
+        - lineId
+        - scenario
+        - temperature
+        - vibration
+        - rpm
+        - energyKw
+        - qualityScore
+        - health
+        - status
+        - batchId
+      properties:
+        eventId:
+          type: string
+          example: "DET-42-0"
+          description: Unique telemetry reading identifier.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 event timestamp.
+        siteId:
+          type: string
+          example: "DET"
+          description: Plant identifier.
+        siteName:
+          type: string
+          example: "Detroit Assembly"
+          description: Plant display name.
+        assetId:
+          type: string
+          example: "DET-R01"
+          description: Robot asset identifier.
+        assetType:
+          type: string
+          example: "Welding robot"
+          description: Robot type/role designation.
+        lineId:
+          type: string
+          example: "LINE-1"
+          description: Production line identifier.
+        scenario:
+          type: string
+          example: "bearing"
+          description: Active simulation scenario.
+        temperature:
+          type: number
+          example: 41.2
+          description: Measured temperature in °C.
+        vibration:
+          type: number
+          example: 3.45
+          description: Measured vibration in mm/s.
+        rpm:
+          type: integer
+          example: 1780
+          description: Measured rotational speed in RPM.
+        energyKw:
+          type: number
+          example: 13.1
+          description: Measured power draw in kW.
+        qualityScore:
+          type: number
+          example: 98.4
+          description: Quality inspection score percentage.
+        health:
+          type: integer
+          example: 87
+          description: Asset health percentage (15 to 100).
+        status:
+          type: string
+          enum: [running, warning, stopped]
+          example: "running"
+          description: Operational state.
+        batchId:
+          type: string
+          example: "BATCH-1004"
+          description: Work-in-progress manufacturing batch identifier.
+
+    AssetStateEvent:
+      type: object
+      description: Schema-governed compact state record published to Kafka topic `factory-asset-state` for RTCE state materialization.
+      required:
+        - assetId
+        - siteId
+        - timestamp
+        - status
+        - health
+        - temperature
+        - vibration
+        - qualityScore
+        - scenario
+      properties:
+        assetId:
+          type: string
+          example: "DET-R01"
+          description: Robot asset identifier.
+        siteId:
+          type: string
+          example: "DET"
+          description: Plant identifier.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 state timestamp.
+        status:
+          type: string
+          enum: [running, warning, stopped]
+          example: "running"
+          description: Operating status.
+        health:
+          type: integer
+          example: 95
+          description: Health percentage.
+        temperature:
+          type: number
+          example: 36.5
+          description: Temperature in °C.
+        vibration:
+          type: number
+          example: 1.2
+          description: Vibration in mm/s.
+        qualityScore:
+          type: number
+          example: 99.2
+          description: Quality score percentage.
+        scenario:
+          type: string
+          example: "baseline"
+          description: Active scenario.
+
+    MaintenanceEvent:
+      type: object
+      description: Schema-governed maintenance event payload published to Kafka topic `factory-maintenance-events`.
+      required:
+        - eventId
+        - timestamp
+        - siteId
+        - assetId
+        - eventType
+        - severity
+        - message
+        - acknowledged
+      properties:
+        eventId:
+          type: string
+          example: "AL-DET-12"
+          description: Event identifier.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 timestamp.
+        siteId:
+          type: string
+          example: "DET"
+          description: Plant identifier.
+        assetId:
+          type: string
+          example: "DET-R01"
+          description: Asset identifier.
+        eventType:
+          type: string
+          example: "BEARING_RISK"
+          description: Anomaly or maintenance event type.
+        severity:
+          type: string
+          enum: [critical, warning]
+          example: "warning"
+          description: Alarm severity level.
+        message:
+          type: string
+          example: "Abnormal spindle vibration detected"
+          description: Diagnostic message.
+        acknowledged:
+          type: boolean
+          example: false
+          description: Acknowledgment status.
+
+    DerivedStreamEvent:
+      type: object
+      description: Real-time record consumed from Confluent Cloud Flink SQL output topics.
+      required:
+        - topic
+        - value
+        - timestamp
+      properties:
+        topic:
+          type: string
+          example: "factory-risk-signals"
+          description: Kafka topic name where Flink CTAS continuous query emitted the record.
+        value:
+          type:
+            - object
+            - "null"
+          nullable: true
+          description: JSON deserialized payload emitted by Flink.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 receive timestamp.
+
+    ScenarioEvent:
+      type: object
+      description: Payload broadcast when a simulation scenario is injected.
+      required:
+        - siteId
+        - scenario
+        - intensity
+      properties:
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Targeted factory site ID.
+        scenario:
+          type: string
+          enum: [baseline, bearing, thermal, quality, surge]
+          example: "bearing"
+          description: Injected scenario identifier.
+        intensity:
+          type: number
+          example: 85
+          description: Severity intensity percentage (1-100).
+
+    Snapshot:
+      type: object
+      description: Complete real-time snapshot of the manufacturing enterprise.
+      required:
+        - tick
+        - timestamp
+        - paused
+        - sites
+        - alerts
+        - actions
+        - recentEvents
+        - summary
+      properties:
+        tick:
+          type: integer
+          example: 120
+          description: Current simulation step tick counter.
+        timestamp:
+          type: string
+          format: date-time
+          example: "2026-03-30T10:15:30.123456+00:00"
+          description: ISO 8601 snapshot timestamp.
+        paused:
+          type: boolean
+          example: false
+          description: Whether the entire simulation loop is paused.
+        sites:
+          type: array
+          description: Full operational states of all 6 plant facilities.
+          items:
+            $ref: "#/components/schemas/Site"
+        alerts:
+          type: array
+          description: Most recent 25 active or historical alerts.
+          items:
+            $ref: "#/components/schemas/Alert"
+        actions:
+          type: array
+          description: Most recent 20 operator control interventions.
+          items:
+            $ref: "#/components/schemas/ActionResult"
+        recentEvents:
+          type: array
+          description: Most recent 32 raw telemetry events.
+          items:
+            $ref: "#/components/schemas/TelemetryEvent"
+        summary:
+          $ref: "#/components/schemas/SnapshotSummary"
+
+    SimulateRequest:
+      type: object
+      description: Scenario injection request parameters.
+      required:
+        - siteId
+        - scenario
+      properties:
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Target factory site identifier.
+        scenario:
+          type: string
+          enum: [baseline, bearing, thermal, quality, surge]
+          example: "bearing"
+          description: Fault or demand scenario to apply.
+        intensity:
+          type: number
+          minimum: 1
+          maximum: 100
+          default: 75
+          example: 85
+          description: Injected fault severity percentage (clamped between 1 and 100).
+
+    SimulateResult:
+      type: object
+      description: Injected scenario confirmation.
+      required:
+        - siteId
+        - scenario
+        - intensity
+      properties:
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Factory site identifier.
+        scenario:
+          type: string
+          enum: [baseline, bearing, thermal, quality, surge]
+          example: "bearing"
+          description: Applied scenario.
+        intensity:
+          type: number
+          example: 85
+          description: Applied intensity.
+
+    SimulateResponse:
+      type: object
+      description: Response wrapper for scenario injection.
+      required:
+        - ok
+        - result
+      properties:
+        ok:
+          type: boolean
+          example: true
+          description: Operation success flag.
+        result:
+          $ref: "#/components/schemas/SimulateResult"
+
+    ControlRequest:
+      type: object
+      description: Operator intervention request parameters.
+      required:
+        - siteId
+        - action
+      properties:
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Target factory site identifier.
+        action:
+          type: string
+          enum: [pause, resume, maintenance, acknowledge]
+          example: "maintenance"
+          description: Action to execute.
+        robotId:
+          type: string
+          example: "DET-R01"
+          description: Optional specific robot arm asset identifier.
+
+    ControlResponse:
+      type: object
+      description: Response wrapper for operator control actions.
+      required:
+        - ok
+        - result
+      properties:
+        ok:
+          type: boolean
+          example: true
+          description: Operation success flag.
+        result:
+          $ref: "#/components/schemas/ActionResult"
+
+    ContextRequest:
+      type: object
+      description: Natural language query parameters for factory context.
+      required:
+        - siteId
+      properties:
+        siteId:
+          type: string
+          enum: [DET, AUS, SEA, PHX, CLT, CHI]
+          example: "DET"
+          description: Factory site identifier to analyze.
+        question:
+          type: string
+          example: "Which robot needs maintenance?"
+          description: Operator question or query string.
+
+    ContextResponse:
+      type: object
+      description: Rule-based factory operational context and diagnostic narrative.
+      required:
+        - source
+        - title
+        - risk
+        - answer
+        - evidence
+        - suggestion
+      properties:
+        source:
+          type: string
+          example: "LOCAL DEMO RULES — NOT MCP/LLM"
+          description: Explicit attribution tag indicating rule-based logic.
+        title:
+          type: string
+          example: "Maintenance risk assessment"
+          description: Context analysis category title.
+        risk:
+          type: string
+          example: "Elevated"
+          description: Qualitative operational risk assessment (e.g. Low, Elevated, Informational, Attention, Normal).
+        answer:
+          type: string
+          example: "Detroit Assembly has 1 assets above normal thresholds. DET-R01 currently reads 6.20 mm/s vibration and 52.0°C. A condition-based inspection is recommended before the next shift."
+          description: Diagnostic answer generated from current simulation parameters.
+        evidence:
+          type: array
+          description: Supporting telemetry metrics and scenario facts.
+          items:
+            type: string
+          example:
+            - "Scenario: bearing"
+            - "Active assets: 5/6"
+            - "Plant OEE: 86.2%"
+        suggestion:
+          type: string
+          example: "Inspect affected equipment and schedule maintenance if confirmed."
+          description: Actionable operator recommendation.
+
+    McpTool:
+      type: object
+      description: Specification of a callable tool exposed by Confluent RTCE MCP.
+      required:
+        - name
+        - description
+        - inputSchema
+      properties:
+        name:
+          type: string
+          example: "get_latest_asset_state"
+          description: Remote tool name.
+        description:
+          type: string
+          example: "Materializes the latest state for a given assetId from Confluent RTCE memory."
+          description: Description of tool function and expected outcome.
+        inputSchema:
+          type: object
+          description: JSON Schema defining expected input arguments.
+          example:
+            type: "object"
+            properties:
+              assetId:
+                type: "string"
+            required:
+              - "assetId"
+
+    McpToolsResponse:
+      type: object
+      description: Tool catalog retrieved from the upstream RTCE MCP endpoint.
+      required:
+        - connected
+        - tools
+      properties:
+        connected:
+          type: boolean
+          example: true
+          description: Upstream RTCE connection status.
+        tools:
+          type: array
+          description: Available MCP tools.
+          items:
+            $ref: "#/components/schemas/McpTool"
+
+    McpErrorResponse:
+      type: object
+      description: Error payload returned when RTCE MCP is unconfigured or unreachable.
+      required:
+        - connected
+        - error
+      properties:
+        connected:
+          type: boolean
+          example: false
+          description: Connection status.
+        error:
+          type: string
+          example: "RTCE MCP is not configured. See docs/cloud-setup.md"
+          description: Diagnostic error message.
+
+    McpCallRequest:
+      type: object
+      description: Tool invocation request forwarded to upstream Confluent RTCE MCP.
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 150
+          pattern: "^[-_a-zA-Z0-9.]+$"
+          example: "get_latest_asset_state"
+          description: Validated MCP tool name.
+        args:
+          type: object
+          default: {}
+          example:
+            assetId: "DET-R01"
+          description: Key-value arguments conforming to the tool's inputSchema.
+
+    McpCallResponse:
+      type: object
+      description: Result returned from remote Confluent RTCE MCP tool execution.
+      required:
+        - source
+        - result
+      properties:
+        source:
+          type: string
+          example: "CONFLUENT RTCE MCP"
+          description: Attribution tag for real Confluent RTCE MCP execution.
+        result:
+          description: Output payload returned by the remote MCP tool.
+
+    StreamModeRequest:
+      type: object
+      description: Stream source mode toggle parameters.
+      required:
+        - source
+      properties:
+        source:
+          type: string
+          enum:
+            - kafka
+            - sim
+          example: "kafka"
+          description: Desired data stream consumption mode.
+
+    StreamModeResponse:
+      type: object
+      description: Stream source mode toggle confirmation.
+      required:
+        - ok
+        - sourceMode
+        - sourceConnected
+      properties:
+        ok:
+          type: boolean
+          example: true
+          description: Mode switch success flag.
+        sourceMode:
+          type: string
+          enum:
+            - kafka
+            - sim
+          example: "kafka"
+          description: Updated stream source mode.
+        sourceConnected:
+          type: boolean
+          example: true
+          description: Whether the Kafka source consumer is connected.
+
+    ErrorResponse:
+      type: object
+      description: Standard HTTP error response.
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          example: "Unknown factory"
+          description: Error message describing why the request failed.
+        note:
+          type: string
+          example: "The local simulation may already have changed; external workflow failed."
+          description: Optional supplementary note for partial failures.
