@@ -35,7 +35,7 @@ SERVICE="${1:-${SERVICE:-all}}"   # all | sql-executor | schema-retriever
 ICR_NAMESPACE="${ICR_NAMESPACE:-action-kpi}"
 CE_PROJECT="${CE_PROJECT:-pearson-action-kpi}"
 RESOURCE_GROUP="${RESOURCE_GROUP:-pearson-action-kpi}"
-IBMCLOUD_API_KEY="${IBMCLOUD_API_KEY:-V3EsxUpvIHfl98AnjinWlkIYGZsdHLhv15YcM_zxeye2}"
+IBMCLOUD_API_KEY="${IBMCLOUD_API_KEY:-}"
 
 ICR_REGION="${ICR_REGION:-de.icr.io}"
 CE_REGION="${CE_REGION:-eu-de}"          # Frankfurt; change to us-south for Dallas
