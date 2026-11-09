@@ -28,6 +28,7 @@ class PipelineRunRequest(BaseModel):
     force: bool = False
 
 
+from shared.auth import ApiKeyMiddleware
 from ingestion_pipeline.src.api.routes.ingestion_routes import router as ingestion_router
 from ingestion_pipeline.src.config import app as app_cfg, cos as cos_cfg
 from ingestion_pipeline.src.services.cos_service import cos_service
@@ -51,13 +52,15 @@ def create_app() -> FastAPI:
         description="Document ingestion from IBM COS into OpenSearch.",
     )
 
+    # Authentication first, CORS last: Starlette runs the last-added middleware
+    # outermost, so CORS answers pre-flights and decorates 401 responses.
+    _app.add_middleware(ApiKeyMiddleware)
     _app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=False,   # must be False when allow_origins=["*"]
+        allow_origins=[o.strip() for o in app_cfg.cors_origin.split(",") if o.strip()],
+        allow_credentials=False,
         allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-        allow_headers=["*"],
-        expose_headers=["*"],
+        allow_headers=["Content-Type", "Authorization", "X-API-Key"],
         max_age=600,
     )
 

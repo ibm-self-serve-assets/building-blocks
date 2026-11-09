@@ -90,6 +90,9 @@ Initialises OpenSearch indexes on startup.
 | `COS_ENDPOINT` | COS endpoint URL |
 | `COS_BUCKET_INSTANCE_CRN` | COS service instance CRN |
 | `CORS_ORIGIN` | Allowed CORS origin (frontend URL) |
+| `API_KEY` | Shared secret; requests without a matching `X-API-Key` get `401` (same value on all three services) |
+| `CRAWL_ALLOWED_HOSTS` | *Optional.* Hosts the web crawler may fetch. Blank = any public host |
+| `S3_ALLOWED_ENDPOINTS` | *Optional.* Extra S3 endpoints callers may select |
 
 ---
 
@@ -107,6 +110,8 @@ Runs `python -m mcp_server` — the MCP / Knowledge Hub API on port 6868.
 | `WATSONX_API_KEY` | IBM watsonx AI API key |
 | `WATSONX_PROJECT_ID` | watsonx project ID |
 | `CORS_ORIGIN` | Allowed CORS origin (frontend URL) |
+| `API_KEY` | Shared secret; requests without a matching `X-API-Key` get `401` (same value on all three services) |
+| `MAXIMO_ALLOWED_HOSTS` | *Optional.* Hosts that may be registered as Maximo instances |
 
 ---
 
@@ -122,6 +127,9 @@ Backend URLs are injected at container startup — not baked into the image.
 | `BACKEND_API_URL` | `http://host.containers.internal:6868` | MCP Server URL |
 | `INGEST_API_URL` | `http://host.containers.internal:8080` | Ingestion Pipeline URL |
 | `OPENSEARCH_URL` | `https://host.containers.internal:9200` | OpenSearch URL |
+| `API_KEY` | *(none — required)* | Shared secret nginx adds as `X-API-Key` to `/api` and `/ingest-api` calls |
+| `UI_USERNAME` | *(none — required)* | Login name for the UI (HTTP basic auth enforced by nginx) |
+| `UI_PASSWORD` | *(none — required)* | Password for `UI_USERNAME`. The container refuses to start without both |
 
 ---
 

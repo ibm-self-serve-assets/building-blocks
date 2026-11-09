@@ -78,6 +78,10 @@ Key environment variables (read by all three services):
 | `COS_BUCKET_NAME` | COS bucket containing Maximo documents |
 | `COS_ENDPOINT` | COS endpoint URL |
 | `COS_BUCKET_INSTANCE_CRN` | COS service instance CRN |
+| `API_KEY` | **Required.** Shared secret for the MCP Server and Ingestion Pipeline; requests without a matching `X-API-Key` get `401`. Also put it in the root `.env` for local dev (the Vite proxy adds it) and in `deployment/.env.deploy` for deployments. Letters, digits, `_`, `-` only (`openssl rand -hex 32`). |
+| `UI_USERNAME` / `UI_PASSWORD` | **Required for the deployed UI.** nginx enforces HTTP basic auth on the whole site (the old client-side login that accepted anything was removed). Not needed for local `npm run dev`. |
+| `CORS_ORIGIN` | Frontend origin(s) allowed to call the backends (comma-separated). No longer `*`. |
+| `CRAWL_ALLOWED_HOSTS` | *Optional.* Hosts the web crawler may fetch. Blank = any public host; private, loopback and link-local addresses are always refused. |
 
 #### 2 — Install dependencies
 
