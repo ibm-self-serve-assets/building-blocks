@@ -120,10 +120,16 @@ INGEST_API_URL="${INGEST_API_URL:-}"
 OPENSEARCH_URL="${OPENSEARCH_URL:-}"
 # Shared secret nginx adds (X-API-Key) to proxied backend calls. Same value as the backends.
 API_KEY="${API_KEY:-}"
+# Second secret for ingestion/delete routes. nginx sends it only for UI_USERNAME.
+# Same value as the ingestion service's ADMIN_API_KEY.
+ADMIN_API_KEY="${ADMIN_API_KEY:-}"
 # Login for the UI itself (nginx HTTP basic auth). Required: nginx adds API_KEY to
-# every proxied call, so it must authenticate its own callers.
+# every proxied call, so it must authenticate its own callers. UI_USERNAME is the
+# administrator; the optional viewer login can search and chat but not ingest.
 UI_USERNAME="${UI_USERNAME:-}"
 UI_PASSWORD="${UI_PASSWORD:-}"
+UI_VIEWER_USERNAME="${UI_VIEWER_USERNAME:-}"
+UI_VIEWER_PASSWORD="${UI_VIEWER_PASSWORD:-}"
 
 # ── Flags ─────────────────────────────────────────────────────────────────────
 MODE="full"          # full | build-only | deploy-only | local
@@ -239,8 +245,11 @@ run_local() {
     -e INGEST_API_URL="${INGEST_API_URL:-http://host.containers.internal:8080}" \
     -e OPENSEARCH_URL="${OPENSEARCH_URL:-https://host.containers.internal:9200}" \
     -e API_KEY="${API_KEY:-}" \
+    -e ADMIN_API_KEY="${ADMIN_API_KEY:-}" \
     -e UI_USERNAME="${UI_USERNAME:-}" \
     -e UI_PASSWORD="${UI_PASSWORD:-}" \
+    -e UI_VIEWER_USERNAME="${UI_VIEWER_USERNAME:-}" \
+    -e UI_VIEWER_PASSWORD="${UI_VIEWER_PASSWORD:-}" \
     --name "${container_name}" \
     "${image}"
 
@@ -335,6 +344,7 @@ deploy_to_ce() {
   require_var "INGEST_API_URL"   "${INGEST_API_URL}"
   require_var "OPENSEARCH_URL"   "${OPENSEARCH_URL}"
   require_var "API_KEY"          "${API_KEY}"
+  require_var "ADMIN_API_KEY"    "${ADMIN_API_KEY}"
   require_var "UI_USERNAME"      "${UI_USERNAME}"
   require_var "UI_PASSWORD"      "${UI_PASSWORD}"
 
@@ -384,8 +394,11 @@ deploy_to_ce() {
     --from-literal "INGEST_API_URL=${INGEST_API_URL}" \
     --from-literal "OPENSEARCH_URL=${OPENSEARCH_URL}" \
     --from-literal "API_KEY=${API_KEY}" \
+    --from-literal "ADMIN_API_KEY=${ADMIN_API_KEY}" \
     --from-literal "UI_USERNAME=${UI_USERNAME}" \
     --from-literal "UI_PASSWORD=${UI_PASSWORD}" \
+    --from-literal "UI_VIEWER_USERNAME=${UI_VIEWER_USERNAME}" \
+    --from-literal "UI_VIEWER_PASSWORD=${UI_VIEWER_PASSWORD}" \
     || error "Failed to create CE generic secret '${env_secret}'"
   success "CE generic secret '${env_secret}' ready"
 

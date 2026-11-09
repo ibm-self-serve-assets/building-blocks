@@ -301,7 +301,7 @@ if [[ "${SKIP_INGESTION}" == "false" ]]; then
 
   # Export vars the sub-script needs (it also sources .env.deploy, but explicit
   # export ensures overrides from THIS environment take precedence).
-  export IMAGE_TAG IBMCLOUD_API_KEY CE_REGION CE_RESOURCE_GROUP CE_PROJECT API_KEY
+  export IMAGE_TAG IBMCLOUD_API_KEY CE_REGION CE_RESOURCE_GROUP CE_PROJECT API_KEY ADMIN_API_KEY CRAWL_ALLOWED_HOSTS
 
   # shellcheck source=deployment/deploy-ingestion.sh
   bash "${SCRIPT_DIR}/deploy-ingestion.sh" $(sub_flags)
@@ -330,7 +330,7 @@ if [[ "${SKIP_MCP}" == "false" ]]; then
   # Remove stale URL file
   rm -f "${MCP_URL_FILE}"
 
-  export IMAGE_TAG IBMCLOUD_API_KEY CE_REGION CE_RESOURCE_GROUP CE_PROJECT API_KEY
+  export IMAGE_TAG IBMCLOUD_API_KEY CE_REGION CE_RESOURCE_GROUP CE_PROJECT API_KEY ADMIN_API_KEY CRAWL_ALLOWED_HOSTS
 
   # shellcheck source=deployment/deploy-mcp-server.sh
   bash "${SCRIPT_DIR}/deploy-mcp-server.sh" $(sub_flags)
@@ -403,7 +403,7 @@ if [[ "${SKIP_UI}" == "false" ]]; then
 
   step "Running deploy.sh (UI)..."
 
-  export IMAGE_TAG IBMCLOUD_API_KEY CE_REGION CE_RESOURCE_GROUP CE_PROJECT API_KEY UI_USERNAME UI_PASSWORD
+  export IMAGE_TAG IBMCLOUD_API_KEY CE_REGION CE_RESOURCE_GROUP CE_PROJECT API_KEY ADMIN_API_KEY UI_USERNAME UI_PASSWORD UI_VIEWER_USERNAME UI_VIEWER_PASSWORD
 
   # shellcheck source=deployment/deploy.sh
   bash "${SCRIPT_DIR}/deploy.sh" $(sub_flags)

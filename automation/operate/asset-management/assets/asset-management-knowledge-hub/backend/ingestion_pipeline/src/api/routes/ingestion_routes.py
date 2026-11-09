@@ -7,12 +7,14 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from typing import Optional
 from urllib.parse import urlsplit
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field, field_validator
+from shared.auth import client_info
 from shared.config import cos as cos_cfg
 from shared.logging import get_logger
-from shared.net_guard import UnsafeURLError, check_url
+from shared.net_guard import UnsafeURLError, check_url, crawl_allowed_hosts
+from shared.rate_limit import limiter_from_env
 from ingestion_pipeline.src.services.progress_service import progress_service, ProgressEvent
 
 logger = get_logger(__name__)
@@ -27,6 +29,34 @@ _MAX_ACTIVE_JOBS = int(os.environ.get("MAX_ACTIVE_INGEST_JOBS", "8"))
 
 # What the caller sees when an ingestion job fails. Details go to the server log.
 _GENERIC_FAILURE = "Ingestion failed. See server logs for details."
+
+
+_limiter = limiter_from_env()
+
+
+def throttle(request: Request) -> None:
+    """Per-client rate limit for job submissions (429 + Retry-After)."""
+    user, addr = client_info(request.scope)
+    wait = _limiter.hit(f"{user}@{addr}")
+    if wait:
+        logger.warning("Ingestion rate limit exceeded", extra={
+            "event": "ingest_rate_limited", "client": addr, "user": user,
+            "route": request.url.path,
+        })
+        raise HTTPException(
+            status_code=429,
+            detail="Too many ingestion requests. Try again later.",
+            headers={"Retry-After": str(int(wait) + 1)},
+        )
+
+
+def audit(request: Request, source: str, job_id: Optional[str], **fields) -> None:
+    """Audit-log an accepted ingestion/index-changing request. Never log secrets."""
+    user, addr = client_info(request.scope)
+    logger.info("Ingestion request accepted", extra={
+        "event": "ingest_submitted", "source": source, "job_id": job_id,
+        "client": addr, "user": user, **fields,
+    })
 
 
 def _require_capacity() -> None:
@@ -100,13 +130,21 @@ class WebCrawlRequest(BaseModel):
     @field_validator("urls")
     @classmethod
     def _urls_are_acceptable(cls, urls: list[str]) -> list[str]:
-        # Cheap syntactic screen (scheme, credentials, port, literal IPs) so bad
-        # input is rejected with a 422. The crawler re-validates, including DNS,
-        # at fetch time and on every redirect.
+        # Cheap screen (scheme, credentials, port, internal names, literal IPs and
+        # the approved-domain list) so bad input is rejected with a 422. The
+        # crawler re-validates, including DNS, at fetch time and on every redirect.
+        approved = crawl_allowed_hosts()
         for u in urls:
             try:
-                check_url(u, resolve=False)
+                check_url(u, resolve=False, allowed_hosts=approved)
             except UnsafeURLError as exc:
+                logger.warning("Web crawl URL rejected", extra={
+                    "event": "ingest_url_rejected",
+                    "host": (urlsplit(u).hostname or "")[:100] if isinstance(u, str) else "",
+                    "reason": str(exc),
+                })
+                if "allowlist" in str(exc):
+                    raise ValueError("URL is not on an approved domain: " + ", ".join(approved)) from exc
                 raise ValueError(str(exc)) from exc
         return [u.strip() for u in urls]
 
@@ -187,13 +225,17 @@ def _run_web_job(job_id: str, body: WebCrawlRequest) -> None:
     ))
 
 @router.post("/web")
-async def ingest_web(body: WebCrawlRequest):
+async def ingest_web(body: WebCrawlRequest, request: Request):
     """Accept web crawl request, kick off background job, return job_id immediately."""
+    throttle(request)
     _require_capacity()
     label = body.urls[0] if body.urls else "web"
     if len(body.urls) > 1:
         label += f" (+{len(body.urls) - 1} more)"
     job_id = progress_service.create_job("web", label=label)
+    audit(request, "web", job_id, url_count=len(body.urls),
+          hosts=",".join(sorted({(urlsplit(u).hostname or "")[:100] for u in body.urls})),
+          max_depth=body.max_depth, max_pages=body.max_pages)
     progress_service.push(job_id, ProgressEvent(
         type="start",
         message=f"Starting web crawl for {len(body.urls)} URL(s)…",
@@ -291,8 +333,9 @@ def _run_s3_job(job_id: str, body: S3IngestRequest) -> None:
         ))
 
 @router.post("/s3")
-async def ingest_s3(body: S3IngestRequest):
+async def ingest_s3(body: S3IngestRequest, request: Request):
     """Accept S3 ingest request, kick off background job, return job_id immediately."""
+    throttle(request)
     _validate_s3_endpoint(body.endpoint_url)
     _require_capacity()
     # Resolve effective values (request overrides env, env is the fallback)
@@ -307,6 +350,7 @@ async def ingest_s3(body: S3IngestRequest):
 
     label = f"s3://{effective_bucket}/{body.prefix or ''}"
     job_id = progress_service.create_job("s3", label=label)
+    audit(request, "s3", job_id, bucket=effective_bucket[:100], prefix=body.prefix[:200])
     progress_service.push(job_id, ProgressEvent(
         type="start",
         message=f"Starting S3 ingestion from {label}…",
@@ -372,11 +416,13 @@ def _run_box_job(job_id: str, body: BoxIngestRequest) -> None:
         ))
 
 @router.post("/box")
-async def ingest_box(body: BoxIngestRequest):
+async def ingest_box(body: BoxIngestRequest, request: Request):
     """Accept Box ingest request, kick off background job, return job_id immediately."""
+    throttle(request)
     _require_capacity()
     label = f"Box folder {body.folder_id}"
     job_id = progress_service.create_job("box", label=label)
+    audit(request, "box", job_id, folder_id=body.folder_id)
     progress_service.push(job_id, ProgressEvent(
         type="start",
         message=f"Starting Box ingestion from folder {body.folder_id}…",

@@ -67,7 +67,8 @@ export default defineConfig(({ mode }) => {
           target: env.VITE_INGESTION_URL || 'http://localhost:8080',
           changeOrigin: true,
           secure: false,
-          headers: { 'X-API-Key': env.API_KEY || '' },
+          // Local dev runs as the administrator, so the admin key is added too.
+          headers: { 'X-API-Key': env.API_KEY || '', 'X-Admin-Key': env.ADMIN_API_KEY || '' },
           rewrite: (path) => path.replace(/^\/ingest-api/, ''),
         },
         // /whoami is answered by nginx in production; the dev server falls back

@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 from ingestion_pipeline.src.services.cos_service import DocumentMetadata
 from ingestion_pipeline.src.services.opensearch_service import OpenSearchService, DocumentChunk
 from shared.chunking import CHUNK_OVERLAP, CHUNK_SIZE, split_text
-from shared.net_guard import UnsafeURLError, parse_host_list, safe_get
+from shared.net_guard import UnsafeURLError, crawl_allowed_hosts, safe_get
 from shared.watsonx import client as wx
 from datetime import datetime
 from shared.logging import get_logger
@@ -33,15 +33,6 @@ _DEFAULT_HEADERS = {
 MAX_DEPTH_LIMIT = 2
 MAX_PAGES_LIMIT = 50
 MAX_CHUNKS_PER_PAGE = 500
-
-
-def _allowed_hosts() -> list[str]:
-    """Operator allowlist (CRAWL_ALLOWED_HOSTS, comma-separated, ``*.`` wildcards ok).
-
-    Empty means any *public* host. Private, loopback and link-local targets are
-    always refused by the net guard.
-    """
-    return parse_host_list(os.environ.get("CRAWL_ALLOWED_HOSTS", ""))
 
 
 @dataclass
@@ -96,7 +87,7 @@ class WebIngestionService:
 
         max_depth = max(0, min(max_depth, MAX_DEPTH_LIMIT))
         max_pages = max(1, min(max_pages, MAX_PAGES_LIMIT))
-        allowed_hosts = _allowed_hosts()
+        allowed_hosts = crawl_allowed_hosts()
 
         visited: set[str] = set()
         queue: list[tuple[str, int]] = [(seed_url, 0)]

@@ -36,6 +36,20 @@ _EMBEDDING_NETS = (
 )
 
 
+# Host names that only make sense inside a cluster, container runtime or LAN.
+# Blocked by name in addition to the IP checks (defence in depth) unless private
+# targets are explicitly allowed.
+_INTERNAL_NAME_PATTERNS = (
+    "localhost", "*.localhost", "*.local", "*.localdomain", "*.internal", "*.lan",
+    "*.svc", "*.svc.*", "*.cluster.local", "kubernetes.default*",
+    "host.docker.internal", "host.containers.internal", "gateway.docker.internal",
+)
+
+# Container-runtime / orchestrator management ports; never fetchable by the
+# crawler even if OUTBOUND_ALLOWED_PORTS is widened.
+_MANAGEMENT_PORTS = {2375, 2376, 2379, 2380, 6443, 8001, 10250, 10255}
+
+
 class UnsafeURLError(ValueError):
     """The URL (or a redirect target) is not allowed to be fetched."""
 
@@ -67,6 +81,16 @@ def parse_host_list(raw: str) -> list[str]:
     return [h.strip().lower() for h in raw.split(",") if h.strip()]
 
 
+# Approved crawl sources when CRAWL_ALLOWED_HOSTS is unset or blank. The crawler
+# never runs without an allowlist.
+DEFAULT_CRAWL_HOSTS = ("ibm.com", "*.ibm.com", "maximosecrets.com", "*.maximosecrets.com")
+
+
+def crawl_allowed_hosts() -> list[str]:
+    """Approved web-crawl domains: CRAWL_ALLOWED_HOSTS if set, else the defaults."""
+    return parse_host_list(os.environ.get("CRAWL_ALLOWED_HOSTS", "")) or list(DEFAULT_CRAWL_HOSTS)
+
+
 def _ip_blocked(ip: ipaddress.IPv4Address | ipaddress.IPv6Address, allow_private: bool) -> bool:
     if isinstance(ip, ipaddress.IPv6Address) and ip.ipv4_mapped:
         ip = ip.ipv4_mapped
@@ -79,6 +103,13 @@ def _ip_blocked(ip: ipaddress.IPv4Address | ipaddress.IPv6Address, allow_private
     if any(ip in net for net in _EMBEDDING_NETS if net.version == ip.version):
         return True
     return not ip.is_global
+
+
+def _internal_name(host: str) -> bool:
+    """True for single-label names (e.g. ``kubernetes``) and well-known internal suffixes."""
+    if "." not in host and ":" not in host:
+        return True
+    return any(fnmatch(host, pattern) for pattern in _INTERNAL_NAME_PATTERNS)
 
 
 def _host_allowed(host: str, allowed_hosts: Optional[Iterable[str]]) -> bool:
@@ -118,7 +149,7 @@ def check_url(
     if not host:
         raise UnsafeURLError("URL has no host")
     port = port or _SCHEMES[parts.scheme]
-    if not allow_private and port not in allowed_ports():
+    if not allow_private and (port not in allowed_ports() or port in _MANAGEMENT_PORTS):
         raise UnsafeURLError("Port is not allowed")
     if not _host_allowed(host, allowed_hosts):
         raise UnsafeURLError("Host is not on the allowlist")
@@ -127,6 +158,9 @@ def check_url(
         literal = ipaddress.ip_address(host)
     except ValueError:
         literal = None
+
+    if literal is None and not allow_private and _internal_name(host):
+        raise UnsafeURLError("Internal host names are not allowed")
 
     if literal is not None:
         if _ip_blocked(literal, allow_private):
