@@ -1,5 +1,5 @@
 ---
-name: autonomous-instana-bob-app
+name: application-observability-instana-bob
 description: Use when building, modifying, operating, debugging, extending, or testing the Autonomous Instana Bob App (React 18 Carbon UI, Express bridge, mcp-instana STDIO MCP server, and IBM Bob LLM autonomous SRE agent loop).
 ---
 
