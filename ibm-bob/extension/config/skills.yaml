@@ -221,3 +221,9 @@ skills:
     domain: Automation
     docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
     mcps: []
+
+  # Full-Stack Application Observability (QSE — under Automation/Secure)
+  - folderName: qse-bob-automation-workbench
+    domain: Automation
+    docsUrl: https://ibm-self-serve-assets.github.io/building-blocks-docs/automation-core/bob-skills-and-modes/
+    mcps: []
