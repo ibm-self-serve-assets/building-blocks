@@ -1,5 +1,5 @@
 ---
-name: qse-workbench
+name: qse-bob-automation-workbench
 description: Recreates the QSE Automation Workbench (React/Carbon UI, Express/SQLite backend, Headless Bob + QSE CLI integration, mock demo mode, Pipeline digital twin) from the bundled SPEC.md using ordered build guides. Use when asked to "recreate", "rebuild", "clone", "scaffold" or "audit" the QSE workbench, or to plan which build guide to read next.
 ---
 
